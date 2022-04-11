@@ -157,14 +157,6 @@
             ><feather type="settings" />Paramètres</a
           >
           <nav class="nav nav-sub">
-            <nuxt-link to="" class="nav-sub-link">Tarification</nuxt-link>
-          </nav>
-          <nav class="nav nav-sub">
-            <nuxt-link to="" class="nav-sub-link"
-              >Réglages financiers</nuxt-link
-            >
-          </nav>
-          <nav class="nav nav-sub">
             <nuxt-link
               to="/parametre/utilisateur"
               class="nav-sub-link"
@@ -173,12 +165,12 @@
             >
           </nav>
           <nav class="nav nav-sub">
-            <nuxt-link to="" class="nav-sub-link"
-              >Architecture du marché</nuxt-link
+            <nuxt-link
+              to="/parametre/architecture"
+              class="nav-sub-link"
+              :class="{ active: $route.name === 'parametre-architecture' }"
+              >Architecture de Marché</nuxt-link
             >
-          </nav>
-          <nav class="nav nav-sub">
-            <nuxt-link to="" class="nav-sub-link">Produits Annexes</nuxt-link>
           </nav>
         </li>
       </ul>
