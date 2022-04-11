@@ -40,7 +40,6 @@
           >
         </li>
       </ul>
-
       <div id="tabParametreContent" class="tab-content mg-t-20">
         <div
           id="user"

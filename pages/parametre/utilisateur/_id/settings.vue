@@ -96,10 +96,9 @@ export default {
     PartialBreadcrumb,
   },
   async asyncData({ params, store }) {
-    const { avatar, name, description, adresse } = await store.dispatch(
-      'user-role/user/getOne',
-      params.id
-    )
+    const {
+      user: { avatar, name, description, adresse },
+    } = await store.dispatch('user-role/user/getOne', params.id)
     const profileData = { avatar, name, description, adresse, id: params.id }
     return {
       nom: name,
