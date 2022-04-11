@@ -19,7 +19,7 @@ export const actions = {
   },
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/users/' + id)
-    return requete.data.user
+    return requete.data
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
