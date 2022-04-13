@@ -20,7 +20,7 @@
     "core-js": "^3.19.3",
     "feather-icons": "4",
     "nuxt": "^2.15.8",
-    "vue": "2",
+    "vue": "3",
     "vue-bootstrap4-table": "^1.1.11",
     "vue-feather": "1",
     "vue-gates": "^2.1.2",
