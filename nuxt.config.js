@@ -5,7 +5,7 @@ export default {
   target: 'static',
   // Global page headers: https://go.nuxtjs.dev/config-head
   env: {
-    API: process.env.API || 'http://localhost:8000',
+    API: process.env.API,
   },
   head: {
     title: 'gesmar',

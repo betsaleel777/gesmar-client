@@ -1,9 +1,23 @@
 <template>
-  <div></div>
+  <div>
+    <button
+      type="button"
+      class="btn btn-primary"
+      @click="$bvModal.show('structure')"
+    >
+      Création d'architecture de marché
+    </button>
+    <modal-stepper-architecture />
+  </div>
 </template>
 
 <script>
-export default {}
+import ModalStepperArchitecture from './ModalStepperArchitecture.vue'
+export default {
+  components: {
+    ModalStepperArchitecture,
+  },
+}
 </script>
 
 <style scoped></style>
