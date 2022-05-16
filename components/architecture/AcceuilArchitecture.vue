@@ -7,7 +7,7 @@
     >
       Création d'architecture de marché
     </button>
-    <modal-stepper-architecture />
+    <ModalStepperArchitecture />
   </div>
 </template>
 

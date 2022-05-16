@@ -1,9 +1,13 @@
 export const state = () => ({
   pavillons: [],
+  selected: [],
 })
 export const getters = {
   pavillons: (state) => {
     return state.pavillons
+  },
+  selected: (state) => {
+    return state.selected
   },
 }
 export const actions = {
@@ -11,6 +15,11 @@ export const actions = {
     commit('SET_PAVILLON', [])
     const requete = await this.$axios.get('api/parametres/pavillons')
     commit('SET_PAVILLON', requete.data.pavillons)
+  },
+  async getByMarche({ commit }, id) {
+    commit('SET_SELECTED', [])
+    const requete = await this.$axios.get('api/parametres/pavillons/marche/' + id)
+    commit('SET_SELECTED', requete.data.pavillons)
   },
   async getTrashAll({ commit }) {
     commit('SET_PAVILLON', [])
@@ -49,10 +58,21 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+  async push({ dispatch }, payload) {
+    const requete = await this.$axios.post(
+      'api/parametres/pavillons/push',
+      payload
+    )
+    dispatch('getAll')
+    return { message: requete.data.message, donnees: requete.data.pavillons }
+  },
 }
 
 export const mutations = {
   SET_PAVILLON(state, pavillons) {
     state.pavillons = pavillons
+  },
+  SET_SELECTED(state, selected) {
+    state.selected = selected
   },
 }

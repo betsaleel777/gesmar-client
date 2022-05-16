@@ -15,23 +15,50 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <StepperContentMarche @suivant="step = 2" />
+            <StepperContentMarche v-if="step === 1" @suivant="onSuivant" />
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <StepperContentPavillon @suivant="step = 3" />
+            <StepperContentPavillon
+              v-if="step === 2"
+              :key="marche.key"
+              :marche="marche"
+              @suivant="onSuivant"
+              @precedant="step = step - 1"
+            />
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <StepperContentNiveau @suivant="step = 4" />
+            <StepperContentNiveau
+              v-if="step === 3"
+              :key="pavillons.key"
+              :pavillons="pavillons.liste"
+              :marche="marche"
+              @suivant="onSuivant"
+              @precedant="step = step - 1"
+            />
           </v-stepper-content>
 
           <v-stepper-content step="4">
-            <StepperContentZone @suivant="step = 5" />
+            <StepperContentZone
+              v-if="step === 4"
+              :key="niveaus.key"
+              :niveaus="niveaus.liste"
+              :marche="marche"
+              @suivant="onSuivant"
+              @precedant="step = step - 1"
+            />
           </v-stepper-content>
 
           <v-stepper-content step="5">
-            <StepperContentEmplacement @suivant="step = 1" />
+            <StepperContentEmplacement
+              v-if="step === 5"
+              :key="zones.key"
+              :zones="zones.liste"
+              :marche="marche"
+              @suivant="onSuivant"
+              @precedant="step = step - 1"
+            />
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -61,10 +88,34 @@ export default {
       { id: 4, name: 'Zones' },
       { id: 5, name: 'Emplacements' },
     ],
+    marche: { id: null, key: false },
+    pavillons: { liste: [], key: false },
+    niveaus: { liste: [], key: false },
+    zones: { liste: [], key: false },
   }),
   methods: {
     reset() {
       this.step = 1
+    },
+    onSuivant({ step, donnees }) {
+      if (donnees) {
+        this.step = step
+        if (step === 2) {
+          this.marche = donnees
+          this.marche.key = !this.marche.key
+        } else if (step === 3) {
+          this.pavillons.liste = donnees
+          this.pavillons.key = !this.pavillons.key
+        } else if (step === 4) {
+          this.niveaus.liste = donnees
+          this.niveaus.key = !this.niveaus.key
+        } else if (step === 5) {
+          this.zones.liste = donnees
+          this.zones.key = !this.zones.key
+        }
+      } else {
+        this.reset()
+      }
     },
   },
 }

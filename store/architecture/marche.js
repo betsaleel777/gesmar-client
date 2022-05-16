@@ -49,6 +49,14 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+  async push({ dispatch }, payload) {
+    const requete = await this.$axios.post(
+      'api/parametres/marches/push',
+      payload
+    )
+    dispatch('getAll')
+    return { message: requete.data.message, donnees: requete.data.marche }
+  },
 }
 
 export const mutations = {

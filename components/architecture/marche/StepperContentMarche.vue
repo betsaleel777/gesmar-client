@@ -1,8 +1,15 @@
 <template>
   <div class="">
+    <v-switch
+      v-model="isNew"
+      :label="isNew ? 'anciens marché' : 'nouveau marché'"
+    ></v-switch>
     <v-autocomplete
       v-if="!isNew"
+      v-model="selected"
       :items="marches"
+      item-text="nom"
+      item-value="id"
       outlined
       dense
       label="choix du marché"
@@ -86,13 +93,13 @@
       </v-row>
     </form>
     <v-btn small color="primary" @click="save"> Continuer </v-btn>
-    <v-btn small text color="error"> Annuler </v-btn>
   </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 export default {
+  emits: ['suivant'],
   data: () => ({
     marche: {
       nom: '',
@@ -108,11 +115,12 @@ export default {
       pays: { exist: false, message: null },
     },
     isNew: true,
+    selected: null,
   }),
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches' }),
   },
-  mounted() {
+  created() {
     this.getAll().then(() => {
       if (this.marches.length > 0) this.isNew = false
     })
@@ -120,25 +128,38 @@ export default {
   methods: {
     ...mapActions({
       getAll: 'architecture/marche/getAll',
-      ajouter: 'architecture/marche/ajouter',
+      getOne: 'architecture/marche/getOne',
+      push: 'architecture/marche/push',
     }),
     save() {
-      this.ajouter(this.marche)
-        .then(({ message }) => {
-          this.$emit('suivant')
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
+      if (this.isNew) {
+        this.push(this.marche)
+          .then(({ message, donnees }) => {
+            this.$emit('suivant', { step: 2, donnees })
+            this.$bvToast.toast(message, {
+              title: 'succès de la création'.toLocaleUpperCase(),
+              variant: 'success',
+              solid: true,
+            })
           })
+          .catch((err) => {
+            const { data } = err.response
+            if (data) {
+              errorsInitialise(this.errors)
+              errorsWriting(data.errors, this.errors)
+            }
+          })
+      } else if (this.selected) {
+        this.getOne(this.selected).then(({ marche: donnees }) => {
+          this.$emit('suivant', { step: 2, donnees })
         })
-        .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+      } else {
+        this.$bvToast.toast('Aucun marché selectionné', {
+          title: "echec de l'opération".toLocaleUpperCase(),
+          variant: 'danger',
+          solid: true,
         })
+      }
     },
   },
 }
