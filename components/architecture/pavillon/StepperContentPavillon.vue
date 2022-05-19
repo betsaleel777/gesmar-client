@@ -42,12 +42,14 @@ export default {
     save() {
       this.push({ id: this.marche.id, nombre: this.nombre })
         .then(({ message, donnees }) => {
-          this.$emit('suivant', { step: 3, donnees })
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
             solid: true,
+            autoHideDelay: 3000,
           })
+          const interval = `${donnees[0].nom} à ${donnees.at(-1).nom}`
+          this.$emit('suivant', { step: 3, donnees, interval })
         })
         .catch((err) => {
           const { data } = err.response

@@ -135,12 +135,13 @@ export default {
       if (this.isNew) {
         this.push(this.marche)
           .then(({ message, donnees }) => {
-            this.$emit('suivant', { step: 2, donnees })
-            this.$bvToast.toast(message, {
+            this.$root.$bvToast.toast(message, {
               title: 'succès de la création'.toLocaleUpperCase(),
               variant: 'success',
               solid: true,
+              autoHideDelay: 3000,
             })
+            this.$emit('suivant', { step: 2, donnees })
           })
           .catch((err) => {
             const { data } = err.response

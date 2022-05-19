@@ -4,7 +4,7 @@
       <h5>Création automatique de niveau, site "{{ marche.nom }}"</h5>
       <h5>
         Ce nombre de niveau sera crée pour chaque pavillon allant du
-        {{ intervalText }}
+        {{ interval }}
       </h5>
       <div class="form-group">
         <label>Nombre de niveaux</label>
@@ -31,6 +31,10 @@ export default {
       type: Object,
       required: true,
     },
+    interval: {
+      type: String,
+      required: true,
+    },
     pavillons: {
       type: Array,
       required: true,
@@ -38,17 +42,11 @@ export default {
   },
   emits: ['suivant', 'precedant'],
   data: () => ({
-    intervalText: null,
     nombre: null,
     errors: {
       nombre: { exist: false, message: null },
     },
   }),
-  mounted() {
-    this.intervalText = `${this.pavillons[0].nom} à ${
-      this.pavillons.at(-1).nom
-    }`
-  },
   methods: {
     ...mapActions({
       push: 'architecture/niveau/push',
@@ -57,12 +55,14 @@ export default {
       const ids = this.pavillons.map((pavillon) => pavillon.id)
       this.push({ pavillons: ids, nombre: this.nombre })
         .then(({ message, donnees }) => {
-          this.$emit('suivant', { step: 4, donnees })
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
             solid: true,
+            autoHideDelay: 3000,
           })
+          const interval = `${donnees[0].at(0).nom} à ${donnees[0].at(-1).nom}`
+          this.$emit('suivant', { step: 4, donnees, interval })
         })
         .catch((err) => {
           const { data } = err.response

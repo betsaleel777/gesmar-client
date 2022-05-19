@@ -23,7 +23,7 @@ export const actions = {
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
-      'parametre/zones/' + payload.id,
+      'api/parametres/zones/' + payload.id,
       payload
     )
     dispatch('getAll')
@@ -46,6 +46,14 @@ export const actions = {
     )
     dispatch('getAll')
     return { message: requete.data.message }
+  },
+  async push({ dispatch }, payload) {
+    const requete = await this.$axios.post(
+      'api/parametres/zones/push',
+      payload
+    )
+    dispatch('getAll')
+    return { message: requete.data.message, donnees: requete.data.zones }
   },
 }
 

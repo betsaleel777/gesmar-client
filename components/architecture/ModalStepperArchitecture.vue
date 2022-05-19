@@ -34,6 +34,7 @@
               :key="pavillons.key"
               :pavillons="pavillons.liste"
               :marche="marche"
+              :interval="pavillons.intervalText"
               @suivant="onSuivant"
               @precedant="step = step - 1"
             />
@@ -42,22 +43,13 @@
           <v-stepper-content step="4">
             <StepperContentZone
               v-if="step === 4"
-              :key="niveaus.key"
-              :niveaus="niveaus.liste"
+              :key="niveaux.key"
+              :niveaux="niveaux.liste"
               :marche="marche"
+              :interval="niveaux.intervalText"
               @suivant="onSuivant"
               @precedant="step = step - 1"
-            />
-          </v-stepper-content>
-
-          <v-stepper-content step="5">
-            <StepperContentEmplacement
-              v-if="step === 5"
-              :key="zones.key"
-              :zones="zones.liste"
-              :marche="marche"
-              @suivant="onSuivant"
-              @precedant="step = step - 1"
+              @fermer="$bvModal.hide('structure')"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -70,14 +62,12 @@ import StepperContentMarche from './marche/StepperContentMarche.vue'
 import StepperContentNiveau from './niveau/StepperContentNiveau.vue'
 import StepperContentPavillon from './pavillon/StepperContentPavillon.vue'
 import StepperContentZone from './zones/StepperContentZone.vue'
-import StepperContentEmplacement from './emplacement/StepperContentEmplacement.vue'
 export default {
   components: {
     StepperContentMarche,
     StepperContentNiveau,
     StepperContentPavillon,
     StepperContentZone,
-    StepperContentEmplacement,
   },
   data: () => ({
     step: 1,
@@ -86,18 +76,16 @@ export default {
       { id: 2, name: 'Pavillons' },
       { id: 3, name: 'Niveaux' },
       { id: 4, name: 'Zones' },
-      { id: 5, name: 'Emplacements' },
     ],
     marche: { id: null, key: false },
-    pavillons: { liste: [], key: false },
-    niveaus: { liste: [], key: false },
-    zones: { liste: [], key: false },
+    pavillons: { liste: [], key: false, intervalText: null },
+    niveaux: { liste: [], key: false, intervalText: null },
   }),
   methods: {
     reset() {
       this.step = 1
     },
-    onSuivant({ step, donnees }) {
+    onSuivant({ step, donnees, interval }) {
       if (donnees) {
         this.step = step
         if (step === 2) {
@@ -105,13 +93,12 @@ export default {
           this.marche.key = !this.marche.key
         } else if (step === 3) {
           this.pavillons.liste = donnees
+          this.pavillons.intervalText = interval
           this.pavillons.key = !this.pavillons.key
         } else if (step === 4) {
-          this.niveaus.liste = donnees
-          this.niveaus.key = !this.niveaus.key
-        } else if (step === 5) {
-          this.zones.liste = donnees
-          this.zones.key = !this.zones.key
+          this.niveaux.liste = donnees
+          this.niveaux.intervalText = interval
+          this.niveaux.key = !this.niveaux.key
         }
       } else {
         this.reset()

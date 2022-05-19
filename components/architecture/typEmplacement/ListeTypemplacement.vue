@@ -1,10 +1,19 @@
 <template>
   <div>
     <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Zones Archivées">
+      <b-card aria-hidden="true" header="Liste des types d'emplacements">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
             <div class="">
+              <feather
+                v-b-tooltip.hover.top
+                title="créer"
+                class="btn btn-sm btn-primary btn-icon"
+                stroke-width="2"
+                size="18"
+                type="plus"
+                @click="$bvModal.show('modalCreateTypempl')"
+              />
               <feather
                 v-b-tooltip.hover.top
                 title="imprimer liste"
@@ -15,23 +24,22 @@
               />
               <feather
                 v-b-tooltip.hover.top
-                title="retour"
+                title="archives"
                 class="btn btn-sm btn-primary btn-icon"
                 stroke-width="2"
                 size="18"
-                type="arrow-left"
-                @click="$emit('back')"
+                type="archive"
+                @click="$emit('archivage')"
               />
             </div>
           </div>
-          <!-- btn-toolbar -->
           <hr class="mg-t-4" />
           <b-form-input
             v-if="totalRows > 0"
             id="filter-input"
             v-model="filter"
             type="search"
-            placeholder="Type to Search"
+            placeholder="Rechercher"
             class="mg-y-10"
             :debounce="500"
           ></b-form-input>
@@ -42,31 +50,31 @@
             small
             bordered
             primary-key="id"
+            :items="types"
+            :fields="fields"
             :current-page="currentPage"
             :per-page="perPage"
-            :items="zones"
-            :fields="fields"
             responsive
-            empty-text="Aucune zone archivé"
+            empty-text="Aucun type d'emplacement"
             show-empty
             :filter="filter"
             @filtered="onFiltered"
           >
-            <template #cell(niveau)="data">
-              {{ data.item.niveau.nom }}
+            <template #cell(option)="data">
+              <a type="button" @click="editer(data.item)">
+                <feather title="modifier" type="edit" size="20" stroke="blue" />
+              </a>
+              <a type="button" @click="dialoger(data.item)">
+                <feather
+                  title="archiver"
+                  type="trash-2"
+                  size="20"
+                  stroke="red"
+                />
+              </a>
             </template>
             <template #cell(created_at)="data">
               {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-            </template>
-            <template #cell(option)="data">
-              <feather
-                title="restaurer"
-                type="rotate-cw"
-                size="20"
-                stroke="green"
-                stroke-width="3"
-                @click="dialoger(data.item)"
-              />
             </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
@@ -79,38 +87,54 @@
             v-model="currentPage"
             :total-rows="totalRows"
             :per-page="perPage"
-            align="fill"
+            align="right"
             size="sm"
-            class="mg-y-1"
             aria-controls="table"
           ></b-pagination>
-          <ConfirmationModal
-            :id="dialogData.id"
-            :key="dialogData.modal"
-            v-model="dialogData.modal"
-            :nom="dialogData.nom"
-            modal-id="zoneConfirmationArchive"
-            action="architecture/zone/restaurer"
-            :message="`Voulez vous réelement restaurer le niveau ${dialogData.nom}`"
-            @confirmed="$emit('back')"
-          />
+          <div>
+            <ConfirmationModal
+              :id="dialogData.id"
+              :key="dialogData.modal"
+              v-model="dialogData.modal"
+              :nom="dialogData.nom"
+              modal-id="typemplConfirmationListe"
+              action="architecture/typEmplacement/supprimer"
+              :message="`Voulez vous réelement archiver le type d'emplacement ${dialogData.nom}`"
+            />
+          </div>
+          <CreateTypemplacementModal />
+          <div>
+            <EditTypemplacementModal
+              :key="edit.modal"
+              v-model="edit.modal"
+              :current="edit.type"
+            />
+          </div>
         </b-card-text>
       </b-card>
     </b-overlay>
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import CreateTypemplacementModal from './CreateTypemplacementModal.vue'
+import EditTypemplacementModal from './EditTypemplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
     ConfirmationModal,
+    CreateTypemplacementModal,
+    EditTypemplacementModal,
+  },
+  props: {
+    types: {
+      type: Array,
+      required: true,
+    },
   },
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'niveau', label: 'Niveau', sortable: true },
-      { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
         label: 'Options',
@@ -120,27 +144,32 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
+    edit: { modal: false, type: {} },
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.getTrashAll().then(() => {
-      this.totalRows = this.niveaux.length
-    })
-  },
-  computed: {
-    ...mapGetters('architecture/niveau', ['niveaux']),
+    this.totalRows = this.types.length
   },
   methods: {
-    ...mapActions('architecture/niveau', ['getTrashAll']),
+    ...mapActions({
+      getOne: 'architecture/typEmplacement/getOne',
+    }),
     imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
       this.dialogData.modal = true
-      this.$bvModal.show('niveauConfirmationArchive')
+      this.$bvModal.show('typemplConfirmationListe')
+    },
+    editer({ id }) {
+      this.getOne(id).then(({ type }) => {
+        this.edit.type = type
+        this.edit.modal = true
+        this.$bvModal.show('modalEditTypempl')
+      })
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

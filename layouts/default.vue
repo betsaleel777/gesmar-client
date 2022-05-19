@@ -3,7 +3,9 @@
     <PartialSidebar />
     <div class="content">
       <PartialHeader />
-      <nuxt />
+      <v-app>
+        <nuxt />
+      </v-app>
     </div>
   </div>
 </template>

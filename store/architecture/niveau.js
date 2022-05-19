@@ -8,14 +8,14 @@ export const getters = {
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_niveaux', [])
+    commit('SET_NIVEAUX', [])
     const requete = await this.$axios.get('api/parametres/niveaux')
-    commit('SET_niveaux', requete.data.niveaux)
+    commit('SET_NIVEAUX', requete.data.niveaux)
   },
   async getTrashAll({ commit }) {
-    commit('SET_niveaux', [])
+    commit('SET_NIVEAUX', [])
     const requete = await this.$axios.get('api/parametres/niveaux/trashed')
-    commit('SET_niveaux', requete.data.niveaux)
+    commit('SET_NIVEAUX', requete.data.niveaux)
   },
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/niveaux/' + id)
@@ -49,10 +49,18 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+  async push({ dispatch }, payload) {
+    const requete = await this.$axios.post(
+      'api/parametres/niveaux/push',
+      payload
+    )
+    dispatch('getAll')
+    return { message: requete.data.message, donnees: requete.data.niveaux }
+  },
 }
 
 export const mutations = {
-  SET_niveaux(state, niveaux) {
+  SET_NIVEAUX(state, niveaux) {
     state.niveaux = niveaux
   },
 }

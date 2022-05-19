@@ -29,12 +29,12 @@
         </li>
         <li class="nav-item">
           <a
-            id="batiment-tab"
+            id="pavillon-tab"
             class="nav-link"
             data-toggle="tab"
-            href="#batiment"
+            href="#pavillon"
             role="tab"
-            aria-controls="batiment"
+            aria-controls="pavillon"
             aria-selected="false"
             >Pavillons</a
           >
@@ -75,6 +75,18 @@
             >Emplacements</a
           >
         </li>
+        <li class="nav-item">
+          <a
+            id="typemplacement-tab"
+            class="nav-link"
+            data-toggle="tab"
+            href="#typemplacement"
+            role="tab"
+            aria-controls="typemplacement"
+            aria-selected="false"
+            >Type d'Emplacements</a
+          >
+        </li>
       </ul>
       <div id="tabArchitectureContent" class="tab-content mg-t-20">
         <div
@@ -87,27 +99,30 @@
         </div>
         <div
           id="market"
-          class="tab-pane fade show active"
+          class="tab-pane fade"
           role="tabpanel"
           aria-labelledby="market-tab"
         >
           <ListeMarche
             v-if="!archive.marche"
+            :marches="marches"
             @archivage="archive.marche = true"
           />
-          <ListeMarcheArchive v-else @back="archive.marche = false" />
+          <ListeMarcheArchive v-else @back="onBack(1)" />
         </div>
         <div
-          id="batiment"
+          id="pavillon"
           class="tab-pane fade"
           role="tabpanel"
-          aria-labelledby="batiment-tab"
+          aria-labelledby="pavillon-tab"
         >
           <ListePavillon
-            v-if="!archive.batiment"
-            @archivage="archive.batiment = true"
+            v-if="!archive.pavillon"
+            :marches="marches"
+            :pavillons="pavillons"
+            @archivage="archive.pavillon = true"
           />
-          <ListePavillonArchive v-else @back="archive.batiment = false" />
+          <ListePavillonArchive v-else @back="onBack(2)" />
         </div>
         <div
           id="niveau"
@@ -117,9 +132,11 @@
         >
           <ListeNiveau
             v-if="!archive.niveau"
+            :pavillons="pavillons"
+            :niveaux="niveaux"
             @archivage="archive.niveau = true"
           />
-          <ListeNiveauArchive v-else @back="archive.niveau = false" />
+          <ListeNiveauArchive v-else @back="onBack(3)" />
         </div>
         <div
           id="zone"
@@ -127,8 +144,13 @@
           role="tabpanel"
           aria-labelledby="zone-tab"
         >
-          <ListeZone v-if="!archive.zone" @archivage="archive.zone = true" />
-          <ListeZoneArchive v-else @back="archive.zone = false" />
+          <ListeZone
+            v-if="!archive.zone"
+            :niveaux="niveaux"
+            :zones="zones"
+            @archivage="archive.zone = true"
+          />
+          <ListeZoneArchive v-else @back="onBack(4)" />
         </div>
         <div
           id="emplacement"
@@ -140,13 +162,26 @@
             v-if="!archive.emplacement"
             @archivage="archive.emplacement = true"
           />
-          <ListeEmplacementArchive v-else @back="archive.emplacement = false" />
+          <ListeEmplacementArchive v-else @back="onBack(5)" />
+        </div>
+        <div
+          id="typemplacement"
+          class="tab-pane fade"
+          role="tabpanel"
+          aria-labelledby="typemplacement-tab"
+        >
+          <ListeEmplacement
+            v-if="!archive.emplacement"
+            @archivage="archive.emplacement = true"
+          />
+          <ListeEmplacementArchive v-else @back="onBack(5)" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import AcceuilArchitecture from '~/components/architecture/AcceuilArchitecture.vue'
 import ListeMarche from '~/components/architecture/marche/ListeMarche.vue'
@@ -178,13 +213,59 @@ export default {
     liens: [{ path: '#', text: 'Architecture de marché' }],
     archive: {
       marche: false,
-      batiment: false,
+      pavillon: false,
       niveau: false,
       zone: false,
       emplacement: false,
     },
   }),
-  methods: {},
+  computed: {
+    ...mapGetters({
+      marches: 'architecture/marche/marches',
+      pavillons: 'architecture/pavillon/pavillons',
+      niveaux: 'architecture/niveau/niveaux',
+      zones: 'architecture/zone/zones',
+      types: 'architecture/typEmplacement/types',
+      emplacements: 'architecture/emplacements/emplacements',
+    }),
+  },
+  created() {
+    this.getMarches()
+    this.getNiveaux()
+    this.getPavillons()
+    this.getZones()
+  },
+  methods: {
+    ...mapActions({
+      getMarches: 'architecture/marche/getAll',
+      getPavillons: 'architecture/pavillon/getAll',
+      getNiveaux: 'architecture/niveau/getAll',
+      getZones: 'architecture/zone/getAll',
+      getTypes: 'architecture/typEmplacement/getAll',
+      getEmplacements: 'architecture/emplacement/getAll',
+    }),
+    onBack(numero) {
+      if (numero === 1) {
+        this.archive.marche = false
+        this.getMarches()
+      } else if (numero === 2) {
+        this.archive.pavillon = false
+        this.getPavillons()
+      } else if (numero === 3) {
+        this.archive.niveau = false
+        this.getNiveaux()
+      } else if (numero === 4) {
+        this.archive.zone = false
+        this.getZones()
+      } else if (numero === 5) {
+        this.archive.emplacement = false
+        this.getEmplacements()
+      } else {
+        this.archive.type = false
+        this.getTypes()
+      }
+    },
+  },
 }
 </script>
 <style></style>

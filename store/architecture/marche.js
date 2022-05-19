@@ -23,7 +23,7 @@ export const actions = {
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
-      'parametre/marches/' + payload.id,
+      'api/parametres/marches/' + payload.id,
       payload
     )
     dispatch('getAll')

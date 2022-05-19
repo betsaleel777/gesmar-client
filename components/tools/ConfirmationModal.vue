@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modal" v-model="dialog" centered>
+  <b-modal :id="modalId" v-model="dialog" centered>
     <template #modal-header>
       <h6 id="archiver" class="modal-title">Veuillez confirmer l'action</h6>
       <button
@@ -36,6 +36,10 @@ export default {
   props: {
     id: {
       type: Number,
+      required: true,
+    },
+    modalId: {
+      type: String,
       required: true,
     },
     message: {
