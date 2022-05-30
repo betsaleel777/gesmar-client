@@ -13,7 +13,7 @@
         <div class="form-group required">
           <label class="form-label mg-t-10">Nom complet</label>
           <input
-            v-model="marche.nom"
+            v-model="type.nom"
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errors.nom.exist }"
@@ -22,6 +22,39 @@
           <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.nom.message }}</strong>
           </span>
+        </div>
+        <div class="form-group required">
+          <label class="form-label mg-t-10"
+            >Préfixe Ex:(mag pour magasin)</label
+          >
+          <input
+            v-model="type.prefix"
+            type="text"
+            :class="{ 'is-invalid': errors.prefix.exist }"
+            class="form-control"
+          />
+          <span
+            v-if="errors.prefix.exist"
+            class="invalid-feedback"
+            role="alert"
+          >
+            <strong>{{ errors.prefix.message }}</strong>
+          </span>
+        </div>
+        <div class="form-group">
+          <v-app>
+            <v-autocomplete
+              v-model="type.site_id"
+              :items="marches"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              label="choix du pavillon"
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            ></v-autocomplete>
+          </v-app>
         </div>
       </form>
     </template>
@@ -49,14 +82,23 @@ export default {
       type: Object,
       required: true,
     },
+    marches: {
+      type: Array,
+      required: true,
+    },
     value: Boolean,
   },
   data: () => ({
     type: {
+      id: null,
       nom: '',
+      prefix: '',
+      site_id: null,
     },
     errors: {
       nom: { exist: false, message: null },
+      site_id: { exist: false, message: null },
+      prefix: { exist: false, message: null },
     },
   }),
   computed: {
@@ -72,13 +114,15 @@ export default {
   mounted() {
     this.type.id = this.current.id
     this.type.nom = this.current.nom
+    this.type.prefix = this.current.prefix
+    this.type.site_id = this.current.site_id
   },
   methods: {
     ...mapActions({
       modifier: 'architecture/typEmplacement/modifier',
     }),
     save() {
-      this.modifier(this.marche)
+      this.modifier(this.type)
         .then(({ message }) => {
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
@@ -98,7 +142,10 @@ export default {
     },
     close() {
       this.type = {
+        id: null,
         nom: '',
+        prefix: '',
+        site_id: null,
       }
       errorsInitialise(this.errors)
       this.dialog = false

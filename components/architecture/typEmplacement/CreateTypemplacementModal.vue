@@ -23,6 +23,39 @@
             <strong>{{ errors.nom.message }}</strong>
           </span>
         </div>
+        <div class="form-group required">
+          <label class="form-label mg-t-10"
+            >Préfixe Ex:(mag pour magasin)</label
+          >
+          <input
+            v-model="type.prefix"
+            type="text"
+            :class="{ 'is-invalid': errors.prefix.exist }"
+            class="form-control"
+          />
+          <span
+            v-if="errors.prefix.exist"
+            class="invalid-feedback"
+            role="alert"
+          >
+            <strong>{{ errors.prefix.message }}</strong>
+          </span>
+        </div>
+        <div class="form-group">
+          <v-app>
+            <v-autocomplete
+              v-model="type.site_id"
+              :items="marches"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              label="choix du pavillon"
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            ></v-autocomplete>
+          </v-app>
+        </div>
       </form>
     </template>
     <template #modal-footer>
@@ -44,12 +77,22 @@
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
+  props: {
+    marches: {
+      type: Array,
+      required: true,
+    },
+  },
   data: () => ({
     type: {
       nom: '',
+      prefix: '',
+      site_id: '',
     },
     errors: {
       nom: { exist: false, message: null },
+      prefix: { exist: false, message: null },
+      site_id: { exist: false, message: null },
     },
   }),
   methods: {
@@ -57,7 +100,7 @@ export default {
     save() {
       this.ajouter(this.type)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreatetype')
+          this.$bvModal.hide('modalCreateTypempl')
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -75,9 +118,11 @@ export default {
     reset() {
       this.type = {
         nom: '',
+        prefix: '',
+        site_id: '',
       }
       errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreatetype')
+      this.$bvModal.hide('modalCreateTypempl')
     },
   },
 }

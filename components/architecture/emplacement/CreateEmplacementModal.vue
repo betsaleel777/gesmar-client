@@ -8,19 +8,6 @@
     </template>
     <template #default>
       <form ref="form">
-        <v-app>
-          <v-autocomplete
-            v-model="emplacement.zone_id"
-            :items="zones"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            label="choix de la zone"
-            :error="errors.zone_id.exist"
-            :error-messages="errors.zone_id.message"
-          ></v-autocomplete>
-        </v-app>
         <div class="form-group required">
           <label class="form-label">Nom complet</label>
           <input
@@ -70,17 +57,40 @@
             v-model="emplacement.pas_porte"
             type="text"
             class="form-control"
-            :class="{ 'is-invalid': errors.pas_porte.exist }"
             placeholder="Entrer le pas de porte"
           />
-          <span
-            v-if="errors.pas_porte.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
-            <strong>{{ errors.pas_porte.message }}</strong>
-          </span>
         </div>
+        <v-app>
+          <v-autocomplete
+            v-model="emplacement.zone_id"
+            :items="zones"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            label="choix de la zone"
+            :error="errors.zone_id.exist"
+            :error-messages="errors.zone_id.message"
+          >
+            <template #item="data">
+              {{ data.item.niveau.pavillon.site.nom }}
+              {{ data.item.niveau.pavillon.nom }}
+              {{ data.item.niveau.nom }}
+              {{ data.item.nom }}
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="emplacement.type_emplacement_id"
+            :items="types"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            label="type d'emplacement"
+            :error="errors.type_emplacement_id.exist"
+            :error-messages="errors.type_emplacement_id.message"
+          ></v-autocomplete>
+        </v-app>
       </form>
     </template>
     <template #modal-footer>

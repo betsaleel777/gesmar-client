@@ -72,19 +72,8 @@
             role="tab"
             aria-controls="emplacement"
             aria-selected="false"
+            @click="setting.emplacement.visible = true"
             >Emplacements</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="typemplacement-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#typemplacement"
-            role="tab"
-            aria-controls="typemplacement"
-            aria-selected="false"
-            >Type d'Emplacements</a
           >
         </li>
       </ul>
@@ -160,24 +149,21 @@
         >
           <ListeEmplacement
             v-if="!archive.emplacement"
-            @archivage="archive.emplacement = true"
-          />
-          <ListeEmplacementArchive v-else @back="onBack(5)" />
-        </div>
-        <div
-          id="typemplacement"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="typemplacement-tab"
-        >
-          <ListeEmplacement
-            v-if="!archive.emplacement"
+            :marches="marches"
+            :emplacements="emplacements"
+            :types="types"
+            :zones="zones"
             @archivage="archive.emplacement = true"
           />
           <ListeEmplacementArchive v-else @back="onBack(5)" />
         </div>
       </div>
     </div>
+    <SettingsEmplacementMenu
+      v-if="setting.emplacement.visible"
+      :key="setting.emplacement.visible"
+    />
+    <!-- content-right -->
   </div>
 </template>
 <script>
@@ -194,6 +180,7 @@ import ListeZone from '~/components/architecture/zones/ListeZone.vue'
 import ListeZoneArchive from '~/components/architecture/zones/ListeZoneArchive.vue'
 import ListeEmplacement from '~/components/architecture/emplacement/ListeEmplacement.vue'
 import ListeEmplacementArchive from '~/components/architecture/emplacement/ListeEmplacementArchive.vue'
+import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
 export default {
   components: {
     PartialBreadcrumb,
@@ -208,6 +195,7 @@ export default {
     ListeZoneArchive,
     ListeEmplacement,
     ListeEmplacementArchive,
+    SettingsEmplacementMenu,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Architecture de marché' }],
@@ -217,6 +205,13 @@ export default {
       niveau: false,
       zone: false,
       emplacement: false,
+      type: false,
+    },
+    setting: {
+      emplacement: {
+        visible: false,
+        activate: 1,
+      },
     },
   }),
   computed: {
@@ -226,7 +221,7 @@ export default {
       niveaux: 'architecture/niveau/niveaux',
       zones: 'architecture/zone/zones',
       types: 'architecture/typEmplacement/types',
-      emplacements: 'architecture/emplacements/emplacements',
+      emplacements: 'architecture/emplacement/emplacements',
     }),
   },
   created() {
@@ -234,6 +229,7 @@ export default {
     this.getNiveaux()
     this.getPavillons()
     this.getZones()
+    this.getEmplacements()
   },
   methods: {
     ...mapActions({
@@ -241,7 +237,6 @@ export default {
       getPavillons: 'architecture/pavillon/getAll',
       getNiveaux: 'architecture/niveau/getAll',
       getZones: 'architecture/zone/getAll',
-      getTypes: 'architecture/typEmplacement/getAll',
       getEmplacements: 'architecture/emplacement/getAll',
     }),
     onBack(numero) {
@@ -257,12 +252,9 @@ export default {
       } else if (numero === 4) {
         this.archive.zone = false
         this.getZones()
-      } else if (numero === 5) {
+      } else {
         this.archive.emplacement = false
         this.getEmplacements()
-      } else {
-        this.archive.type = false
-        this.getTypes()
       }
     },
   },

@@ -9,21 +9,21 @@ export const getters = {
 export const actions = {
   async getAll({ commit }) {
     commit('SET_TYPES', [])
-    const requete = await this.$axios.get('api/parametres/emplacements/types')
+    const requete = await this.$axios.get('api/parametres/types')
     commit('SET_TYPES', requete.data.types)
   },
   async getTrashAll({ commit }) {
     commit('SET_TYPES', [])
-    const requete = await this.$axios.get('api/parametres/emplacements/types/trashed')
+    const requete = await this.$axios.get('api/parametres/types/trashed')
     commit('SET_TYPES', requete.data.types)
   },
   async getOne({ commit }, id) {
-    const requete = await this.$axios.get('api/parametres/emplacements/types/' + id)
+    const requete = await this.$axios.get('api/parametres/types/' + id)
     return requete.data
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
-      'api/parametres/emplacements/types/' + payload.id,
+      'api/parametres/types/' + payload.id,
       payload
     )
     dispatch('getAll')
@@ -31,21 +31,21 @@ export const actions = {
   },
   async supprimer({ dispatch }, id) {
     const requete = await this.$axios.delete(
-      'api/parametres/emplacements/types/' + id
+      'api/parametres/types/' + id
     )
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.get(
-      'api/parametres/emplacements/types/restore/' + id
+      'api/parametres/types/restore/' + id
     )
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post(
-      'api/parametres/emplacements/types/store',
+      'api/parametres/types/store',
       payload
     )
     dispatch('getAll')

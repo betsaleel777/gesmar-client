@@ -102,12 +102,13 @@
               :message="`Voulez vous réelement archiver le type d'emplacement ${dialogData.nom}`"
             />
           </div>
-          <CreateTypemplacementModal />
+          <CreateTypemplacementModal :marches="marches" />
           <div>
             <EditTypemplacementModal
               :key="edit.modal"
               v-model="edit.modal"
               :current="edit.type"
+              :marches="marches"
             />
           </div>
         </b-card-text>
@@ -131,10 +132,15 @@ export default {
       type: Array,
       required: true,
     },
+    marches: {
+      type: Array,
+      required: true,
+    },
   },
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
+      { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
         label: 'Options',

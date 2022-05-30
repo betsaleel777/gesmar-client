@@ -22,7 +22,11 @@
               label="choix du marché"
               :error="errors.pavillon_id.exist"
               :error-messages="errors.pavillon_id.message"
-            ></v-autocomplete>
+            >
+              <template #item="data">
+                {{ data.item.site.nom }} {{ data.item.nom }}
+              </template>
+            </v-autocomplete>
           </v-app>
         </div>
         <div class="form-group required">

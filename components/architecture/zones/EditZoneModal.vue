@@ -20,7 +20,13 @@
               label="choix du niveau"
               :error="errors.niveau_id.exist"
               :error-messages="errors.niveau_id.message"
-            ></v-autocomplete>
+            >
+              <template #item="data">
+                {{ data.item.pavillon.site.nom }}
+                {{ data.item.pavillon.nom }}
+                {{ data.item.nom }}
+              </template>
+            </v-autocomplete>
           </v-app>
         </div>
         <div class="form-group required">
