@@ -2,91 +2,48 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-components">
-      <ul id="tabSettingsEmplacement" class="nav nav-line" role="tablist">
-        <li class="nav-item">
-          <a
-            id="equipement-tab"
-            class="nav-link"
-            :class="$route.query.tab === 1 ? 'active' : ''"
-            data-toggle="tab"
-            href="#equipement"
-            role="tab"
-            aria-controls="equipement"
-            aria-selected="true"
-            >Equipement</a
+      <b-tabs
+        v-model="tabIndex"
+        content-class="mt-4"
+        active-nav-item-class="font-weight-bold"
+      >
+        <b-overlay :show="$fetchState.pending" rounded="sm">
+          <b-tab
+            title="Equipements"
+            :active="tab === 1"
+            :title-link-class="linkClass(0)"
           >
-        </li>
-        <li class="nav-item">
-          <a
-            id="type-equipement-tab"
-            class="nav-link"
-            :class="$route.query.tab === 2 ? 'active' : ''"
-            data-toggle="tab"
-            href="#type-equipement"
-            role="tab"
-            aria-controls="type-equipement"
-            aria-selected="false"
-            >Types d'équipement</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="type-emplacement-tab"
-            class="nav-link"
-            :class="$route.query.tab === 3 ? 'active' : ''"
-            data-toggle="tab"
-            href="#type-emplacement"
-            role="tab"
-            aria-controls="type-emplacement"
-            aria-selected="false"
-            >Types d'emplacement</a
-          >
-        </li>
-      </ul>
-      <div id="tabSettingsEmplacementContent" class="tab-content mg-t-20">
-        <div
-          id="equipement"
-          class="tab-pane fade show active"
-          role="tabpanel"
-          aria-labelledby="equipement-tab"
-        >
-          <ListeEquipement
-            v-if="!archive.equipement"
-            :equipements="equipements"
-            @archivage="archive.equipement = true"
-          />
-          <ListeEquipementArchive v-else @back="onBack(1)" />
-        </div>
-        <div
-          id="type-equipement"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="type-equipement-tab"
-        >
-          <ListeTypequipement
-            v-if="!archive.typEquipement"
-            :marches="marches"
-            :types="typEquipement"
-            @archivage="archive.typEquipement = true"
-          />
-          <ListeTypequipementArchive v-else @back="onBack(2)" />
-        </div>
-        <div
-          id="type-emplacement"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="type-emplacement-tab"
-        >
-          <ListeTypemplacement
-            v-if="!archive.typEmplacement"
-            :marches="marches"
-            :types="typEmplacement"
-            @archivage="archive.typEmplacement = true"
-          />
-          <ListeTypemplacementArchive v-else @back="onBack(3)" />
-        </div>
-      </div>
-      <SettingsEmplacementMenu :active-tab="$route.query.tab" />
+            <ListeEquipement
+              v-if="!archive.equipement"
+              :equipements="equipements"
+              @archivage="archive.equipement = true"
+            />
+            <ListeEquipementArchive v-else @back="onBack(1)" />
+          </b-tab>
+          <b-tab
+            title="Types d'équipement"
+            :active="tab === 2"
+            :title-link-class="linkClass(1)"
+            ><ListeTypequipement
+              v-if="!archive.typEquipement"
+              :marches="marches"
+              :types="typEquipements"
+              @archivage="archive.typEquipement = true" />
+            <ListeTypequipementArchive v-else @back="onBack(2)"
+          /></b-tab>
+          <b-tab
+            title="Types d'emplacement"
+            :active="tab === 3"
+            :title-link-class="linkClass(2)"
+            ><ListeTypemplacement
+              v-if="!archive.typEmplacement"
+              :marches="marches"
+              :types="typEmplacements"
+              @archivage="archive.typEmplacement = true" />
+            <ListeTypemplacementArchive v-else @back="onBack(3)"
+          /></b-tab>
+        </b-overlay>
+      </b-tabs>
     </div>
     <!-- content-right -->
   </div>
@@ -112,15 +69,22 @@ export default {
   },
   data: () => ({
     liens: [
-      { path: 'parametre/architecture', text: 'Architecture de marché' },
+      { path: '/parametre/architecture', text: 'Architecture de marché' },
       { path: '#', text: "Options d'emplacement" },
     ],
     archive: {
       typEmplacement: false,
-      typeEquipement: false,
+      typEquipement: false,
       equipement: false,
     },
+    tabIndex: 0,
   }),
+  fetch() {
+    this.getTypesEmplacement()
+    this.getTypesEquipement()
+    this.getEquipements()
+    this.getMarches()
+  },
   computed: {
     ...mapGetters({
       typEmplacements: 'architecture/typEmplacement/types',
@@ -128,12 +92,9 @@ export default {
       equipements: 'architecture/equipement/equipements',
       marches: 'architecture/marche/marches',
     }),
-  },
-  created() {
-    this.getTypesEmplacement()
-    this.getTypesEquipement()
-    this.getEquipements()
-    this.getMarches()
+    tab() {
+      return parseInt(this.$route.query.tab)
+    },
   },
   methods: {
     ...mapActions({
@@ -144,14 +105,21 @@ export default {
     }),
     onBack(numero) {
       if (numero === 1) {
-        this.archive.typEmplacement = false
-        this.getTypesEmplacement()
-      } else if (numero === 2) {
-        this.archive.typeEquipement = false
-        this.getTypesEquipement()
-      } else if (numero === 3) {
         this.archive.equipement = false
         this.getEquipements()
+      } else if (numero === 2) {
+        this.archive.typEquipement = false
+        this.getTypesEquipement()
+      } else if (numero === 3) {
+        this.archive.typEmplacement = false
+        this.getTypesEmplacement()
+      }
+    },
+    linkClass(idx) {
+      if (this.tabIndex === idx) {
+        return ['bg-white', 'text-primary']
+      } else {
+        return ['bg-light', 'text-primary']
       }
     },
   },

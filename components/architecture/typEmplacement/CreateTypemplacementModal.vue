@@ -50,7 +50,7 @@
               item-value="id"
               outlined
               dense
-              label="choix du pavillon"
+              label="choix du site"
               :error="errors.site_id.exist"
               :error-messages="errors.site_id.message"
             ></v-autocomplete>

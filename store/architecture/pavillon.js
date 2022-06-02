@@ -18,7 +18,9 @@ export const actions = {
   },
   async getByMarche({ commit }, id) {
     commit('SET_SELECTED', [])
-    const requete = await this.$axios.get('api/parametres/pavillons/marche/' + id)
+    const requete = await this.$axios.get(
+      'api/parametres/pavillons/marche/' + id
+    )
     commit('SET_SELECTED', requete.data.pavillons)
   },
   async getTrashAll({ commit }) {

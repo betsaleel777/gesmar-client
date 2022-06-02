@@ -96,6 +96,9 @@ export default {
         url: process.env.API,
       },
     },
+    redirect: {
+      home: false,
+    },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

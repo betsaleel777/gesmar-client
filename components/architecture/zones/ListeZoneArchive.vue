@@ -127,20 +127,20 @@ export default {
   }),
   fetch() {
     this.getTrashAll().then(() => {
-      this.totalRows = this.niveaux.length
+      this.totalRows = this.zones.length
     })
   },
   computed: {
-    ...mapGetters('architecture/niveau', ['niveaux']),
+    ...mapGetters('architecture/zone', ['zones']),
   },
   methods: {
-    ...mapActions('architecture/niveau', ['getTrashAll']),
+    ...mapActions('architecture/zone', ['getTrashAll']),
     imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
       this.dialogData.modal = true
-      this.$bvModal.show('niveauConfirmationArchive')
+      this.$bvModal.show('zoneConfirmationArchive')
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

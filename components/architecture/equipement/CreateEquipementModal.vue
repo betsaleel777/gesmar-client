@@ -1,7 +1,233 @@
-<template lang="">
-  <div></div>
+<template>
+  <b-modal id="modalCreateEquipement" scrollable @show="reset">
+    <template #modal-header>
+      <h5 id="archiver" class="modal-title text-primary">Nouvel Equipement</h5>
+      <button type="button" class="close" aria-label="Close" @click="reset">
+        <span aria-hidden="true"><feather type="x" /></span>
+      </button>
+    </template>
+    <template #default>
+      <form ref="form">
+        <div class="form-group">
+          <label class="form-label">Nom complet</label>
+          <input
+            v-model="equipement.nom"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.nom.exist }"
+            placeholder="Entrer votre nom complet"
+          />
+          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+            <strong>{{ errors.nom.message }}</strong>
+          </span>
+        </div>
+        <b-input-group label-for="prix_unitaire">
+          <template #label>
+            <span class="form-label"
+              >Prix Unitaire <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-form-input
+            id="prix_unitaire"
+            v-model="equipement.prix_unitaire"
+            type="text"
+            :class="{ 'is-invalid': errors.prix_unitaire.exist }"
+            class="form-control"
+          />
+          <b-input-group-append>
+            <b-input-group-text class="bg-transparent font-weight-bold">
+              FCFA
+            </b-input-group-text>
+          </b-input-group-append>
+          <span
+            v-if="errors.prix_unitaire.exist"
+            class="invalid-feedback"
+            role="alert"
+          >
+            <strong>{{ errors.prix_unitaire.message }}</strong>
+          </span>
+        </b-input-group>
+        <b-input-group label-for="prix_fixe">
+          <template #label>
+            <span class="form-label"
+              >Prix Fixe <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-form-input
+            id="prix_fixe"
+            v-model="equipement.prix_fixe"
+            type="text"
+            :class="{ 'is-invalid': errors.prix_fixe.exist }"
+            class="form-control"
+          />
+          <b-input-group-append>
+            <b-input-group-text class="bg-transparent font-weight-bold">
+              FCFA
+            </b-input-group-text>
+          </b-input-group-append>
+          <span
+            v-if="errors.prix_fixe.exist"
+            class="invalid-feedback"
+            role="alert"
+          >
+            <strong>{{ errors.prix_unitaire.message }}</strong>
+          </span>
+        </b-input-group>
+        <b-input-group label-for="frais_facture">
+          <template #label>
+            <span class="form-label"
+              >Frais Facture <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-form-input
+            id="frais_facture"
+            v-model="equipement.frais_facture"
+            type="text"
+            :class="{ 'is-invalid': errors.frais_facture.exist }"
+            class="form-control"
+          />
+          <b-input-group-append>
+            <b-input-group-text class="bg-transparent font-weight-bold">
+              FCFA
+            </b-input-group-text>
+          </b-input-group-append>
+          <span
+            v-if="errors.frais_facture.exist"
+            class="invalid-feedback"
+            role="alert"
+          >
+            <strong>{{ errors.prix_unitaire.message }}</strong>
+          </span>
+        </b-input-group>
+        <div class="form-group">
+          <label class="form-label">Index</label>
+          <input
+            v-model="equipement.index"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.index.exist }"
+            placeholder="Entrer l'index"
+          />
+          <span v-if="errors.index.exist" class="invalid-feedback" role="alert">
+            <strong>{{ errors.index.message }}</strong>
+          </span>
+        </div>
+        <v-app>
+          <v-autocomplete
+            v-model="equipement.emplacement_id"
+            :items="emplacements"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            label="choix de l'emplacement"
+            :error="errors.emplacement_id.exist"
+            :error-messages="errors.emplacement_id.message"
+          >
+            <template #item="data">
+              {{ data.item.niveau.pavillon.site.nom }}
+              {{ data.item.niveau.pavillon.nom }}
+              {{ data.item.niveau.nom }}
+              {{ data.item.nom }}
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="equipement.type_equipement_id"
+            :items="types"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            label="type d'equipement"
+            :error="errors.type_equipement_id.exist"
+            :error-messages="errors.type_equipement_id.message"
+          ></v-autocomplete>
+        </v-app>
+      </form>
+    </template>
+    <template #modal-footer>
+      <button
+        type="button"
+        class="btn btn-warning"
+        data-dismiss="modal"
+        @click="reset"
+      >
+        Fermer
+      </button>
+      <button type="button" class="btn btn-primary" @click="save">
+        Valider
+      </button>
+    </template>
+  </b-modal>
 </template>
 <script>
-export default {}
+import { mapActions } from 'vuex'
+import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+export default {
+  props: {
+    types: {
+      type: Array,
+      required: true,
+    },
+    zones: {
+      type: Array,
+      required: true,
+    },
+  },
+  data: () => ({
+    equipement: {
+      nom: '',
+      superficie: '',
+      loyer: '',
+      pas_porte: '',
+      zone_id: null,
+      type_equipement_id: null,
+    },
+    errors: {
+      nom: { exist: false, message: null },
+      superficie: { exist: false, message: null },
+      loyer: { exist: false, message: null },
+      zone_id: { exist: false, message: null },
+      type_equipement_id: { exist: false, message: null },
+    },
+  }),
+  methods: {
+    ...mapActions('architecture/equipement', ['ajouter']),
+    save() {
+      this.ajouter(this.equipement)
+        .then(({ message }) => {
+          this.$bvModal.hide('modalCreateEquipement')
+          this.$bvToast.toast(message, {
+            title: 'succès de la création'.toLocaleUpperCase(),
+            variant: 'success',
+            solid: true,
+          })
+        })
+        .catch((err) => {
+          const { data } = err.response
+          if (data) {
+            errorsInitialise(this.errors)
+            errorsWriting(data.errors, this.errors)
+          }
+        })
+    },
+    reset() {
+      this.equipement = {
+        nom: '',
+        superficie: '',
+        loyer: '',
+        pas_porte: '',
+        zone_id: null,
+        type_equipement_id: null,
+      }
+      errorsInitialise(this.errors)
+      this.$bvModal.hide('modalCreateEquipement')
+    },
+  },
+}
 </script>
-<style lang=""></style>
+<style>
+.v-application--wrap {
+  min-height: fit-content;
+}
+</style>

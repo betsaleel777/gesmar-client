@@ -2,162 +2,64 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-components">
-      <ul id="tabArchitecture" class="nav nav-line" role="tablist">
-        <li class="nav-item">
-          <a
-            id="acceuil-tab"
-            class="nav-link active"
-            data-toggle="tab"
-            href="#acceuil"
-            role="tab"
-            aria-controls="acceuil"
-            aria-selected="true"
-            >Acceuil</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="market-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#market"
-            role="tab"
-            aria-controls="market"
-            aria-selected="false"
-            >Marchés</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="pavillon-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#pavillon"
-            role="tab"
-            aria-controls="pavillon"
-            aria-selected="false"
-            >Pavillons</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="niveau-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#niveau"
-            role="tab"
-            aria-controls="niveau"
-            aria-selected="false"
-            >Niveaux</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="zone-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#zone"
-            role="tab"
-            aria-controls="zone"
-            aria-selected="false"
-            >Zones</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="emplacement-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#emplacement"
-            role="tab"
-            aria-controls="emplacement"
-            aria-selected="false"
-            @click="setting.emplacement.visible = true"
-            >Emplacements</a
-          >
-        </li>
-      </ul>
-      <div id="tabArchitectureContent" class="tab-content mg-t-20">
-        <div
-          id="acceuil"
-          class="tab-pane fade show active"
-          role="tabpanel"
-          aria-labelledby="acceuil-tab"
-        >
-          <AcceuilArchitecture />
-        </div>
-        <div
-          id="market"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="market-tab"
-        >
-          <ListeMarche
-            v-if="!archive.marche"
-            :marches="marches"
-            @archivage="archive.marche = true"
-          />
-          <ListeMarcheArchive v-else @back="onBack(1)" />
-        </div>
-        <div
-          id="pavillon"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="pavillon-tab"
-        >
-          <ListePavillon
-            v-if="!archive.pavillon"
-            :marches="marches"
-            :pavillons="pavillons"
-            @archivage="archive.pavillon = true"
-          />
-          <ListePavillonArchive v-else @back="onBack(2)" />
-        </div>
-        <div
-          id="niveau"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="niveau-tab"
-        >
-          <ListeNiveau
-            v-if="!archive.niveau"
-            :pavillons="pavillons"
-            :niveaux="niveaux"
-            @archivage="archive.niveau = true"
-          />
-          <ListeNiveauArchive v-else @back="onBack(3)" />
-        </div>
-        <div
-          id="zone"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="zone-tab"
-        >
-          <ListeZone
-            v-if="!archive.zone"
-            :niveaux="niveaux"
-            :zones="zones"
-            @archivage="archive.zone = true"
-          />
-          <ListeZoneArchive v-else @back="onBack(4)" />
-        </div>
-        <div
-          id="emplacement"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="emplacement-tab"
-        >
-          <ListeEmplacement
-            v-if="!archive.emplacement"
-            :marches="marches"
-            :emplacements="emplacements"
-            :types="types"
-            :zones="zones"
-            @archivage="archive.emplacement = true"
-          />
-          <ListeEmplacementArchive v-else @back="onBack(5)" />
-        </div>
-      </div>
+      <b-tabs
+        v-model="tabIndex"
+        content-class="mt-7"
+        active-nav-item-class="font-weight-bold"
+        @activate-tab="options"
+      >
+        <b-overlay :show="$fetchState.pending" rounded="sm">
+          <b-tab title="Acceuil" :title-link-class="linkClass(0)">
+            <AcceuilArchitecture />
+          </b-tab>
+          <b-tab title="Marchés" :title-link-class="linkClass(1)">
+            <ListeMarche
+              v-if="!archive.marche"
+              :marches="marches"
+              @archivage="archive.marche = true"
+            />
+            <ListeMarcheArchive v-else @back="onBack(1)" />
+          </b-tab>
+          <b-tab title="Pavillons" :title-link-class="linkClass(2)">
+            <ListePavillon
+              v-if="!archive.pavillon"
+              :marches="marches"
+              :pavillons="pavillons"
+              @archivage="archive.pavillon = true"
+            />
+            <ListePavillonArchive v-else @back="onBack(2)" />
+          </b-tab>
+          <b-tab title="Niveaux" :title-link-class="linkClass(3)">
+            <ListeNiveau
+              v-if="!archive.niveau"
+              :pavillons="pavillons"
+              :niveaux="niveaux"
+              @archivage="archive.niveau = true"
+            />
+            <ListeNiveauArchive v-else @back="onBack(3)" />
+          </b-tab>
+          <b-tab title="Zones" :title-link-class="linkClass(4)">
+            <ListeZone
+              v-if="!archive.zone"
+              :niveaux="niveaux"
+              :zones="zones"
+              @archivage="archive.zone = true"
+            />
+            <ListeZoneArchive v-else @back="onBack(4)" />
+          </b-tab>
+          <b-tab title="Emplacements" :title-link-class="linkClass(5)">
+            <ListeEmplacement
+              v-if="!archive.emplacement"
+              :marches="marches"
+              :emplacements="emplacements"
+              :types="types"
+              :zones="zones"
+              @archivage="archive.emplacement = true"
+            />
+            <ListeEmplacementArchive v-else @back="onBack(5)" />
+          </b-tab>
+        </b-overlay>
+      </b-tabs>
     </div>
     <SettingsEmplacementMenu
       v-if="setting.emplacement.visible"
@@ -208,12 +110,17 @@ export default {
       type: false,
     },
     setting: {
-      emplacement: {
-        visible: false,
-        activate: 1,
-      },
+      emplacement: { visible: false },
     },
+    tabIndex: 0,
   }),
+  fetch() {
+    this.getMarches()
+    this.getNiveaux()
+    this.getPavillons()
+    this.getZones()
+    this.getEmplacements()
+  },
   computed: {
     ...mapGetters({
       marches: 'architecture/marche/marches',
@@ -223,13 +130,6 @@ export default {
       types: 'architecture/typEmplacement/types',
       emplacements: 'architecture/emplacement/emplacements',
     }),
-  },
-  created() {
-    this.getMarches()
-    this.getNiveaux()
-    this.getPavillons()
-    this.getZones()
-    this.getEmplacements()
   },
   methods: {
     ...mapActions({
@@ -255,6 +155,20 @@ export default {
       } else {
         this.archive.emplacement = false
         this.getEmplacements()
+      }
+    },
+    linkClass(idx) {
+      if (this.tabIndex === idx) {
+        return ['bg-white', 'text-primary']
+      } else {
+        return ['bg-light', 'text-primary']
+      }
+    },
+    options(idx) {
+      if (idx === 5) {
+        this.setting.emplacement.visible = true
+      } else {
+        this.setting.emplacement.visible = false
       }
     },
   },

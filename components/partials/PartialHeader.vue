@@ -159,7 +159,7 @@ export default {
   data() {
     return {
       sidebarHide: false,
-      baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+      baseURL: process.env.BASE_URL,
     }
   },
   head() {
@@ -171,7 +171,7 @@ export default {
   },
   methods: {
     async logout() {
-      await this.$auth.logout()
+      await this.$auth.logout(this.utilisateur)
       this.$router.push('/login')
     },
   },

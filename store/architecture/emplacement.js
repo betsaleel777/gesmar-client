@@ -18,7 +18,6 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
   async getOne({ commit }, id) {
-    console.log(id)
     const requete = await this.$axios.get('api/parametres/emplacements/' + id)
     return requete.data
   },

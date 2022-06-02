@@ -48,10 +48,7 @@ export const actions = {
     return { message: requete.data.message }
   },
   async push({ dispatch }, payload) {
-    const requete = await this.$axios.post(
-      'api/parametres/zones/push',
-      payload
-    )
+    const requete = await this.$axios.post('api/parametres/zones/push', payload)
     dispatch('getAll')
     return { message: requete.data.message, donnees: requete.data.zones }
   },
