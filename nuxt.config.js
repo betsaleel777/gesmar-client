@@ -34,11 +34,6 @@ export default {
     script: [
       { src: '/lib/jquery/jquery.min.js', body: 'true' },
       { src: '/lib/bootstrap/js/bootstrap.bundle.min.js', body: 'true' },
-      { src: '/lib/perfect-scrollbar/perfect-scrollbar.min.js', body: 'true' },
-      { src: '/lib/feather-icons/feather.min.js', body: 'true' },
-      { src: '/lib/js-cookie/js.cookie.js', body: 'true' },
-      { src: '/lib/prismjs/prism.js', body: 'true' },
-      { src: '/js/cassie.js', body: 'true' },
     ],
   },
 
@@ -48,6 +43,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/feather.js',
+    '~/plugins/perfect-scrollbar.js',
     '~/plugins/unicons',
     '~/plugins/user.js',
     '~/plugins/vue-gates',

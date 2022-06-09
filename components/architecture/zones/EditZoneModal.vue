@@ -21,6 +21,10 @@
               :error="errors.niveau_id.exist"
               :error-messages="errors.niveau_id.message"
             >
+              <template #label>
+                Choix du niveau
+                <span class="red--text"><strong>* </strong></span>
+              </template>
               <template #item="data">
                 {{ data.item.pavillon.site.nom }}
                 {{ data.item.pavillon.nom }}
@@ -30,7 +34,9 @@
           </v-app>
         </div>
         <div class="form-group required">
-          <label class="form-label">Nom</label>
+          <label class="form-label"
+            >Nom<span class="text-danger">*</span></label
+          >
           <input
             v-model="zone.nom"
             type="text"

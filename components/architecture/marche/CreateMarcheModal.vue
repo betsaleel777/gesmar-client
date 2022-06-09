@@ -9,7 +9,9 @@
     <template #default>
       <form ref="form">
         <div class="form-group required">
-          <label class="form-label mg-t-10">Nom complet</label>
+          <label class="form-label mg-t-10"
+            >Nom complet<span class="text-danger">*</span></label
+          >
           <input
             v-model="marche.nom"
             type="text"
@@ -22,7 +24,9 @@
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label">Commune</label>
+          <label class="form-label"
+            >Commune<span class="text-danger">*</span></label
+          >
           <input
             v-model="marche.commune"
             type="text"
@@ -39,7 +43,9 @@
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label">Ville</label>
+          <label class="form-label"
+            >Ville<span class="text-danger">*</span></label
+          >
           <input
             v-model="marche.ville"
             type="text"
@@ -52,7 +58,9 @@
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label">Pays</label>
+          <label class="form-label"
+            >Pays<span class="text-danger">*</span></label
+          >
           <input
             v-model="marche.pays"
             type="text"

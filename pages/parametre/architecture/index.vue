@@ -120,6 +120,7 @@ export default {
     this.getPavillons()
     this.getZones()
     this.getEmplacements()
+    this.getTypes()
   },
   computed: {
     ...mapGetters({
@@ -138,6 +139,7 @@ export default {
       getNiveaux: 'architecture/niveau/getAll',
       getZones: 'architecture/zone/getAll',
       getEmplacements: 'architecture/emplacement/getAll',
+      getTypes: 'architecture/typEmplacement/getAll',
     }),
     onBack(numero) {
       if (numero === 1) {

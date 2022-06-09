@@ -10,27 +10,30 @@
     </template>
     <template #default>
       <form ref="form">
-        <div class="form-group">
-          <v-app>
-            <v-autocomplete
-              v-model="niveau.pavillon_id"
-              :items="pavillons"
-              item-text="nom"
-              item-value="id"
-              outlined
-              dense
-              label="choix du marché"
-              :error="errors.pavillon_id.exist"
-              :error-messages="errors.pavillon_id.message"
-            >
-              <template #item="data">
-                {{ data.item.site.nom }} {{ data.item.nom }}
-              </template>
-            </v-autocomplete>
-          </v-app>
-        </div>
+        <v-app>
+          <v-autocomplete
+            v-model="niveau.pavillon_id"
+            :items="pavillons"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            :error="errors.pavillon_id.exist"
+            :error-messages="errors.pavillon_id.message"
+          >
+            <template #label>
+              Choix du pavillon
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+            <template #item="data">
+              {{ data.item.site.nom }} {{ data.item.nom }}
+            </template>
+          </v-autocomplete>
+        </v-app>
         <div class="form-group required">
-          <label class="form-label">Nom</label>
+          <label class="form-label"
+            >Nom<span class="text-danger">*</span></label
+          >
           <input
             v-model="niveau.nom"
             type="text"

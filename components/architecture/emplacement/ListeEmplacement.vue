@@ -102,7 +102,11 @@
               :message="`Voulez vous réelement archiver l'emplacement ${dialogData.nom}`"
             />
           </div>
-          <CreateEmplacementModal :types="types" :zones="zones" />
+          <CreateEmplacementModal
+            :types="types"
+            :zones="zones"
+            :marches="marches"
+          />
           <div>
             <EditEmplacementModal
               :key="edit.modal"
@@ -110,6 +114,7 @@
               :current="edit.emplacement"
               :types="types"
               :zones="zones"
+              :marches="marches"
             />
           </div>
         </b-card-text>

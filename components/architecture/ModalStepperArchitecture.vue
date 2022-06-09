@@ -1,5 +1,12 @@
 <template>
-  <b-modal id="structure" scrollable size="lg" hide-footer @show="reset">
+  <b-modal
+    id="structure"
+    title="Structuration automatique de marché"
+    scrollable
+    size="lg"
+    hide-footer
+    @show="reset"
+  >
     <v-app>
       <v-stepper v-model="step" flat>
         <v-stepper-header>

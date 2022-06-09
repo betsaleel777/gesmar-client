@@ -7,7 +7,7 @@
         {{ interval }}
       </h5>
       <div class="form-group">
-        <label>Nombre de niveaux</label>
+        <label>Nombre de niveaux<span class="text-danger">*</span></label>
         <input
           v-model="nombre"
           class="form-control"

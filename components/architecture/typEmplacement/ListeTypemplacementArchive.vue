@@ -105,6 +105,7 @@ export default {
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
+      { key: 'site.nom', label: 'Marché', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

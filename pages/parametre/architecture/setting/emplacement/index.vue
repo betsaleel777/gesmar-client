@@ -1,7 +1,7 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <div class="content-body content-body-components">
+    <div class="content-body">
       <b-tabs
         v-model="tabIndex"
         content-class="mt-4"
@@ -16,6 +16,8 @@
             <ListeEquipement
               v-if="!archive.equipement"
               :equipements="equipements"
+              :types="typEquipements"
+              :marches="marches"
               @archivage="archive.equipement = true"
             />
             <ListeEquipementArchive v-else @back="onBack(1)" />

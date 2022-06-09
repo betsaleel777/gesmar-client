@@ -7,7 +7,7 @@
         {{ interval }}
       </h5>
       <div class="form-group">
-        <label>Nombre de zones</label>
+        <label>Nombre de zones<span class="text-danger">*</span></label>
         <input
           v-model="nombre"
           class="form-control"

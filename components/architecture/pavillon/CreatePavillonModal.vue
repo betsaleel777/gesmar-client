@@ -9,28 +9,32 @@
       </template>
       <template #default>
         <form ref="form">
-          <div class="form-group">
-            <v-app>
-              <v-switch
-                v-model="pavillon.automatiq"
-                :label="pavillon.automatiq ? 'automatique' : 'manuel'"
-                @change="initState(true)"
-              ></v-switch>
-              <v-autocomplete
-                v-model="pavillon.site_id"
-                :items="marches"
-                item-text="nom"
-                item-value="id"
-                outlined
-                dense
-                label="choix du marché"
-                :error="errors.site_id.exist"
-                :error-messages="errors.site_id.message"
-              ></v-autocomplete>
-            </v-app>
-          </div>
+          <v-app>
+            <v-switch
+              v-model="pavillon.automatiq"
+              :label="pavillon.automatiq ? 'automatique' : 'manuel'"
+              @change="initState(true)"
+            ></v-switch>
+            <v-autocomplete
+              v-model="pavillon.site_id"
+              :items="marches"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            >
+              <template #label>
+                Choix du marché
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+            </v-autocomplete>
+          </v-app>
           <div v-if="!pavillon.automatiq" class="form-group">
-            <label class="form-label">Nom</label>
+            <label class="form-label"
+              >Nom<span class="text-danger">*</span></label
+            >
             <input
               v-model="pavillon.nom"
               type="text"
@@ -43,7 +47,7 @@
             </span>
           </div>
           <div v-else class="form-group">
-            <label>Nombre de pavillons</label>
+            <label>Nombre de pavillons<span class="text-danger">*</span></label>
             <input
               v-model="pavillon.nombre"
               class="form-control"

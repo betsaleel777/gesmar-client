@@ -9,32 +9,35 @@
       </template>
       <template #default>
         <form ref="form">
-          <div class="form-group">
-            <v-app>
-              <v-switch
-                v-model="niveau.automatiq"
-                :label="niveau.automatiq ? 'automatique' : 'manuel'"
-                @change="initState(true)"
-              ></v-switch>
-              <v-autocomplete
-                v-model="niveau.pavillon_id"
-                :items="pavillons"
-                item-text="nom"
-                item-value="id"
-                outlined
-                dense
-                label="choix du pavillon"
-                :error="errors.pavillon_id.exist"
-                :error-messages="errors.pavillon_id.message"
-              >
-                <template #item="data">
-                  {{ data.item.site.nom }} {{ data.item.nom }}
-                </template>
-              </v-autocomplete>
-            </v-app>
-          </div>
+          <v-app>
+            <v-switch
+              v-model="niveau.automatiq"
+              :label="niveau.automatiq ? 'automatique' : 'manuel'"
+              @change="initState(true)"
+            ></v-switch>
+            <v-autocomplete
+              v-model="niveau.pavillon_id"
+              :items="pavillons"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              :error="errors.pavillon_id.exist"
+              :error-messages="errors.pavillon_id.message"
+            >
+              <template #label>
+                Choix du pavillon
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+              <template #item="data">
+                {{ data.item.site.nom }} {{ data.item.nom }}
+              </template>
+            </v-autocomplete>
+          </v-app>
           <div v-if="!niveau.automatiq" class="form-group">
-            <label class="form-label">Nom</label>
+            <label class="form-label"
+              >Nom<span class="text-danger">*</span></label
+            >
             <input
               v-model="niveau.nom"
               type="text"
@@ -47,7 +50,7 @@
             </span>
           </div>
           <div v-else class="form-group">
-            <label>Nombre de niveaux</label>
+            <label>Nombre de niveaux <span class="text-danger">*</span></label>
             <input
               v-model="niveau.nombre"
               class="form-control"

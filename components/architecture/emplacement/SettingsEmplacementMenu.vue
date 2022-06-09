@@ -2,20 +2,20 @@
   <div class="content-right content-right-components">
     <label>Options d'emplacement</label>
     <nav id="navSection" class="nav flex-column">
-      <a
-        href="/parametre/architecture/setting/emplacement?tab=1"
+      <nuxt-link
+        to="/parametre/architecture/setting/emplacement?tab=1"
         class="nav-link"
-        >Equipements</a
+        >Equipements</nuxt-link
       >
-      <a
-        href="/parametre/architecture/setting/emplacement?tab=2"
+      <nuxt-link
+        to="/parametre/architecture/setting/emplacement?tab=2"
         class="nav-link"
-        >Types d'équipement</a
+        >Types d'équipement</nuxt-link
       >
-      <a
-        href="/parametre/architecture/setting/emplacement?tab=3"
+      <nuxt-link
+        to="/parametre/architecture/setting/emplacement?tab=3"
         class="nav-link"
-        >Types d'emplacement</a
+        >Types d'emplacement</nuxt-link
       >
     </nav>
   </div>

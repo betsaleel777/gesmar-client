@@ -12,13 +12,17 @@
       item-value="id"
       outlined
       dense
-      label="choix du marché"
-    ></v-autocomplete>
+    >
+      <template #label>
+        Choix du marché
+        <span class="red--text"><strong>* </strong></span>
+      </template>
+    </v-autocomplete>
     <form v-if="isNew">
       <v-row dense>
         <v-col cols="6" class="pa-2">
           <div class="form-group">
-            <label>Nom</label>
+            <label>Nom<span class="text-danger">*</span></label>
             <input
               v-model="marche.nom"
               class="form-control"
@@ -29,9 +33,7 @@
             </span>
           </div>
           <div class="form-group">
-            <label>
-              <span>Commune</span>
-            </label>
+            <label> Commune<span class="text-danger">*</span> </label>
             <input
               v-model="marche.commune"
               class="form-control"
@@ -48,9 +50,7 @@
         </v-col>
         <v-col cols="6" class="pa-2">
           <div class="form-group">
-            <label>
-              <span>Ville</span>
-            </label>
+            <label> Ville <span class="text-danger">*</span> </label>
             <input
               v-model="marche.ville"
               class="form-control"
@@ -65,9 +65,7 @@
             </span>
           </div>
           <div class="form-group">
-            <label>
-              <span>Pays</span>
-            </label>
+            <label> Pays <span class="text-danger">*</span> </label>
             <input
               v-model="marche.pays"
               class="form-control"

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalCreateEmplacement" scrollable @show="reset">
+  <b-modal id="modalCreateEmplacement" @show="reset">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvel Emplacement</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -8,8 +8,10 @@
     </template>
     <template #default>
       <form ref="form">
-        <div class="form-group required">
-          <label class="form-label">Nom complet</label>
+        <div class="form-group">
+          <label class="form-label"
+            >Nom complet <span class="text-danger">*</span></label
+          >
           <input
             v-model="emplacement.nom"
             type="text"
@@ -21,45 +23,80 @@
             <strong>{{ errors.nom.message }}</strong>
           </span>
         </div>
-        <div class="form-group">
-          <label class="form-label">Superficie</label>
-          <input
-            v-model="emplacement.superficie"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.superficie.exist }"
-            placeholder="Entrer la superficie"
-          />
-          <span
-            v-if="errors.superficie.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
-            <strong>{{ errors.superficie.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Loyer</label>
-          <input
-            v-model="emplacement.loyer"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.loyer.exist }"
-            placeholder="Entrer le loyer"
-          />
-          <span v-if="errors.loyer.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.loyer.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pas de porte</label>
-          <input
-            v-model="emplacement.pas_porte"
-            type="text"
-            class="form-control"
-            placeholder="Entrer le pas de porte"
-          />
-        </div>
+        <b-form-group label-for="superficie">
+          <template #label>
+            <span class="form-label"
+              >Superficie <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-input-group>
+            <b-form-input
+              id="superficie"
+              v-model="emplacement.superficie"
+              type="text"
+              :class="{ 'is-invalid': errors.superficie.exist }"
+              class="form-control"
+            />
+            <b-input-group-append>
+              <b-input-group-text class="bg-transparent font-weight-bold">
+                m²
+              </b-input-group-text>
+            </b-input-group-append>
+            <span
+              v-if="errors.superficie.exist"
+              class="invalid-feedback"
+              role="alert"
+            >
+              <strong>{{ errors.superficie.message }}</strong>
+            </span>
+          </b-input-group>
+        </b-form-group>
+        <b-form-group label-for="loyer">
+          <template #label>
+            <span class="form-label"
+              >Loyer <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-input-group>
+            <b-form-input
+              id="loyer"
+              v-model="emplacement.loyer"
+              type="text"
+              :class="{ 'is-invalid': errors.loyer.exist }"
+              class="form-control"
+            />
+            <b-input-group-append>
+              <b-input-group-text class="bg-transparent font-weight-bold">
+                FCFA
+              </b-input-group-text>
+            </b-input-group-append>
+            <span
+              v-if="errors.loyer.exist"
+              class="invalid-feedback"
+              role="alert"
+            >
+              <strong>{{ errors.loyer.message }}</strong>
+            </span>
+          </b-input-group>
+        </b-form-group>
+        <b-form-group label-for="pas_porte">
+          <template #label>
+            <span class="form-label">Pas de porte</span>
+          </template>
+          <b-input-group>
+            <b-form-input
+              id="pas_porte"
+              v-model="emplacement.pas_porte"
+              type="text"
+              class="form-control"
+            />
+            <b-input-group-append>
+              <b-input-group-text class="bg-transparent font-weight-bold">
+                FCFA
+              </b-input-group-text>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
         <v-app>
           <v-autocomplete
             v-model="emplacement.zone_id"
@@ -72,6 +109,10 @@
             :error="errors.zone_id.exist"
             :error-messages="errors.zone_id.message"
           >
+            <template #label>
+              Choix de la zone
+              <span class="red--text"><strong>* </strong></span>
+            </template>
             <template #item="data">
               {{ data.item.niveau.pavillon.site.nom }}
               {{ data.item.niveau.pavillon.nom }}
@@ -86,11 +127,18 @@
             item-value="id"
             outlined
             dense
-            label="type d'emplacement"
             :error="errors.type_emplacement_id.exist"
             :error-messages="errors.type_emplacement_id.message"
-          ></v-autocomplete>
+            append-outer-icon="mdi-plus-thick"
+            @click:append-outer="$bvModal.show('modalCreateTypempl')"
+          >
+            <template #label>
+              Type d'emplacement
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
         </v-app>
+        <CreateTypemplacementModal :marches="marches" @pushed="onPushed" />
       </form>
     </template>
     <template #modal-footer>
@@ -110,10 +158,16 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import CreateTypemplacementModal from '../typEmplacement/CreateTypemplacementModal.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
+  components: { CreateTypemplacementModal },
   props: {
     types: {
+      type: Array,
+      required: true,
+    },
+    marches: {
       type: Array,
       required: true,
     },
@@ -170,6 +224,9 @@ export default {
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateEmplacement')
+    },
+    onPushed(id) {
+      this.emplacement.type_emplacement_id = id
     },
   },
 }

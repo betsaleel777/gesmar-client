@@ -3,7 +3,7 @@
     <form>
       <h4>Création automatique de pavillons le site "{{ marche.nom }}"</h4>
       <div class="form-group">
-        <label>Nombre de pavillons</label>
+        <label>Nombre de pavillons<span class="text-danger">*</span></label>
         <input
           v-model="nombre"
           class="form-control"

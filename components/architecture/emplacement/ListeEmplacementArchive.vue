@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Marchés Archivées">
+      <b-card aria-hidden="true" header="Emplacements Archivées">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
             <div class="">

@@ -11,7 +11,9 @@
     <template #default>
       <form ref="form">
         <div class="form-group required">
-          <label class="form-label mg-t-10">Nom complet</label>
+          <label class="form-label mg-t-10"
+            >Nom complet<span class="text-danger">*</span></label
+          >
           <input
             v-model="type.nom"
             type="text"
@@ -25,7 +27,8 @@
         </div>
         <div class="form-group required">
           <label class="form-label mg-t-10"
-            >Préfixe Ex:(mag pour magasin)</label
+            >Préfixe<span class="text-danger">*</span> Ex:(mag pour
+            magasin)</label
           >
           <input
             v-model="type.prefix"
@@ -41,21 +44,23 @@
             <strong>{{ errors.prefix.message }}</strong>
           </span>
         </div>
-        <div class="form-group">
-          <v-app>
-            <v-autocomplete
-              v-model="type.site_id"
-              :items="marches"
-              item-text="nom"
-              item-value="id"
-              outlined
-              dense
-              label="choix du marché"
-              :error="errors.site_id.exist"
-              :error-messages="errors.site_id.message"
-            ></v-autocomplete>
-          </v-app>
-        </div>
+        <v-app>
+          <v-autocomplete
+            v-model="type.site_id"
+            :items="marches"
+            item-text="nom"
+            item-value="id"
+            outlined
+            dense
+            :error="errors.site_id.exist"
+            :error-messages="errors.site_id.message"
+          >
+            <template #label>
+              Choix du marché
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+        </v-app>
       </form>
     </template>
     <template #modal-footer>
