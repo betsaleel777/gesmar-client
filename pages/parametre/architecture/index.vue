@@ -58,13 +58,24 @@
             />
             <ListeEmplacementArchive v-else @back="onBack(5)" />
           </b-tab>
+          <b-tab
+            title="Equipements"
+            :active="tab === 1"
+            :title-link-class="linkClass(6)"
+          >
+            <ListeEquipement
+              v-if="!archive.equipement"
+              :equipements="equipements"
+              :types="typEquipements"
+              :marches="marches"
+              @archivage="archive.equipement = true"
+            />
+            <ListeEquipementArchive v-else @back="onBack(6)" />
+          </b-tab>
         </b-overlay>
       </b-tabs>
     </div>
-    <SettingsEmplacementMenu
-      v-if="setting.emplacement.visible"
-      :key="setting.emplacement.visible"
-    />
+    <SettingsEmplacementMenu />
     <!-- content-right -->
   </div>
 </template>
@@ -82,6 +93,8 @@ import ListeZone from '~/components/architecture/zones/ListeZone.vue'
 import ListeZoneArchive from '~/components/architecture/zones/ListeZoneArchive.vue'
 import ListeEmplacement from '~/components/architecture/emplacement/ListeEmplacement.vue'
 import ListeEmplacementArchive from '~/components/architecture/emplacement/ListeEmplacementArchive.vue'
+import ListeEquipement from '~/components/architecture/equipement/ListeEquipement.vue'
+import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
 export default {
   components: {
@@ -97,10 +110,12 @@ export default {
     ListeZoneArchive,
     ListeEmplacement,
     ListeEmplacementArchive,
+    ListeEquipement,
+    ListeEquipementArchive,
     SettingsEmplacementMenu,
   },
   data: () => ({
-    liens: [{ path: '#', text: 'Architecture de marché' }],
+    liens: [{ path: '#', text: 'Configuration de marché' }],
     archive: {
       marche: false,
       pavillon: false,
@@ -108,9 +123,6 @@ export default {
       zone: false,
       emplacement: false,
       type: false,
-    },
-    setting: {
-      emplacement: { visible: false },
     },
     tabIndex: 0,
   }),
@@ -121,6 +133,7 @@ export default {
     this.getZones()
     this.getEmplacements()
     this.getTypes()
+    this.getEquipements()
   },
   computed: {
     ...mapGetters({
@@ -130,6 +143,7 @@ export default {
       zones: 'architecture/zone/zones',
       types: 'architecture/typEmplacement/types',
       emplacements: 'architecture/emplacement/emplacements',
+      equipements: 'architecture/equipement/equipements',
     }),
   },
   methods: {
@@ -140,6 +154,7 @@ export default {
       getZones: 'architecture/zone/getAll',
       getEmplacements: 'architecture/emplacement/getAll',
       getTypes: 'architecture/typEmplacement/getAll',
+      getEquipements: 'architecture/equipement/getAll',
     }),
     onBack(numero) {
       if (numero === 1) {
@@ -154,9 +169,12 @@ export default {
       } else if (numero === 4) {
         this.archive.zone = false
         this.getZones()
-      } else {
+      } else if (numero === 5) {
         this.archive.emplacement = false
         this.getEmplacements()
+      } else {
+        this.archive.equipement = false
+        this.getEquipements()
       }
     },
     linkClass(idx) {
@@ -164,13 +182,6 @@ export default {
         return ['bg-white', 'text-primary']
       } else {
         return ['bg-light', 'text-primary']
-      }
-    },
-    options(idx) {
-      if (idx === 5) {
-        this.setting.emplacement.visible = true
-      } else {
-        this.setting.emplacement.visible = false
       }
     },
   },

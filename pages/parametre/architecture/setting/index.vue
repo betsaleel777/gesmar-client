@@ -9,40 +9,26 @@
       >
         <b-overlay :show="$fetchState.pending" rounded="sm">
           <b-tab
-            title="Equipements"
-            :active="tab === 1"
-            :title-link-class="linkClass(0)"
-          >
-            <ListeEquipement
-              v-if="!archive.equipement"
-              :equipements="equipements"
-              :types="typEquipements"
-              :marches="marches"
-              @archivage="archive.equipement = true"
-            />
-            <ListeEquipementArchive v-else @back="onBack(1)" />
-          </b-tab>
-          <b-tab
             title="Types d'équipement"
-            :active="tab === 2"
-            :title-link-class="linkClass(1)"
+            :active="tab === 0"
+            :title-link-class="linkClass(0)"
             ><ListeTypequipement
               v-if="!archive.typEquipement"
               :marches="marches"
               :types="typEquipements"
               @archivage="archive.typEquipement = true" />
-            <ListeTypequipementArchive v-else @back="onBack(2)"
+            <ListeTypequipementArchive v-else @back="onBack(0)"
           /></b-tab>
           <b-tab
             title="Types d'emplacement"
-            :active="tab === 3"
-            :title-link-class="linkClass(2)"
+            :active="tab === 1"
+            :title-link-class="linkClass(1)"
             ><ListeTypemplacement
               v-if="!archive.typEmplacement"
               :marches="marches"
               :types="typEmplacements"
               @archivage="archive.typEmplacement = true" />
-            <ListeTypemplacementArchive v-else @back="onBack(3)"
+            <ListeTypemplacementArchive v-else @back="onBack(1)"
           /></b-tab>
         </b-overlay>
       </b-tabs>
@@ -53,8 +39,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
-import ListeEquipement from '~/components/architecture/equipement/ListeEquipement.vue'
-import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import ListeTypequipement from '~/components/architecture/typEquipement/ListeTypequipement.vue'
 import ListeTypequipementArchive from '~/components/architecture/typEquipement/ListeTypequipementArchive.vue'
 import ListeTypemplacement from '~/components/architecture/typEmplacement/ListeTypemplacement.vue'
@@ -62,8 +46,7 @@ import ListeTypemplacementArchive from '~/components/architecture/typEmplacement
 export default {
   components: {
     PartialBreadcrumb,
-    ListeEquipement,
-    ListeEquipementArchive,
+
     ListeTypequipement,
     ListeTypequipementArchive,
     ListeTypemplacement,
@@ -71,27 +54,24 @@ export default {
   },
   data: () => ({
     liens: [
-      { path: '/parametre/architecture', text: 'Architecture de marché' },
-      { path: '#', text: "Options d'emplacement" },
+      { path: '/parametre/architecture', text: 'Configuration de marché' },
+      { path: '#', text: 'Options' },
     ],
     archive: {
       typEmplacement: false,
       typEquipement: false,
-      equipement: false,
     },
     tabIndex: 0,
   }),
   fetch() {
     this.getTypesEmplacement()
     this.getTypesEquipement()
-    this.getEquipements()
     this.getMarches()
   },
   computed: {
     ...mapGetters({
       typEmplacements: 'architecture/typEmplacement/types',
       typEquipements: 'architecture/typEquipement/types',
-      equipements: 'architecture/equipement/equipements',
       marches: 'architecture/marche/marches',
     }),
     tab() {
@@ -102,17 +82,13 @@ export default {
     ...mapActions({
       getTypesEmplacement: 'architecture/typEmplacement/getAll',
       getTypesEquipement: 'architecture/typEquipement/getAll',
-      getEquipements: 'architecture/equipement/getAll',
       getMarches: 'architecture/marche/getAll',
     }),
     onBack(numero) {
-      if (numero === 1) {
-        this.archive.equipement = false
-        this.getEquipements()
-      } else if (numero === 2) {
+      if (numero === 0) {
         this.archive.typEquipement = false
         this.getTypesEquipement()
-      } else if (numero === 3) {
+      } else {
         this.archive.typEmplacement = false
         this.getTypesEmplacement()
       }

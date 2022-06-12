@@ -169,7 +169,7 @@
                 to="/parametre/architecture"
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'parametre-architecture' }"
-                >Architecture de Marché</nuxt-link
+                >Configuration de Marché</nuxt-link
               >
             </nav>
           </li>
