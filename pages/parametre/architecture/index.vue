@@ -6,7 +6,6 @@
         v-model="tabIndex"
         content-class="mt-7"
         active-nav-item-class="font-weight-bold"
-        @activate-tab="options"
       >
         <b-overlay :show="$fetchState.pending" rounded="sm">
           <b-tab title="Acceuil" :title-link-class="linkClass(0)">
@@ -52,17 +51,13 @@
               v-if="!archive.emplacement"
               :marches="marches"
               :emplacements="emplacements"
-              :types="types"
+              :types="typEmplacements"
               :zones="zones"
               @archivage="archive.emplacement = true"
             />
             <ListeEmplacementArchive v-else @back="onBack(5)" />
           </b-tab>
-          <b-tab
-            title="Equipements"
-            :active="tab === 1"
-            :title-link-class="linkClass(6)"
-          >
+          <b-tab title="Equipements" :title-link-class="linkClass(6)">
             <ListeEquipement
               v-if="!archive.equipement"
               :equipements="equipements"
@@ -71,6 +66,17 @@
               @archivage="archive.equipement = true"
             />
             <ListeEquipementArchive v-else @back="onBack(6)" />
+          </b-tab>
+          <b-tab title="Abonnements" :title-link-class="linkClass(7)">
+            <ListeAbonnement
+              v-if="!archive.abonnement"
+              :abonnements="abonnements"
+              :marches="marches"
+              :equipements="equipements"
+              :emplacements="emplacements"
+              @archivage="archive.abonnement = true"
+            />
+            <ListeAbonnementArchive v-else @back="onBack(7)" />
           </b-tab>
         </b-overlay>
       </b-tabs>
@@ -96,6 +102,8 @@ import ListeEmplacementArchive from '~/components/architecture/emplacement/Liste
 import ListeEquipement from '~/components/architecture/equipement/ListeEquipement.vue'
 import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
+import ListeAbonnement from '~/components/architecture/abonnement/ListeAbonnement.vue'
+import ListeAbonnementArchive from '~/components/architecture/abonnement/ListeAbonnementArchive.vue'
 export default {
   components: {
     PartialBreadcrumb,
@@ -113,6 +121,8 @@ export default {
     ListeEquipement,
     ListeEquipementArchive,
     SettingsEmplacementMenu,
+    ListeAbonnement,
+    ListeAbonnementArchive,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Configuration de marché' }],
@@ -122,6 +132,7 @@ export default {
       niveau: false,
       zone: false,
       emplacement: false,
+      abonnement: false,
       type: false,
     },
     tabIndex: 0,
@@ -132,8 +143,10 @@ export default {
     this.getPavillons()
     this.getZones()
     this.getEmplacements()
-    this.getTypes()
+    this.getTypesEmplacement()
+    this.getTypesEquipement()
     this.getEquipements()
+    this.getAbonnements()
   },
   computed: {
     ...mapGetters({
@@ -141,9 +154,11 @@ export default {
       pavillons: 'architecture/pavillon/pavillons',
       niveaux: 'architecture/niveau/niveaux',
       zones: 'architecture/zone/zones',
-      types: 'architecture/typEmplacement/types',
+      typEmplacements: 'architecture/typEmplacement/types',
+      typEquipements: 'architecture/typEquipement/types',
       emplacements: 'architecture/emplacement/emplacements',
       equipements: 'architecture/equipement/equipements',
+      abonnements: 'architecture/abonnement/abonnements',
     }),
   },
   methods: {
@@ -153,8 +168,10 @@ export default {
       getNiveaux: 'architecture/niveau/getAll',
       getZones: 'architecture/zone/getAll',
       getEmplacements: 'architecture/emplacement/getAll',
-      getTypes: 'architecture/typEmplacement/getAll',
+      getTypesEmplacement: 'architecture/typEmplacement/getAll',
+      getTypesEquipement: 'architecture/typEquipement/getAll',
       getEquipements: 'architecture/equipement/getAll',
+      getAbonnements: 'architecture/abonnement/getAll',
     }),
     onBack(numero) {
       if (numero === 1) {
@@ -172,9 +189,12 @@ export default {
       } else if (numero === 5) {
         this.archive.emplacement = false
         this.getEmplacements()
-      } else {
+      } else if (numero === 6) {
         this.archive.equipement = false
         this.getEquipements()
+      } else {
+        this.archive.abonnement = false
+        this.getAbonnements()
       }
     },
     linkClass(idx) {
