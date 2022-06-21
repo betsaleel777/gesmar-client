@@ -61,6 +61,7 @@
             :filter="filter"
             @filtered="onFiltered"
           >
+            <template #cell(index)="data"> {{ data.index + 1 }} </template>
             <template #cell(connected)="data">
               <span v-if="data.item.connected" class="badge badge-success-light"
                 >connecté</span
@@ -110,6 +111,7 @@
             :key="dialogData.modal"
             v-model="dialogData.modal"
             :nom="dialogData.nom"
+            modal-id="userConfirmation"
             action="user-role/user/supprimer"
             :message="`Voulez vous réelement archiver l'utilisateur ${dialogData.nom}`"
           />
@@ -130,6 +132,7 @@ export default {
   },
   data: () => ({
     fields: [
+      'index',
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },
       { key: 'email', label: 'Email', tdClass: 'wd-30p', sortable: true },
       {

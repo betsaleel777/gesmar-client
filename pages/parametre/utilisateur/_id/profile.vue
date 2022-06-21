@@ -6,8 +6,8 @@
         <div class="profile-sidebar-header">
           <div class="avatar">
             <img
-              v-if="utilisateur.avatar"
-              :src="baseURL + 'storage/' + utilisateur.avatar"
+              v-if="user.avatar"
+              :src="baseURL + 'storage/' + user.avatar"
               class="rounded-circle"
               alt=""
             />
@@ -18,9 +18,9 @@
               alt=""
             />
           </div>
-          <h5>{{ utilisateur.name.toUpperCase() }}</h5>
+          <h5>{{ user.name }}</h5>
           <p>UI Developer (Savior of Mankind)</p>
-          <span>{{ utilisateur.adresse }}</span>
+          <span>{{ user.adresse }}</span>
 
           <!-- <div class="d-flex align-self-stretch mg-t-30">
           <a href="" class="btn btn-brand-01 btn-sm btn-uppercase flex-fill"
@@ -268,30 +268,18 @@
   <!-- content-body -->
 </template>
 <script>
-import { mapActions } from 'vuex'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
   components: {
     PartialBreadcrumb,
   },
-  async asyncData({ params, store }) {
-    const { avatar, name, description, adresse } = await store.dispatch(
-      'user-role/user/getOne',
-      params.id
-    )
-    const utilisateur = { avatar, name, description, adresse, id: params.id }
-    return {
-      nom: name,
-      id: Number(params.id),
-      utilisateur,
-      liens: [{ path: '#', text: `profil ${name}` }],
-    }
-  },
   data: () => ({
     baseURL: process.env.BASE_URL || 'http://localhost:8000/',
   }),
-  methods: {
-    ...mapActions('user-role/user', ['getOne']),
+  computed: {
+    liens() {
+      return [{ path: '#', text: `profile ${this.user.name}` }]
+    },
   },
 }
 </script>

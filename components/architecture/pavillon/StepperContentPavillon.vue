@@ -1,7 +1,9 @@
 <template>
   <div class="">
     <form>
-      <h4>Création automatique de pavillons le site "{{ marche.nom }}"</h4>
+      <h4>
+        Création automatique de pavillons pour le site: "{{ marche.nom }}"
+      </h4>
       <div class="form-group">
         <label>Nombre de pavillons<span class="text-danger">*</span></label>
         <input

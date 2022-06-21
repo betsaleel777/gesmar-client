@@ -1,15 +1,15 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <div class="content-body content-body-components">
-      <b-tabs
-        v-model="tabIndex"
-        content-class="mt-7"
-        active-nav-item-class="font-weight-bold"
-      >
-        <b-overlay :show="$fetchState.pending" rounded="sm">
+    <b-overlay :show="$fetchState.pending" rounded="sm">
+      <div class="content-body content-body-components">
+        <b-tabs
+          v-model="tabIndex"
+          content-class="mt-7"
+          active-nav-item-class="font-weight-bold"
+        >
           <b-tab title="Acceuil" :title-link-class="linkClass(0)">
-            <AcceuilArchitecture />
+            <AcceuilArchitecture :key="cle" :structure="structure" />
           </b-tab>
           <b-tab title="Marchés" :title-link-class="linkClass(1)">
             <ListeMarche
@@ -78,9 +78,9 @@
             />
             <ListeAbonnementArchive v-else @back="onBack(7)" />
           </b-tab>
-        </b-overlay>
-      </b-tabs>
-    </div>
+        </b-tabs>
+      </div>
+    </b-overlay>
     <SettingsEmplacementMenu />
     <!-- content-right -->
   </div>
@@ -132,12 +132,16 @@ export default {
       niveau: false,
       zone: false,
       emplacement: false,
+      equipement: false,
       abonnement: false,
-      type: false,
     },
     tabIndex: 0,
+    cle: false,
   }),
   fetch() {
+    this.getStructure().then(() => {
+      this.cle = !this.cle
+    })
     this.getMarches()
     this.getNiveaux()
     this.getPavillons()
@@ -159,6 +163,7 @@ export default {
       emplacements: 'architecture/emplacement/emplacements',
       equipements: 'architecture/equipement/equipements',
       abonnements: 'architecture/abonnement/abonnements',
+      structure: 'architecture/marche/structure',
     }),
   },
   methods: {
@@ -172,6 +177,7 @@ export default {
       getTypesEquipement: 'architecture/typEquipement/getAll',
       getEquipements: 'architecture/equipement/getAll',
       getAbonnements: 'architecture/abonnement/getAll',
+      getStructure: 'architecture/marche/getGeneralStructure',
     }),
     onBack(numero) {
       if (numero === 1) {

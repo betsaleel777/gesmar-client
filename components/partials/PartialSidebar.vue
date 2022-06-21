@@ -48,7 +48,7 @@
               >
             </nav>
           </li>
-          <li
+          <!-- <li
             class="nav-item"
             :class="{ show: active.finance }"
             @click="activer('finance')"
@@ -145,7 +145,7 @@
             <nav class="nav nav-sub">
               <nuxt-link to="" class="nav-sub-link">Répertoire</nuxt-link>
             </nav>
-          </li>
+          </li> -->
           <li
             class="nav-item"
             :class="{ show: active.setting }"

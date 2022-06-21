@@ -1,57 +1,49 @@
 export const state = () => ({
-  prospects: [],
+  annexes: [],
 })
 export const getters = {
-  prospects: (state) => {
-    return state.prospects
+  annexes: (state) => {
+    return state.annexes
   },
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_PROSPECT', [])
-    const requete = await this.$axios.get(
-      'api/exploitations/receptions/prospects'
-    )
-    commit('SET_PROSPECT', requete.data.prospects)
+    commit('SET_ANNEXES', [])
+    const requete = await this.$axios.get('api/parametres/annexes')
+    commit('SET_ANNEXES', requete.data.annexes)
   },
   async getTrashAll({ commit }) {
-    commit('SET_PROSPECT', [])
-    const requete = await this.$axios.get(
-      'api/exploitations/receptions/prospects/trashed'
-    )
-    commit('SET_PROSPECT', requete.data.prospects)
+    commit('SET_ANNEXES', [])
+    const requete = await this.$axios.get('api/parametres/annexes/trashed')
+    commit('SET_ANNEXES', requete.data.annexes)
   },
   async getOne({ commit }, id) {
-    const requete = await this.$axios.get(
-      'api/exploitations/receptions/prospects/' + id
-    )
+    const requete = await this.$axios.get('api/parametres/annexes/' + id)
     return requete.data
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
-      'api/exploitations/receptions/prospects/' + payload.id,
+      'api/parametres/annexes/' + payload.id,
       payload
     )
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async supprimer({ dispatch }, id) {
-    const requete = await this.$axios.delete(
-      'api/exploitations/receptions/prospects/' + id
-    )
+    const requete = await this.$axios.delete('api/parametres/annexes/' + id)
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.get(
-      'api/exploitations/receptions/prospects/restore/' + id
+      'api/parametres/annexes/restore/' + id
     )
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post(
-      'api/exploitations/receptions/prospects/store',
+      'api/parametres/annexes/store',
       payload
     )
     dispatch('getAll')
@@ -60,7 +52,7 @@ export const actions = {
 }
 
 export const mutations = {
-  SET_PROSPECT(state, prospects) {
-    state.prospects = prospects
+  SET_ANNEXES(state, annexes) {
+    state.annexes = annexes
   },
 }

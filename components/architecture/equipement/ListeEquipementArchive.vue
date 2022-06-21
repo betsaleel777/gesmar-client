@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Emplacements Archivés">
+      <b-card aria-hidden="true" header="Equipements Archivés">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
             <div class="">
@@ -62,6 +62,11 @@
                 @click="dialoger(data.item)"
               />
             </template>
+            <template #cell(status)="data">
+              <span :class="statusClass(data.item.status)">{{
+                data.item.status
+              }}</span>
+            </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
                 {{ scope.emptyText }}
@@ -95,6 +100,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { EQUIPEMENT } from '~/helper/constantes'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
@@ -109,20 +115,9 @@ export default {
         tdClass: 'text-right',
         sortable: true,
       },
-      {
-        key: 'prix_fixe',
-        label: 'Prix Fixe',
-        tdClass: 'text-right',
-        sortable: true,
-      },
-      {
-        key: 'frais_facture',
-        label: 'Frais Facture',
-        tdClass: 'text-right',
-        sortable: true,
-      },
       { key: 'type.nom', label: 'Type' },
       { key: 'site.nom', label: 'Site' },
+      { key: 'status', label: 'Statut' },
       {
         key: 'option',
         label: 'Options',
@@ -157,6 +152,15 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      if (value === EQUIPEMENT.free) {
+        return 'badge badge-success-light'
+      } else if (value === EQUIPEMENT.busy) {
+        return 'badge badge-danger-light'
+      } else {
+        return 'badge badge-warning-light'
+      }
     },
   },
 }

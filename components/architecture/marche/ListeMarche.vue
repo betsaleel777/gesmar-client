@@ -21,15 +21,6 @@
               size="18"
               type="printer"
             />
-            <feather
-              v-b-tooltip.hover.top
-              title="archives"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="archive"
-              @click="$emit('archivage')"
-            />
           </div>
         </div>
         <hr class="mg-t-4" />
@@ -59,12 +50,12 @@
           :filter="filter"
           @filtered="onFiltered"
         >
+          <template #cell(index)="data">
+            {{ data.index + 1 }}
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="editer(data.item)">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
-            </a>
-            <a type="button" @click="dialoger(data.item)">
-              <feather title="archiver" type="trash-2" size="20" stroke="red" />
             </a>
           </template>
           <template #cell(created_at)="data">
@@ -85,17 +76,6 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <div>
-          <ConfirmationModal
-            :id="dialogData.id"
-            :key="dialogData.modal"
-            v-model="dialogData.modal"
-            :nom="dialogData.nom"
-            modal-id="marcheConfirmationListe"
-            action="architecture/marche/supprimer"
-            :message="`Voulez vous réelement archiver le marché ${dialogData.nom}`"
-          />
-        </div>
         <CreateMarcheModal />
         <div>
           <EditMarcheModal
@@ -112,11 +92,9 @@
 import { mapActions } from 'vuex'
 import CreateMarcheModal from './CreateMarcheModal.vue'
 import EditMarcheModal from './EditMarcheModal.vue'
-import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
     CreateMarcheModal,
-    ConfirmationModal,
     EditMarcheModal,
   },
   props: {
@@ -127,6 +105,7 @@ export default {
   },
   data: () => ({
     fields: [
+      'index',
       { key: 'nom', label: 'Nom', sortable: true },
       { key: 'commune', label: 'Commune', sortable: true },
       { key: 'ville', label: 'Ville', sortable: true },

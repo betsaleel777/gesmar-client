@@ -29,9 +29,19 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+  async resilier({ dispatch }, payload) {
+    const requete = await this.$axios.put(
+      'api/parametres/abonnements/finished/' + payload.id,
+      payload
+    )
+    dispatch('getAll')
+    dispatch('architecture/equipement/getAll', {}, { root: true })
+    return { message: requete.data.message }
+  },
   async supprimer({ dispatch }, id) {
     const requete = await this.$axios.delete('api/parametres/abonnements/' + id)
     dispatch('getAll')
+    dispatch('architecture/equipement/getAll', {}, { root: true })
     return { message: requete.data.message }
   },
   async restaurer({ dispatch }, id) {
@@ -47,6 +57,7 @@ export const actions = {
       payload
     )
     dispatch('getAll')
+    dispatch('architecture/equipement/getAll', {}, { root: true })
     return { message: requete.data.message }
   },
   async getLastIndex({ commit }, id) {

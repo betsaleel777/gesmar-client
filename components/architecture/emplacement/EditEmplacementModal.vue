@@ -185,6 +185,7 @@ export default {
   },
   data: () => ({
     emplacement: {
+      id: null,
       nom: '',
       superficie: '',
       loyer: '',
@@ -244,6 +245,7 @@ export default {
     },
     close() {
       this.emplacement = {
+        id: null,
         nom: '',
         superficie: '',
         loyer: '',

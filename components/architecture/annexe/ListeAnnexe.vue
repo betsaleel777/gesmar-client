@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Liste des prospects">
+      <b-card aria-hidden="true" header="Liste des services annexes">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
             <div class="">
@@ -12,7 +12,7 @@
                 stroke-width="2"
                 size="18"
                 type="plus"
-                @click="$bvModal.show('modalCreateProspect')"
+                @click="$bvModal.show('modalCreateAnnexe')"
               />
               <feather
                 v-b-tooltip.hover.top
@@ -50,12 +50,12 @@
             small
             bordered
             primary-key="id"
-            :items="prospects"
+            :items="annexes"
             :fields="fields"
             :current-page="currentPage"
             :per-page="perPage"
             responsive
-            empty-text="Aucun prospect"
+            empty-text="Aucun service annexe"
             show-empty
             :filter="filter"
             @filtered="onFiltered"
@@ -75,9 +75,6 @@
                   stroke="red"
                 />
               </a>
-            </template>
-            <template #cell(created_at)="data">
-              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
             </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
@@ -100,18 +97,17 @@
               :key="dialogData.modal"
               v-model="dialogData.modal"
               :nom="dialogData.nom"
-              modal-id="prospectConfirmationListe"
-              action="exploitation/prospect/supprimer"
-              :message="`Voulez vous réelement archiver le prospect: '${dialogData.nom}'.`"
+              modal-id="annexeConfirmationListe"
+              action="architecture/annexe/supprimer"
+              :message="`Voulez vous réelement archiver le service annexe: '${dialogData.nom}'`"
             />
           </div>
-          <CreateProspectModal :types="types" :marches="marches" />
+          <CreateAnnexeModal :marches="marches" />
           <div>
-            <EditProspectModal
+            <EditAnnexeModal
               :key="edit.modal"
               v-model="edit.modal"
-              :current="edit.prospect"
-              :types="types"
+              :current="edit.annexe"
               :marches="marches"
             />
           </div>
@@ -122,25 +118,21 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import CreateProspectModal from './CreateProspectModal.vue'
-import EditProspectModal from './EditProspectModal.vue'
+import EditAnnexeModal from './EditAnnexeModal.vue'
+import CreateAnnexeModal from './CreateAnnexeModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
     ConfirmationModal,
-    CreateProspectModal,
-    EditProspectModal,
+    EditAnnexeModal,
+    CreateAnnexeModal,
   },
   props: {
+    annexes: {
+      type: Array,
+      required: true,
+    },
     marches: {
-      type: Array,
-      required: true,
-    },
-    prospects: {
-      type: Array,
-      required: true,
-    },
-    types: {
       type: Array,
       required: true,
     },
@@ -149,49 +141,47 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'prenom', label: 'Prénom', sortable: true },
-      { key: 'ville', label: 'Ville', tdClass: 'text-right', sortable: true },
       {
-        key: 'contact',
-        label: 'Contact',
+        key: 'prix',
+        label: 'Prix/Heures',
         tdClass: 'text-right',
         sortable: true,
       },
-      { key: 'site.nom', label: 'Marché', sortable: true },
+      { key: 'site.nom', label: 'Site' },
       {
         key: 'option',
         label: 'Options',
         tdClass: 'text-center',
-        thClass: 'wd-20p text-center',
+        thClass: 'wd-15p text-center',
         sortable: false,
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, prospect: {} },
+    edit: { modal: false, annexe: {} },
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.totalRows = this.prospects.length
+    this.totalRows = this.annexes.length
   },
   methods: {
     ...mapActions({
-      getOne: 'exploitation/prospect/getOne',
+      getOne: 'architecture/annexe/getOne',
     }),
     imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
       this.dialogData.modal = true
-      this.$bvModal.show('prospectConfirmationListe')
+      this.$bvModal.show('annexeConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ prospect }) => {
-        this.edit.prospect = prospect
+      this.getOne(id).then(({ annexe }) => {
+        this.edit.annexe = annexe
         this.edit.modal = true
-        this.$bvModal.show('modalEditProspect')
+        this.$bvModal.show('modalEditAnnexe')
       })
     },
     onFiltered(filteredItems) {

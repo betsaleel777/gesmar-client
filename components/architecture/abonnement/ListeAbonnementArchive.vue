@@ -44,7 +44,7 @@
             primary-key="id"
             :current-page="currentPage"
             :per-page="perPage"
-            :items="emplacements"
+            :items="abonnements"
             :fields="fields"
             responsive
             empty-text="Aucun abonnements archivés"
@@ -61,6 +61,14 @@
                 stroke-width="3"
                 @click="dialoger(data.item)"
               />
+            </template>
+            <template #cell(status)="data">
+              <span :class="statusClass(data.item.status)">{{
+                data.item.status
+              }}</span>
+            </template>
+            <template #cell(created_at)="data">
+              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
             </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
@@ -95,6 +103,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { ABONNEMENT } from '~/helper/constantes'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
@@ -103,16 +112,31 @@ export default {
   data: () => ({
     fields: [
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'superficie', label: 'Superficie', sortable: true },
       { key: 'equipement.code', label: 'Equipement', sortable: true },
       { key: 'emplacement.code', label: 'Emplacement', sortable: true },
-      { key: 'index_depart', label: 'Index', sortable: true },
-      { key: 'status', label: 'Statut', sortable: true },
+      { key: 'index_depart', label: 'Index depart', sortable: true },
+      {
+        key: 'index_fin',
+        label: 'Index fin',
+        formatter: (value) => {
+          return Number(value)
+        },
+        sortByFormatted: true,
+        filterByFormatted: true,
+        sortable: true,
+      },
+      {
+        key: 'status',
+        label: 'Statut',
+        tdClass: 'text-center',
+        thClass: 'wd-5p text-center',
+        sortable: true,
+      },
       {
         key: 'option',
         label: 'Options',
         tdClass: 'text-center',
-        thClass: 'wd-20p text-center',
+        thClass: 'wd-15p text-center',
         sortable: false,
       },
     ],
@@ -142,6 +166,11 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      return value === ABONNEMENT.progressing
+        ? 'badge badge-primary-light'
+        : 'badge badge-danger-light'
     },
   },
 }

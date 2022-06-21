@@ -4,12 +4,12 @@
       <h5 id="archiver" class="modal-title text-primary">
         Création d'abonnement
       </h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form v-if="!finish" ref="form">
+      <form ref="form">
         <v-app>
           <v-autocomplete
             v-model="abonnement.site_id"
@@ -30,7 +30,7 @@
           <v-autocomplete
             v-model="abonnement.emplacement_id"
             :items="emplacementsSet"
-            item-text="nom"
+            item-text="code"
             item-value="id"
             outlined
             dense
@@ -43,11 +43,11 @@
             </template>
           </v-autocomplete>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="4">
               <v-autocomplete
                 v-model="abonnement.equipement_id"
                 :items="equipementsSet"
-                item-text="nom"
+                item-text="code"
                 item-value="id"
                 outlined
                 dense
@@ -56,34 +56,39 @@
                 @change="getIndex"
               >
                 <template #label>
-                  Emplacement
+                  Equipement
                   <span class="red--text"><strong>* </strong></span>
                 </template>
               </v-autocomplete>
             </v-col>
-            <v-col cols="6">
-              <v-text-field v-model="abonnement.index" outlined dense>
+            <v-col cols="4">
+              <v-text-field
+                v-model="abonnement.index_depart"
+                outlined
+                dense
+                :error="errors.index_depart.exist"
+                :error-messages="errors.index_depart.message"
+                readonly
+              >
                 <template #label>
-                  Index
+                  Index de départ
                   <span class="red--text"><strong>* </strong></span>
                 </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="4">
+              <v-text-field
+                v-model="abonnement.index_autre"
+                outlined
+                dense
+                hint="valeur si différent"
+              >
+                <template #label> Autre Index </template>
               </v-text-field>
             </v-col>
           </v-row>
         </v-app>
       </form>
-      <b-alert v-else show variant="info">
-        <p>Voulez-vous créer à nouveau un autre abonnement ?</p>
-        <hr />
-        <p class="mb-0">
-          <b-button variant="success" @click="reset">Oui</b-button>
-          <b-button
-            variant="danger"
-            @click="$bvModal.hide('modalCreateAbonnement')"
-            >Non</b-button
-          >
-        </p>
-      </b-alert>
     </template>
     <template #modal-footer>
       <button
@@ -102,6 +107,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { EQUIPEMENT } from '~/helper/constantes'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
@@ -119,21 +125,20 @@ export default {
     },
   },
   data: () => ({
-    cle: false,
-    finish: false,
     equipementsSet: [],
     emplacementsSet: [],
-    abonnements: {
+    abonnement: {
       site_id: null,
       emplacement_id: null,
       equipement_id: null,
-      index: '',
+      index_depart: '',
+      index_autre: '',
     },
     errors: {
       site_id: { exist: false, message: null },
       emplacement_id: { exist: false, message: null },
       equipement_id: { exist: false, message: null },
-      index: { exist: false, message: null },
+      index_depart: { exist: false, message: null },
     },
   }),
   methods: {
@@ -146,7 +151,7 @@ export default {
             variant: 'success',
             solid: true,
           })
-          this.finish = true
+          this.$bvModal.hide('modalCreateAbonnement')
         })
         .catch((err) => {
           const { data } = err.response
@@ -161,26 +166,30 @@ export default {
         site_id: null,
         emplacement_id: null,
         equipement_id: null,
-        index: '',
+        index_depart: '',
+        index_autre: '',
       }
+      this.equipementsSet = []
+      this.emplacementsSet = []
       errorsInitialise(this.errors)
     },
     setDependencies() {
       if (this.abonnement.site_id) {
         this.equipementsSet = this.equipements.filter(
-          (equipement) => equipement.site_id === this.abonnement.site_id
+          (equipement) =>
+            equipement.site_id === this.abonnement.site_id &&
+            equipement.status === EQUIPEMENT.free
         )
         this.emplacementsSet = this.emplacements.filter(
           (emplacement) =>
             emplacement.zone.niveau.pavillon.site_id === this.abonnement.site_id
         )
-        this.cle = !this.cle
       }
     },
     getIndex() {
       if (this.abonnement.equipement_id) {
         this.getLastIndex(this.abonnement.equipement_id).then(({ index }) => {
-          this.abonnement.index = index
+          this.abonnement.index_depart = index
         })
       }
     },

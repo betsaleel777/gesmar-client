@@ -64,7 +64,7 @@
               <!-- tab-pane -->
               <NotificationSetup :id="id" />
               <!-- tab-pane -->
-              <PermissionSetup :id="id" />
+              <!-- <PermissionSetup :id="id" /> -->
               <!-- tab-pane -->
             </div>
             <!-- tab-content -->
@@ -79,12 +79,11 @@
   <!-- content-body -->
 </template>
 <script>
-import { mapActions } from 'vuex'
 import ProfileSetup from '~/components/utilisateur/ProfileSetup.vue'
 import AccountSetup from '~/components/utilisateur/AccountSetup.vue'
 import SecuritySetup from '~/components/utilisateur/SecuritySetup.vue'
 import NotificationSetup from '~/components/utilisateur/NotificationSetup.vue'
-import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
+// import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
   components: {
@@ -92,7 +91,7 @@ export default {
     AccountSetup,
     SecuritySetup,
     NotificationSetup,
-    PermissionSetup,
+    // PermissionSetup,
     PartialBreadcrumb,
   },
   async asyncData({ params, store }) {
@@ -106,12 +105,6 @@ export default {
       profileData,
       liens: [{ path: '#', text: `utilisateur ${name}` }],
     }
-  },
-  data: () => ({
-    baseURL: process.env.BASE_URL || 'http://localhost:8000/',
-  }),
-  methods: {
-    ...mapActions('user-role/user', ['getOne']),
   },
 }
 </script>

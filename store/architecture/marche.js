@@ -1,9 +1,13 @@
 export const state = () => ({
   marches: [],
+  structure: [],
 })
 export const getters = {
   marches: (state) => {
     return state.marches
+  },
+  structure: (state) => {
+    return state.structure
   },
 }
 export const actions = {
@@ -20,6 +24,10 @@ export const actions = {
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/marches/' + id)
     return requete.data
+  },
+  async getGeneralStructure({ commit }) {
+    const requete = await this.$axios.get('api/parametres/marches/structure')
+    commit('SET_STRUCTURE', requete.data.structure)
   },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
@@ -62,5 +70,8 @@ export const actions = {
 export const mutations = {
   SET_MARCHE(state, marches) {
     state.marches = marches
+  },
+  SET_STRUCTURE(state, structure) {
+    state.structure = structure
   },
 }
