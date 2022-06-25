@@ -43,7 +43,6 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/feather.js',
-    '~/plugins/echarts.js',
     '~/plugins/perfect-scrollbar.js',
     '~/plugins/unicons',
     '~/plugins/user.js',

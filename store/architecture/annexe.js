@@ -21,6 +21,10 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/annexes/' + id)
     return requete.data
   },
+  async getByMarche({ commit }, id) {
+    const requete = await this.$axios.get('api/parametres/annexes/marche/' + id)
+    return requete.data
+  },
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put(
       'api/parametres/annexes/' + payload.id,
