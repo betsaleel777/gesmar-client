@@ -171,8 +171,10 @@ export default {
   },
   methods: {
     async logout() {
-      await this.$auth.logout(this.utilisateur)
-      this.$router.push('/login')
+      await this.$axios.post('deconnecter', this.user)
+      this.$auth.logout().then(() => {
+        this.$router.push('/login')
+      })
     },
   },
 }

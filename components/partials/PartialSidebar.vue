@@ -172,6 +172,14 @@
                 >Configuration de Marché</nuxt-link
               >
             </nav>
+            <nav class="nav nav-sub">
+              <nuxt-link
+                to="/parametre/template"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'parametre-template' }"
+                >Gabaris de documents</nuxt-link
+              >
+            </nav>
           </li>
         </ul>
       </div>

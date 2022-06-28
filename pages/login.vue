@@ -98,11 +98,12 @@ export default {
     this.$axios.$get('/sanctum/csrf-cookie')
   },
   methods: {
-    async login() {
-      await this.$auth
+    login() {
+      this.$auth
         .loginWith('laravelSanctum', { data: this.utilisateur })
         .then(() => {
           // this.$gates.setPermissions(this.profile.permissions)
+          this.$router.push('/')
         })
         .catch((err) => {
           const { data } = err.response
@@ -111,7 +112,6 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
-      this.$router.push('/')
     },
   },
 }
