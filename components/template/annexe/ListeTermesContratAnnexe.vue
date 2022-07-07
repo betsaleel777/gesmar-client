@@ -62,6 +62,14 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
+          <nuxt-link :to="`/parametre/template/pdf/${data.item.id}/annexe`">
+            <feather
+              title="modifier"
+              type="file-text"
+              size="20"
+              stroke="indigo"
+            />
+          </nuxt-link>
           <a type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
@@ -150,6 +158,7 @@ export default {
   methods: {
     ...mapActions({
       getOne: 'template/terme-annexe/getOne',
+      getPdf: 'template/terme-annexe/getPdf',
     }),
     imprimer() {},
     dialoger({ id, code }) {
@@ -161,6 +170,9 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    pdf({ id }) {
+      this.getPdf(id)
     },
   },
 }

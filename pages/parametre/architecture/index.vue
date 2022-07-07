@@ -69,14 +69,11 @@
           </b-tab>
           <b-tab title="Abonnements" :title-link-class="linkClass(7)">
             <ListeAbonnement
-              v-if="!archive.abonnement"
               :abonnements="abonnements"
               :marches="marches"
               :equipements="equipements"
               :emplacements="emplacements"
-              @archivage="archive.abonnement = true"
             />
-            <ListeAbonnementArchive v-else @back="onBack(7)" />
           </b-tab>
         </b-tabs>
       </div>
@@ -103,7 +100,6 @@ import ListeEquipement from '~/components/architecture/equipement/ListeEquipemen
 import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
 import ListeAbonnement from '~/components/architecture/abonnement/ListeAbonnement.vue'
-import ListeAbonnementArchive from '~/components/architecture/abonnement/ListeAbonnementArchive.vue'
 export default {
   components: {
     PartialBreadcrumb,
@@ -122,7 +118,6 @@ export default {
     ListeEquipementArchive,
     SettingsEmplacementMenu,
     ListeAbonnement,
-    ListeAbonnementArchive,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Configuration de marché' }],
@@ -195,12 +190,9 @@ export default {
       } else if (numero === 5) {
         this.archive.emplacement = false
         this.getEmplacements()
-      } else if (numero === 6) {
+      } else {
         this.archive.equipement = false
         this.getEquipements()
-      } else {
-        this.archive.abonnement = false
-        this.getAbonnements()
       }
     },
     linkClass(idx) {

@@ -48,12 +48,15 @@
               >
             </nav>
           </li>
-          <!-- <li
+          <li
             class="nav-item"
             :class="{ show: active.finance }"
             @click="activer('finance')"
           >
-            <a class="nav-link with-sub">
+            <a
+              class="nav-link with-sub"
+              :class="{ active: $route.name.match(/^finance/) }"
+            >
               <feather type="dollar-sign" />Finances & quittancement</a
             >
             <nav class="nav nav-sub">
@@ -63,26 +66,11 @@
             </nav>
             <nav class="nav nav-sub">
               <nuxt-link to="" class="nav-sub-link"
-                >Facturation Equipements</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Facturation Charges Copropriété</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
                 >Recettes & Dépenses</nuxt-link
               >
             </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Appels de Loyers/Pas-de-porte</nuxt-link
-              >
-            </nav>
           </li>
-          <li
+          <!-- <li
             class="nav-item"
             :class="{ show: active.paiement }"
             @click="activer('paiement')"
@@ -105,8 +93,8 @@
                 >Export/Import SAGE</nuxt-link
               >
             </nav>
-          </li>
-          <li
+          </li> -->
+          <!-- <li
             class="nav-item"
             :class="{ show: active.outils }"
             @click="activer('outils')"

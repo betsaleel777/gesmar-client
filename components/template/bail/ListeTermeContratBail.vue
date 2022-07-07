@@ -13,7 +13,7 @@
             stroke-width="2"
             size="18"
             type="plus"
-            @click="$bvModal.show('modalCreateTermeContratAnnexe')"
+            @click="$bvModal.show('modalCreateTermeContratBail')"
           />
           <feather
             v-b-tooltip.hover.top
@@ -96,21 +96,24 @@
           :key="dialogData.modal"
           v-model="dialogData.modal"
           :nom="dialogData.code"
-          modal-id="termeContratAnnexeConfirmationListe"
-          action="template/terme-annexe/supprimer"
+          modal-id="termeContratBailConfirmationListe"
+          action="template/terme-bail/supprimer"
           :message="`Voulez-vous réelement archiver les termes: '${dialogData.code}'`"
         />
       </div>
+      <CreateTermeContratBailModal :marches="marches" />
     </b-card-text>
   </b-card>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import CreateTermeContratBailModal from './CreateTermeContratBailModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
     ConfirmationModal,
+    CreateTermeContratBailModal,
   },
   props: {
     termes: {
@@ -149,14 +152,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOne: 'template/terme-annexe/getOne',
+      getOne: 'template/terme-bail/getOne',
     }),
     imprimer() {},
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id
       this.dialogData.modal = true
-      this.$bvModal.show('termeContratAnnexeConfirmationListe')
+      this.$bvModal.show('termeContratBailConfirmationListe')
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

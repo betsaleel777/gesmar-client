@@ -72,9 +72,6 @@
                 stroke="blue"
               />
             </a>
-            <a type="button" @click="dialoger(data.item)">
-              <feather title="archiver" type="trash-2" size="20" stroke="red" />
-            </a>
           </template>
           <template #cell(index)="data">
             {{ data.index + 1 }}
@@ -102,17 +99,6 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <div>
-          <ConfirmationModal
-            :id="dialogData.id"
-            :key="dialogData.modal"
-            v-model="dialogData.modal"
-            :nom="dialogData.code"
-            modal-id="abonnementConfirmationListe"
-            action="architecture/abonnement/supprimer"
-            :message="`Voulez vous réelement archiver l'abonnement ${dialogData.code}`"
-          />
-        </div>
         <CreateAbonnementModal
           :equipements="equipements"
           :emplacements="emplacements"
@@ -134,10 +120,8 @@ import { mapActions } from 'vuex'
 import FinishAbonnementModal from './FinishAbonnementModal.vue'
 import CreateAbonnementModal from './CreateAbonnementModal.vue'
 import { ABONNEMENT } from '~/helper/constantes'
-import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
-    ConfirmationModal,
     CreateAbonnementModal,
     FinishAbonnementModal,
   },
@@ -201,7 +185,6 @@ export default {
         sortable: false,
       },
     ],
-    dialogData: { modal: false, id: 0, code: '' },
     edit: { modal: false, abonnement: {} },
     filter: null,
     currentPage: 1,
@@ -217,12 +200,6 @@ export default {
       getOne: 'architecture/abonnement/getOne',
     }),
     imprimer() {},
-    dialoger({ id, code }) {
-      this.dialogData.code = code
-      this.dialogData.id = id
-      this.dialogData.modal = true
-      this.$bvModal.show('abonnementConfirmationListe')
-    },
     resilier({ id }) {
       this.getOne(id).then(({ abonnement }) => {
         this.edit.abonnement = abonnement

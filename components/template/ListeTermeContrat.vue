@@ -63,11 +63,11 @@ export default {
     }),
     onBack(numero) {
       if (numero === 1) {
-        this.archive.bail = false
-        this.getTermesBails()
-      } else if (numero === 2) {
         this.archive.annexe = false
         this.getTermesAnnexes()
+      } else if (numero === 2) {
+        this.archive.bail = false
+        this.getTermesBails()
       }
     },
   },
