@@ -10,6 +10,16 @@
     </template>
     <template #default>
       <form ref="form">
+        <v-app>
+          <v-switch
+            v-model="type.auto_valid"
+            :label="
+              type.auto_valid
+                ? 'validation directe du contrat sans paiement'
+                : 'paiement requis pour la validation du contrat'
+            "
+          ></v-switch>
+        </v-app>
         <div class="form-group required">
           <label class="form-label mg-t-10"
             >Nom complet<span class="text-danger">*</span></label
@@ -94,6 +104,7 @@ export default {
       nom: '',
       prefix: '',
       site_id: '',
+      auto_valid: false,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -127,6 +138,7 @@ export default {
         nom: '',
         prefix: '',
         site_id: '',
+        auto_valid: false,
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateTypempl')

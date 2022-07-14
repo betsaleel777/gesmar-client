@@ -36,7 +36,14 @@ export default {
       { src: '/lib/bootstrap/js/bootstrap.bundle.min.js', body: 'true' },
     ],
   },
-
+  loading: {
+    continuous: true,
+  },
+  loadingIndicator: {
+    name: 'rectangle-bounce',
+    color: '#5556fd',
+    background: 'white',
+  },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/css/cassie.css'],
 

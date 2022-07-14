@@ -90,7 +90,6 @@
                 item-value="id"
                 outlined
                 dense
-                label="choix de la zone"
                 :error="errors.zone_id.exist"
                 :error-messages="errors.zone_id.message"
               >
@@ -106,6 +105,24 @@
                 </template>
               </v-autocomplete>
             </v-app>
+            <b-form-group label-for="caution">
+              <template #label>
+                <span class="form-label">Caution </span>
+              </template>
+              <b-input-group>
+                <b-form-input
+                  id="caution"
+                  v-model="emplacement.caution"
+                  type="text"
+                  class="form-control"
+                />
+                <b-input-group-append>
+                  <b-input-group-text class="bg-transparent font-weight-bold">
+                    Mois
+                  </b-input-group-text>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
           </div>
           <div class="col-md-6 col-sm-6">
             <b-form-group label-for="pas_porte">
@@ -223,6 +240,7 @@ export default {
       zone_id: null,
       type_emplacement_id: null,
       nombre: null,
+      caution: null,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -281,6 +299,7 @@ export default {
         pas_porte: '',
         zone_id: null,
         type_emplacement_id: null,
+        caution: null,
       }
       this.automatiq = false
       errorsInitialise(this.errors)

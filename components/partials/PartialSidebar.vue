@@ -60,7 +60,10 @@
               <feather type="dollar-sign" />Finances & quittancement</a
             >
             <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
+              <nuxt-link
+                to="/finance/facture"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'finance-facture' }"
                 >Facturation Générale</nuxt-link
               >
             </nav>

@@ -10,6 +10,16 @@
     </template>
     <template #default>
       <form ref="form">
+        <v-app>
+          <v-switch
+            v-model="type.auto_valid"
+            :label="
+              type.auto_valid
+                ? 'validation directe du contrat sans paiement'
+                : 'paiement requis pour la validation du contrat'
+            "
+          ></v-switch>
+        </v-app>
         <div class="form-group required">
           <label class="form-label mg-t-10"
             >Nom complet<span class="text-danger">*</span></label
@@ -99,6 +109,7 @@ export default {
       nom: '',
       prefix: '',
       site_id: null,
+      auto_valid: false,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -121,6 +132,7 @@ export default {
     this.type.nom = this.current.nom
     this.type.prefix = this.current.prefix
     this.type.site_id = this.current.site_id
+    this.type.auto_valid = this.current.auto_valid
   },
   methods: {
     ...mapActions({
@@ -151,6 +163,7 @@ export default {
         nom: '',
         prefix: '',
         site_id: null,
+        auto_valid: false,
       }
       errorsInitialise(this.errors)
       this.dialog = false
