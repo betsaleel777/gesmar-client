@@ -63,6 +63,9 @@
             <template #cell(index)="data">
               {{ data.index + 1 }}
             </template>
+            <template #cell(prix)="data">
+              {{ data.item.prix }} {{ data.item.mode }}
+            </template>
             <template #cell(option)="data">
               <a type="button" @click="editer(data.item)">
                 <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -143,7 +146,8 @@ export default {
       { key: 'nom', label: 'Nom', sortable: true },
       {
         key: 'prix',
-        label: 'Prix/Heures',
+        label: 'Prix',
+        thClass: 'text-right',
         tdClass: 'text-right',
         sortable: true,
       },

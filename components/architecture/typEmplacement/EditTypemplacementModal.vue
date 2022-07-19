@@ -19,6 +19,11 @@
                 : 'paiement requis pour la validation du contrat'
             "
           ></v-switch>
+          <v-spacer></v-spacer>
+          <v-switch
+            v-model="type.equipable"
+            :label="type.equipable ? 'avec équipement' : 'sans équipement'"
+          ></v-switch>
         </v-app>
         <div class="form-group required">
           <label class="form-label mg-t-10"
@@ -110,6 +115,7 @@ export default {
       prefix: '',
       site_id: null,
       auto_valid: false,
+      equipable: false,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -133,6 +139,7 @@ export default {
     this.type.prefix = this.current.prefix
     this.type.site_id = this.current.site_id
     this.type.auto_valid = this.current.auto_valid
+    this.type.equipable = this.current.equipable
   },
   methods: {
     ...mapActions({
@@ -164,6 +171,7 @@ export default {
         prefix: '',
         site_id: null,
         auto_valid: false,
+        equipable: false,
       }
       errorsInitialise(this.errors)
       this.dialog = false

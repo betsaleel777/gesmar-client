@@ -73,6 +73,11 @@
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
+          <template #cell(equipable)="data">
+            <span :class="statusClass(data.item.equipable)">{{
+              data.item.equipable ? equipable.with : equipable.without
+            }}</span>
+          </template>
           <template #empty="scope">
             <h6 class="text-center text-muted pd-y-10">
               {{ scope.emptyText }}
@@ -117,6 +122,7 @@ import { mapActions } from 'vuex'
 import CreateTypemplacementModal from './CreateTypemplacementModal.vue'
 import EditTypemplacementModal from './EditTypemplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { TYPEQUIPEMENT } from '~/helper/constantes'
 export default {
   components: {
     ConfirmationModal,
@@ -134,11 +140,24 @@ export default {
     },
   },
   data: () => ({
+    equipable: TYPEQUIPEMENT.equipable,
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
       { key: 'site.nom', label: 'Marché', sortable: true },
-      { key: 'created_at', label: 'Crée le', sortable: true },
+      {
+        key: 'created_at',
+        label: 'Crée le',
+        tdClass: 'wd-10p text-center',
+        thClass: 'wd-10p text-center',
+        sortable: true,
+      },
+      {
+        key: 'equipable',
+        label: 'Equipable',
+        tdClass: 'wd-10p text-center',
+        thClass: 'wd-10p text-center',
+      },
       {
         key: 'option',
         label: 'Options',
@@ -179,6 +198,13 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      if (value) {
+        return 'badge badge-success-light'
+      } else {
+        return 'badge badge-danger-light'
+      }
     },
   },
 }

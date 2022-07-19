@@ -1,9 +1,13 @@
 export const state = () => ({
   emplacements: [],
+  equipables: [],
 })
 export const getters = {
   emplacements: (state) => {
     return state.emplacements
+  },
+  equipables: (state) => {
+    return state.equipables
   },
 }
 export const actions = {
@@ -11,6 +15,13 @@ export const actions = {
     commit('SET_EMPLACEMENT', [])
     const requete = await this.$axios.get('api/parametres/emplacements')
     commit('SET_EMPLACEMENT', requete.data.emplacements)
+  },
+  async getEquipables({ commit }) {
+    commit('SET_EQUIPABLE', [])
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/equipables'
+    )
+    commit('SET_EQUIPABLE', requete.data.emplacements)
   },
   async getTrashAll({ commit }) {
     commit('SET_EMPLACEMENT', [])
@@ -70,5 +81,8 @@ export const actions = {
 export const mutations = {
   SET_EMPLACEMENT(state, emplacements) {
     state.emplacements = emplacements
+  },
+  SET_EQUIPABLE(state, emplacements) {
+    state.equipables = emplacements
   },
 }

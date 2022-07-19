@@ -44,6 +44,11 @@
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{
+              data.item.status
+            }}</span>
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="editer(data.item)">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -74,6 +79,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { FACTURE } from '~/helper/constantes'
 export default {
   components: {},
   props: {
@@ -91,12 +97,6 @@ export default {
       {
         key: 'contrat.emplacement.code',
         label: 'Emplacement',
-        tdClass: 'text-center',
-        sortable: true,
-      },
-      {
-        key: 'contrat.site.nom',
-        label: 'Site',
         tdClass: 'text-center',
         sortable: true,
       },
@@ -126,6 +126,12 @@ export default {
         },
         tdClass: 'text-right',
         sortable: true,
+      },
+      {
+        key: 'status',
+        label: 'Statut',
+        tdClass: 'text-center',
+        thClass: 'text-center',
       },
       {
         key: 'option',
@@ -161,6 +167,13 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      if (value === FACTURE.status.schedulable) {
+        return 'badge badge-warning-light'
+      } else {
+        return 'badge badge-dark-light'
+      }
     },
   },
 }

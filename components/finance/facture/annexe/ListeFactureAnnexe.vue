@@ -53,6 +53,11 @@
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{
+              data.item.status
+            }}</span>
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="editer(data.item)">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -94,6 +99,7 @@
 import { mapActions } from 'vuex'
 import CreateFactureAnnexeModal from './CreateFactureAnnexeModal.vue'
 import EditFactureAnnexeModal from './EditFactureAnnexeModal.vue'
+import { FACTURE } from '~/helper/constantes'
 export default {
   components: {
     CreateFactureAnnexeModal,
@@ -135,10 +141,16 @@ export default {
         sortable: true,
       },
       {
+        key: 'status',
+        label: 'Statut',
+        tdClass: 'text-center',
+        thClass: 'text-center',
+      },
+      {
         key: 'option',
         label: 'Options',
         tdClass: 'text-center',
-        thClass: 'wd-20p text-center',
+        thClass: 'wd-10p text-center',
         sortable: false,
       },
     ],
@@ -168,6 +180,13 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      if (value === FACTURE.status.schedulable) {
+        return 'badge badge-warning-light'
+      } else {
+        return 'badge badge-dark-light'
+      }
     },
   },
 }

@@ -19,6 +19,11 @@
                 : 'paiement requis pour la validation du contrat'
             "
           ></v-switch>
+          <v-spacer></v-spacer>
+          <v-switch
+            v-model="type.equipable"
+            :label="type.equipable ? 'avec équipement' : 'sans équipement'"
+          ></v-switch>
         </v-app>
         <div class="form-group required">
           <label class="form-label mg-t-10"
@@ -105,6 +110,7 @@ export default {
       prefix: '',
       site_id: '',
       auto_valid: false,
+      equipable: false,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -139,6 +145,7 @@ export default {
         prefix: '',
         site_id: '',
         auto_valid: false,
+        equipable: false,
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateTypempl')
@@ -146,8 +153,7 @@ export default {
   },
 }
 </script>
-<style></style>
-<style>
+<style scoped>
 .v-application--wrap {
   min-height: fit-content;
 }

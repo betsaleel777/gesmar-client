@@ -72,7 +72,7 @@
               :abonnements="abonnements"
               :marches="marches"
               :equipements="equipements"
-              :emplacements="emplacements"
+              :emplacements="equipables"
             />
           </b-tab>
         </b-tabs>
@@ -142,6 +142,7 @@ export default {
     this.getPavillons()
     this.getZones()
     this.getEmplacements()
+    this.getEquipables()
     this.getTypesEmplacement()
     this.getTypesEquipement()
     this.getEquipements()
@@ -156,6 +157,7 @@ export default {
       typEmplacements: 'architecture/typEmplacement/types',
       typEquipements: 'architecture/typEquipement/types',
       emplacements: 'architecture/emplacement/emplacements',
+      equipables: 'architecture/emplacement/equipables',
       equipements: 'architecture/equipement/equipements',
       abonnements: 'architecture/abonnement/abonnements',
       structure: 'architecture/marche/structure',
@@ -168,6 +170,7 @@ export default {
       getNiveaux: 'architecture/niveau/getAll',
       getZones: 'architecture/zone/getAll',
       getEmplacements: 'architecture/emplacement/getAll',
+      getEquipables: 'architecture/emplacement/getEquipables',
       getTypesEmplacement: 'architecture/typEmplacement/getAll',
       getTypesEquipement: 'architecture/typEquipement/getAll',
       getEquipements: 'architecture/equipement/getAll',

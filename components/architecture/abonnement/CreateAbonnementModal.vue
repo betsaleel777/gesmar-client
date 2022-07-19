@@ -181,8 +181,7 @@ export default {
             equipement.status === EQUIPEMENT.free
         )
         this.emplacementsSet = this.emplacements.filter(
-          (emplacement) =>
-            emplacement.zone.niveau.pavillon.site_id === this.abonnement.site_id
+          (emplacement) => emplacement.site_id === this.abonnement.site_id
         )
       }
     },
@@ -200,7 +199,7 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
 .v-application--wrap {
   min-height: fit-content;
 }
