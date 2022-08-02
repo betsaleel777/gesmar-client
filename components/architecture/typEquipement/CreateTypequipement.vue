@@ -53,6 +53,34 @@
             </span>
           </b-input-group>
         </b-form-group>
+        <b-form-group label-for="caution_abonnement">
+          <template #label>
+            <span class="form-label"
+              >Caution d'Abonnement <span class="text-danger">*</span></span
+            >
+          </template>
+          <b-input-group>
+            <b-form-input
+              id="caution_abonnement"
+              v-model="type.caution_abonnement"
+              type="text"
+              :class="{ 'is-invalid': errors.caution_abonnement.exist }"
+              class="form-control"
+            />
+            <b-input-group-append>
+              <b-input-group-text class="bg-transparent font-weight-bold">
+                FCFA
+              </b-input-group-text>
+            </b-input-group-append>
+            <span
+              v-if="errors.caution_abonnement.exist"
+              class="invalid-feedback"
+              role="alert"
+            >
+              <strong>{{ errors.caution_abonnement.message }}</strong>
+            </span>
+          </b-input-group>
+        </b-form-group>
         <v-app>
           <v-autocomplete
             v-model="type.site_id"
@@ -103,11 +131,13 @@ export default {
       nom: '',
       frais_penalite: '',
       site_id: '',
+      caution_abonnement: null,
     },
     errors: {
       nom: { exist: false, message: null },
       frais_penalite: { exist: false, message: null },
       site_id: { exist: false, message: null },
+      caution_abonnement: { exist: false, message: null },
     },
   }),
   methods: {
@@ -136,6 +166,7 @@ export default {
         nom: '',
         frais_penalite: '',
         site_id: '',
+        caution_abonnement: null,
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateTypequip')

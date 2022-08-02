@@ -12,6 +12,14 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/equipements')
     commit('SET_EQUIPEMENT', requete.data.equipements)
   },
+  async getAllFromTypes({ commit }, payload) {
+    commit('SET_EQUIPEMENT', [])
+    const requete = await this.$axios.post(
+      'api/parametres/equipements/types',
+      payload
+    )
+    commit('SET_EQUIPEMENT', requete.data.equipements)
+  },
   async getTrashAll({ commit }) {
     commit('SET_EQUIPEMENT', [])
     const requete = await this.$axios.get('api/parametres/equipements/trashed')

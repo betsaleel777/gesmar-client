@@ -62,6 +62,11 @@
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{
+              data.item.status
+            }}</span>
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="editer(data.item)">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -123,6 +128,7 @@ import { mapActions } from 'vuex'
 import CreateEmplacementModal from './CreateEmplacementModal.vue'
 import EditEmplacementModal from './EditEmplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { EMPLACEMENT } from '~/helper/constantes'
 export default {
   components: {
     ConfirmationModal,
@@ -164,6 +170,12 @@ export default {
         sortable: true,
       },
       {
+        key: 'status',
+        label: 'Statut',
+        tdClass: 'text-center',
+        thClass: 'text-center',
+      },
+      {
         key: 'option',
         label: 'Options',
         tdClass: 'text-center',
@@ -203,6 +215,15 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      if (value === EMPLACEMENT.free) {
+        return 'badge badge-success-light'
+      } else if (value === EMPLACEMENT.busy) {
+        return 'badge badge-danger-light'
+      } else {
+        return 'badge badge-warning-light'
+      }
     },
   },
 }

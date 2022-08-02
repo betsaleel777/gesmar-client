@@ -51,6 +51,9 @@
             :filter="filter"
             @filtered="onFiltered"
           >
+            <template #cell(ordre)="data">
+              {{ data.index + 1 }}
+            </template>
             <template #cell(option)="data">
               <feather
                 title="restaurer"
@@ -104,8 +107,10 @@ export default {
   },
   data: () => ({
     fields: [
+      'ordre',
       { key: 'nom', label: 'Nom', sortable: true },
       { key: 'site.nom', label: 'Marché', sortable: true },
+      { key: 'caution_abonnement', label: 'Caution' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

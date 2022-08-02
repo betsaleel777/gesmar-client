@@ -171,8 +171,10 @@ export default {
     statusClass(value) {
       if (value === FACTURE.status.schedulable) {
         return 'badge badge-warning-light'
+      } else if (value === FACTURE.status.paid) {
+        return 'badge badge-success-light'
       } else {
-        return 'badge badge-dark-light'
+        return 'badge badge-danger-light'
       }
     },
   },

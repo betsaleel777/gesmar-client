@@ -23,6 +23,12 @@ export const actions = {
     )
     commit('SET_EQUIPABLE', requete.data.emplacements)
   },
+  async getMonthRental({ commit }, mois) {
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/rental/' + mois
+    )
+    return requete.data
+  },
   async getTrashAll({ commit }) {
     commit('SET_EMPLACEMENT', [])
     const requete = await this.$axios.get('api/parametres/emplacements/trashed')
@@ -35,6 +41,18 @@ export const actions = {
   async getByMarche({ commit }, id) {
     const requete = await this.$axios.get(
       'api/parametres/emplacements/marche/' + id
+    )
+    return requete.data
+  },
+  async getFreeByMarche({ commit }, id) {
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/marche/free/' + id
+    )
+    return requete.data
+  },
+  async getBusyByMarche({ commit }, id) {
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/marche/busy' + id
     )
     return requete.data
   },

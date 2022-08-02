@@ -1,4 +1,5 @@
 const EQUIPEMENT = { busy: 'occupé', free: 'libre', damaging: 'abimé' }
+const EMPLACEMENT = { busy: 'occupé', free: 'libre' }
 const ABONNEMENT = { progressing: 'en cours', stopped: 'résilié' }
 const ANNEXE = {
   quotidien: 'par jour',
@@ -19,6 +20,8 @@ const TYPEQUIPEMENT = {
 const FACTURE = {
   status: {
     schedulable: 'planifiable',
+    paid: 'payée',
+    unpaid: 'impayée',
   },
   type: {
     loyer: 'loyer',
@@ -34,4 +37,5 @@ module.exports = {
   TYPEQUIPEMENT,
   CONTRAT,
   FACTURE,
+  EMPLACEMENT,
 }
