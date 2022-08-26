@@ -12,14 +12,6 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/equipements')
     commit('SET_EQUIPEMENT', requete.data.equipements)
   },
-  async getAllFromTypes({ commit }, payload) {
-    commit('SET_EQUIPEMENT', [])
-    const requete = await this.$axios.post(
-      'api/parametres/equipements/types',
-      payload
-    )
-    commit('SET_EQUIPEMENT', requete.data.equipements)
-  },
   async getTrashAll({ commit }) {
     commit('SET_EQUIPEMENT', [])
     const requete = await this.$axios.get('api/parametres/equipements/trashed')
@@ -27,6 +19,13 @@ export const actions = {
   },
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/equipements/' + id)
+    return requete.data
+  },
+  // récupération des equipememnts non liés et non abonnés
+  async getGearsUnlinkedsubscribed({ commit }) {
+    const requete = await this.$axios.get(
+      'api/parametres/equipements/unlinkedsubscribed'
+    )
     return requete.data
   },
   async modifier({ dispatch }, payload) {

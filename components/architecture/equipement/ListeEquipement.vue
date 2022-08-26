@@ -59,7 +59,7 @@
           :filter="filter"
           @filtered="onFiltered"
         >
-          <template #cell(index)="data">
+          <template #cell(ordre)="data">
             {{ data.index + 1 }}
           </template>
           <template #cell(option)="data">
@@ -71,9 +71,13 @@
             </a>
           </template>
           <template #cell(status)="data">
-            <span :class="statusClass(data.item.status)">{{
-              data.item.status
-            }}</span>
+            <span
+              v-for="(status, index) in data.item.statuts"
+              :key="index"
+              :class="statusClass(status.name)"
+            >
+              {{ status.name }}
+            </span>
           </template>
           <template #empty="scope">
             <h6 class="text-center text-muted pd-y-10">
@@ -143,7 +147,7 @@ export default {
   },
   data: () => ({
     fields: [
-      'index',
+      'ordre',
       { key: 'type.nom', label: 'Type' },
       { key: 'code', label: 'Code', sortable: true },
       { key: 'nom', label: 'Nom', sortable: true },
@@ -154,7 +158,7 @@ export default {
         sortable: true,
       },
       { key: 'site.nom', label: 'Site' },
-      { key: 'status', label: 'Statut' },
+      { key: 'status', label: 'Statuts' },
       {
         key: 'option',
         label: 'Options',
@@ -197,12 +201,10 @@ export default {
       this.currentPage = 1
     },
     statusClass(value) {
-      if (value === EQUIPEMENT.free) {
+      if (value === EQUIPEMENT.subscribed || value === EQUIPEMENT.unlinked) {
         return 'badge badge-success-light'
-      } else if (value === EQUIPEMENT.busy) {
-        return 'badge badge-danger-light'
       } else {
-        return 'badge badge-warning-light'
+        return 'badge badge-danger-light'
       }
     },
   },

@@ -140,6 +140,28 @@
               <span class="red--text"><strong>* </strong></span>
             </template>
           </v-autocomplete>
+          <h6 v-if="equipement.emplacement">
+            Lié actuellement à l'emplacement {{ equipement.emplacement.code }}
+          </h6>
+          <v-autocomplete
+            v-model="equipement.emplacement_id"
+            :items="emplacements"
+            item-text="code"
+            item-value="id"
+            outlined
+            dense
+            :loading="loading"
+          >
+            <template #label> Choix d'un nouvel emplacement </template>
+            <template #progress>
+              <v-progress-linear
+                v-if="loading"
+                indeterminate
+                color="primary"
+                absolute
+              ></v-progress-linear>
+            </template>
+          </v-autocomplete>
         </v-app>
         <CreateTypequipement :marches="marches" @pushed="onPushed" />
       </form>
@@ -188,7 +210,10 @@ export default {
       index: '',
       type_equipement_id: null,
       site_id: null,
+      emplacement_id: null,
     },
+    emplacements: [],
+    loading: false,
     errors: {
       prix_unitaire: { exist: false, message: null },
       prix_fixe: { exist: false, message: null },
@@ -209,18 +234,17 @@ export default {
     },
   },
   mounted() {
-    this.equipement.id = this.current.id
-    this.equipement.nom = this.current.nom
-    this.equipement.prix_unitaire = this.current.prix_unitaire
-    this.equipement.prix_fixe = this.current.prix_fixe
-    this.equipement.frais_facture = this.current.frais_facture
-    this.equipement.index = this.current.index
-    this.equipement.type_equipement_id = this.current.type_equipement_id
-    this.equipement.site_id = this.current.site_id
+    this.equipement = Object.assign({}, this.current)
+    if (this.equipement.site_id) {
+      this.getEmplacement(this.equipement.site_id).then(({ emplacements }) => {
+        this.emplacements = emplacements
+      })
+    }
   },
   methods: {
     ...mapActions({
       modifier: 'architecture/equipement/modifier',
+      getEmplacement: 'architecture/emplacement/getByMarcheUnlinked',
     }),
     save() {
       this.modifier(this.equipement)
@@ -249,7 +273,9 @@ export default {
         index: '',
         type_equipement_id: null,
         site_id: null,
+        emplacement_id: null,
       }
+      this.emplacements = []
       errorsInitialise(this.errors)
       this.dialog = false
     },

@@ -20,7 +20,7 @@
             dense
             :error="errors.site_id.exist"
             :error-messages="errors.site_id.message"
-            @change="setDependencies"
+            @change="getEmplacements"
           >
             <template #label>
               Choix du marché
@@ -29,57 +29,97 @@
           </v-autocomplete>
           <v-autocomplete
             v-model="abonnement.emplacement_id"
-            :items="emplacementsSet"
+            :items="emplacements"
             item-text="code"
             item-value="id"
             outlined
             dense
             :error="errors.emplacement_id.exist"
             :error-messages="errors.emplacement_id.message"
+            @change="setEquipements"
           >
             <template #label>
               Emplacement
               <span class="red--text"><strong>* </strong></span>
             </template>
           </v-autocomplete>
-          <v-row>
-            <v-col cols="4">
-              <v-autocomplete
-                v-model="abonnement.equipement_id"
-                :items="equipementsSet"
-                item-text="code"
-                item-value="id"
-                outlined
-                dense
-                :error="errors.equipement_id.exist"
-                :error-messages="errors.equipement_id.message"
-                @change="getIndex"
-              >
-                <template #label>
-                  Equipement
-                  <span class="red--text"><strong>* </strong></span>
-                </template>
-              </v-autocomplete>
-            </v-col>
-            <v-col cols="4">
-              <v-text-field
-                v-model="abonnement.index_depart"
-                outlined
-                dense
-                :error="errors.index_depart.exist"
-                :error-messages="errors.index_depart.message"
-                readonly
-              >
-                <template #label>
-                  Index de départ
-                  <span class="red--text"><strong>* </strong></span>
-                </template>
+          <v-container v-if="liaisons.length > 0">
+            <center><h6>Equipements déjà installés</h6></center>
+            <v-simple-table class="mb-4" dense>
+              <template #default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Code</th>
+                    <th class="text-left">Type</th>
+                    <th class="text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="equipement in liaisons" :key="equipement.id">
+                    <td>{{ equipement.code }}</td>
+                    <td>{{ equipement.type.nom }}</td>
+                    <td>
+                      <v-chip
+                        v-if="equipement.subscribed"
+                        label
+                        color="success"
+                        small
+                        >{{ CONSTANTE.subscribed }}</v-chip
+                      >
+                      <v-chip v-else label color="error" small>
+                        {{ CONSTANTE.unsubscribed }}
+                      </v-chip>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-container>
+          <v-autocomplete
+            v-model="selected"
+            :items="equipements"
+            item-text="alias"
+            item-value="id"
+            return-object
+            outlined
+            dense
+            multiple
+            chips
+            small-chips
+            deletable-chips
+            color="indigo"
+            item-color="indigo"
+            @change="getIndex"
+          >
+            <template #label>
+              Selection des équipements
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+            <template #selection="{ item, index }">
+              <v-chip v-if="index < 2" small close @click:close="remove(index)">
+                <span>{{ item.code }}</span>
+              </v-chip>
+              <span v-if="index === 2" class="grey--text text-caption">
+                (+{{ selected.length - 2 }} autres)
+              </span>
+            </template>
+          </v-autocomplete>
+          <v-row
+            v-for="(equipement, index) in abonnement.equipements"
+            :key="index"
+          >
+            <v-col cols="6">
+              <v-text-field v-model="equipement.nom" single-line dense readonly>
               </v-text-field>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="3">
+              <v-text-field v-model="equipement.index_depart" dense readonly>
+                <template #label> Index de départ </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="3">
               <v-text-field
-                v-model="abonnement.index_autre"
-                outlined
+                v-model="equipement.index_autre"
                 dense
                 hint="valeur si différent"
               >
@@ -111,38 +151,32 @@ import { EQUIPEMENT } from '~/helper/constantes'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    equipements: {
-      type: Array,
-      required: true,
-    },
     marches: {
-      type: Array,
-      required: true,
-    },
-    emplacements: {
       type: Array,
       required: true,
     },
   },
   data: () => ({
-    equipementsSet: [],
-    emplacementsSet: [],
+    equipements: [],
+    emplacements: [],
+    liaisons: [],
+    selected: [],
+    CONSTANTE: EQUIPEMENT,
     abonnement: {
       site_id: null,
       emplacement_id: null,
-      equipement_id: null,
-      index_depart: '',
-      index_autre: '',
+      equipements: [],
     },
     errors: {
       site_id: { exist: false, message: null },
       emplacement_id: { exist: false, message: null },
       equipement_id: { exist: false, message: null },
-      index_depart: { exist: false, message: null },
     },
   }),
   methods: {
     ...mapActions('architecture/abonnement', ['ajouter', 'getLastIndex']),
+    ...mapActions('architecture/equipement', ['getGearsUnlinkedsubscribed']),
+    ...mapActions('architecture/emplacement', ['getByMarcheWithGearsLinked']),
     save() {
       this.ajouter(this.abonnement)
         .then(({ message }) => {
@@ -165,32 +199,55 @@ export default {
       this.abonnement = {
         site_id: null,
         emplacement_id: null,
-        equipement_id: null,
-        index_depart: '',
-        index_autre: '',
+        equipements: [],
       }
-      this.equipementsSet = []
-      this.emplacementsSet = []
+      this.equipements = []
+      this.emplacements = []
+      this.liaisons = []
+      this.selected = []
       errorsInitialise(this.errors)
     },
-    setDependencies() {
+    getEmplacements() {
       if (this.abonnement.site_id) {
-        this.equipementsSet = this.equipements.filter(
-          (equipement) =>
-            equipement.site_id === this.abonnement.site_id &&
-            equipement.status === EQUIPEMENT.free
-        )
-        this.emplacementsSet = this.emplacements.filter(
-          (emplacement) => emplacement.site_id === this.abonnement.site_id
+        this.getByMarcheWithGearsLinked(this.abonnement.site_id).then(
+          ({ emplacements }) => {
+            this.emplacements = emplacements
+          }
         )
       }
     },
+    setEquipements() {
+      const selected = this.emplacements.find(
+        (emplacement) => emplacement.id === this.abonnement.emplacement_id
+      )
+      this.liaisons = selected?.equipements
+      const equipement = this.liaisons.find(
+        (equipement) => !equipement.subscribed
+      )
+      this.equipements.push(equipement)
+      this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
+        if (equipements.length > 0) this.equipements.push(...equipements)
+      })
+    },
     getIndex() {
-      if (this.abonnement.equipement_id) {
-        this.getLastIndex(this.abonnement.equipement_id).then(({ index }) => {
-          this.abonnement.index_depart = index
+      const gear = {}
+      if (this.selected.length > 0) {
+        const lastGear = this.selected.at(-1)
+        gear.id = lastGear.id
+        gear.nom = lastGear.alias
+        this.getLastIndex(gear.id).then(({ index }) => {
+          gear.index_depart = index
+          gear.index_autre = null
+          this.abonnement.equipements.push(gear)
         })
       }
+    },
+    remove(index) {
+      const indexFound = this.abonnement.equipements.findIndex(
+        (equipement) => equipement.id === this.selected[index].id
+      )
+      this.abonnement.equipements.splice(indexFound, 1)
+      this.selected.splice(index, 1)
     },
     close() {
       this.reset()

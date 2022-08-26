@@ -182,12 +182,14 @@ export default {
       this.currentPage = 1
     },
     statusClass(value) {
-      if (value === FACTURE.status.schedulable) {
+      if (value === FACTURE.status.facture) {
         return 'badge badge-warning-light'
       } else if (value === FACTURE.status.paid) {
         return 'badge badge-success-light'
+      } else if (value === FACTURE.status.proforma) {
+        return 'badge badge-primary-light'
       } else {
-        return 'badge badge-danger-light'
+        return 'badge badge-secondary-light'
       }
     },
   },

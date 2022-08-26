@@ -93,7 +93,7 @@ export default {
       'index',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'contrat.code', label: 'Contrat', sortable: true },
-      { key: 'contrat.personne.nomComplet', label: 'Personne', sortable: true },
+      { key: 'contrat.personne.alias', label: 'Personne', sortable: true },
       {
         key: 'contrat.emplacement.code',
         label: 'Emplacement',
@@ -169,12 +169,14 @@ export default {
       this.currentPage = 1
     },
     statusClass(value) {
-      if (value === FACTURE.status.schedulable) {
+      if (value === FACTURE.status.facture) {
         return 'badge badge-warning-light'
       } else if (value === FACTURE.status.paid) {
         return 'badge badge-success-light'
-      } else {
+      } else if (value === FACTURE.status.unpaid) {
         return 'badge badge-danger-light'
+      } else {
+        return 'badge badge-primary-light'
       }
     },
   },

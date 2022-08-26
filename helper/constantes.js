@@ -1,25 +1,42 @@
-const EQUIPEMENT = { busy: 'occupé', free: 'libre', damaging: 'abimé' }
-const EMPLACEMENT = { busy: 'occupé', free: 'libre' }
-const ABONNEMENT = { progressing: 'en cours', stopped: 'résilié' }
-const ANNEXE = {
+const EQUIPEMENT = Object.freeze({
+  subscribed: 'abonné',
+  unsubscribed: 'non abonné',
+  damaged: 'abimé',
+  fixed: 'réparé',
+  linked: 'lié',
+  unlinked: 'non lié',
+})
+const EMPLACEMENT = Object.freeze({
+  busy: 'occupé',
+  free: 'libre',
+  linked: 'lié',
+  unlinked: 'non lié',
+})
+const ABONNEMENT = Object.freeze({
+  progressing: 'en cours',
+  stopped: 'résilié',
+})
+const ANNEXE = Object.freeze({
   quotidien: 'par jour',
   mensuel: 'par mois',
   forfait: 'forfaitaire',
-}
-const CONTRAT = {
+})
+const CONTRAT = Object.freeze({
   status: {
-    proforma: 'proforma',
-    cours: 'en cours',
+    validated: 'validé',
+    onEndorsed: 'à signer',
+    onValidated: 'à valider',
     attente: 'en attente',
   },
   type: { annexe: 'annexe', bail: 'bail' },
-}
-const TYPEQUIPEMENT = {
+})
+const TYPEQUIPEMENT = Object.freeze({
   equipable: { with: 'avec équipement', without: 'sans équipement' },
-}
-const FACTURE = {
+})
+const FACTURE = Object.freeze({
   status: {
-    schedulable: 'planifiable',
+    proforma: 'proforma',
+    facture: 'facture',
     paid: 'payée',
     unpaid: 'impayée',
   },
@@ -29,7 +46,7 @@ const FACTURE = {
     annexe: 'annexe',
     equipement: 'équipement',
   },
-}
+})
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,

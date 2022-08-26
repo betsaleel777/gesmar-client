@@ -10,16 +10,9 @@
     </template>
     <template #default>
       <form ref="form">
-        <v-app>
-          <v-switch
-            v-model="automatiq"
-            :label="automatiq ? 'mode automatique' : 'mode manuel'"
-            @change="switcher"
-          ></v-switch>
-        </v-app>
         <div class="row">
           <div class="col-md-6 col-sm-6">
-            <div v-if="!automatiq" class="form-group">
+            <div class="form-group">
               <label class="form-label"
                 >Nom complet <span class="text-danger">*</span></label
               >
@@ -36,24 +29,6 @@
                 role="alert"
               >
                 <strong>{{ errors.nom.message }}</strong>
-              </span>
-            </div>
-            <div v-else class="form-group">
-              <label class="form-label"
-                >Nombre d'emplacement <span class="text-danger">*</span></label
-              >
-              <input
-                v-model="emplacement.nombre"
-                type="text"
-                class="form-control"
-                :class="{ 'is-invalid': errors.nombre.exist }"
-              />
-              <span
-                v-if="errors.nombre.exist"
-                class="invalid-feedback"
-                role="alert"
-              >
-                <strong>{{ errors.nombre.message }}</strong>
               </span>
             </div>
             <b-form-group label-for="superficie">

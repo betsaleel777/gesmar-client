@@ -75,7 +75,7 @@
           </template>
           <template #cell(equipable)="data">
             <span :class="statusClass(data.item.equipable)">{{
-              data.item.equipable ? equipable.with : equipable.without
+              data.item.equipable ? EQUIPABLE.with : EQUIPABLE.without
             }}</span>
           </template>
           <template #empty="scope">
@@ -140,7 +140,7 @@ export default {
     },
   },
   data: () => ({
-    equipable: TYPEQUIPEMENT.equipable,
+    EQUIPABLE: TYPEQUIPEMENT.equipable,
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },

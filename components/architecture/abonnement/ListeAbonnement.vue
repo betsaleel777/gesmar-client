@@ -21,15 +21,6 @@
               size="18"
               type="printer"
             />
-            <feather
-              v-b-tooltip.hover.top
-              title="archives"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="archive"
-              @click="$emit('archivage')"
-            />
           </div>
         </div>
         <hr class="mg-t-4" />
@@ -61,7 +52,7 @@
         >
           <template #cell(option)="data">
             <a
-              v-if="!data.item.date_resiliation"
+              v-if="data.item.status.name === CONSTANTE.progressing"
               type="button"
               @click="resilier(data.item)"
             >
@@ -99,11 +90,7 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <CreateAbonnementModal
-          :equipements="equipements"
-          :emplacements="emplacements"
-          :marches="marches"
-        />
+        <CreateAbonnementModal :marches="marches" />
         <div>
           <FinishAbonnementModal
             :key="edit.modal"
@@ -144,6 +131,7 @@ export default {
     },
   },
   data: () => ({
+    CONSTANTE: ABONNEMENT,
     fields: [
       'index',
       { key: 'code', label: 'Code', sortable: true },

@@ -11,15 +11,47 @@
         <v-app>
           <v-container fluid>
             <v-form>
-              <v-date-picker
-                v-model="mois"
-                locale="fr"
-                landscape
-                type="month"
-                full-width
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                :return-value.sync="mois"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
                 class="mb-5"
-                @change="getEmplacements(mois + '-01')"
-              ></v-date-picker>
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="mois"
+                    label="Sélection du mois"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="mois"
+                  locale="fr"
+                  type="month"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menu = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="getEmplacements(mois + '-01')"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
               <v-data-table
                 v-model="selected"
                 :headers="headers"
@@ -66,6 +98,7 @@ import { mapActions } from 'vuex'
 export default {
   components: {},
   data: () => ({
+    menu: false,
     search: null,
     emplacements: [],
     selected: [],
@@ -78,7 +111,7 @@ export default {
         sortable: false,
         value: 'code',
       },
-      { text: 'Clients', value: 'nomComplet' },
+      { text: 'Clients', value: 'alias' },
       { text: 'Loyer (FCFA)', value: 'loyer', align: 'right' },
     ],
   }),
@@ -95,6 +128,7 @@ export default {
     save() {},
     getEmplacements(date) {
       if (date) {
+        this.$refs.menu.save(this.mois)
         this.loading = true
         this.getMonthRental(date).then(({ emplacements }) => {
           this.emplacements = emplacements

@@ -44,6 +44,18 @@ export const actions = {
     )
     return requete.data
   },
+  async getByMarcheWithGearsLinked({ commit }, id) {
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/marche/gears/' + id
+    )
+    return requete.data
+  },
+  async getByMarcheUnlinked({ commit }, id) {
+    const requete = await this.$axios.get(
+      'api/parametres/emplacements/marche/unlinked/' + id
+    )
+    return requete.data
+  },
   async getFreeByMarche({ commit }, id) {
     const requete = await this.$axios.get(
       'api/parametres/emplacements/marche/free/' + id

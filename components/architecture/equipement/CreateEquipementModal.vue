@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalCreateEquipement" @show="reset">
+  <b-modal id="modalCreateEquipement" scrollable @show="reset">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvel Equipement</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -132,10 +132,30 @@
             dense
             :error="errors.site_id.exist"
             :error-messages="errors.site_id.message"
+            @change="getEmplacementByMarket"
           >
             <template #label>
               Choix du marché
               <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="equipement.emplacement_id"
+            :items="emplacements"
+            item-text="code"
+            item-value="id"
+            outlined
+            dense
+            :loading="loading"
+          >
+            <template #label> Choix de l'emplacement </template>
+            <template #progress>
+              <v-progress-linear
+                v-if="loading"
+                indeterminate
+                color="primary"
+                absolute
+              ></v-progress-linear>
             </template>
           </v-autocomplete>
         </v-app>
@@ -181,7 +201,10 @@ export default {
       index: '',
       type_equipement_id: null,
       site_id: null,
+      emplacement_id: null,
     },
+    emplacements: [],
+    loading: false,
     errors: {
       prix_unitaire: { exist: false, message: null },
       prix_fixe: { exist: false, message: null },
@@ -192,7 +215,10 @@ export default {
     },
   }),
   methods: {
-    ...mapActions('architecture/equipement', ['ajouter']),
+    ...mapActions({
+      ajouter: 'architecture/equipement/ajouter',
+      getEmplacement: 'architecture/emplacement/getByMarcheUnlinked',
+    }),
     save() {
       this.ajouter(this.equipement)
         .then(({ message }) => {
@@ -219,9 +245,17 @@ export default {
         index: '',
         type_equipement_id: null,
         site_id: null,
+        emplacement_id: null,
       }
+      this.emplacements = []
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateEquipement')
+    },
+    async getEmplacementByMarket() {
+      this.loading = true
+      const requete = await this.getEmplacement(this.equipement.site_id)
+      this.emplacements = requete.emplacements
+      this.loading = false
     },
     onPushed(id) {
       this.equipement.type_equipement_id = id
