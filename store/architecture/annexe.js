@@ -26,10 +26,7 @@ export const actions = {
     return requete.data
   },
   async modifier({ dispatch }, payload) {
-    const requete = await this.$axios.put(
-      'api/parametres/annexes/' + payload.id,
-      payload
-    )
+    const requete = await this.$axios.put('api/parametres/annexes/' + payload.id, payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },
@@ -39,17 +36,12 @@ export const actions = {
     return { message: requete.data.message }
   },
   async restaurer({ dispatch }, id) {
-    const requete = await this.$axios.get(
-      'api/parametres/annexes/restore/' + id
-    )
+    const requete = await this.$axios.patch('api/parametres/annexes/restore/' + id)
     dispatch('getAll')
     return { message: requete.data.message }
   },
   async ajouter({ dispatch }, payload) {
-    const requete = await this.$axios.post(
-      'api/parametres/annexes/store',
-      payload
-    )
+    const requete = await this.$axios.post('api/parametres/annexes/store', payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },

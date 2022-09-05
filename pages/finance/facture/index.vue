@@ -1,7 +1,7 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <div class="content-body content-body-components">
+    <div class="col-md-12 col-sm-12">
       <b-tabs
         v-model="tabIndex"
         content-class="mt-7"

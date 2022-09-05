@@ -71,12 +71,11 @@
             </a>
           </template>
           <template #cell(status)="data">
-            <span
-              v-for="(status, index) in data.item.statuts"
-              :key="index"
-              :class="statusClass(status.name)"
-            >
-              {{ status.name }}
+            <span :class="statusClass(data.item.abonnement)">
+              {{ data.item.abonnement }}
+            </span>
+            <span :class="statusClass(data.item.liaison)">
+              {{ data.item.liaison }}
             </span>
           </template>
           <template #empty="scope">
@@ -201,7 +200,7 @@ export default {
       this.currentPage = 1
     },
     statusClass(value) {
-      if (value === EQUIPEMENT.subscribed || value === EQUIPEMENT.unlinked) {
+      if (value === EQUIPEMENT.unsubscribed || value === EQUIPEMENT.unlinked) {
         return 'badge badge-success-light'
       } else {
         return 'badge badge-danger-light'

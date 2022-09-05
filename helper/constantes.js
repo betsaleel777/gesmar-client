@@ -15,6 +15,7 @@ const EMPLACEMENT = Object.freeze({
 const ABONNEMENT = Object.freeze({
   progressing: 'en cours',
   stopped: 'résilié',
+  error: 'erreur index',
 })
 const ANNEXE = Object.freeze({
   quotidien: 'par jour',

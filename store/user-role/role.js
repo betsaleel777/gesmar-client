@@ -17,10 +17,7 @@ export const actions = {
     return requete.data.role
   },
   async modifier({ dispatch }, payload) {
-    const requete = await this.$axios.put(
-      'api/parametres/roles/' + payload.id,
-      payload
-    )
+    const requete = await this.$axios.put('api/parametres/roles/' + payload.id, payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },
@@ -30,10 +27,7 @@ export const actions = {
     return { message: requete.data.message }
   },
   async ajouter({ dispatch }, payload) {
-    const requete = await this.$axios.post(
-      'api/parametres/roles/store',
-      payload
-    )
+    const requete = await this.$axios.post('api/parametres/roles/store', payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },

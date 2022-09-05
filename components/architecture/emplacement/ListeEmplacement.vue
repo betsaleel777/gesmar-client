@@ -63,12 +63,11 @@
             {{ data.index + 1 }}
           </template>
           <template #cell(status)="data">
-            <span
-              v-for="(status, index) in data.item.statuts"
-              :key="index"
-              :class="statusClass(status.name)"
-            >
-              {{ status.name }}
+            <span :class="statusClass(data.item.disponibilite)">
+              {{ data.item.disponibilite }}
+            </span>
+            <span :class="statusClass(data.item.liaison)">
+              {{ data.item.liaison }}
             </span>
           </template>
           <template #cell(option)="data">

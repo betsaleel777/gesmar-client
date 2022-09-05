@@ -60,14 +60,14 @@
                     <td>{{ equipement.type.nom }}</td>
                     <td>
                       <v-chip
-                        v-if="equipement.subscribed"
+                        v-if="equipement.abonnement === STATUS.subscribed"
                         label
                         color="success"
                         small
-                        >{{ CONSTANTE.subscribed }}</v-chip
+                        >{{ equipement.abonnement }}</v-chip
                       >
                       <v-chip v-else label color="error" small>
-                        {{ CONSTANTE.unsubscribed }}
+                        {{ equipement.abonnement }}
                       </v-chip>
                     </td>
                   </tr>
@@ -121,9 +121,13 @@
               <v-text-field
                 v-model="equipement.index_autre"
                 dense
-                hint="valeur si différent"
+                :error="errors.index_autre.exist"
+                :error-messages="errors.index_autre.message"
               >
-                <template #label> Autre Index </template>
+                <template #label>
+                  Index actuel
+                  <span class="red--text"><strong>* </strong></span></template
+                >
               </v-text-field>
             </v-col>
           </v-row>
@@ -161,7 +165,7 @@ export default {
     emplacements: [],
     liaisons: [],
     selected: [],
-    CONSTANTE: EQUIPEMENT,
+    STATUS: EQUIPEMENT,
     abonnement: {
       site_id: null,
       emplacement_id: null,
@@ -171,6 +175,7 @@ export default {
       site_id: { exist: false, message: null },
       emplacement_id: { exist: false, message: null },
       equipement_id: { exist: false, message: null },
+      index_autre: { exist: false, message: null },
     },
   }),
   methods: {
@@ -222,7 +227,7 @@ export default {
       )
       this.liaisons = selected?.equipements
       const equipement = this.liaisons.find(
-        (equipement) => !equipement.subscribed
+        (equipement) => equipement.abonnement !== this.STATUS.subscribed
       )
       this.equipements.push(equipement)
       this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
@@ -234,7 +239,7 @@ export default {
       if (this.selected.length > 0) {
         const lastGear = this.selected.at(-1)
         gear.id = lastGear.id
-        gear.nom = lastGear.alias
+        gear.nom = lastGear.code
         this.getLastIndex(gear.id).then(({ index }) => {
           gear.index_depart = index
           gear.index_autre = null
@@ -253,6 +258,7 @@ export default {
       this.reset()
       this.$bvModal.hide('modalCreateAbonnement')
     },
+    validable() {},
   },
 }
 </script>
