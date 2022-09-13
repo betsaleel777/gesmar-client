@@ -51,26 +51,18 @@
           @filtered="onFiltered"
         >
           <template #cell(option)="data">
-            <a
-              v-if="data.item.status.name === CONSTANTE.progressing"
-              type="button"
-              @click="resilier(data.item)"
-            >
-              <feather
-                title="résilier"
-                type="check-circle"
-                size="20"
-                stroke="blue"
-              />
+            <a v-if="data.item.status === STATUS.progressing" type="button" @click="resilier(data.item)">
+              <feather title="résilier" type="x-octagon" size="20" stroke="red" />
+            </a>
+            <a v-if="data.item.status === STATUS.error" type="button" @click="confirmer(data.item)">
+              <feather title="confimer" type="check-circle" size="20" stroke="blue" />
             </a>
           </template>
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
           <template #cell(status)="data">
-            <span :class="statusClass(data.item.status)">{{
-              data.item.status
-            }}</span>
+            <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
           </template>
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
@@ -92,11 +84,8 @@
         ></b-pagination>
         <CreateAbonnementModal :marches="marches" />
         <div>
-          <FinishAbonnementModal
-            :key="edit.modal"
-            v-model="edit.modal"
-            :current="edit.abonnement"
-          />
+          <FinishAbonnementModal v-if="edit.modal" v-model="edit.modal" :current="edit.abonnement" />
+          <ValidateAbonnementModal v-if="confirm.modal" v-model="confirm.modal" :infos="confirm.validation" />
         </div>
       </b-card-text>
     </b-card>
@@ -106,11 +95,13 @@
 import { mapActions } from 'vuex'
 import FinishAbonnementModal from './FinishAbonnementModal.vue'
 import CreateAbonnementModal from './CreateAbonnementModal.vue'
+import ValidateAbonnementModal from './ValidateAbonnementModal.vue'
 import { ABONNEMENT } from '~/helper/constantes'
 export default {
   components: {
     CreateAbonnementModal,
     FinishAbonnementModal,
+    ValidateAbonnementModal,
   },
   props: {
     marches: {
@@ -131,7 +122,7 @@ export default {
     },
   },
   data: () => ({
-    CONSTANTE: ABONNEMENT,
+    STATUS: ABONNEMENT,
     fields: [
       'index',
       { key: 'code', label: 'Code', sortable: true },
@@ -147,7 +138,7 @@ export default {
         tdClass: 'text-primary',
         sortable: true,
       },
-      { key: 'index_depart', label: 'Index depart', sortable: true },
+      { key: 'index_autre', label: 'Index lu', sortable: true },
       {
         key: 'index_fin',
         label: 'Index fin',
@@ -174,6 +165,7 @@ export default {
       },
     ],
     edit: { modal: false, abonnement: {} },
+    confirm: { modal: false, validation: {} },
     filter: null,
     currentPage: 1,
     perPage: 10,
@@ -195,14 +187,16 @@ export default {
         this.$bvModal.show('modalFinishAbonnement')
       })
     },
+    confirmer({ id, code }) {
+      this.confirm.validation = { abonnement_id: id, code }
+      this.confirm.modal = true
+    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
     statusClass(value) {
-      return value === ABONNEMENT.progressing
-        ? 'badge badge-primary-light'
-        : 'badge badge-danger-light'
+      return value === ABONNEMENT.progressing ? 'badge badge-primary-light' : 'badge badge-danger-light'
     },
   },
 }

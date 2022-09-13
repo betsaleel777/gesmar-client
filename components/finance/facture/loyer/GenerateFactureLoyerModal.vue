@@ -32,24 +32,10 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="mois"
-                  locale="fr"
-                  type="month"
-                  no-title
-                  scrollable
-                >
+                <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu = false">
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="getEmplacements(mois + '-01')"
-                  >
-                    OK
-                  </v-btn>
+                  <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+                  <v-btn text color="primary" @click="getEmplacements(mois + '-01')"> OK </v-btn>
                 </v-date-picker>
               </v-menu>
               <v-data-table
@@ -79,17 +65,8 @@
       </div>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -111,7 +88,7 @@ export default {
         sortable: false,
         value: 'code',
       },
-      { text: 'Clients', value: 'alias' },
+      { text: 'Clients', value: 'contrat_actuel.personne.alias' },
       { text: 'Loyer (FCFA)', value: 'loyer', align: 'right' },
     ],
   }),
@@ -123,6 +100,7 @@ export default {
       this.emplacements = []
       this.selected = []
       this.mois = ''
+      this.loading = false
       this.$bvModal.hide('modalGenererLoyer')
     },
     save() {},

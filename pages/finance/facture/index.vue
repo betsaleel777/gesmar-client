@@ -2,11 +2,7 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="col-md-12 col-sm-12">
-      <b-tabs
-        v-model="tabIndex"
-        content-class="mt-7"
-        active-nav-item-class="font-weight-bold"
-      >
+      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
         <b-overlay :show="$fetchState.pending" rounded="sm">
           <b-tab title="Tableau" :title-link-class="linkClass(0)">
             <TableauFacture />
@@ -15,25 +11,13 @@
             <ListeFactureInitiale :factures="initiales" />
           </b-tab>
           <b-tab title="Factures Loyer" :title-link-class="linkClass(2)">
-            <ListeFactureLoyer
-              :factures="loyers"
-              :contrats="contrats"
-              :personnes="personnes"
-            />
+            <ListeFactureLoyer :factures="loyers" :contrats="contrats" :personnes="personnes" />
           </b-tab>
           <b-tab title="Factures Annexes" :title-link-class="linkClass(3)">
-            <ListeFactureAnnexe
-              :factures="annexes"
-              :contrats="contrats"
-              :personnes="personnes"
-            />
+            <ListeFactureAnnexe :factures="annexes" :contrats="contrats" :personnes="personnes" />
           </b-tab>
           <b-tab title="Factures Equipements" :title-link-class="linkClass(4)">
-            <ListeFactureEquipement
-              :factures="equipements"
-              :contrats="contrats"
-              :personnes="personnes"
-            />
+            <ListeFactureEquipement :factures="equipements" :contrats="contrats" :personnes="personnes" />
           </b-tab>
         </b-overlay>
       </b-tabs>

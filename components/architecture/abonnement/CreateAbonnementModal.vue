@@ -1,9 +1,7 @@
 <template>
   <b-modal id="modalCreateAbonnement" @show="reset">
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">
-        Création d'abonnement
-      </h5>
+      <h5 id="archiver" class="modal-title text-primary">Création d'abonnement</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -59,14 +57,10 @@
                     <td>{{ equipement.code }}</td>
                     <td>{{ equipement.type.nom }}</td>
                     <td>
-                      <v-chip
-                        v-if="equipement.abonnement === STATUS.subscribed"
-                        label
-                        color="success"
-                        small
-                        >{{ equipement.abonnement }}</v-chip
-                      >
-                      <v-chip v-else label color="error" small>
+                      <v-chip v-if="equipement.abonnement === STATUS.subscribed" label color="error" small>{{
+                        equipement.abonnement
+                      }}</v-chip>
+                      <v-chip v-else label color="success" small>
                         {{ equipement.abonnement }}
                       </v-chip>
                     </td>
@@ -104,13 +98,9 @@
               </span>
             </template>
           </v-autocomplete>
-          <v-row
-            v-for="(equipement, index) in abonnement.equipements"
-            :key="index"
-          >
+          <v-row v-for="(equipement, index) in abonnement.equipements" :key="index">
             <v-col cols="6">
-              <v-text-field v-model="equipement.nom" single-line dense readonly>
-              </v-text-field>
+              <v-text-field v-model="equipement.nom" single-line dense readonly> </v-text-field>
             </v-col>
             <v-col cols="3">
               <v-text-field v-model="equipement.index_depart" dense readonly>
@@ -135,24 +125,18 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
 <script>
+import { isNull } from 'url/util'
 import { mapActions } from 'vuex'
 import { EQUIPEMENT } from '~/helper/constantes'
+// eslint-disable-next-line no-unused-vars
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+let message = ''
 export default {
   props: {
     marches: {
@@ -183,22 +167,31 @@ export default {
     ...mapActions('architecture/equipement', ['getGearsUnlinkedsubscribed']),
     ...mapActions('architecture/emplacement', ['getByMarcheWithGearsLinked']),
     save() {
-      this.ajouter(this.abonnement)
-        .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
+      if (this.validable())
+        this.ajouter(this.abonnement)
+          .then(({ message }) => {
+            this.$bvToast.toast(message, {
+              title: 'succès de la création'.toLocaleUpperCase(),
+              variant: 'success',
+              solid: true,
+            })
+            this.$bvModal.hide('modalCreateAbonnement')
           })
-          this.$bvModal.hide('modalCreateAbonnement')
+          .catch((err) => {
+            const { data } = err.response
+            if (data) {
+              errorsInitialise(this.errors)
+              errorsWriting(data.errors, this.errors)
+            }
+          })
+      else {
+        this.$bvToast.toast(message, {
+          title: "echèc de l'opération".toLocaleUpperCase(),
+          variant: 'danger',
+          solid: true,
         })
-        .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
-        })
+        message = ''
+      }
     },
     reset() {
       this.abonnement = {
@@ -214,11 +207,9 @@ export default {
     },
     getEmplacements() {
       if (this.abonnement.site_id) {
-        this.getByMarcheWithGearsLinked(this.abonnement.site_id).then(
-          ({ emplacements }) => {
-            this.emplacements = emplacements
-          }
-        )
+        this.getByMarcheWithGearsLinked(this.abonnement.site_id).then(({ emplacements }) => {
+          this.emplacements = emplacements
+        })
       }
     },
     setEquipements() {
@@ -226,9 +217,7 @@ export default {
         (emplacement) => emplacement.id === this.abonnement.emplacement_id
       )
       this.liaisons = selected?.equipements
-      const equipement = this.liaisons.find(
-        (equipement) => equipement.abonnement !== this.STATUS.subscribed
-      )
+      const equipement = this.liaisons.find((equipement) => equipement.abonnement !== this.STATUS.subscribed)
       this.equipements.push(equipement)
       this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
         if (equipements.length > 0) this.equipements.push(...equipements)
@@ -258,7 +247,18 @@ export default {
       this.reset()
       this.$bvModal.hide('modalCreateAbonnement')
     },
-    validable() {},
+    validable() {
+      return this.equipementsExist() && !this.indexMissing()
+    },
+    equipementsExist() {
+      if (this.abonnement.equipements.length === 0) message += 'Aucun équipement sélectionné \n'
+      return this.abonnement.equipements.length > 0
+    },
+    indexMissing() {
+      const missing = this.abonnement.equipements.some(({ index_autre: index }) => isNull(index))
+      if (missing) message += "valeur manquante de l'index actuel"
+      return missing
+    },
   },
 }
 </script>

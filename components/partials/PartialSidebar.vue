@@ -13,14 +13,8 @@
           <!-- <li class="nav-label">
             <label class="content-label">Parametres</label>
           </li> -->
-          <li
-            class="nav-item"
-            :class="{ show: active.exploitation }"
-            @click="activer('exploitation')"
-          >
-            <a
-              class="nav-link with-sub"
-              :class="{ active: $route.name.match(/^exploitation/) }"
+          <li class="nav-item" :class="{ show: active.exploitation }" @click="activer('exploitation')">
+            <a class="nav-link with-sub" :class="{ active: $route.name.match(/^exploitation/) }"
               ><feather type="activity" /> Exploitation</a
             >
             <nav class="nav nav-sub">
@@ -33,10 +27,10 @@
             </nav>
             <nav class="nav nav-sub">
               <nuxt-link
-                to="/exploitation/abonnement"
+                to="/exploitation/ordonnancement"
                 class="nav-sub-link"
-                :class="{ active: $route.name === 'exploitation-abonnement' }"
-                >Abonnement Équipements</nuxt-link
+                :class="{ active: $route.name === 'exploitation-ordonnancement' }"
+                >ordonnancement</nuxt-link
               >
             </nav>
             <nav class="nav nav-sub">
@@ -48,15 +42,8 @@
               >
             </nav>
           </li>
-          <li
-            class="nav-item"
-            :class="{ show: active.finance }"
-            @click="activer('finance')"
-          >
-            <a
-              class="nav-link with-sub"
-              :class="{ active: $route.name.match(/^finance/) }"
-            >
+          <li class="nav-item" :class="{ show: active.finance }" @click="activer('finance')">
+            <a class="nav-link with-sub" :class="{ active: $route.name.match(/^finance/) }">
               <feather type="dollar-sign" />Finances & quittancement</a
             >
             <nav class="nav nav-sub">
@@ -68,9 +55,7 @@
               >
             </nav>
             <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Recettes & Dépenses</nuxt-link
-              >
+              <nuxt-link to="" class="nav-sub-link">Recettes & Dépenses</nuxt-link>
             </nav>
           </li>
           <!-- <li
@@ -137,14 +122,8 @@
               <nuxt-link to="" class="nav-sub-link">Répertoire</nuxt-link>
             </nav>
           </li> -->
-          <li
-            class="nav-item"
-            :class="{ show: active.setting }"
-            @click="activer('setting')"
-          >
-            <a
-              class="nav-link with-sub"
-              :class="{ active: $route.name.match(/^parametre/) }"
+          <li class="nav-item" :class="{ show: active.setting }" @click="activer('setting')">
+            <a class="nav-link with-sub" :class="{ active: $route.name.match(/^parametre/) }"
               ><feather type="settings" />Paramètres</a
             >
             <nav class="nav nav-sub">
