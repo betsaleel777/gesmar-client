@@ -17,6 +17,10 @@ const ABONNEMENT = Object.freeze({
   stopped: 'résilié',
   error: 'erreur index',
 })
+const ORDONNANCEMENT = Object.freeze({
+  paid: 'payé',
+  unpaid: 'impayé',
+})
 const ANNEXE = Object.freeze({
   quotidien: 'par jour',
   mensuel: 'par mois',
@@ -56,4 +60,5 @@ module.exports = {
   CONTRAT,
   FACTURE,
   EMPLACEMENT,
+  ORDONNANCEMENT,
 }
