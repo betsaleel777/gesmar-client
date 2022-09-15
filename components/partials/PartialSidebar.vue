@@ -55,6 +55,14 @@
               >
             </nav>
             <nav class="nav nav-sub">
+              <nuxt-link
+                to="/finance/bordereau"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'finance-bordereau' }"
+                >Bordereaux</nuxt-link
+              >
+            </nav>
+            <nav class="nav nav-sub">
               <nuxt-link to="" class="nav-sub-link">Recettes & Dépenses</nuxt-link>
             </nav>
           </li>
