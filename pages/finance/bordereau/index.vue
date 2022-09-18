@@ -3,14 +3,14 @@
     <PartialBreadcrumb :liens="liens" />
     <div class="col-md-12 col-sm-12">
       <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
-        <b-tab title="Tableau" :title-link-class="linkClass(0)">
+        <b-tab id="tableau" title="Tableau" :title-link-class="linkClass(0)">
           <TableauBordereau />
         </b-tab>
-        <b-tab title="Bordereaux" :title-link-class="linkClass(1)">
-          <ListeBordereau />
-        </b-tab>
-        <b-tab title="Commerciaux" :title-link-class="linkClass(2)">
+        <b-tab id="commerciaux" title="Commerciaux" :title-link-class="linkClass(1)">
           <ListeCommercial />
+        </b-tab>
+        <b-tab id="bordereaux" title="Bordereaux" :title-link-class="linkClass(2)">
+          <ListeBordereau />
         </b-tab>
       </b-tabs>
     </div>

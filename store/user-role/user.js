@@ -12,6 +12,11 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/users')
     commit('SET_USERS', requete.data.users)
   },
+  async getUncommercials({ commit }) {
+    commit('SET_USERS', [])
+    const requete = await this.$axios.get('api/parametres/users/uncommercials')
+    commit('SET_USERS', requete.data.users)
+  },
 
   async getTrashAll({ commit }) {
     commit('SET_USERS', [])

@@ -41,7 +41,7 @@
             small
             bordered
             primary-key="id"
-            :items="commercial"
+            :items="commerciaux"
             :fields="fields"
             :current-page="currentPage"
             :per-page="perPage"
@@ -61,9 +61,12 @@
               <a type="button" @click="details(data.item)">
                 <feather title="visualiser" type="eye" size="20" stroke="indigo" />
               </a>
-              <a type="button" @click="editer(data.item)">
-                <feather title="modifier" type="edit" size="20" stroke="blue" />
+              <a type="button" @click="attribuer(data.item)">
+                <feather title="attribuer" type="calendar" size="20" stroke="green" />
               </a>
+              <nuxt-link :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
+                <feather title="modifier" type="edit" size="20" stroke="blue" />
+              </nuxt-link>
             </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
@@ -80,8 +83,12 @@
             size="sm"
             aria-controls="table"
           ></b-pagination>
-          <EditCommercialModal v-if="edit.modal" v-model="edit.modal" :current="edit.commercial" />
           <CreateCommecialModal />
+          <AttribuerBordereauModal
+            v-if="attribution.modal"
+            v-model="attribution.modal"
+            :commercial="attribution.commercial"
+          />
         </b-card-text>
       </b-card>
     </b-overlay>
@@ -89,18 +96,18 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import EditCommercialModal from './EditCommercialModal.vue'
 import CreateCommecialModal from './CreateCommecialModal.vue'
+import AttribuerBordereauModal from './AttribuerBordereauModal.vue'
 export default {
   components: {
-    EditCommercialModal,
     CreateCommecialModal,
+    AttribuerBordereauModal,
   },
   data: () => ({
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'name', label: 'Nom', sortable: true },
+      { key: 'user.name', label: 'Nom', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -112,6 +119,7 @@ export default {
     ],
     edit: { modal: false, commercial: {} },
     show: { modal: false, commercial: {} },
+    attribution: { modal: false, commercial: {} },
     filter: null,
     currentPage: 1,
     perPage: 10,
@@ -142,6 +150,10 @@ export default {
         this.edit.commercial = commercial
         this.edit.modal = true
       })
+    },
+    attribuer(commercial) {
+      this.attribution.commercial = commercial
+      this.attribution.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
