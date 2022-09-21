@@ -89,11 +89,19 @@
               Selection des équipements
               <span class="red--text"><strong>* </strong></span>
             </template>
-            <template #selection="{ item, index }">
-              <v-chip v-if="index < 2" small close @click:close="supprimer(item)">
-                <span>{{ item.code }}</span>
+            <template #selection="data">
+              <v-chip
+                v-if="data.index < 2"
+                small
+                close
+                v-bind="data.attrs"
+                :input-value="data.selected"
+                @click="data.select"
+                @click:close="supprimer(data.item)"
+              >
+                <span>{{ data.item.code }}</span>
               </v-chip>
-              <span v-if="index === 2" class="grey--text text-caption">
+              <span v-if="data.index === 2" class="grey--text text-caption">
                 (+{{ selected.length - 2 }} autres)
               </span>
             </template>
@@ -237,7 +245,7 @@ export default {
       }
     },
     supprimer(item) {
-      remove(item, this.selected, this.abonnement.equipement)
+      remove(item, this.selected, this.abonnement.equipements)
     },
     close() {
       this.reset()

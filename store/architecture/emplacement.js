@@ -17,6 +17,13 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
+  // les emplacements dont les contrat qui ne passent pas par l'ordonnacement pour être validés
+  async getAutoAll({ commit }) {
+    commit('SET_EMPLACEMENT', [])
+    const requete = await this.$axios.get('api/parametres/emplacements/autos')
+    commit('SET_EMPLACEMENT', requete.data.emplacements)
+  },
+
   async getEquipables({ commit }) {
     commit('SET_EQUIPABLE', [])
     const requete = await this.$axios.get('api/parametres/emplacements/equipables')

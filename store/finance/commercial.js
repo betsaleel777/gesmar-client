@@ -47,6 +47,12 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+
+  async attribuer({ dispatch }, payload) {
+    const requete = await this.$axios.post('api/finances/commerciaux/attribuer', payload)
+    dispatch('getAll')
+    return { message: requete.data.message }
+  },
 }
 
 export const mutations = {
