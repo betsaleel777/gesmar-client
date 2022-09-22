@@ -36,6 +36,12 @@ export const actions = {
     return { message: requete.data.message }
   },
 
+  async annuler({ dispatch }, payload) {
+    const requete = await this.$axios.patch('api/finances/commerciaux/desattribuate/' + payload.id, payload)
+    dispatch('getAll')
+    return { message: requete.data.message }
+  },
+
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.patch('api/finances/commerciaux/restore/' + id)
     dispatch('getAll')

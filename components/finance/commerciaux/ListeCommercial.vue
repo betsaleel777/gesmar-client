@@ -89,6 +89,11 @@
             v-model="attribution.modal"
             :commercial="attribution.commercial"
           />
+          <ShowAttributionBordereauModal
+            v-if="show.modal"
+            v-model="show.modal"
+            :commercial="show.commercial"
+          />
         </b-card-text>
       </b-card>
     </b-overlay>
@@ -98,10 +103,12 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateCommecialModal from './CreateCommecialModal.vue'
 import AttribuerBordereauModal from './AttribuerBordereauModal.vue'
+import ShowAttributionBordereauModal from './ShowAttributionBordereauModal.vue'
 export default {
   components: {
     CreateCommecialModal,
     AttribuerBordereauModal,
+    ShowAttributionBordereauModal,
   },
   data: () => ({
     fields: [
