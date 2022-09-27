@@ -26,7 +26,6 @@
           </div>
           <hr class="mg-t-4" />
           <b-form-input
-            v-if="totalRows > 0"
             id="filter-input"
             v-model="filter"
             type="search"
@@ -75,7 +74,6 @@
             </template>
           </b-table>
           <b-pagination
-            v-if="totalRows > 0"
             v-model="currentPage"
             :total-rows="totalRows"
             :per-page="perPage"
@@ -128,17 +126,17 @@ export default {
     show: { modal: false, commercial: {} },
     attribution: { modal: false, commercial: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.getAll()
+    this.getAll().then(() => {
+      this.totalRows = this.commerciaux.length
+    })
   },
   computed: {
     ...mapGetters('finance/commercial', ['commerciaux']),
-    totalRows() {
-      return this.commerciaux.length
-    },
   },
   methods: {
     ...mapActions({

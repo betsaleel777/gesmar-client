@@ -26,7 +26,6 @@
           </div>
           <hr class="mg-t-4" />
           <b-form-input
-            v-if="totalRows > 0"
             id="filter-input"
             v-model="filter"
             type="search"
@@ -72,7 +71,6 @@
             </template>
           </b-table>
           <b-pagination
-            v-if="totalRows > 0"
             v-model="currentPage"
             :total-rows="totalRows"
             :per-page="perPage"
@@ -116,17 +114,15 @@ export default {
     edit: { modal: false, bordereau: {} },
     show: { modal: false, bordereau: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.getAll()
+    this.getAll().then(() => this.bordereaux.length)
   },
   computed: {
     ...mapGetters('finance/bordereau', ['bordereaux']),
-    totalRows() {
-      return this.bordereaux.length
-    },
   },
   methods: {
     ...mapActions({
