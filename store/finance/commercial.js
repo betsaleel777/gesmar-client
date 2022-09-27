@@ -1,11 +1,13 @@
 export const state = () => ({
   commerciaux: [],
 })
+
 export const getters = {
   commerciaux: (state) => {
     return state.commerciaux
   },
 }
+
 export const actions = {
   async getAll({ commit }) {
     commit('SET_COMMERCIAUX', [])
