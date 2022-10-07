@@ -47,6 +47,9 @@
             <template #cell(status)="data">
               <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
             </template>
+            <template #cell(pas_porte)="data">
+              {{ data.item.pas_porte | currency }}
+            </template>
             <template #cell(option)="data">
               <a type="button" @click="editer(data.item)">
                 <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -69,16 +72,18 @@
             size="sm"
             aria-controls="table"
           ></b-pagination>
-          <div></div>
         </b-card-text>
+        <EditFactureInitialeModal v-if="edit.modal" v-model="edit.modal" :facture="edit.facture" />
       </b-card>
     </b-overlay>
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import EditFactureInitialeModal from './EditFactureInitialeModal.vue'
 import { FACTURE } from '~/helper/constantes'
 export default {
+  components: { EditFactureInitialeModal },
   data: () => ({
     fields: [
       'ordre',
@@ -112,9 +117,6 @@ export default {
       {
         key: 'pas_porte',
         label: 'Pas de porte',
-        formatter: (value) => {
-          return Number(value)
-        },
         tdClass: 'text-right',
         sortable: true,
       },
@@ -149,7 +151,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOne: 'facture/annexe/getOne',
+      getOne: 'facture/initiale/getOne',
       getFactures: 'facture/initiale/getAll',
     }),
     imprimer() {},
@@ -157,7 +159,6 @@ export default {
       this.getOne(id).then(({ facture }) => {
         this.edit.facture = facture
         this.edit.modal = true
-        this.$bvModal.show('modalEditFactureAnnexe')
       })
     },
     onFiltered(filteredItems) {

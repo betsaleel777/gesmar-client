@@ -51,7 +51,6 @@ export default {
   plugins: [
     '~/plugins/feather.js',
     '~/plugins/perfect-scrollbar.js',
-    '~/plugins/unicons',
     '~/plugins/user.js',
     '~/plugins/vue-gates',
   ],
@@ -107,7 +106,7 @@ export default {
       home: false,
       login: '/login',
     },
-    plugins: ['~/plugins/auth.js'],
+    plugins: ['~/plugins/auth.js', '~/plugins/currency.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

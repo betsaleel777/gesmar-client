@@ -10,12 +10,7 @@
     <v-app>
       <v-stepper v-model="step" flat>
         <v-stepper-header>
-          <v-stepper-step
-            v-for="(item, key) in steps"
-            :key="key"
-            :complete="step > item.id"
-            :step="item.id"
-          >
+          <v-stepper-step v-for="(item, key) in steps" :key="key" :complete="step > item.id" :step="item.id">
             {{ item.name }}
           </v-stepper-step>
         </v-stepper-header>
@@ -113,5 +108,3 @@ export default {
     },
   },
 }
-</script>
-<style></style>

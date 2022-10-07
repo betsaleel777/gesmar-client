@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-dialog v-model="loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          En chargement ...
+          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <b-overlay :show="$fetchState.pending" rounded="sm">
       <b-card aria-hidden="true" header="Liste des commerciaux">
         <b-card-text>
@@ -57,10 +65,18 @@
               {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
             </template>
             <template #cell(option)="data">
-              <a type="button" @click="details(data.item)">
+              <a type="button" class="mr-1" @click="details(data.item)">
                 <feather title="visualiser" type="eye" size="20" stroke="indigo" />
               </a>
-              <a type="button" @click="attribuer(data.item)">
+              <a type="button" class="mr-1" @click="transferer(data.item)">
+                <feather
+                  :title="`transférer à ${data.item.user.name}`"
+                  type="refresh-ccw"
+                  size="20"
+                  stroke="orange"
+                />
+              </a>
+              <a type="button" class="mr-1" @click="attribuer(data.item)">
                 <feather title="attribuer" type="calendar" size="20" stroke="green" />
               </a>
               <nuxt-link :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
@@ -92,6 +108,12 @@
             v-model="show.modal"
             :commercial="show.commercial"
           />
+          <TransfererCommercialModal
+            v-if="transfer.modal"
+            v-model="transfer.modal"
+            :commercial="transfer.commercial"
+            :commerciaux="commerciaux"
+          />
         </b-card-text>
       </b-card>
     </b-overlay>
@@ -102,13 +124,16 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateCommecialModal from './CreateCommecialModal.vue'
 import AttribuerBordereauModal from './AttribuerBordereauModal.vue'
 import ShowAttributionBordereauModal from './ShowAttributionBordereauModal.vue'
+import TransfererCommercialModal from './TransfererCommercialModal.vue'
 export default {
   components: {
     CreateCommecialModal,
     AttribuerBordereauModal,
     ShowAttributionBordereauModal,
+    TransfererCommercialModal,
   },
   data: () => ({
+    loading: false,
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
@@ -118,12 +143,13 @@ export default {
         key: 'option',
         label: 'Options',
         tdClass: 'text-center',
-        thClass: 'wd-20p text-center',
+        thClass: 'wd-15p text-center',
         sortable: false,
       },
     ],
     edit: { modal: false, commercial: {} },
     show: { modal: false, commercial: {} },
+    transfer: { modal: false, commercial: {} },
     attribution: { modal: false, commercial: {} },
     filter: null,
     totalRows: 0,
@@ -145,20 +171,24 @@ export default {
     }),
     imprimer() {},
     details({ id }) {
+      this.loading = true
       this.getOne(id).then(({ commercial }) => {
         this.show.commercial = commercial
         this.show.modal = true
-      })
-    },
-    editer({ id }) {
-      this.getOne(id).then(({ commercial }) => {
-        this.edit.commercial = commercial
-        this.edit.modal = true
+        this.loading = false
       })
     },
     attribuer(commercial) {
       this.attribution.commercial = commercial
       this.attribution.modal = true
+    },
+    transferer({ id }) {
+      this.loading = true
+      this.getOne(id).then(({ commercial }) => {
+        this.transfer.commercial = commercial
+        this.transfer.modal = true
+        this.loading = false
+      })
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

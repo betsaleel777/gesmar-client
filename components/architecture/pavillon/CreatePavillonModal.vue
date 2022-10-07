@@ -32,9 +32,7 @@
             </v-autocomplete>
           </v-app>
           <div v-if="!pavillon.automatiq" class="form-group">
-            <label class="form-label"
-              >Nom<span class="text-danger">*</span></label
-            >
+            <label class="form-label">Nom<span class="text-danger">*</span></label>
             <input
               v-model="pavillon.nom"
               type="text"
@@ -60,17 +58,8 @@
         </form>
       </template>
       <template #modal-footer>
-        <button
-          type="button"
-          class="btn btn-warning"
-          data-dismiss="modal"
-          @click="close"
-        >
-          Fermer
-        </button>
-        <button type="button" class="btn btn-primary" @click="save">
-          Valider
-        </button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+        <button type="button" class="btn btn-primary" @click="save">Valider</button>
       </template>
     </b-modal>
   </v-app>
@@ -142,8 +131,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

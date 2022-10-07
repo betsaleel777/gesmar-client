@@ -1,6 +1,6 @@
 <template>
   <b-overlay :show="$fetchState.pending" rounded="sm">
-    <b-card aria-hidden="true" header="Liste des bordereaux">
+    <b-card aria-hidden="true" header="Liste des Encaissements de bordereaux">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
           <div class="">
@@ -11,7 +11,7 @@
               stroke-width="2"
               size="18"
               type="plus"
-              @click="$bvModal.show('modalCreateBordereau')"
+              @click="dialog = true"
             />
             <feather
               v-b-tooltip.hover.top
@@ -39,7 +39,7 @@
           small
           bordered
           primary-key="id"
-          :items="bordereaux"
+          :items="attributions"
           :fields="fields"
           :current-page="currentPage"
           :per-page="perPage"
@@ -55,8 +55,11 @@
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
-          <template #cell(date_attribution)="data">
+          <template #cell(jour)="data">
             {{ $moment(data.item.date_attribution).format('DD-MM-YYYY') }}
+          </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
           </template>
           <template #cell(option)="data">
             <a type="button" @click="details(data.item)">
@@ -77,63 +80,56 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <ShowBordereauModal v-if="show.modal" v-model="show.modal" :bordereau="show.bordereau" />
-        <CreateBordereauModal />
       </b-card-text>
     </b-card>
+    <CreateCollecteModal v-if="dialog" v-model="dialog" />
   </b-overlay>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ShowBordereauModal from './ShowBordereauModal.vue'
-import CreateBordereauModal from './CreateBordereauModal.vue'
+import CreateCollecteModal from './CreateCollecteModal.vue'
+import { ATTRIBUTION } from '~/helper/constantes'
 export default {
-  components: {
-    ShowBordereauModal,
-    CreateBordereauModal,
-  },
+  components: { CreateCollecteModal },
   data: () => ({
+    dialog: false,
     fields: [
       'ordre',
-      { key: 'code', label: 'Code du bordereau', sortable: false },
-      { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: true },
-      { key: 'date_attribution', label: 'Date', sortable: true },
+      { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: false },
+      { key: 'bordereau.code', label: 'Numéro du bordereau', sortable: false },
+      { key: 'jour', label: 'Date', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
-        key: 'option',
-        label: 'Options',
+        key: 'status',
+        label: 'Statuts',
         tdClass: 'text-center',
-        thClass: 'wd-10p text-center',
-        sortable: false,
+        thClass: 'text-center',
       },
     ],
-    show: { modal: false, bordereau: {} },
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.getAll().then(() => this.bordereaux.length)
+    this.getAll().then(() => (this.totalRows = this.attributions.length))
   },
   computed: {
-    ...mapGetters('finance/bordereau', ['bordereaux']),
+    ...mapGetters('finance/attribution', ['attributions']),
   },
   methods: {
-    ...mapActions({
-      getAll: 'finance/bordereau/getAll',
-      getOne: 'finance/bordereau/getOne',
-    }),
+    ...mapActions({ getAll: 'finance/attribution/getAllWithBorderau' }),
     imprimer() {},
-    details({ id }) {
-      this.getOne(id).then(({ bordereau }) => {
-        this.show.bordereau = bordereau
-        this.show.modal = true
-      })
-    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      const classes = {
+        [ATTRIBUTION.cashed]: 'badge badge-success-light',
+        [ATTRIBUTION.uncashed]: 'badge badge-danger-light',
+      }
+      return classes[value]
     },
   },
 }

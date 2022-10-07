@@ -1,9 +1,7 @@
 <template>
   <b-modal id="modalEditTypequip" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">
-        Modifier le type d'équipement {{ type.nom }}
-      </h5>
+      <h5 class="modal-title text-primary">Modifier le type d'équipement {{ type.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -11,9 +9,7 @@
     <template #default>
       <form ref="form">
         <div class="form-group">
-          <label class="form-label mg-t-10"
-            >Nom complet<span class="text-danger">*</span></label
-          >
+          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
           <input
             v-model="type.nom"
             type="text"
@@ -27,9 +23,7 @@
         </div>
         <b-form-group label-for="frais_penalite">
           <template #label>
-            <span class="form-label"
-              >Frais de Pénalite <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Frais de Pénalite <span class="text-danger">*</span></span>
           </template>
           <b-input-group>
             <b-form-input
@@ -40,24 +34,16 @@
               class="form-control"
             />
             <b-input-group-append>
-              <b-input-group-text class="bg-transparent font-weight-bold">
-                FCFA
-              </b-input-group-text>
+              <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.frais_penalite.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.frais_penalite.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.frais_penalite.message }}</strong>
             </span>
           </b-input-group>
         </b-form-group>
         <b-form-group label-for="caution_abonnement">
           <template #label>
-            <span class="form-label"
-              >Caution d'Abonnement <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Caution d'Abonnement <span class="text-danger">*</span></span>
           </template>
           <b-input-group>
             <b-form-input
@@ -68,15 +54,9 @@
               class="form-control"
             />
             <b-input-group-append>
-              <b-input-group-text class="bg-transparent font-weight-bold">
-                FCFA
-              </b-input-group-text>
+              <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.caution_abonnement.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.caution_abonnement.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.caution_abonnement.message }}</strong>
             </span>
           </b-input-group>
@@ -101,17 +81,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -195,8 +166,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

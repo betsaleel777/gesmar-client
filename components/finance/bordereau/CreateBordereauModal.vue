@@ -13,7 +13,7 @@
           :items="commerciaux"
           outlined
           dense
-          item-text="code"
+          item-text="user.name"
           item-value="id"
           :error="errors.commercial_id.exist"
           :error-messages="errors.commercial_id.message"
@@ -51,9 +51,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
-  props: {
-    value: Boolean,
-  },
   data: () => ({
     dates: [],
     marker: true,
@@ -70,14 +67,6 @@ export default {
     ...mapGetters({
       commerciaux: 'finance/commercial/commerciaux',
     }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   mounted() {
     this.getCommerciaux()
@@ -95,7 +84,7 @@ export default {
             variant: 'success',
             solid: true,
           })
-          this.dialog = false
+          this.$bvModal.hide('modalCreateBordereau')
         })
         .catch((err) => {
           const { data } = err.response
@@ -114,7 +103,9 @@ export default {
       if (this.bordereau.commercial_id) {
         const commercial = this.commerciaux.find(({ id }) => id === this.bordereau.commercial_id)
         this.bordereau.date_attribution = null
-        this.dates = [...new Set(commercial.emplacements.map(({ pivot: { jour } }) => jour))]
+        const datesDistincts = [...new Set(commercial.attributions.map(({ jour }) => jour))]
+        const datesUsed = commercial.bordereaux.map(({ date_attribution: date }) => date)
+        this.dates = datesDistincts.filter((date) => !datesUsed.includes(date))
       }
     },
     setToday() {

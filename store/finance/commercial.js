@@ -15,6 +15,13 @@ export const actions = {
     commit('SET_COMMERCIAUX', requete.data.commerciaux)
   },
 
+  // async getCommercialsWithBordereau({ commit }) {
+  //   commit('SET_COMMERCIAUX', [])
+  //   const requete = await this.$axios.get('api/finances/commerciaux')
+  //   const withBordereaux = requete.data.commerciaux.filter(({ bordereaux }) => !isNull(bordereaux))
+  //   commit('SET_COMMERCIAUX', withBordereaux)
+  // },
+
   async getTrashAll({ commit }) {
     commit('SET_COMMERCIAUX', [])
     const requete = await this.$axios.get('api/finances/commerciaux/trashed')
@@ -34,12 +41,6 @@ export const actions = {
 
   async supprimer({ dispatch }, id) {
     const requete = await this.$axios.delete('api/finances/commerciaux/' + id)
-    dispatch('getAll')
-    return { message: requete.data.message }
-  },
-
-  async annuler({ dispatch }, payload) {
-    const requete = await this.$axios.patch('api/finances/commerciaux/desattribuate/' + payload.id, payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },

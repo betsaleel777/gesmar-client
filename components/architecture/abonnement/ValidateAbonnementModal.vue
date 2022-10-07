@@ -17,6 +17,7 @@
           ></v-switch>
           <v-textarea
             v-model="validation.raison"
+            counter
             outlined
             :error="errors.raison.exist"
             :error-messages="errors.raison.message"
@@ -104,8 +105,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

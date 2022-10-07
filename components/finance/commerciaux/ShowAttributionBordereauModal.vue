@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="dialog" scrollable size="lg" hide-footer>
+  <b-modal v-model="dialog" size="xl" scrollable hide-footer>
     <template #modal-header>
       <h5 class="modal-title text-primary">Détails du commercial {{ commercial.user.name }}</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
@@ -52,7 +52,7 @@
                       </v-menu>
                     </v-toolbar>
                   </v-sheet>
-                  <v-sheet height="600">
+                  <v-sheet height="700">
                     <v-calendar
                       ref="calendar"
                       v-model="focus"
@@ -72,7 +72,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <v-row justify="center">
-          <v-dialog v-model="dialogDelete" persistent max-width="310">
+          <v-dialog v-model="dialogDelete" persistent max-width="450">
             <v-card>
               <v-card-title class="text-h6 error--text">Confirmation d'annulation ?</v-card-title>
               <v-card-text>
@@ -141,23 +141,21 @@ export default {
       },
     },
     events() {
-      return this.commercial.emplacements.map(({ id, code, pivot: { jour } }) => {
-        return { id, start: jour, end: jour, name: code, timed: true }
-      })
+      return this.commercial.attributions.map(
+        ({ id, emplacement_id: emplacement, emplacement: { code }, jour }) => {
+          return { id, emplacement, start: jour, end: jour, name: code, timed: true }
+        }
+      )
     },
   },
   methods: {
-    ...mapActions('finance/commercial', ['annuler']),
+    ...mapActions('finance/attribution', ['supprimer']),
     deleteItem({ event }) {
       this.editedItem = Object.assign({}, event)
       this.dialogDelete = true
     },
     remove() {
-      this.annuler({
-        id: this.commercial.id,
-        emplacement: this.editedItem.id,
-        jour: this.editedItem.jour,
-      }).then(({ message }) => {
+      this.supprimer(this.editedItem.id).then(({ message }) => {
         this.$bvToast.toast(message, {
           title: "succès de l'annulation".toLocaleUpperCase(),
           variant: 'success',

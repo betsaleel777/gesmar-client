@@ -1,9 +1,7 @@
 <template>
   <b-modal id="modalEditNiveau" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">
-        Modifier le niveau {{ niveau.nom }}
-      </h5>
+      <h5 class="modal-title text-primary">Modifier le niveau {{ niveau.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -25,15 +23,11 @@
               Choix du pavillon
               <span class="red--text"><strong>* </strong></span>
             </template>
-            <template #item="data">
-              {{ data.item.site.nom }} {{ data.item.nom }}
-            </template>
+            <template #item="data"> {{ data.item.site.nom }} {{ data.item.nom }} </template>
           </v-autocomplete>
         </v-app>
         <div class="form-group required">
-          <label class="form-label"
-            >Nom<span class="text-danger">*</span></label
-          >
+          <label class="form-label">Nom<span class="text-danger">*</span></label>
           <input
             v-model="niveau.nom"
             type="text"
@@ -48,17 +42,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -138,8 +123,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

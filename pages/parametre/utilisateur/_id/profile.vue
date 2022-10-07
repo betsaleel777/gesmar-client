@@ -229,7 +229,7 @@ export default {
     PartialBreadcrumb,
   },
   data: () => ({
-    baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+    baseURL: process.env.API || 'http://localhost:8000/',
   }),
   computed: {
     liens() {

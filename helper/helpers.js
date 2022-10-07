@@ -27,4 +27,4 @@ function getDatesInRange(startDate, endDate) {
   return dates
 }
 
-export default { remove, add, getDatesInRange }
+export { remove, add, getDatesInRange }

@@ -12,6 +12,9 @@
         <b-tab id="bordereaux" title="Bordereaux" :title-link-class="linkClass(2)">
           <ListeBordereau />
         </b-tab>
+        <b-tab id="Encaissement" title="Collecte et statut" :title-link-class="linkClass(3)">
+          <ListeCollecte />
+        </b-tab>
       </b-tabs>
     </div>
     <!-- content-right -->
@@ -22,12 +25,14 @@ import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import TableauBordereau from '~/components/finance/TableauBordereau.vue'
 import ListeBordereau from '~/components/finance/bordereau/ListeBordereau.vue'
 import ListeCommercial from '~/components/finance/commerciaux/ListeCommercial.vue'
+import ListeCollecte from '~/components/finance/bordereau/encaissement/ListeCollecte.vue'
 export default {
   components: {
     PartialBreadcrumb,
     TableauBordereau,
     ListeBordereau,
     ListeCommercial,
+    ListeCollecte,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Bordereaux' }],

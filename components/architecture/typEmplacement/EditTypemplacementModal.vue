@@ -1,9 +1,7 @@
 <template>
   <b-modal id="modalEditTypempl" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">
-        Modifier le type d'emplacement {{ type.nom }}
-      </h5>
+      <h5 class="modal-title text-primary">Modifier le type d'emplacement {{ type.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -26,9 +24,7 @@
           ></v-switch>
         </v-app>
         <div class="form-group required">
-          <label class="form-label mg-t-10"
-            >Nom complet<span class="text-danger">*</span></label
-          >
+          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
           <input
             v-model="type.nom"
             type="text"
@@ -42,8 +38,7 @@
         </div>
         <div class="form-group required">
           <label class="form-label mg-t-10"
-            >Préfixe<span class="text-danger">*</span> Ex:(mag pour
-            magasin)</label
+            >Préfixe<span class="text-danger">*</span> Ex:(mag pour magasin)</label
           >
           <input
             v-model="type.prefix"
@@ -51,11 +46,7 @@
             :class="{ 'is-invalid': errors.prefix.exist }"
             class="form-control"
           />
-          <span
-            v-if="errors.prefix.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
+          <span v-if="errors.prefix.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.prefix.message }}</strong>
           </span>
         </div>
@@ -79,17 +70,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -179,8 +161,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

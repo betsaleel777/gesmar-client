@@ -189,8 +189,8 @@ export default {
     },
     emplacementsUsable() {
       if (this.attribution.jour) {
-        const notUsables = this.commercial.emplacements
-          .filter(({ pivot: { jour } }) => this.attribution.jour === jour)
+        const notUsables = this.commercial.attributions
+          .filter(({ jour }) => this.attribution.jour === jour)
           .map(({ id }) => id)
         return this.emplacements.filter(({ id }) => !notUsables.includes(id))
       } else return this.emplacements
@@ -219,11 +219,11 @@ export default {
       getSites: 'architecture/marche/getAll',
       getZonesByMarche: 'architecture/zone/getByMarche',
       getEmplacements: 'architecture/emplacement/getAutoAll',
-      attribuer: 'finance/commercial/attribuer',
+      ajouter: 'finance/attribution/ajouter',
     }),
     save() {
       if (this.validable)
-        this.attribuer(this.attribution)
+        this.ajouter(this.attribution)
           .then(({ message }) => {
             this.$root.$bvToast.toast(message, {
               title: 'succès de la création'.toLocaleUpperCase(),

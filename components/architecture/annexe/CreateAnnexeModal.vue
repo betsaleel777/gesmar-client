@@ -159,8 +159,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

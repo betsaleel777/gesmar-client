@@ -47,11 +47,6 @@
             <template #cell(status)="data">
               <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
             </template>
-            <template #cell(option)="data">
-              <a type="button" @click="editer(data.item)">
-                <feather title="modifier" type="edit" size="20" stroke="blue" />
-              </a>
-            </template>
             <template #cell(created_at)="data">
               {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
             </template>
@@ -85,12 +80,8 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import EditFactureAnnexeModal from './EditFactureAnnexeModal.vue'
 import { FACTURE } from '~/helper/constantes'
 export default {
-  components: {
-    EditFactureAnnexeModal,
-  },
   data: () => ({
     fields: [
       'ordre',
@@ -149,19 +140,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOne: 'facture/annexe/getOne',
       getFactures: 'facture/annexe/getAll',
       getContrats: 'exploitation/contrat/getAll',
       getPersonnes: 'exploitation/personne/getAll',
     }),
     imprimer() {},
-    editer({ id }) {
-      this.getOne(id).then(({ facture }) => {
-        this.edit.facture = facture
-        this.edit.modal = true
-        this.$bvModal.show('modalEditFactureAnnexe')
-      })
-    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1

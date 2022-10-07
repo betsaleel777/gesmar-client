@@ -62,17 +62,12 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <nuxt-link :to="`/parametre/template/pdf/${data.item.id}/annexe`">
-            <feather
-              title="modifier"
-              type="file-text"
-              size="20"
-              stroke="indigo"
-            />
-          </nuxt-link>
-          <a type="button" @click="editer(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
+          <a type="button" @click="pdf(data.item)">
+            <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
+          <!-- <a type="button" @click="editer(data.item)">
+            <feather title="modifier" type="edit" size="20" stroke="blue" />
+          </a> -->
           <a type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
@@ -172,7 +167,10 @@ export default {
       this.currentPage = 1
     },
     pdf({ id }) {
-      this.getPdf(id)
+      this.getPdf(id).then(({ path }) => {
+        const chemin = String(process.env.API + '/storage/' + path)
+        window.open(chemin, '_blank')
+      })
     },
   },
 }

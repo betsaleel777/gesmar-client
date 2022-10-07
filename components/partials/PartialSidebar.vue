@@ -51,7 +51,7 @@
                 to="/finance/facture"
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'finance-facture' }"
-                >Facturation Générale</nuxt-link
+                >Facturation</nuxt-link
               >
             </nav>
             <nav class="nav nav-sub">

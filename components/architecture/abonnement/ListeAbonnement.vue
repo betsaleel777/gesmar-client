@@ -145,8 +145,8 @@ export default {
         formatter: (value) => {
           return Number(value)
         },
-        sortByFormatted: true,
         filterByFormatted: true,
+        sortByFormatted: true,
         sortable: true,
       },
       {
