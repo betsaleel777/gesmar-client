@@ -95,8 +95,9 @@ export default {
     dialog: false,
     fields: [
       'ordre',
-      { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: false },
       { key: 'bordereau.code', label: 'Numéro du bordereau', sortable: false },
+      { key: 'emplacement.code', label: "Code d'emplacement", sortable: false },
+      { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: false },
       { key: 'jour', label: 'Date', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {

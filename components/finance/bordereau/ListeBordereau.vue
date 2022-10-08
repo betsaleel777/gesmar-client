@@ -58,6 +58,9 @@
           <template #cell(date_attribution)="data">
             {{ $moment(data.item.date_attribution).format('DD-MM-YYYY') }}
           </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="details(data.item)">
               <feather title="visualiser" type="eye" size="20" stroke="indigo" />
@@ -87,6 +90,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ShowBordereauModal from './ShowBordereauModal.vue'
 import CreateBordereauModal from './CreateBordereauModal.vue'
+import { ATTRIBUTION } from '~/helper/constantes'
 export default {
   components: {
     ShowBordereauModal,
@@ -99,6 +103,7 @@ export default {
       { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: true },
       { key: 'date_attribution', label: 'Date', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center' },
       {
         key: 'option',
         label: 'Options',
@@ -134,6 +139,13 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      const classes = {
+        [ATTRIBUTION.cashed]: 'badge badge-success-light',
+        [ATTRIBUTION.uncashed]: 'badge badge-danger-light',
+      }
+      return classes[value]
     },
   },
 }
