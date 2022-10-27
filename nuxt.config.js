@@ -97,16 +97,12 @@ export default {
         provider: 'laravel/sanctum',
         url: process.env.API,
         endpoints: {
-          login: { url: '/login', method: 'post' },
+          login: { url: '/api/login' },
           logout: { url: '/api/logout', method: 'post' },
         },
       },
     },
-    redirect: {
-      home: false,
-      login: '/login',
-    },
-    plugins: ['~/plugins/auth.js', '~/plugins/currency.js'],
+    plugins: ['~/plugins/currency.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

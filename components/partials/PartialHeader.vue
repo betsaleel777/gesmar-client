@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     async logout() {
-      await this.$axios.post('deconnecter', this.user)
+      await this.$axios.post('api/deconnecter', this.user)
       this.$auth.logout().then(() => {
         this.$router.push('/login')
       })

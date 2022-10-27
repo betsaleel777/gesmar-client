@@ -5,7 +5,7 @@
     scrollable
     size="lg"
     hide-footer
-    @show="reset"
+    @show="step = 1"
   >
     <v-app>
       <v-stepper v-model="step" flat>
@@ -71,22 +71,21 @@ export default {
     StepperContentPavillon,
     StepperContentZone,
   },
-  data: () => ({
-    step: 1,
-    steps: [
-      { id: 1, name: 'Marchés' },
-      { id: 2, name: 'Pavillons' },
-      { id: 3, name: 'Niveaux' },
-      { id: 4, name: 'Zones' },
-    ],
-    marche: { id: null, key: false },
-    pavillons: { liste: [], key: false, intervalText: null },
-    niveaux: { liste: [], key: false, intervalText: null },
-  }),
+  data() {
+    return {
+      step: 1,
+      steps: [
+        { id: 1, name: 'Marchés' },
+        { id: 2, name: 'Pavillons' },
+        { id: 3, name: 'Niveaux' },
+        { id: 4, name: 'Zones' },
+      ],
+      marche: { id: null, key: false },
+      pavillons: { liste: [], key: false, intervalText: null },
+      niveaux: { liste: [], key: false, intervalText: null },
+    }
+  },
   methods: {
-    reset() {
-      this.step = 1
-    },
     onSuivant({ step, donnees, interval }) {
       if (donnees) {
         this.step = step
@@ -103,8 +102,9 @@ export default {
           this.niveaux.key = !this.niveaux.key
         }
       } else {
-        this.reset()
+        this.step = 1
       }
     },
   },
 }
+</script>

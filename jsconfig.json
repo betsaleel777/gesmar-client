@@ -9,7 +9,9 @@
     }
   },
   "vueCompilerOptions": {
-    "experimentalDisableTemplateSupport": true
+    "experimentalDisableTemplateSupport": true,
+    "extensions": [".vue"],
+    "target": 2
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }
