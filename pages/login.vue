@@ -54,7 +54,7 @@
 <script>
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 export default {
-  layout: 'vide',
+  layout: 'empty',
   data() {
     return {
       utilisateur: {
@@ -85,7 +85,7 @@ export default {
         .loginWith('laravelSanctum', { data: this.utilisateur })
         .then(() => {
           // this.$gates.setPermissions(this.profile.permissions)
-          this.$router.push('/')
+          // this.$router.push('/')
         })
         .catch((err) => {
           const { data } = err.response

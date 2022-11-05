@@ -102,7 +102,7 @@ export default {
         },
       },
     },
-    plugins: ['~/plugins/currency.js'],
+    plugins: ['~/plugins/currency.js', '~/plugins/axios.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

@@ -63,7 +63,7 @@
               >
             </nav>
             <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link">Recettes & Dépenses</nuxt-link>
+              <nuxt-link to="" class="nav-sub-link">Caisse</nuxt-link>
             </nav>
           </li>
           <!-- <li
@@ -156,6 +156,14 @@
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'parametre-template' }"
                 >Gabaris de documents</nuxt-link
+              >
+            </nav>
+            <nav class="nav nav-sub">
+              <nuxt-link
+                to="/parametre/caisse"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'parametre-template' }"
+                >Caisse</nuxt-link
               >
             </nav>
           </li>
