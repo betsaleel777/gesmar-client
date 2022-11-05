@@ -62,9 +62,6 @@
                 >Bordereaux</nuxt-link
               >
             </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link">Caisse</nuxt-link>
-            </nav>
           </li>
           <!-- <li
             class="nav-item"
@@ -162,7 +159,7 @@
               <nuxt-link
                 to="/parametre/caisse"
                 class="nav-sub-link"
-                :class="{ active: $route.name === 'parametre-template' }"
+                :class="{ active: $route.name === 'parametre-caisse' }"
                 >Caisse</nuxt-link
               >
             </nav>
