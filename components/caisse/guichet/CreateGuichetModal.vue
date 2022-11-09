@@ -87,7 +87,7 @@ export default {
         })
     },
     reset() {
-      this.marche = {
+      this.guichet = {
         nom: '',
         site_id: null,
       }

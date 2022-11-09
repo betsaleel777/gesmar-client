@@ -8,9 +8,9 @@
           <div v-if="!utilisateur.image" class="avatar avatar-xxl">
             <img
               v-if="utilisateur.avatar"
-              :src="baseURL + 'storage/' + utilisateur.avatar"
+              :src="baseURL + '/storage/' + utilisateur.avatar"
               class="rounded-circle"
-              alt=""
+              alt="image de profil"
             />
             <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
@@ -106,6 +106,7 @@ export default {
   }),
   mounted() {
     this.utilisateur = this.profileData
+    console.log(this.baseURL + '/storage/' + this.utilisateur.avatar)
   },
   methods: {
     ...mapActions('user-role/user', ['profile']),

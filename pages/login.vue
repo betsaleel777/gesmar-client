@@ -1,9 +1,6 @@
 <template>
   <div class="signin-panel">
-    <!-- <svg-to-inline
-      path="http://themepixels.me/cassie/assets/svg/citywalk.svg"
-      class-name="svg-bg"
-    ></svg-to-inline> -->
+    <nuxt-img src="/images/bermuda-circle.svg" loading="lazy" class-name="svg-bg" />
     <div class="signin-sidebar">
       <div class="signin-sidebar-body">
         <a href="dashboard-one.html" class="sidebar-logo mg-b-40"><span>Gesmar</span></a>

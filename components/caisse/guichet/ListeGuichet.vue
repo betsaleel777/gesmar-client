@@ -78,7 +78,7 @@
         ></b-pagination>
         <CreateGuichetModal />
         <div>
-          <EditGuichetModal :key="edit.modal" v-model="edit.modal" :current="edit.marche" />
+          <EditGuichetModal v-if="edit.modal" v-model="edit.modal" :current="edit.guichet" />
         </div>
       </b-card-text>
     </b-card>
@@ -135,8 +135,8 @@ export default {
     },
     editer({ id }) {
       this.getOne(id).then(({ guichet }) => {
-        this.edit.guichet = guichet
         this.edit.modal = true
+        this.edit.guichet = guichet
         this.$bvModal.show('modalEditGuichet')
       })
     },

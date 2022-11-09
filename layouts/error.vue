@@ -2,9 +2,9 @@
   <div class="page-error">
     <div class="error-panel">
       <a href="dashboard-one.html" class="sidebar-logo mg-b-40"><span>Gesmar</span></a>
-      <div class="svg-wrapper">
-        <object type="image/svg+xml" data="http://themepixels.me/cassie/assets/svg/notfound.svg"></object>
-      </div>
+      <!-- <div class="svg-wrapper">
+        <object type="image/svg+xml" data="/images/abstract-timekeeper.svg"></object>
+      </div> -->
       <div v-if="Number($route.query.code) === 404">
         <h1 class="tx-28 tx-sm-36 tx-numeric tx-md-40 tx-semibold">404 Page demandée inexistante</h1>
       </div>
