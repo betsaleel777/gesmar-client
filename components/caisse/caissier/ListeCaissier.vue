@@ -8,97 +8,95 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Liste des caissiers">
-        <b-card-text>
-          <div class="btn-toolbar d-flex flex-row-reverse">
-            <div class="">
-              <feather
-                v-b-tooltip.hover.top
-                title="créer"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="plus"
-                @click="$bvModal.show('modalCreateCaissier')"
-              />
-              <feather
-                v-b-tooltip.hover.top
-                title="imprimer liste"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="printer"
-              />
-            </div>
+    <b-card aria-hidden="true" header="Liste des caissiers">
+      <b-card-text>
+        <div class="btn-toolbar d-flex flex-row-reverse">
+          <div class="">
+            <feather
+              v-b-tooltip.hover.top
+              title="créer"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="plus"
+              @click="$bvModal.show('modalCreateCaissier')"
+            />
+            <feather
+              v-b-tooltip.hover.top
+              title="imprimer liste"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="printer"
+            />
           </div>
-          <hr class="mg-t-4" />
-          <b-form-input
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Rechercher"
-            class="mg-y-10"
-            :debounce="500"
-          ></b-form-input>
-          <b-table
-            id="table"
-            class="table"
-            hover
-            small
-            bordered
-            primary-key="id"
-            :items="caissiers"
-            :fields="fields"
-            :current-page="currentPage"
-            :per-page="perPage"
-            responsive
-            empty-text="Tableau vide"
-            show-empty
-            :filter="filter"
-            @filtered="onFiltered"
-          >
-            <template #cell(ordre)="data">
-              {{ data.index + 1 }}
-            </template>
-            <template #cell(created_at)="data">
-              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-            </template>
-            <template #cell(option)="data">
-              <a type="button" class="mr-1" @click="details(data.item)">
-                <feather title="visualiser" type="eye" size="20" stroke="indigo" />
-              </a>
-              <a type="button" class="mr-1" @click="attribuer(data.item)">
-                <feather title="attribuer" type="calendar" size="20" stroke="green" />
-              </a>
-              <nuxt-link :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
-                <feather title="modifier" type="edit" size="20" stroke="blue" />
-              </nuxt-link>
-            </template>
-            <template #empty="scope">
-              <h6 class="text-center text-muted pd-y-10">
-                {{ scope.emptyText }}
-              </h6>
-            </template>
-          </b-table>
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="right"
-            size="sm"
-            aria-controls="table"
-          ></b-pagination>
-          <CreateCaissierModal />
-          <AttribuerGuichetModal
-            v-if="attribution.modal"
-            v-model="attribution.modal"
-            :caissier="attribution.caissier"
-          />
-          <ShowCaissierModal v-if="show.modal" v-model="show.modal" :caissier="show.caissier" />
-        </b-card-text>
-      </b-card>
-    </b-overlay>
+        </div>
+        <hr class="mg-t-4" />
+        <b-form-input
+          id="filter-input"
+          v-model="filter"
+          type="search"
+          placeholder="Rechercher"
+          class="mg-y-10"
+          :debounce="500"
+        ></b-form-input>
+        <b-table
+          id="table"
+          class="table"
+          hover
+          small
+          bordered
+          primary-key="id"
+          :items="caissiers"
+          :fields="fields"
+          :current-page="currentPage"
+          :per-page="perPage"
+          responsive
+          empty-text="Tableau vide"
+          show-empty
+          :filter="filter"
+          @filtered="onFiltered"
+        >
+          <template #cell(ordre)="data">
+            {{ data.index + 1 }}
+          </template>
+          <template #cell(created_at)="data">
+            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
+          </template>
+          <template #cell(option)="data">
+            <a type="button" class="mr-1" @click="details(data.item)">
+              <feather title="visualiser" type="eye" size="20" stroke="indigo" />
+            </a>
+            <a type="button" class="mr-1" @click="attribuer(data.item)">
+              <feather title="attribuer" type="calendar" size="20" stroke="green" />
+            </a>
+            <nuxt-link :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
+              <feather title="modifier" type="edit" size="20" stroke="blue" />
+            </nuxt-link>
+          </template>
+          <template #empty="scope">
+            <h6 class="text-center text-muted pd-y-10">
+              {{ scope.emptyText }}
+            </h6>
+          </template>
+        </b-table>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          align="right"
+          size="sm"
+          aria-controls="table"
+        ></b-pagination>
+        <CreateCaissierModal />
+        <AttribuerGuichetModal
+          v-if="attribution.modal"
+          v-model="attribution.modal"
+          :caissier="attribution.caissier"
+        />
+        <ShowCaissierModal v-if="show.modal" v-model="show.modal" :caissier="show.caissier" />
+      </b-card-text>
+    </b-card>
   </div>
 </template>
 <script>
