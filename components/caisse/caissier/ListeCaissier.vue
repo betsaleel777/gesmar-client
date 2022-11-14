@@ -155,9 +155,11 @@ export default {
         this.loading = false
       })
     },
-    attribuer(caissier) {
-      this.attribution.caissier = caissier
-      this.attribution.modal = true
+    attribuer({ id }) {
+      this.getOne(id).then(({ caissier }) => {
+        this.attribution.caissier = caissier
+        this.attribution.modal = true
+      })
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

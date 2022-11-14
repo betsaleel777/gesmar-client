@@ -23,14 +23,14 @@
             <template #label> Choix du marche </template>
           </v-autocomplete>
           <v-autocomplete
-            v-model="attribution.guichet"
+            v-model="attribution.guichet_id"
             :items="setGuichets"
             item-text="nom"
             item-value="id"
             outlined
             dense
-            :error="errors.guichet.exist"
-            :error-messages="errors.guichet.message"
+            :error="errors.guichet_id.exist"
+            :error-messages="errors.guichet_id.message"
             :loading="loading"
           >
             <template #label>
@@ -79,6 +79,7 @@
               multiple
               scrollable
               color="primary"
+              :allowed-dates="allowedDates"
             >
               <v-spacer></v-spacer>
               <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
@@ -113,12 +114,12 @@ export default {
     loading: false,
     setGuichets: [],
     attribution: {
-      guichet: null,
+      guichet_id: null,
       dates: null,
-      caissier: null,
+      caissier_id: null,
     },
     errors: {
-      guichet: { exist: false, message: null },
+      guichet_id: { exist: false, message: null },
       dates: { exist: false, message: null },
     },
   }),
@@ -138,15 +139,18 @@ export default {
   },
   mounted() {
     this.getSites()
+    console.log(this.caissier)
   },
   methods: {
     ...mapActions({
       getSites: 'architecture/marche/getAll',
       allGuichets: 'caisse/guichet/getAll',
-      ajouter: 'caisse/attribution/ajouter',
+      attribuer: 'caisse/caissier/attribuer',
     }),
     save() {
-      this.ajouter(this.attribution)
+      // console.log(this.attribution)
+      this.attribution.caissier_id = this.caissier.id
+      this.attribuer(this.attribution)
         .then(({ message }) => {
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
@@ -173,6 +177,10 @@ export default {
       }
     },
     saveDates(dates) {},
+    allowedDates(val) {
+      const dates = this.caissier.attributions.map(({ pivot: { date } }) => date)
+      return !dates.includes(val)
+    },
   },
 }
 </script>
