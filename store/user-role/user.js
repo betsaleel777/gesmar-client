@@ -37,7 +37,7 @@ export const actions = {
   },
 
   async modifier({ dispatch }, payload) {
-    const requete = await this.$axios.put('parametre/users/' + payload.id, payload)
+    const requete = await this.$axios.put('api/parametres/users/' + payload.id, payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },

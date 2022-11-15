@@ -1,7 +1,7 @@
 <template>
   <b-modal id="modalEditGuichet" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Création de guichet</h5>
+      <h5 id="archiver" class="modal-title text-primary">Modifier guichet</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
