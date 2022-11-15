@@ -139,7 +139,6 @@ export default {
   },
   mounted() {
     this.getSites()
-    console.log(this.caissier)
   },
   methods: {
     ...mapActions({
