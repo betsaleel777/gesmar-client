@@ -106,7 +106,6 @@ export default {
   }),
   mounted() {
     this.utilisateur = this.profileData
-    console.log(this.baseURL + '/storage/' + this.utilisateur.avatar)
   },
   methods: {
     ...mapActions('user-role/user', ['profile']),

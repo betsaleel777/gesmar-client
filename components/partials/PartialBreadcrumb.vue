@@ -4,7 +4,7 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="/">Acceuil</a>
+            <nuxt-link to="/">Acceuil</nuxt-link>
           </li>
           <li
             v-for="(lien, index) in liens"
@@ -13,9 +13,7 @@
             :class="{ active: liens.length - 1 === index }"
             aria-current="page"
           >
-            <nuxt-link v-if="liens.length - 1 !== index" :to="lien.path">{{
-              lien.text
-            }}</nuxt-link>
+            <nuxt-link v-if="liens.length - 1 !== index" :to="lien.path">{{ lien.text }}</nuxt-link>
             <span v-else>{{ lien.text }}</span>
           </li>
         </ol>
