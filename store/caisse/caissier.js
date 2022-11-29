@@ -55,6 +55,12 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+
+  async desattribuer({ dispatch }, id) {
+    const requete = await this.$axios.delete('api/parametres/caissiers/desattribuer/' + id)
+    dispatch('getAll')
+    return { message: requete.data.message }
+  },
 }
 
 export const mutations = {

@@ -64,15 +64,6 @@
             size="sm"
             aria-controls="table"
           ></b-pagination>
-          <div>
-            <EditFactureAnnexeModal
-              :key="edit.modal"
-              v-model="edit.modal"
-              :current="edit.facture"
-              :contrats="contrats"
-              :personnes="personnes"
-            />
-          </div>
         </b-card-text>
       </b-card>
     </b-overlay>
