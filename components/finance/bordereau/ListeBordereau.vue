@@ -6,15 +6,6 @@
           <div class="">
             <feather
               v-b-tooltip.hover.top
-              title="créer"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="plus"
-              @click="$bvModal.show('modalCreateBordereau')"
-            />
-            <feather
-              v-b-tooltip.hover.top
               title="imprimer liste"
               class="btn btn-sm btn-primary btn-icon"
               stroke-width="2"
@@ -80,8 +71,7 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <ShowBordereauModal v-if="show.modal" :bordereau="show.bordereau" v-model="show.modal" />
-        <CreateBordereauModal />
+        <ShowBordereauModal v-if="show.modal" v-model="show.modal" :bordereau="show.bordereau" />
       </b-card-text>
     </b-card>
   </b-overlay>
@@ -89,12 +79,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ShowBordereauModal from './ShowBordereauModal.vue'
-import CreateBordereauModal from './CreateBordereauModal.vue'
 import { ATTRIBUTION } from '~/helper/constantes'
 export default {
   components: {
     ShowBordereauModal,
-    CreateBordereauModal,
   },
   data: () => ({
     fields: [
