@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { ATTRIBUTION } from '~/helper/constantes'
 export default {
   props: {
@@ -73,6 +74,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    attributions: [],
     fields: [
       'ordre',
       { key: 'emplacement.code', label: 'Emplacement', sortable: false },
@@ -99,11 +101,17 @@ export default {
         this.$emit('input', value)
       },
     },
-    attributions() {
-      return this.bordereau.attributions
-    },
+  },
+  mounted() {
+    this.getOne(this.bordereau.id).then(({ bordereau }) => {
+      this.attributions = bordereau.attributions
+      this.totalRows = bordereau.attributions.length
+    })
   },
   methods: {
+    ...mapActions({
+      getOne: 'finance/bordereau/getOne',
+    }),
     imprimer() {},
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

@@ -80,7 +80,7 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <ShowBordereauModal v-if="show.modal" v-model="show.modal" :bordereau="show.bordereau" />
+        <ShowBordereauModal v-if="show.modal" :bordereau="show.bordereau" v-model="show.modal" />
         <CreateBordereauModal />
       </b-card-text>
     </b-card>
@@ -119,7 +119,9 @@ export default {
     perPage: 10,
   }),
   fetch() {
-    this.getAll().then(() => this.bordereaux.length)
+    this.getAll().then(() => {
+      this.totalRows = this.bordereaux.length
+    })
   },
   computed: {
     ...mapGetters('finance/bordereau', ['bordereaux']),
@@ -130,11 +132,9 @@ export default {
       getOne: 'finance/bordereau/getOne',
     }),
     imprimer() {},
-    details({ id }) {
-      this.getOne(id).then(({ bordereau }) => {
-        this.show.bordereau = bordereau
-        this.show.modal = true
-      })
+    details({ id, code }) {
+      this.show.bordereau = { id, code }
+      this.show.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
