@@ -1,6 +1,6 @@
 <template>
   <b-overlay :show="$fetchState.pending" rounded="sm">
-    <b-card aria-hidden="true" header="Liste des Encaissements de bordereaux">
+    <b-card aria-hidden="true" header="Liste des Encaissements de Bordereaux">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
           <div class="">
@@ -56,7 +56,7 @@
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
           <template #cell(jour)="data">
-            {{ $moment(data.item.date_attribution).format('DD-MM-YYYY') }}
+            {{ $moment(data.item.jour).format('DD-MM-YYYY') }}
           </template>
           <template #cell(status)="data">
             <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
