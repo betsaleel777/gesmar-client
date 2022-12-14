@@ -10,9 +10,7 @@
       <form ref="form">
         <b-form-group label-for="prix_unitaire">
           <template #label>
-            <span class="form-label"
-              >Prix Unitaire <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Prix Unitaire <span class="text-danger">*</span></span>
           </template>
           <b-input-group>
             <b-form-input
@@ -23,24 +21,16 @@
               class="form-control"
             />
             <b-input-group-append>
-              <b-input-group-text class="bg-transparent font-weight-bold">
-                FCFA
-              </b-input-group-text>
+              <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.prix_unitaire.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.prix_unitaire.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.prix_unitaire.message }}</strong>
             </span>
           </b-input-group>
         </b-form-group>
         <b-form-group label-for="prix_fixe">
           <template #label>
-            <span class="form-label"
-              >Prix Fixe <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Prix Fixe <span class="text-danger">*</span></span>
           </template>
           <b-input-group label-for="prix_fixe">
             <b-form-input
@@ -51,24 +41,16 @@
               class="form-control"
             />
             <b-input-group-append>
-              <b-input-group-text class="bg-transparent font-weight-bold">
-                FCFA
-              </b-input-group-text>
+              <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.prix_fixe.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.prix_fixe.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.prix_unitaire.message }}</strong>
             </span>
           </b-input-group>
         </b-form-group>
         <b-form-group label-for="frais_facture">
           <template #label>
-            <span class="form-label"
-              >Frais Facture <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Frais Facture <span class="text-danger">*</span></span>
           </template>
           <b-input-group>
             <b-form-input
@@ -79,15 +61,9 @@
               class="form-control"
             />
             <b-input-group-append>
-              <b-input-group-text class="bg-transparent font-weight-bold">
-                FCFA
-              </b-input-group-text>
+              <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.frais_facture.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.frais_facture.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.prix_unitaire.message }}</strong>
             </span>
           </b-input-group>
@@ -150,12 +126,7 @@
           >
             <template #label> Choix de l'emplacement </template>
             <template #progress>
-              <v-progress-linear
-                v-if="loading"
-                indeterminate
-                color="primary"
-                absolute
-              ></v-progress-linear>
+              <v-progress-linear v-if="loading" indeterminate color="primary" absolute></v-progress-linear>
             </template>
           </v-autocomplete>
         </v-app>
@@ -163,17 +134,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -263,8 +225,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

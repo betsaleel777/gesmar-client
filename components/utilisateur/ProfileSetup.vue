@@ -1,8 +1,6 @@
 <template>
   <div id="paneProfile" class="tab-pane active">
-    <h6 class="tx-uppercase tx-semibold tx-color-01 mg-b-0">
-      Informations de profil
-    </h6>
+    <h6 class="tx-uppercase tx-semibold tx-color-01 mg-b-0">Informations de profil</h6>
     <hr />
     <div class="form-settings">
       <form enctype="multipart/form-data">
@@ -10,16 +8,11 @@
           <div v-if="!utilisateur.image" class="avatar avatar-xxl">
             <img
               v-if="utilisateur.avatar"
-              :src="baseURL + 'storage/' + utilisateur.avatar"
+              :src="baseURL + '/storage/' + utilisateur.avatar"
               class="rounded-circle"
-              alt=""
+              alt="image de profil"
             />
-            <img
-              v-else
-              src="https://via.placeholder.com/500/637382/fff"
-              class="rounded-circle"
-              alt=""
-            />
+            <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
           <ImagePreview v-model="utilisateur.image" />
           <label class="form-label mg-t-5">Nom complet</label>
@@ -34,8 +27,7 @@
             <strong>{{ errors.name.message }}</strong>
           </span>
           <div class="tx-11 tx-sans tx-color-04 mg-t-5">
-            Votre nom peut apparaître ici où on parle de vous. Vous pouvez le
-            modifier à tout moment.
+            Votre nom peut apparaître ici où on parle de vous. Vous pouvez le modifier à tout moment.
           </div>
         </div>
         <!-- form-group -->
@@ -66,23 +58,16 @@
             :class="{ 'is-invalid': errors.adresse.exist }"
             placeholder="Adresse utilisateur"
           />
-          <span
-            v-if="errors.adresse.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
+          <span v-if="errors.adresse.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.adresse.message }}</strong>
           </span>
         </div>
         <!-- form-group -->
         <div class="form-group tx-13 tx-color-04">
-          vous nous donnez votre consentement pour partager ces données où que
-          vous soyez.
+          vous nous donnez votre consentement pour partager ces données où que vous soyez.
         </div>
         <hr class="op-0" />
-        <button type="button" class="btn btn-brand-02" @click="save">
-          Modifier le profile
-        </button>
+        <button type="button" class="btn btn-brand-02" @click="save">Modifier le profile</button>
       </form>
     </div>
   </div>
@@ -117,7 +102,7 @@ export default {
       name: { exist: false, message: null },
       adresse: { exist: false, message: null },
     },
-    baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+    baseURL: process.env.API || 'http://localhost:8000/',
   }),
   mounted() {
     this.utilisateur = this.profileData

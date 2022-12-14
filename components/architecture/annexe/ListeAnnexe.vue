@@ -60,23 +60,16 @@
             :filter="filter"
             @filtered="onFiltered"
           >
-            <template #cell(index)="data">
+            <template #cell(ordre)="data">
               {{ data.index + 1 }}
             </template>
-            <template #cell(prix)="data">
-              {{ data.item.prix }} {{ data.item.mode }}
-            </template>
+            <template #cell(prix)="data"> {{ data.item.prix }} {{ data.item.mode }} </template>
             <template #cell(option)="data">
               <a type="button" @click="editer(data.item)">
                 <feather title="modifier" type="edit" size="20" stroke="blue" />
               </a>
               <a type="button" @click="dialoger(data.item)">
-                <feather
-                  title="archiver"
-                  type="trash-2"
-                  size="20"
-                  stroke="red"
-                />
+                <feather title="archiver" type="trash-2" size="20" stroke="red" />
               </a>
             </template>
             <template #empty="scope">
@@ -142,7 +135,8 @@ export default {
   },
   data: () => ({
     fields: [
-      'index',
+      'ordre',
+      { key: 'code', label: 'Code', sortable: false },
       { key: 'nom', label: 'Nom', sortable: true },
       {
         key: 'prix',

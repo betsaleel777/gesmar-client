@@ -1,14 +1,9 @@
 <template>
   <div class="signin-panel">
-    <!-- <svg-to-inline
-      path="http://themepixels.me/cassie/assets/svg/citywalk.svg"
-      class-name="svg-bg"
-    ></svg-to-inline> -->
+    <nuxt-img src="/images/bermuda-circle.svg" loading="lazy" class-name="svg-bg" />
     <div class="signin-sidebar">
       <div class="signin-sidebar-body">
-        <a href="dashboard-one.html" class="sidebar-logo mg-b-40"
-          ><span>Gesmar</span></a
-        >
+        <a href="dashboard-one.html" class="sidebar-logo mg-b-40"><span>Gesmar</span></a>
         <h4 class="signin-title">Bienvenue Gesmar</h4>
         <h5 class="signin-subtitle">Se Connectez</h5>
         <form @submit.prevent="login()">
@@ -22,11 +17,7 @@
                 :class="{ 'is-invalid': errors.email.exist }"
                 placeholder="Entrer votre adresse email"
               />
-              <span
-                v-if="errors.email.exist"
-                class="invalid-feedback"
-                role="alert"
-              >
+              <span v-if="errors.email.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.email.message }}</strong>
               </span>
             </div>
@@ -41,21 +32,12 @@
                 :class="{ 'is-invalid': errors.password.exist }"
                 placeholder="Entrer votre mot de passe"
               />
-              <span
-                v-if="errors.password.exist"
-                class="invalid-feedback"
-                role="alert"
-              >
+              <span v-if="errors.password.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.password.message }}</strong>
               </span>
             </div>
             <div class="form-group d-flex mg-b-0">
-              <button
-                type="submit"
-                class="btn btn-brand-01 btn-uppercase flex-fill"
-              >
-                Se connecter
-              </button>
+              <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill">Se connecter</button>
             </div>
           </div>
         </form>
@@ -69,7 +51,7 @@
 <script>
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 export default {
-  layout: 'vide',
+  layout: 'empty',
   data() {
     return {
       utilisateur: {
@@ -94,20 +76,23 @@ export default {
       ],
     }
   },
-  mounted() {
-    this.$axios.$get('/sanctum/csrf-cookie')
-  },
   methods: {
     login() {
       this.$auth
         .loginWith('laravelSanctum', { data: this.utilisateur })
         .then(() => {
           // this.$gates.setPermissions(this.profile.permissions)
-          this.$router.push('/')
+          // this.$router.push('/')
         })
         .catch((err) => {
           const { data } = err.response
-          if (data) {
+          if (data && data.credentials) {
+            this.$root.$bvToast.toast(data.message, {
+              title: "echec de l'opération".toLocaleUpperCase(),
+              variant: 'danger',
+              solid: true,
+            })
+          } else {
             errorsInitialise(this.errors)
             errorsWriting(data.errors, this.errors)
           }

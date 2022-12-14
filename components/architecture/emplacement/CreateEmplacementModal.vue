@@ -18,9 +18,7 @@
         <div class="row">
           <div class="col-md-6 col-sm-6">
             <div v-if="!automatiq" class="form-group">
-              <label class="form-label"
-                >Nom complet <span class="text-danger">*</span></label
-              >
+              <label class="form-label">Nom complet <span class="text-danger">*</span></label>
               <input
                 v-model="emplacement.nom"
                 type="text"
@@ -28,37 +26,25 @@
                 :class="{ 'is-invalid': errors.nom.exist }"
                 placeholder="Entrer votre nom complet"
               />
-              <span
-                v-if="errors.nom.exist"
-                class="invalid-feedback"
-                role="alert"
-              >
+              <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.nom.message }}</strong>
               </span>
             </div>
             <div v-else class="form-group">
-              <label class="form-label"
-                >Nombre d'emplacement <span class="text-danger">*</span></label
-              >
+              <label class="form-label">Nombre d'emplacement <span class="text-danger">*</span></label>
               <input
                 v-model="emplacement.nombre"
                 type="text"
                 class="form-control"
                 :class="{ 'is-invalid': errors.nombre.exist }"
               />
-              <span
-                v-if="errors.nombre.exist"
-                class="invalid-feedback"
-                role="alert"
-              >
+              <span v-if="errors.nombre.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.nombre.message }}</strong>
               </span>
             </div>
             <b-form-group label-for="superficie">
               <template #label>
-                <span class="form-label"
-                  >Superficie <span class="text-danger">*</span></span
-                >
+                <span class="form-label">Superficie <span class="text-danger">*</span></span>
               </template>
               <b-input-group>
                 <b-form-input
@@ -69,15 +55,9 @@
                   class="form-control"
                 />
                 <b-input-group-append>
-                  <b-input-group-text class="bg-transparent font-weight-bold">
-                    m²
-                  </b-input-group-text>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> m² </b-input-group-text>
                 </b-input-group-append>
-                <span
-                  v-if="errors.superficie.exist"
-                  class="invalid-feedback"
-                  role="alert"
-                >
+                <span v-if="errors.superficie.exist" class="invalid-feedback" role="alert">
                   <strong>{{ errors.superficie.message }}</strong>
                 </span>
               </b-input-group>
@@ -110,16 +90,9 @@
                 <span class="form-label">Caution </span>
               </template>
               <b-input-group>
-                <b-form-input
-                  id="caution"
-                  v-model="emplacement.caution"
-                  type="text"
-                  class="form-control"
-                />
+                <b-form-input id="caution" v-model="emplacement.caution" type="text" class="form-control" />
                 <b-input-group-append>
-                  <b-input-group-text class="bg-transparent font-weight-bold">
-                    Mois
-                  </b-input-group-text>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> Mois </b-input-group-text>
                 </b-input-group-append>
               </b-input-group>
             </b-form-group>
@@ -137,17 +110,13 @@
                   class="form-control"
                 />
                 <b-input-group-append>
-                  <b-input-group-text class="bg-transparent font-weight-bold">
-                    FCFA
-                  </b-input-group-text>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
                 </b-input-group-append>
               </b-input-group>
             </b-form-group>
             <b-form-group label-for="loyer">
               <template #label>
-                <span class="form-label"
-                  >Loyer <span class="text-danger">*</span></span
-                >
+                <span class="form-label">Loyer <span class="text-danger">*</span></span>
               </template>
               <b-input-group>
                 <b-form-input
@@ -158,15 +127,9 @@
                   class="form-control"
                 />
                 <b-input-group-append>
-                  <b-input-group-text class="bg-transparent font-weight-bold">
-                    FCFA
-                  </b-input-group-text>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
                 </b-input-group-append>
-                <span
-                  v-if="errors.loyer.exist"
-                  class="invalid-feedback"
-                  role="alert"
-                >
+                <span v-if="errors.loyer.exist" class="invalid-feedback" role="alert">
                   <strong>{{ errors.loyer.message }}</strong>
                 </span>
               </b-input-group>
@@ -196,17 +159,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -314,8 +268,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

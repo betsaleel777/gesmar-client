@@ -13,6 +13,18 @@ export const actions = {
     commit('SET_USERS', requete.data.users)
   },
 
+  async getUncommercials({ commit }) {
+    commit('SET_USERS', [])
+    const requete = await this.$axios.get('api/parametres/users/uncommercials')
+    commit('SET_USERS', requete.data.users)
+  },
+
+  async getUncashiers({ commit }) {
+    commit('SET_USERS', [])
+    const requete = await this.$axios.get('api/parametres/users/uncashiers')
+    commit('SET_USERS', requete.data.users)
+  },
+
   async getTrashAll({ commit }) {
     commit('SET_USERS', [])
     const requete = await this.$axios.get('api/parametres/users/trashed')
@@ -25,7 +37,7 @@ export const actions = {
   },
 
   async modifier({ dispatch }, payload) {
-    const requete = await this.$axios.put('parametre/users/' + payload.id, payload)
+    const requete = await this.$axios.put('api/parametres/users/' + payload.id, payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },
@@ -50,7 +62,6 @@ export const actions = {
 
   async profile({ dispatch }, payload) {
     const requete = await this.$axios.post('api/parametres/users/profile', payload)
-    dispatch('getAll')
     return { message: requete.data.message }
   },
 

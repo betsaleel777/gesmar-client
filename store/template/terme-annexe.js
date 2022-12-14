@@ -28,7 +28,7 @@ export const actions = {
 
   async getPdf({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/termes/annexes/pdf/' + id)
-    return { path: requete.data.pdf }
+    return { path: requete.data.path }
   },
 
   async modifier({ dispatch }, payload) {

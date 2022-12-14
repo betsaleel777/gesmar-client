@@ -27,17 +27,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -106,8 +97,4 @@ export default {
   },
 }
 </script>
-<style>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

@@ -5,18 +5,8 @@
       <div class="profile-sidebar">
         <div class="profile-sidebar-header">
           <div class="avatar">
-            <img
-              v-if="user.avatar"
-              :src="baseURL + 'storage/' + user.avatar"
-              class="rounded-circle"
-              alt=""
-            />
-            <img
-              v-else
-              src="https://via.placeholder.com/500/637382/fff"
-              class="rounded-circle"
-              alt=""
-            />
+            <img v-if="user.avatar" :src="baseURL + 'storage/' + user.avatar" class="rounded-circle" alt="" />
+            <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
           <h5>{{ user.name }}</h5>
           <p>UI Developer (Savior of Mankind)</p>
@@ -136,41 +126,21 @@
               <div class="stat-profile-body">
                 <div class="row row-xs">
                   <div class="col">
-                    <div
-                      class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-primary-light"
-                    >
-                      <h1
-                        class="tx-light tx-sans tx-spacing--4 tx-primary mg-b-5"
-                      >
-                        102
-                      </h1>
-                      <p class="tx-13 tx-lg-14 tx-color-02 mg-b-0">
-                        Your profile visitors
-                      </p>
+                    <div class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-primary-light">
+                      <h1 class="tx-light tx-sans tx-spacing--4 tx-primary mg-b-5">102</h1>
+                      <p class="tx-13 tx-lg-14 tx-color-02 mg-b-0">Your profile visitors</p>
                     </div>
                   </div>
                   <div class="col">
-                    <div
-                      class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-teal-light"
-                    >
-                      <h1 class="mg-b-5 tx-sans tx-spacing--2 tx-light tx-teal">
-                        961
-                      </h1>
-                      <p class="tx-13 tx-lg-14 tx-color-03 mg-b-0">
-                        Search appearances
-                      </p>
+                    <div class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-teal-light">
+                      <h1 class="mg-b-5 tx-sans tx-spacing--2 tx-light tx-teal">961</h1>
+                      <p class="tx-13 tx-lg-14 tx-color-03 mg-b-0">Search appearances</p>
                     </div>
                   </div>
                   <div class="col">
-                    <div
-                      class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-pink-light"
-                    >
-                      <h1 class="mg-b-5 tx-sans tx-spacing--2 tx-light tx-pink">
-                        665
-                      </h1>
-                      <p class="tx-13 tx-lg-14 tx-color-03 mg-b-0">
-                        Your activity views
-                      </p>
+                    <div class="card card-body pd-10 pd-md-15 bd-0 shadow-none bg-pink-light">
+                      <h1 class="mg-b-5 tx-sans tx-spacing--2 tx-light tx-pink">665</h1>
+                      <p class="tx-13 tx-lg-14 tx-color-03 mg-b-0">Your activity views</p>
                     </div>
                   </div>
                 </div>
@@ -182,16 +152,12 @@
 
             <hr class="mg-y-15 op-0" />
 
-            <label class="content-label content-label-lg mg-b-15 tx-color-01"
-              >Description</label
-            >
+            <label class="content-label content-label-lg mg-b-15 tx-color-01">Description</label>
             <p class="tx-color-03">{{ user.description }}</p>
 
             <hr class="mg-y-15 op-0" />
 
-            <label class="content-label content-label-lg mg-b-15 tx-color-01"
-              >Work Experience</label
-            >
+            <label class="content-label content-label-lg mg-b-15 tx-color-01">Work Experience</label>
             <ul class="list-unstyled media-list-profile">
               <li class="media">
                 <div class="wd-40 ht-40 bg-teal op-5"></div>
@@ -199,9 +165,8 @@
                   <h6 class="mg-b-5 tx-semibold">Themepixels, Inc. LTD</h6>
                   <p class="tx-color-03 tx-13">January 2016 - Present</p>
                   <p>
-                    An online-based high performing web and mobile development
-                    company, with a passion for making high quality web-based
-                    application and services for businesses and organization.
+                    An online-based high performing web and mobile development company, with a passion for
+                    making high quality web-based application and services for businesses and organization.
                   </p>
                 </div>
               </li>
@@ -224,36 +189,26 @@
 
             <hr class="mg-y-15 op-0" />
 
-            <label class="content-label content-label-lg mg-b-15 tx-color-01"
-              >Educational Background</label
-            >
+            <label class="content-label content-label-lg mg-b-15 tx-color-01">Educational Background</label>
             <ul class="list-unstyled media-list-profile">
               <li class="media">
                 <div class="wd-40 ht-40 bg-gray-400"></div>
                 <div class="media-body">
-                  <h6 class="mg-b-5 tx-semibold">
-                    Graduate in BS in Computer Science
-                  </h6>
-                  <p class="tx-color-03 tx-13">
-                    Hold Name University class 2006
-                  </p>
+                  <h6 class="mg-b-5 tx-semibold">Graduate in BS in Computer Science</h6>
+                  <p class="tx-color-03 tx-13">Hold Name University class 2006</p>
                 </div>
               </li>
               <li class="media">
                 <div class="wd-40 ht-40 bg-gray-400"></div>
                 <div class="media-body">
                   <h6 class="mg-b-5 tx-semibold">Sacred Heart Academy</h6>
-                  <p class="tx-color-03 tx-13">
-                    High school graduate class 2002
-                  </p>
+                  <p class="tx-color-03 tx-13">High school graduate class 2002</p>
                 </div>
               </li>
               <li class="media">
                 <div class="wd-40 ht-40 bg-gray-400"></div>
                 <div class="media-body">
-                  <h6 class="mg-b-5 tx-semibold">
-                    Loon Central Elementary School
-                  </h6>
+                  <h6 class="mg-b-5 tx-semibold">Loon Central Elementary School</h6>
                   <p class="tx-color-03 tx-13">Elmentary graduate class 1998</p>
                 </div>
               </li>
@@ -274,7 +229,7 @@ export default {
     PartialBreadcrumb,
   },
   data: () => ({
-    baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+    baseURL: process.env.API || 'http://localhost:8000/',
   }),
   computed: {
     liens() {

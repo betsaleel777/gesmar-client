@@ -26,6 +26,10 @@ const ANNEXE = Object.freeze({
   mensuel: 'par mois',
   forfait: 'forfaitaire',
 })
+const ATTRIBUTION = Object.freeze({
+  cashed: 'encaissé',
+  uncashed: 'non encaissé',
+})
 const CONTRAT = Object.freeze({
   status: {
     validated: 'validé',
@@ -61,4 +65,5 @@ module.exports = {
   FACTURE,
   EMPLACEMENT,
   ORDONNANCEMENT,
+  ATTRIBUTION,
 }

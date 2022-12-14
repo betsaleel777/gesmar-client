@@ -1,9 +1,7 @@
 <template>
   <b-modal id="modalEditAnnexe" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">
-        Modifier le service {{ annexe.nom }}
-      </h5>
+      <h5 class="modal-title text-primary">Modifier le service {{ annexe.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -41,9 +39,7 @@
         </v-app>
         <b-form-group label-for="prix">
           <template #label>
-            <span class="form-label"
-              >Prix <span class="text-danger">*</span></span
-            >
+            <span class="form-label">Prix <span class="text-danger">*</span></span>
           </template>
           <b-input-group>
             <b-form-input
@@ -58,23 +54,14 @@
                 FCFA {{ suffix }}
               </b-input-group-text>
             </b-input-group-append>
-            <span
-              v-if="errors.prix.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.prix.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.prix.message }}</strong>
             </span>
           </b-input-group>
         </b-form-group>
         <div class="form-group">
           <label class="form-label">Description</label>
-          <textarea
-            v-model="annexe.description"
-            class="form-control"
-            cols="30"
-            rows="5"
-          ></textarea>
+          <textarea v-model="annexe.description" class="form-control" cols="30" rows="5"></textarea>
         </div>
         <v-app>
           <v-autocomplete
@@ -96,17 +83,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="close"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -209,8 +187,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

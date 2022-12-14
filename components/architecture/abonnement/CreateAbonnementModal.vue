@@ -89,11 +89,19 @@
               Selection des équipements
               <span class="red--text"><strong>* </strong></span>
             </template>
-            <template #selection="{ item, index }">
-              <v-chip v-if="index < 2" small close @click:close="remove(index)">
-                <span>{{ item.code }}</span>
+            <template #selection="data">
+              <v-chip
+                v-if="data.index < 2"
+                small
+                close
+                v-bind="data.attrs"
+                :input-value="data.selected"
+                @click="data.select"
+                @click:close="supprimer(data.item)"
+              >
+                <span>{{ data.item.code }}</span>
               </v-chip>
-              <span v-if="index === 2" class="grey--text text-caption">
+              <span v-if="data.index === 2" class="grey--text text-caption">
                 (+{{ selected.length - 2 }} autres)
               </span>
             </template>
@@ -134,7 +142,7 @@
 import { isNull } from 'url/util'
 import { mapActions } from 'vuex'
 import { EQUIPEMENT } from '~/helper/constantes'
-// eslint-disable-next-line no-unused-vars
+import { remove } from '~/helper/helpers'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 let message = ''
 export default {
@@ -236,12 +244,8 @@ export default {
         })
       }
     },
-    remove(index) {
-      const indexFound = this.abonnement.equipements.findIndex(
-        (equipement) => equipement.id === this.selected[index].id
-      )
-      this.abonnement.equipements.splice(indexFound, 1)
-      this.selected.splice(index, 1)
+    supprimer(item) {
+      remove(item, this.selected, this.abonnement.equipements)
     },
     close() {
       this.reset()
@@ -262,8 +266,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.v-application--wrap {
-  min-height: fit-content;
-}
-</style>
+<style scoped></style>

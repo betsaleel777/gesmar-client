@@ -9,15 +9,8 @@
     <template #default>
       <form ref="form" enctype="multipart/form-data">
         <div class="form-group required">
-          <ImagePreview
-            v-model="utilisateur.avatar"
-            :error-state="errors.avatar.exist"
-          />
-          <div
-            v-if="errors.avatar.exist"
-            class="text-danger text-thin"
-            role="alert"
-          >
+          <ImagePreview v-model="utilisateur.avatar" :error-state="errors.avatar.exist" />
+          <div v-if="errors.avatar.exist" class="text-danger text-thin" role="alert">
             <strong>{{ errors.avatar.message }}</strong>
           </div>
           <label class="form-label mg-t-10">Nom complet</label>
@@ -41,11 +34,7 @@
             :class="{ 'is-invalid': errors.password.exist }"
             placeholder="Entrer votre mot de passe"
           />
-          <span
-            v-if="errors.password.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
+          <span v-if="errors.password.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.password.message }}</strong>
           </span>
         </div>
@@ -80,11 +69,7 @@
             :class="{ 'is-invalid': errors.adresse.exist }"
             placeholder="Entrer votre adresse"
           />
-          <span
-            v-if="errors.adresse.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
+          <span v-if="errors.adresse.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.adresse.message }}</strong>
           </span>
         </div>
@@ -101,23 +86,14 @@
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
 <script>
 import { mapActions } from 'vuex'
-import ImagePreview from '../tools/ImagePreview.vue'
+import ImagePreview from '~/components/tools/ImagePreview.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   components: {

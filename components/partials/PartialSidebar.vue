@@ -51,11 +51,16 @@
                 to="/finance/facture"
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'finance-facture' }"
-                >Facturation Générale</nuxt-link
+                >Facturation</nuxt-link
               >
             </nav>
             <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link">Recettes & Dépenses</nuxt-link>
+              <nuxt-link
+                to="/finance/bordereau"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'finance-bordereau' }"
+                >Bordereaux</nuxt-link
+              >
             </nav>
           </li>
           <!-- <li
@@ -148,6 +153,14 @@
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'parametre-template' }"
                 >Gabaris de documents</nuxt-link
+              >
+            </nav>
+            <nav class="nav nav-sub">
+              <nuxt-link
+                to="/parametre/caisse"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'parametre-caisse' }"
+                >Caisse</nuxt-link
               >
             </nav>
           </li>

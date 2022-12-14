@@ -2,24 +2,22 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="col-md-12 col-sm-12">
-      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
-        <b-overlay :show="$fetchState.pending" rounded="sm">
-          <b-tab title="Tableau" :title-link-class="linkClass(0)">
-            <TableauFacture />
-          </b-tab>
-          <b-tab title="Factures Initiales" :title-link-class="linkClass(1)">
-            <ListeFactureInitiale :factures="initiales" />
-          </b-tab>
-          <b-tab title="Factures Loyer" :title-link-class="linkClass(2)">
-            <ListeFactureLoyer :factures="loyers" :contrats="contrats" :personnes="personnes" />
-          </b-tab>
-          <b-tab title="Factures Annexes" :title-link-class="linkClass(3)">
-            <ListeFactureAnnexe :factures="annexes" :contrats="contrats" :personnes="personnes" />
-          </b-tab>
-          <b-tab title="Factures Equipements" :title-link-class="linkClass(4)">
-            <ListeFactureEquipement :factures="equipements" :contrats="contrats" :personnes="personnes" />
-          </b-tab>
-        </b-overlay>
+      <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
+        <b-tab title="Tableau" :title-link-class="linkClass(0)">
+          <TableauFacture />
+        </b-tab>
+        <b-tab title="Factures Initiales" :title-link-class="linkClass(1)">
+          <ListeFactureInitiale />
+        </b-tab>
+        <b-tab title="Factures Loyer" :title-link-class="linkClass(2)">
+          <ListeFactureLoyer />
+        </b-tab>
+        <b-tab title="Factures Annexes" :title-link-class="linkClass(3)">
+          <ListeFactureAnnexe />
+        </b-tab>
+        <b-tab title="Factures Equipements" :title-link-class="linkClass(4)">
+          <ListeFactureEquipement />
+        </b-tab>
       </b-tabs>
     </div>
     <!-- content-right -->
@@ -47,8 +45,6 @@ export default {
     tabIndex: 0,
   }),
   fetch() {
-    this.getFacturesInitiales()
-    this.getFacturesLoyers()
     this.getFacturesEquipements()
     this.getFacturesAnnexes()
     this.getContrats()
@@ -56,8 +52,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      initiales: 'facture/initiale/factures',
-      loyers: 'facture/loyer/factures',
       equipements: 'facture/equipement/factures',
       annexes: 'facture/annexe/factures',
       contrats: 'exploitation/contrat/contrats',
@@ -66,8 +60,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      getFacturesInitiales: 'facture/initiale/getAll',
-      getFacturesLoyers: 'facture/loyer/getAll',
       getFacturesEquipements: 'facture/equipement/getAll',
       getFacturesAnnexes: 'facture/annexe/getAll',
       getContrats: 'exploitation/contrat/getAll',

@@ -24,6 +24,11 @@ export const actions = {
     return requete.data
   },
 
+  async getByMarche({ commit }, id) {
+    const requete = await this.$axios.get('api/parametres/zones/marche/' + id)
+    return requete.data
+  },
+
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/parametres/zones/' + payload.id, payload)
     dispatch('getAll')

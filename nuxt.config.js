@@ -51,7 +51,6 @@ export default {
   plugins: [
     '~/plugins/feather.js',
     '~/plugins/perfect-scrollbar.js',
-    '~/plugins/unicons',
     '~/plugins/user.js',
     '~/plugins/vue-gates',
   ],
@@ -79,6 +78,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxt/image',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -98,16 +98,12 @@ export default {
         provider: 'laravel/sanctum',
         url: process.env.API,
         endpoints: {
-          login: { url: '/login', method: 'post' },
+          login: { url: '/api/login' },
           logout: { url: '/api/logout', method: 'post' },
         },
       },
     },
-    redirect: {
-      home: false,
-      login: '/login',
-    },
-    plugins: ['~/plugins/auth.js'],
+    plugins: ['~/plugins/currency.js', '~/plugins/axios.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

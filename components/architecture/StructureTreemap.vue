@@ -1,5 +1,7 @@
 <template>
-  <div id="treemap" style="width: 900px; height: 400px"></div>
+  <div>
+    <div v-if="structure.length > 0" id="treemap" style="width: 900px; height: 400px"></div>
+  </div>
 </template>
 
 <script>
@@ -36,7 +38,9 @@ export default {
     },
   },
   mounted() {
-    this.drawChart()
+    if (this.structure.length > 0) {
+      this.drawChart()
+    }
   },
   methods: {
     drawChart() {
