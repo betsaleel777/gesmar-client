@@ -23,6 +23,21 @@
             <span class="red--text"><strong>* </strong></span>
           </template>
         </v-autocomplete>
+        <v-autocomplete
+          v-model="commercial.site_id"
+          :items="marches"
+          item-text="nom"
+          item-value="id"
+          outlined
+          dense
+          :error="errors.site_id.exist"
+          :error-messages="errors.site_id.message"
+        >
+          <template #label>
+            Choix du marché
+            <span class="red--text"><strong>* </strong></span>
+          </template>
+        </v-autocomplete>
       </v-app>
     </template>
     <template #modal-footer>
@@ -35,24 +50,32 @@
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
-  components: {},
   data: () => ({
     commercial: {
       user_id: null,
+      site_id: null,
     },
     errors: {
       user_id: { exist: false, message: null },
+      site_id: { exist: false, message: null },
     },
   }),
   computed: {
-    ...mapGetters('user-role/user', ['users']),
+    ...mapGetters({
+      users: 'user-role/user/users',
+      marches: 'architecture/marche/marches',
+    }),
   },
-  mounted() {
-    this.getUncommercials()
+  async mounted() {
+    await this.getUncommercials()
+    await this.getSites()
   },
   methods: {
-    ...mapActions('finance/commercial', ['ajouter']),
-    ...mapActions('user-role/user', ['getUncommercials']),
+    ...mapActions({
+      ajouter: 'finance/commercial/ajouter',
+      getUncommercials: 'user-role/user/getUncommercials',
+      getSites: 'architecture/marche/getAll',
+    }),
     save() {
       this.ajouter(this.commercial)
         .then(({ message }) => {
@@ -74,6 +97,7 @@ export default {
     reset() {
       this.commercial = {
         user_id: null,
+        site_id: null,
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateCommercial')

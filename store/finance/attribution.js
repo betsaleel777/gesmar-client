@@ -1,10 +1,14 @@
 export const state = () => ({
   attributions: [],
+  emplacements: [],
 })
 
 export const getters = {
   attributions: (state) => {
     return state.attributions
+  },
+  emplacements: (state) => {
+    return state.emplacements
   },
 }
 
@@ -25,6 +29,14 @@ export const actions = {
     commit('SET_ATTRIBUTION', [])
     const requete = await this.$axios.get('api/finances/attributions/trashed')
     commit('SET_ATTRIBUTION', requete.data.attributions)
+  },
+
+  async getAllAttribuated({ commit }, payload) {
+    commit('SET_EMPLACEMENT', [])
+    const requete = await this.$axios.get(
+      `api/finances/attributions/attribuated/${payload.date}/${payload.commercial}`
+    )
+    commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
   async getOne({ commit }, id) {
@@ -66,5 +78,8 @@ export const actions = {
 export const mutations = {
   SET_ATTRIBUTION(state, attributions) {
     state.attributions = attributions
+  },
+  SET_EMPLACEMENT(state, emplacements) {
+    state.emplacements = emplacements
   },
 }

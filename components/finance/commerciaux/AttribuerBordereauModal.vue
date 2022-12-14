@@ -14,53 +14,58 @@
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
         <v-form>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="attribution.jour"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-            class="mb-5"
+          <v-autocomplete
+            v-model="attribution.bordereau"
+            :items="bordereaux"
+            item-text="code"
+            item-value="id"
+            :disabled="disabled.bordereau"
+            outlined
+            dense
+            clearable
+            @change="onBordereauSelected"
+            @click:clear="onBordereauClear"
           >
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                v-model="attribution.jour"
-                label="Dates d'attribution"
-                prepend-icon="mdi-calendar"
-                readonly
-                :error="errors.jour.exist"
-                :error-messages="errors.jour.message"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <template #label>
-                  Dates d'attribution<span class="red--text"><strong>* </strong></span>
-                </template>
-              </v-text-field>
-            </template>
-            <v-date-picker v-model="attribution.jour" locale="fr" no-title scrollable color="primary">
-              <v-spacer></v-spacer>
-              <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
-              <v-btn text color="primary" @click="saveDate(attribution.jour)"> OK </v-btn>
-            </v-date-picker>
-          </v-menu>
+            <template #label> Bordereau </template>
+          </v-autocomplete>
           <v-row>
             <v-col cols="5">
-              <v-autocomplete
-                v-model="marche"
-                :items="marches"
-                item-text="nom"
-                item-value="id"
-                outlined
-                dense
-                :disabled="disabled"
-                @change="getZones"
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                :return-value.sync="attribution.jour"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+                class="mb-5"
               >
-                <template #label> Choix du marche </template>
-              </v-autocomplete>
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="attribution.jour"
+                    label="Dates d'attribution"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    :disabled="disabled.date"
+                    dense
+                    :error="errors.jour.exist"
+                    :error-messages="errors.jour.message"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <template #label>
+                      Dates d'attribution<span class="red--text"><strong>* </strong></span>
+                    </template>
+                  </v-text-field>
+                </template>
+                <v-date-picker v-model="attribution.jour" locale="fr" no-title scrollable color="primary">
+                  <v-spacer></v-spacer>
+                  <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
+                  <v-btn text color="primary" @click="saveDate(attribution.jour)"> OK </v-btn>
+                </v-date-picker>
+              </v-menu>
             </v-col>
             <v-col cols="7">
               <v-autocomplete
@@ -71,10 +76,10 @@
                 multiple
                 dense
                 small-chips
+                :disabled="disabled.zone"
                 :error="errors.zones.exist"
                 :error-messages="errors.zones.message"
                 :loading="loading"
-                :disabled="disabled"
               >
                 <template #label>
                   Choix des zones
@@ -143,7 +148,6 @@
   </b-modal>
 </template>
 <script>
-import { isNullOrUndefined } from 'url/util'
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
@@ -156,16 +160,21 @@ export default {
   },
   data: () => ({
     menu: null,
-    marche: null,
     zones: [],
     loading: false,
     overlay: false,
     emplacementsByZones: [],
+    disabled: {
+      date: false,
+      zone: false,
+      bordereau: false,
+    },
     attribution: {
       zones: [],
       jour: null,
       emplacements: [],
       commercial: null,
+      bordereau: null,
     },
     headers: [
       { text: "Code d'emplacement", value: 'code' },
@@ -181,6 +190,7 @@ export default {
   }),
   computed: {
     ...mapGetters({
+      bordereaux: 'finance/bordereau/bordereaux',
       marches: 'architecture/marche/marches',
       emplacements: 'architecture/emplacement/emplacements',
     }),
@@ -191,12 +201,9 @@ export default {
       if (this.attribution.jour) {
         const notUsables = this.commercial.attributions
           .filter(({ jour }) => this.attribution.jour === jour)
-          .map(({ id }) => id)
+          .map(({ emplacement_id: id }) => id)
         return this.emplacements.filter(({ id }) => !notUsables.includes(id))
       } else return this.emplacements
-    },
-    disabled() {
-      return isNullOrUndefined(this.attribution.jour)
     },
     dialog: {
       get() {
@@ -210,12 +217,15 @@ export default {
   async mounted() {
     this.overlay = true
     this.attribution.commercial = this.commercial.id
+    await this.getBordereaux()
     await this.getSites()
     await this.getEmplacements()
+    await this.getZones()
     this.overlay = false
   },
   methods: {
     ...mapActions({
+      getBordereaux: 'finance/bordereau/getAll',
       getSites: 'architecture/marche/getAll',
       getZonesByMarche: 'architecture/zone/getByMarche',
       getEmplacements: 'architecture/emplacement/getAutoAll',
@@ -260,17 +270,31 @@ export default {
       this.emplacementsByZones = this.emplacementsByZones.filter(({ zone_id: id }) => id !== item.id)
     },
     getZones() {
-      if (this.marche) {
-        this.loading = true
-        this.getZonesByMarche(this.marche).then(({ zones }) => {
-          this.zones = zones
-          this.loading = false
-        })
+      this.loading = true
+      this.getZonesByMarche(this.commercial.site_id).then(({ zones }) => {
+        this.zones = zones
+        this.loading = false
+      })
+    },
+    onBordereauSelected() {
+      if (this.attribution.bordereau) {
+        this.disabled.date = true
+        const jour = this.bordereaux
+          .filter(({ id }) => id === this.attribution.bordereau)
+          .at(0).date_attribution
+        this.attribution.jour = jour
+        this.saveDate(jour)
       }
+    },
+    onBordereauClear() {
+      this.disabled.date = false
+      this.attribution.jour = null
+      this.attribution.zones = []
+      this.attribution.emplacements = []
+      this.emplacementsByZones = []
     },
     saveDate(value) {
       this.$refs.menu.save(value)
-      this.marche = null
       this.attribution.zones = []
       this.attribution.emplacements = []
       this.emplacementsByZones = []
