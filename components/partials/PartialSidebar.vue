@@ -62,6 +62,14 @@
                 >Bordereaux</nuxt-link
               >
             </nav>
+            <nav class="nav nav-sub">
+              <nuxt-link
+                to="/finance/caisse"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'finance-caisse' }"
+                >Caisse</nuxt-link
+              >
+            </nav>
           </li>
           <!-- <li
             class="nav-item"
