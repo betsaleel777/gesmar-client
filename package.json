@@ -20,6 +20,8 @@
     "core-js": "^3.19.3",
     "echarts": "^5.3.3",
     "feather-icons": "4",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.28",
     "nuxt": "^2.15.8",
     "quill-image-drop-module": "^1.0.3",
     "randomstring": "^1.2.2",
