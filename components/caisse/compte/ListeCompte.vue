@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card aria-hidden="true" header="Liste des Banques">
+    <b-card aria-hidden="true" header="Liste des Comptes">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
           <div class="">
@@ -11,7 +11,7 @@
               stroke-width="2"
               size="18"
               type="plus"
-              @click="$bvModal.show('modalCreateBanque')"
+              @click="$bvModal.show('modalCreateCompte')"
             />
             <feather
               v-b-tooltip.hover.top
@@ -40,12 +40,12 @@
           small
           bordered
           primary-key="id"
-          :items="banques"
+          :items="comptes"
           :fields="fields"
           :current-page="currentPage"
           :per-page="perPage"
           responsive
-          empty-text="Aucune banque"
+          empty-text="Aucune compte"
           show-empty
           :filter="filter"
           @filtered="onFiltered"
@@ -76,9 +76,9 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <CreateBanqueModal />
+        <CreateCompteModal />
         <div>
-          <EditBanqueModal v-if="edit.modal" v-model="edit.modal" :current="edit.banque" />
+          <EditCompteModal v-if="edit.modal" v-model="edit.modal" :current="edit.compte" />
         </div>
       </b-card-text>
     </b-card>
@@ -86,12 +86,12 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import CreateBanqueModal from './CreateBanqueModal.vue'
-import EditBanqueModal from './EditBanqueModal.vue'
+import CreateCompteModal from './CreateCompteModal.vue'
+import EditCompteModal from './EditCompteModal.vue'
 export default {
   components: {
-    CreateBanqueModal,
-    EditBanqueModal,
+    CreateCompteModal,
+    EditCompteModal,
   },
   data: () => ({
     fields: [
@@ -108,31 +108,31 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, banque: {} },
+    edit: { modal: false, compte: {} },
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
   fetch() {
-    this.getBanques().then(() => {
-      this.totalRows = this.banques.length
+    this.getComptes().then(() => {
+      this.totalRows = this.comptes.length
     })
   },
   computed: {
-    ...mapGetters({ banques: 'caisse/banque/banques' }),
+    ...mapGetters({ comptes: 'caisse/compte/comptes' }),
   },
   methods: {
     ...mapActions({
-      getOne: 'caisse/banque/getOne',
-      getBanques: 'caisse/banque/getAll',
+      getOne: 'caisse/compte/getOne',
+      getComptes: 'caisse/compte/getAll',
     }),
     imprimer() {},
     editer({ id }) {
-      this.getOne(id).then(({ banque }) => {
+      this.getOne(id).then(({ compte }) => {
         this.edit.modal = true
-        this.edit.banque = banque
-        this.$bvModal.show('modalEditBanque')
+        this.edit.compte = compte
+        this.$bvModal.show('modalEditCompte')
       })
     },
     onFiltered(filteredItems) {

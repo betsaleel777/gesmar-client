@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>Fermeture de caisse</div>
 </template>
 
 <script>

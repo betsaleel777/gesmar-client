@@ -1,7 +1,7 @@
 <template>
-  <b-modal id="modalEditBanque" v-model="dialog" scrollable>
+  <b-modal id="modalEditCompte" v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Modifier Banque</h5>
+      <h5 id="archiver" class="modal-title text-primary">Modifier Compte</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -9,9 +9,9 @@
     <template #default>
       <form ref="form">
         <div class="form-group required">
-          <label class="form-label">Nom de Banque<span class="text-danger">*</span></label>
+          <label class="form-label mg-t-10">Nom de Banque<span class="text-danger">*</span></label>
           <input
-            v-model="banque.nom"
+            v-model="compte.nom"
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errors.nom.exist }"
@@ -22,13 +22,13 @@
           </span>
         </div>
         <div class="form-group required">
-          <label class="form-label">Code de Banque<span class="text-danger">*</span></label>
+          <label class="form-label mg-t-10">Code du compte<span class="text-danger">*</span></label>
           <input
-            v-model="banque.code"
+            v-model="compte.code"
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errors.code.exist }"
-            placeholder="Entrer le code de la banque"
+            placeholder="Entrer le code du modalCreateCompte"
           />
           <span v-if="errors.code.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.code.message }}</strong>
@@ -36,7 +36,7 @@
         </div>
         <v-app>
           <v-autocomplete
-            v-model="banque.site_id"
+            v-model="compte.site_id"
             :items="marches"
             item-text="nom"
             item-value="id"
@@ -71,7 +71,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
-    banque: {
+    compte: {
       nom: '',
       code: '',
       site_id: null,
@@ -95,14 +95,14 @@ export default {
   },
   mounted() {
     this.getSites()
-    this.banque = Object.assign({}, this.current)
+    this.compte = Object.assign({}, this.current)
   },
   methods: {
-    ...mapActions({ modifier: 'caisse/banque/modifier', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({ modifier: 'caisse/compte/modifier', getSites: 'architecture/marche/getAll' }),
     save() {
-      this.modifier(this.banque)
+      this.modifier(this.compte)
         .then(({ message }) => {
-          this.$bvModal.hide('modalEditBanque')
+          this.$bvModal.hide('modalEditCompte')
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -118,13 +118,13 @@ export default {
         })
     },
     close() {
-      this.banque = {
+      this.compte = {
         nom: '',
         code: '',
         site_id: null,
       }
       errorsInitialise(this.errors)
-      this.$bvModal.hide('modalEditBanque')
+      this.$bvModal.hide('modalEditCompte')
     },
   },
 }

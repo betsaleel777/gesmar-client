@@ -29,6 +29,11 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+
+  async ouvertureExists({ dispatch }, caissier) {
+    const requete = await this.$axios.get('api/finances/caisses/ouvertures/exists/' + caissier)
+    return Boolean(requete.data.exists)
+  },
 }
 
 export const mutations = {

@@ -28,7 +28,7 @@ import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import TableauCaisse from '~/components/finance/caisse/TableauCaisse.vue'
 import ListeOuverture from '~/components/finance/caisse/ouverture/ListeOuverture.vue'
 import ListeFermeture from '~/components/finance/caisse/fermeture/ListeFermeture.vue'
-import ListeEncaissement from '~/components/finance/caisse/ListeEncaissement.vue'
+import ListeEncaissement from '~/components/finance/caisse/encaissement/ListeEncaissement.vue'
 import ListePoint from '~/components/finance/caisse/point/ListePoint.vue'
 export default {
   components: {
