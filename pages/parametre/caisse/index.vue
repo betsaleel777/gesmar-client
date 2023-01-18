@@ -9,8 +9,11 @@
         <b-tab title="Caissiers" :title-link-class="linkClass(1)">
           <ListeCaissier />
         </b-tab>
-        <b-tab title="Compte" :title-link-class="linkClass(2)">
+        <b-tab title="Comptes" :title-link-class="linkClass(2)">
           <ListeCompte />
+        </b-tab>
+        <b-tab title="Banques" :title-link-class="linkClass(3)">
+          <ListeBanque />
         </b-tab>
       </b-tabs>
     </div>
@@ -22,12 +25,14 @@ import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import ListeCaissier from '~/components/caisse/caissier/ListeCaissier.vue'
 import ListeGuichet from '~/components/caisse/guichet/ListeGuichet.vue'
 import ListeCompte from '~/components/caisse/compte/ListeCompte.vue'
+import ListeBanque from '~/components/caisse/banque/ListeBanque.vue'
 export default {
   components: {
     PartialBreadcrumb,
     ListeCaissier,
     ListeGuichet,
     ListeCompte,
+    ListeBanque,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Caisse' }],

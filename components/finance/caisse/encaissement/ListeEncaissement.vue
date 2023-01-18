@@ -11,7 +11,7 @@
               stroke-width="2"
               size="18"
               type="plus"
-              @click="$bvModal.show('modalCreateEncaissement')"
+              @click="dialog = true"
             />
             <feather
               v-b-tooltip.hover.top
@@ -54,9 +54,12 @@
           <template #cell(ordre)="data">
             {{ data.index + 1 }}
           </template>
+          <template #cell(payable_type)="data">
+            {{ data.item.payable_type.split('\\')[3] }}
+          </template>
           <template #cell(option)="data">
             <a type="button" @click="detail(data.item)">
-              <feather title="eye" type="edit" size="20" stroke="blue" />
+              <feather title="eye" type="eye" size="20" stroke="indigo" />
             </a>
           </template>
           <template #cell(created_at)="data">
@@ -77,7 +80,7 @@
           size="sm"
           aria-controls="table"
         ></b-pagination>
-        <CreateEncaissement />
+        <CreateEncaissement v-model="dialog" />
         <ShowEncaissementModal v-if="show.modal" v-model="show.modal" :current="show.encaissement" />
       </b-card-text>
     </b-card>
@@ -98,7 +101,30 @@ export default {
       'ordre',
       { key: 'ordonnancement.code', label: 'Code' },
       { key: 'caissier.user.name', label: 'Caissier' },
-      { key: 'payable', label: 'Payement' },
+      { key: 'payable_type', label: 'Payement' },
+      {
+        key: 'montant',
+        label: 'Montant à payer',
+        formatter: (value, key, item) => {
+          return item.payable_type.split('\\')[3] === 'Espece' ? item.payable.montant : item.payable.valeur
+        },
+      },
+      {
+        key: 'versement',
+        label: 'Montant versé',
+        formatter: (value, key, item) => {
+          return item.payable_type.split('\\')[3] === 'Espece' ? item.payable.versement : item.payable.valeur
+        },
+      },
+      {
+        key: 'monnaie',
+        label: 'Monnaie',
+        formatter: (value, key, item) => {
+          return item.payable_type.split('\\')[3] === 'Espece'
+            ? item.payable.versement - item.payable.montant
+            : 0
+        },
+      },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -108,6 +134,7 @@ export default {
         sortable: false,
       },
     ],
+    dialog: false,
     dialogData: { modal: false, id: 0, nom: '' },
     show: { modal: false, encaissement: {} },
     filter: null,
