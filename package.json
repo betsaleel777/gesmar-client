@@ -26,7 +26,7 @@
     "quill-image-drop-module": "^1.0.3",
     "randomstring": "^1.2.2",
     "tiptap-vuetify": "^2.24.0",
-    "vue": "2",
+    "vue": "3",
     "vue-bootstrap4-table": "^1.1.11",
     "vue-feather": "1",
     "vue-gates": "^2.1.2",
