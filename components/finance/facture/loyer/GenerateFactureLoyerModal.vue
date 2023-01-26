@@ -95,6 +95,7 @@ export default {
   methods: {
     ...mapActions({
       getMonthRental: 'architecture/emplacement/getMonthRental',
+      ajouter: 'facture/loyer/ajouter',
     }),
     reset() {
       this.emplacements = []
@@ -103,7 +104,30 @@ export default {
       this.loading = false
       this.$bvModal.hide('modalGenererLoyer')
     },
-    save() {},
+    save() {
+      if (this.selected.length > 0) {
+        const factures = this.selected.map((emplacement) => {
+          const {
+            contrat_actuel: { id },
+          } = emplacement
+          return { contrat_id: id, periode: this.mois + '-01' }
+        })
+        this.ajouter(factures).then(({ message }) => {
+          this.$bvModal.hide('modalGenererLoyer')
+          this.$bvToast.toast(message, {
+            title: 'succès de la création'.toLocaleUpperCase(),
+            variant: 'success',
+            solid: true,
+          })
+        })
+      } else {
+        this.$bvToast.toast("Aucun client n'a été sélectionné", {
+          title: 'echec opération'.toLocaleUpperCase(),
+          variant: 'danger',
+          solid: true,
+        })
+      }
+    },
     getEmplacements(date) {
       if (date) {
         this.$refs.menu.save(this.mois)
