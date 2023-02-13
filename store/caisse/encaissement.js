@@ -27,6 +27,7 @@ export const actions = {
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/caisses/encaissements/store', payload)
     dispatch('getAll')
+    dispatch('exploitation/ordonnancement/getAllUnpaid', {}, { root: true })
     return { message: requete.data.message }
   },
 }

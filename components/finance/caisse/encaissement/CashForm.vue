@@ -116,7 +116,7 @@ export default {
   data() {
     return {
       payable: this.mode,
-      montant: Number(this.ordonnancement.paiements[0].montant),
+      montant: Number(this.ordonnancement.total),
       monnaie: null,
       errors: {
         versement: { exist: false, message: null },

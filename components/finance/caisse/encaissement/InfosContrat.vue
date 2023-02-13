@@ -8,7 +8,7 @@
     </p>
     <p><b>Emplacement</b>: {{ ordonnancement.contrat.emplacement.code }}</p>
     <p><b>Locataire</b>: {{ ordonnancement.contrat.personne.alias }}</p>
-    <p><b>Montant à payer</b>: {{ ordonnancement.paiements[0].montant | currency }}</p>
+    <p><b>Montant à payer</b>: {{ ordonnancement.total | currency }}</p>
   </v-container>
 </template>
 

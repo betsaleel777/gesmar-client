@@ -9,7 +9,7 @@
     }
   },
   "vueCompilerOptions": {
-    "experimentalDisableTemplateSupport": true,
+    "skipTemplateCodegen": true,
     "extensions": [".vue"],
     "target": 2
   },

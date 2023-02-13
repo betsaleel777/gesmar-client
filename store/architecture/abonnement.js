@@ -19,6 +19,11 @@ export const actions = {
     commit('SET_ABONNEMENT', requete.data.abonnements)
   },
 
+  async getMonthRentalGear({ commit }, mois) {
+    const requete = await this.$axios.get('api/parametres/abonnements/rental-gear/' + mois)
+    return requete.data
+  },
+
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/abonnements/' + id)
     return requete.data

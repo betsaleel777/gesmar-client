@@ -78,7 +78,7 @@
             size="sm"
             aria-controls="table"
           ></b-pagination>
-          <ModalStepperFactureGear />
+          <GenerateFactureGearModal />
         </b-card-text>
       </b-card>
     </b-overlay>
@@ -86,10 +86,10 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ModalStepperFactureGear from './ModalStepperFactureGear.vue'
+import GenerateFactureGearModal from './GenerateFactureGearModal.vue'
 import { FACTURE } from '~/helper/constantes'
 export default {
-  components: { ModalStepperFactureGear },
+  components: { GenerateFactureGearModal },
   data: () => ({
     fields: [
       'ordre',

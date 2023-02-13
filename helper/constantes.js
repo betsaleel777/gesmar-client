@@ -46,7 +46,7 @@ const FACTURE = Object.freeze({
   status: {
     proforma: 'proforma',
     facture: 'facture',
-    paid: 'payée',
+    paid: 'soldée',
     unpaid: 'impayée',
   },
   type: {
