@@ -53,9 +53,6 @@
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
-          <template #cell(pavillon)="data">
-            {{ data.item.pavillon.nom }}
-          </template>
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
@@ -115,7 +112,8 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'pavillon', label: 'Pavillon', sortable: true },
+      { key: 'pavillon.nom', label: 'Pavillon', sortable: true },
+      { key: 'pavillon.site.nom', label: 'Site', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

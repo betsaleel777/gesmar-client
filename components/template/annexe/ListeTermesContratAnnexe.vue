@@ -110,6 +110,7 @@
 import { mapActions } from 'vuex'
 import CreateTermesContratAnnexeModal from './CreateTermesContratAnnexeModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { downloadPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
@@ -169,7 +170,7 @@ export default {
     pdf({ id }) {
       this.getPdf(id).then(({ path }) => {
         const chemin = String(process.env.API + '/storage/' + path)
-        window.open(chemin, '_blank')
+        downloadPdf(chemin)
       })
     },
   },

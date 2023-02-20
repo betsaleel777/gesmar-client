@@ -1,5 +1,5 @@
-import moment from 'moment'
 import { jsPDF as JsPDF } from 'jspdf'
+import axios from 'axios'
 import 'jspdf-autotable'
 const remove = (item, selected, targetArray = []) => {
   let indexFound = targetArray.findIndex((elt) => elt.id === item.id)
@@ -9,24 +9,6 @@ const remove = (item, selected, targetArray = []) => {
 }
 const add = (item, targetArray = []) => {
   targetArray.push(item)
-}
-function getDatesInRange(startDate, endDate) {
-  let date = null
-  let end = null
-  if (moment(startDate).isSameOrBefore(endDate)) {
-    date = moment(startDate)
-    end = moment(endDate)
-  } else {
-    date = moment(endDate)
-    end = moment(startDate)
-  }
-  const dates = []
-
-  while (date.isSameOrBefore(end)) {
-    dates.push(date.format('yyyy-MM-dd'))
-    date.add(1, 'days')
-  }
-  return dates
 }
 
 function capitalize(str) {
@@ -47,4 +29,20 @@ function arrayPdf(cols, records, filename) {
   })
   doc.save(filename + '.pdf')
 }
-export { remove, add, getDatesInRange, capitalize, arrayPdf }
+
+function downloadPdf(path) {
+  axios({
+    url: path,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+    const fileLink = document.createElement('a')
+    fileLink.href = fileURL
+    fileLink.setAttribute('download', 'file.pdf')
+    document.body.appendChild(fileLink)
+    fileLink.click()
+  })
+}
+
+export { remove, add, capitalize, arrayPdf, downloadPdf }

@@ -53,9 +53,6 @@
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
-          <template #cell(niveau)="data">
-            {{ data.item.niveau.nom }}
-          </template>
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
@@ -81,12 +78,7 @@
         ></b-pagination>
         <CreateZoneModal :niveaux="niveaux" />
         <div>
-          <EditZoneModal
-            :key="edit.modal"
-            v-model="edit.modal"
-            :niveaux="niveaux"
-            :current="edit.zone"
-          />
+          <EditZoneModal :key="edit.modal" v-model="edit.modal" :niveaux="niveaux" :current="edit.zone" />
         </div>
       </b-card-text>
     </b-card>
@@ -115,7 +107,9 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'niveau', label: 'Niveaux', sortable: true },
+      { key: 'niveau.nom', label: 'Niveaux', sortable: true },
+      { key: 'niveau.pavillon.nom', label: 'Pavillons', sortable: true },
+      { key: 'niveau.pavillon.site.nom', label: 'Sites', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
