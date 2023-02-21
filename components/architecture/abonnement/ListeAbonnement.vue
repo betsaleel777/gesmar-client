@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des abonnements">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -89,10 +89,10 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import FinishAbonnementModal from './FinishAbonnementModal.vue'
 import CreateAbonnementModal from './CreateAbonnementModal.vue'
 import ValidateAbonnementModal from './ValidateAbonnementModal.vue'
@@ -102,24 +102,6 @@ export default {
     CreateAbonnementModal,
     FinishAbonnementModal,
     ValidateAbonnementModal,
-  },
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-    emplacements: {
-      type: Array,
-      required: true,
-    },
-    equipements: {
-      type: Array,
-      required: true,
-    },
-    abonnements: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     STATUS: ABONNEMENT,
@@ -167,17 +149,33 @@ export default {
     edit: { modal: false, abonnement: {} },
     confirm: { modal: false, validation: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches()
+    this.getEmplacements()
+    this.getEquipements()
+    this.getAbonnements().then(() => {
+      this.totalRows = this.abonnements.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.abonnements.length
-    },
+    ...mapGetters({
+      marches: 'architecture/marche/marches',
+      equipements: 'architecture/equipement/equipements',
+      emplacements: 'architecture/emplacement/equipables',
+      abonnements: 'architecture/abonnement/abonnements',
+    }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/abonnement/getOne',
+      getEmplacements: 'architecture/emplacement/getEquipables',
+      getMarches: 'architecture/marche/getAll',
+      getAbonnements: 'architecture/abonnement/getAll',
+      getEquipements: 'architecture/equipement/getAll',
     }),
     imprimer() {},
     resilier({ id }) {

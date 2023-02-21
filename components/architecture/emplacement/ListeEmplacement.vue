@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des emplacements">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -120,10 +120,10 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateEmplacementModal from './CreateEmplacementModal.vue'
 import EditEmplacementModal from './EditEmplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
@@ -133,24 +133,6 @@ export default {
     ConfirmationModal,
     EditEmplacementModal,
     CreateEmplacementModal,
-  },
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-    emplacements: {
-      type: Array,
-      required: true,
-    },
-    types: {
-      type: Array,
-      required: true,
-    },
-    zones: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -185,17 +167,33 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, emplacement: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches()
+    this.getZones()
+    this.getTypesEmplacement()
+    this.getEmplacements().then(() => {
+      this.totalRows = this.emplacements.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.emplacements.length
-    },
+    ...mapGetters({
+      marches: 'architecture/marche/marches',
+      types: 'architecture/typEmplacement/types',
+      zones: 'architecture/zone/zones',
+      emplacements: 'architecture/emplacement/emplacements',
+    }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/emplacement/getOne',
+      getZones: 'architecture/zone/getAll',
+      getMarches: 'architecture/marche/getAll',
+      getEmplacements: 'architecture/emplacement/getAll',
+      getTypesEmplacement: 'architecture/typEmplacement/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

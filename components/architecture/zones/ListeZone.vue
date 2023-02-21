@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des zones">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -82,26 +82,16 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateZoneModal from './CreateZoneModal.vue'
 import EditZoneModal from './EditZoneModal.vue'
 export default {
   components: {
     CreateZoneModal,
     EditZoneModal,
-  },
-  props: {
-    zones: {
-      type: Array,
-      required: true,
-    },
-    niveaux: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -122,17 +112,24 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, zone: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getNiveaux()
+    this.getZones().then(() => {
+      this.totalRows = this.zones.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.zones.length
-    },
+    ...mapGetters({ niveaux: 'architecture/niveau/niveaux', zones: 'architecture/zone/zones' }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/zone/getOne',
+      getNiveaux: 'architecture/niveau/getAll',
+      getZones: 'architecture/zone/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

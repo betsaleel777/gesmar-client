@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des pavillons">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -90,26 +90,16 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreatePavillonModal from './CreatePavillonModal.vue'
 import EditPavillonModal from './EditPavillonModal.vue'
 export default {
   components: {
     CreatePavillonModal,
     EditPavillonModal,
-  },
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-    pavillons: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -128,17 +118,24 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, pavillon: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches()
+    this.getPavillons().then(() => {
+      this.totalRows = this.pavillons.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.pavillons.length
-    },
+    ...mapGetters({ marches: 'architecture/marche/marches', pavillons: 'architecture/pavillon/pavillons' }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/pavillon/getOne',
+      getMarches: 'architecture/marche/getAll',
+      getPavillons: 'architecture/pavillon/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

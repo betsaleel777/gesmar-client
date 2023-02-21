@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des niveaux">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -87,26 +87,16 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateNiveauModal from './CreateNiveauModal.vue'
 import EditNiveauModal from './EditNiveauModal.vue'
 export default {
   components: {
     CreateNiveauModal,
     EditNiveauModal,
-  },
-  props: {
-    pavillons: {
-      type: Array,
-      required: true,
-    },
-    niveaux: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -126,17 +116,24 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, niveau: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getNiveaux()
+    this.getPavillons().then(() => {
+      this.totalRows = this.niveaux.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.niveaux.length
-    },
+    ...mapGetters({ pavillons: 'architecture/pavillon/pavillons', niveaux: 'architecture/niveau/niveaux' }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/niveau/getOne',
+      getPavillons: 'architecture/pavillon/getAll',
+      getNiveaux: 'architecture/niveau/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

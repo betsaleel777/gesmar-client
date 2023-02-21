@@ -1,18 +1,15 @@
 <template>
-  <div>
-    <button
-      type="button"
-      class="btn btn-primary"
-      @click="$bvModal.show('structure')"
-    >
+  <b-overlay :show="$fetchState.pending" rounded="sm">
+    <button type="button" class="btn btn-primary text-white" @click="$bvModal.show('structure')">
       Création d'architecture de marché
     </button>
     <ModalStepperArchitecture />
     <StructureTreemap :structure="structure" />
-  </div>
+  </b-overlay>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import ModalStepperArchitecture from './ModalStepperArchitecture.vue'
 import StructureTreemap from './StructureTreemap.vue'
 export default {
@@ -20,11 +17,14 @@ export default {
     ModalStepperArchitecture,
     StructureTreemap,
   },
-  props: {
-    structure: {
-      type: Array,
-      required: true,
-    },
+  fetch() {
+    this.getStructure()
+  },
+  computed: {
+    ...mapGetters({ structure: 'architecture/marche/structure' }),
+  },
+  methods: {
+    ...mapActions({ getStructure: 'architecture/marche/getGeneralStructure' }),
   },
 }
 </script>

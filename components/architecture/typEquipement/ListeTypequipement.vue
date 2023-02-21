@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des types d'équipements">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -101,19 +101,14 @@
         </div>
         <CreateTypequipement :marches="marches" />
         <div>
-          <EditTypequipement
-            :key="edit.modal"
-            v-model="edit.modal"
-            :current="edit.type"
-            :marches="marches"
-          />
+          <EditTypequipement :key="edit.modal" v-model="edit.modal" :current="edit.type" :marches="marches" />
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateTypequipement from './CreateTypequipement.vue'
 import EditTypequipement from './EditTypequipement.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
@@ -122,16 +117,6 @@ export default {
     ConfirmationModal,
     CreateTypequipement,
     EditTypequipement,
-  },
-  props: {
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -151,17 +136,24 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, type: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches()
+    this.getTypesEquipement().then(() => {
+      this.totalRows = this.types.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.types.length
-    },
+    ...mapGetters({ types: 'architecture/typEquipement/types', marches: 'architecture/marche/marches' }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/typEquipement/getOne',
+      getTypesEquipement: 'architecture/typEquipement/getAll',
+      getMarches: 'architecture/marche/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

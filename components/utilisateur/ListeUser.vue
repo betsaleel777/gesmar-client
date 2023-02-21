@@ -1,125 +1,108 @@
 <template>
-  <div>
-    <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Liste des utilisateurs ">
-        <b-card-text>
-          <div class="btn-toolbar d-flex flex-row-reverse">
-            <div class="">
-              <feather
-                v-b-tooltip.hover.top
-                title="créer"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="plus"
-                @click="$bvModal.show('modalCreateUser')"
-              />
-              <feather
-                v-b-tooltip.hover.top
-                title="imprimer liste"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="printer"
-              />
-              <feather
-                v-b-tooltip.hover.top
-                title="archives"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="archive"
-                @click="$emit('archivage')"
-              />
-            </div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
+    <b-card aria-hidden="true" header="Liste des utilisateurs ">
+      <b-card-text>
+        <div class="btn-toolbar d-flex flex-row-reverse">
+          <div class="">
+            <feather
+              v-b-tooltip.hover.top
+              title="créer"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="plus"
+              @click="$bvModal.show('modalCreateUser')"
+            />
+            <feather
+              v-b-tooltip.hover.top
+              title="imprimer liste"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="printer"
+            />
+            <feather
+              v-b-tooltip.hover.top
+              title="archives"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="archive"
+              @click="$emit('archivage')"
+            />
           </div>
-          <!-- btn-toolbar -->
-          <hr class="mg-t-4" />
-          <b-form-input
-            v-if="totalRows > 0"
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Rechercher"
-            class="mg-y-10"
-            :debounce="500"
-          ></b-form-input>
-          <b-table
-            id="table"
-            class="table"
-            hover
-            small
-            bordered
-            primary-key="id"
-            :items="users"
-            :fields="fields"
-            :current-page="currentPage"
-            :per-page="perPage"
-            responsive
-            empty-text="Aucun utilisateurs"
-            show-empty
-            :filter="filter"
-            @filtered="onFiltered"
-          >
-            <template #cell(index)="data"> {{ data.index + 1 }} </template>
-            <template #cell(connected)="data">
-              <span v-if="data.item.connected" class="badge badge-success-light"
-                >connecté</span
-              >
-              <span v-else class="badge badge-danger-light">déconnecté</span>
-            </template>
-            <template #cell(option)="data">
-              <nuxt-link
-                :to="`/parametre/utilisateur/${data.item.id}/settings`"
-              >
-                <feather
-                  title="parametres"
-                  type="settings"
-                  class="mr-auto"
-                  size="20"
-                />
-              </nuxt-link>
-              <a type="button" @click="dialoger(data.item)">
-                <feather
-                  title="archiver"
-                  type="trash-2"
-                  size="20"
-                  stroke="red"
-                />
-              </a>
-            </template>
-            <template #cell(created_at)="data">
-              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-            </template>
-            <template #empty="scope">
-              <h6 class="text-center text-muted pd-y-10">
-                {{ scope.emptyText }}
-              </h6>
-            </template>
-          </b-table>
-          <b-pagination
-            v-if="totalRows > 0"
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="right"
-            size="sm"
-            aria-controls="table"
-          ></b-pagination>
-          <ConfirmationModal
-            :id="dialogData.id"
-            :key="dialogData.modal"
-            v-model="dialogData.modal"
-            :nom="dialogData.nom"
-            modal-id="userConfirmation"
-            action="user-role/user/supprimer"
-            :message="`Voulez vous réelement archiver l'utilisateur ${dialogData.nom}`"
-          />
-          <CreateUserModal />
-        </b-card-text>
-      </b-card>
-    </b-overlay>
-  </div>
+        </div>
+        <!-- btn-toolbar -->
+        <hr class="mg-t-4" />
+        <b-form-input
+          id="filter-input"
+          v-model="filter"
+          type="search"
+          placeholder="Rechercher"
+          class="mg-y-10"
+          :debounce="500"
+        ></b-form-input>
+        <b-table
+          id="table"
+          class="table"
+          hover
+          small
+          bordered
+          primary-key="id"
+          :items="users"
+          :fields="fields"
+          :current-page="currentPage"
+          :per-page="perPage"
+          responsive
+          empty-text="Aucun utilisateurs"
+          show-empty
+          :filter="filter"
+          @filtered="onFiltered"
+        >
+          <template #cell(index)="data"> {{ data.index + 1 }} </template>
+          <template #cell(connected)="data">
+            <span v-if="data.item.connected" class="badge badge-success-light">connecté</span>
+            <span v-else class="badge badge-danger-light">déconnecté</span>
+          </template>
+          <template #cell(option)="data">
+            <nuxt-link :to="`/parametre/utilisateur/${data.item.id}/settings`">
+              <feather title="parametres" type="settings" stroke="blue" class="mr-auto" size="20" />
+            </nuxt-link>
+            <a type="button" @click="dialoger(data.item)">
+              <feather title="archiver" type="trash-2" size="20" stroke="red" />
+            </a>
+          </template>
+          <template #cell(created_at)="data">
+            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
+          </template>
+          <template #empty="scope">
+            <h6 class="text-center text-muted pd-y-10">
+              {{ scope.emptyText }}
+            </h6>
+          </template>
+        </b-table>
+        <b-pagination
+          v-if="totalRows > 0"
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          align="right"
+          size="sm"
+          aria-controls="table"
+        ></b-pagination>
+        <ConfirmationModal
+          :id="dialogData.id"
+          :key="dialogData.modal"
+          v-model="dialogData.modal"
+          :nom="dialogData.nom"
+          modal-id="userConfirmation"
+          action="user-role/user/supprimer"
+          :message="`Voulez vous réelement archiver l'utilisateur ${dialogData.nom}`"
+        />
+        <CreateUserModal />
+      </b-card-text>
+    </b-card>
+  </b-overlay>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -180,7 +163,6 @@ export default {
       this.$bvModal.show('modal')
     },
     onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },

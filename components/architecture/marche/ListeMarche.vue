@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des marchés">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -78,30 +78,20 @@
         ></b-pagination>
         <CreateMarcheModal />
         <div>
-          <EditMarcheModal
-            :key="edit.modal"
-            v-model="edit.modal"
-            :current="edit.marche"
-          />
+          <EditMarcheModal :key="edit.modal" v-model="edit.modal" :current="edit.marche" />
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateMarcheModal from './CreateMarcheModal.vue'
 import EditMarcheModal from './EditMarcheModal.vue'
 export default {
   components: {
     CreateMarcheModal,
     EditMarcheModal,
-  },
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -121,17 +111,22 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, marche: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches().then(() => {
+      this.totalRows = this.marches.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.marches.length
-    },
+    ...mapGetters({ marches: 'architecture/marche/marches' }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/marche/getOne',
+      getMarches: 'architecture/marche/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

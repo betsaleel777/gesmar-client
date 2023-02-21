@@ -9,9 +9,7 @@
     <template #default>
       <form ref="form">
         <div class="form-group required">
-          <label class="form-label mg-t-10"
-            >Nom complet<span class="text-danger">*</span></label
-          >
+          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
           <input
             v-model="marche.nom"
             type="text"
@@ -24,9 +22,7 @@
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label"
-            >Commune<span class="text-danger">*</span></label
-          >
+          <label class="form-label">Commune<span class="text-danger">*</span></label>
           <input
             v-model="marche.commune"
             type="text"
@@ -34,18 +30,12 @@
             :class="{ 'is-invalid': errors.commune.exist }"
             placeholder="Entrer la commune"
           />
-          <span
-            v-if="errors.commune.exist"
-            class="invalid-feedback"
-            role="alert"
-          >
+          <span v-if="errors.commune.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.commune.message }}</strong>
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label"
-            >Ville<span class="text-danger">*</span></label
-          >
+          <label class="form-label">Ville<span class="text-danger">*</span></label>
           <input
             v-model="marche.ville"
             type="text"
@@ -58,9 +48,7 @@
           </span>
         </div>
         <div class="form-group">
-          <label class="form-label"
-            >Pays<span class="text-danger">*</span></label
-          >
+          <label class="form-label">Pays<span class="text-danger">*</span></label>
           <input
             v-model="marche.pays"
             type="text"
@@ -74,27 +62,13 @@
         </div>
         <div class="form-group">
           <label class="form-label">Adresse Postale</label>
-          <input
-            v-model="marche.postale"
-            type="text"
-            class="form-control"
-            placeholder="Adresse postale"
-          />
+          <input v-model="marche.postale" type="text" class="form-control" placeholder="Adresse postale" />
         </div>
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>

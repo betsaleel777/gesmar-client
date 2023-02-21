@@ -71,7 +71,7 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary" @click="save">Valider</button>
+      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>

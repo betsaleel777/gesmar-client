@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des équipements">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -116,10 +116,10 @@
         </div>
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CreateEquipementModal from './CreateEquipementModal.vue'
 import EditEquipementModal from './EditEquipementModal.vue'
 import { EQUIPEMENT } from '~/helper/constantes'
@@ -129,20 +129,6 @@ export default {
     ConfirmationModal,
     EditEquipementModal,
     CreateEquipementModal,
-  },
-  props: {
-    equipements: {
-      type: Array,
-      required: true,
-    },
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
     fields: [
@@ -169,17 +155,30 @@ export default {
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, equipement: {} },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  fetch() {
+    this.getMarches()
+    this.getTypesEquipement()
+    this.getEquipements().then(() => {
+      this.totalRows = this.equipements.length
+    })
+  },
   computed: {
-    totalRows() {
-      return this.equipements.length
-    },
+    ...mapGetters({
+      marches: 'architecture/marche/marches',
+      types: 'architecture/typEquipement/types',
+      equipements: 'architecture/equipement/equipements',
+    }),
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/equipement/getOne',
+      getMarches: 'architecture/marche/getAll',
+      getTypesEquipement: 'architecture/typEquipement/getAll',
+      getEquipements: 'architecture/equipement/getAll',
     }),
     imprimer() {},
     dialoger({ id, nom }) {

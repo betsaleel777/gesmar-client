@@ -1,89 +1,45 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <b-overlay :show="$fetchState.pending" rounded="sm">
-      <div class="content-body content-body-components">
-        <b-tabs
-          v-model="tabIndex"
-          content-class="mt-7"
-          active-nav-item-class="font-weight-bold"
-        >
-          <b-tab title="Acceuil" :title-link-class="linkClass(0)">
-            <AcceuilArchitecture :key="cle" :structure="structure" />
-          </b-tab>
-          <b-tab title="Marchés" :title-link-class="linkClass(1)">
-            <ListeMarche
-              v-if="!archive.marche"
-              :marches="marches"
-              @archivage="archive.marche = true"
-            />
-            <ListeMarcheArchive v-else @back="onBack(1)" />
-          </b-tab>
-          <b-tab title="Pavillons" :title-link-class="linkClass(2)">
-            <ListePavillon
-              v-if="!archive.pavillon"
-              :marches="marches"
-              :pavillons="pavillons"
-              @archivage="archive.pavillon = true"
-            />
-            <ListePavillonArchive v-else @back="onBack(2)" />
-          </b-tab>
-          <b-tab title="Niveaux" :title-link-class="linkClass(3)">
-            <ListeNiveau
-              v-if="!archive.niveau"
-              :pavillons="pavillons"
-              :niveaux="niveaux"
-              @archivage="archive.niveau = true"
-            />
-            <ListeNiveauArchive v-else @back="onBack(3)" />
-          </b-tab>
-          <b-tab title="Zones" :title-link-class="linkClass(4)">
-            <ListeZone
-              v-if="!archive.zone"
-              :niveaux="niveaux"
-              :zones="zones"
-              @archivage="archive.zone = true"
-            />
-            <ListeZoneArchive v-else @back="onBack(4)" />
-          </b-tab>
-          <b-tab title="Emplacements" :title-link-class="linkClass(5)">
-            <ListeEmplacement
-              v-if="!archive.emplacement"
-              :marches="marches"
-              :emplacements="emplacements"
-              :types="typEmplacements"
-              :zones="zones"
-              @archivage="archive.emplacement = true"
-            />
-            <ListeEmplacementArchive v-else @back="onBack(5)" />
-          </b-tab>
-          <b-tab title="Equipements" :title-link-class="linkClass(6)">
-            <ListeEquipement
-              v-if="!archive.equipement"
-              :equipements="equipements"
-              :types="typEquipements"
-              :marches="marches"
-              @archivage="archive.equipement = true"
-            />
-            <ListeEquipementArchive v-else @back="onBack(6)" />
-          </b-tab>
-          <b-tab title="Abonnements" :title-link-class="linkClass(7)">
-            <ListeAbonnement
-              :abonnements="abonnements"
-              :marches="marches"
-              :equipements="equipements"
-              :emplacements="equipables"
-            />
-          </b-tab>
-        </b-tabs>
-      </div>
-    </b-overlay>
+    <div class="content-body content-body-components">
+      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
+        <b-tab title="Acceuil" lazy :title-link-class="linkClass(0)">
+          <AcceuilArchitecture />
+        </b-tab>
+        <b-tab title="Marchés" lazy :title-link-class="linkClass(1)">
+          <ListeMarche v-if="!archive.marche" @archivage="archive.marche = true" />
+          <ListeMarcheArchive v-else @back="onBack(1)" />
+        </b-tab>
+        <b-tab title="Pavillons" lazy :title-link-class="linkClass(2)">
+          <ListePavillon v-if="!archive.pavillon" @archivage="archive.pavillon = true" />
+          <ListePavillonArchive v-else @back="onBack(2)" />
+        </b-tab>
+        <b-tab title="Niveaux" lazy :title-link-class="linkClass(3)">
+          <ListeNiveau v-if="!archive.niveau" @archivage="archive.niveau = true" />
+          <ListeNiveauArchive v-else @back="onBack(3)" />
+        </b-tab>
+        <b-tab title="Zones" lazy :title-link-class="linkClass(4)">
+          <ListeZone v-if="!archive.zone" @archivage="archive.zone = true" />
+          <ListeZoneArchive v-else @back="onBack(4)" />
+        </b-tab>
+        <b-tab title="Emplacements" lazy :title-link-class="linkClass(5)">
+          <ListeEmplacement v-if="!archive.emplacement" @archivage="archive.emplacement = true" />
+          <ListeEmplacementArchive v-else @back="onBack(5)" />
+        </b-tab>
+        <b-tab title="Equipements" lazy :title-link-class="linkClass(6)">
+          <ListeEquipement v-if="!archive.equipement" @archivage="archive.equipement = true" />
+          <ListeEquipementArchive v-else @back="onBack(6)" />
+        </b-tab>
+        <b-tab title="Abonnements" lazy :title-link-class="linkClass(7)">
+          <ListeAbonnement />
+        </b-tab>
+      </b-tabs>
+    </div>
     <SettingsEmplacementMenu />
     <!-- content-right -->
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import AcceuilArchitecture from '~/components/architecture/AcceuilArchitecture.vue'
 import ListeMarche from '~/components/architecture/marche/ListeMarche.vue'
@@ -131,71 +87,21 @@ export default {
       abonnement: false,
     },
     tabIndex: 0,
-    cle: false,
   }),
-  fetch() {
-    this.getStructure().then(() => {
-      this.cle = !this.cle
-    })
-    this.getMarches()
-    this.getNiveaux()
-    this.getPavillons()
-    this.getZones()
-    this.getEmplacements()
-    this.getEquipables()
-    this.getTypesEmplacement()
-    this.getTypesEquipement()
-    this.getEquipements()
-    this.getAbonnements()
-  },
-  computed: {
-    ...mapGetters({
-      marches: 'architecture/marche/marches',
-      pavillons: 'architecture/pavillon/pavillons',
-      niveaux: 'architecture/niveau/niveaux',
-      zones: 'architecture/zone/zones',
-      typEmplacements: 'architecture/typEmplacement/types',
-      typEquipements: 'architecture/typEquipement/types',
-      emplacements: 'architecture/emplacement/emplacements',
-      equipables: 'architecture/emplacement/equipables',
-      equipements: 'architecture/equipement/equipements',
-      abonnements: 'architecture/abonnement/abonnements',
-      structure: 'architecture/marche/structure',
-    }),
-  },
   methods: {
-    ...mapActions({
-      getMarches: 'architecture/marche/getAll',
-      getPavillons: 'architecture/pavillon/getAll',
-      getNiveaux: 'architecture/niveau/getAll',
-      getZones: 'architecture/zone/getAll',
-      getEmplacements: 'architecture/emplacement/getAll',
-      getEquipables: 'architecture/emplacement/getEquipables',
-      getTypesEmplacement: 'architecture/typEmplacement/getAll',
-      getTypesEquipement: 'architecture/typEquipement/getAll',
-      getEquipements: 'architecture/equipement/getAll',
-      getAbonnements: 'architecture/abonnement/getAll',
-      getStructure: 'architecture/marche/getGeneralStructure',
-    }),
     onBack(numero) {
       if (numero === 1) {
         this.archive.marche = false
-        this.getMarches()
       } else if (numero === 2) {
         this.archive.pavillon = false
-        this.getPavillons()
       } else if (numero === 3) {
         this.archive.niveau = false
-        this.getNiveaux()
       } else if (numero === 4) {
         this.archive.zone = false
-        this.getZones()
       } else if (numero === 5) {
         this.archive.emplacement = false
-        this.getEmplacements()
       } else {
         this.archive.equipement = false
-        this.getEquipements()
       }
     },
     linkClass(idx) {

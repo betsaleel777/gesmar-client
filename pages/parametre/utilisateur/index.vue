@@ -2,71 +2,18 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-components">
-      <ul id="tabParametre" class="nav nav-line" role="tablist">
-        <li class="nav-item">
-          <a
-            id="user-tab"
-            class="nav-link active"
-            data-toggle="tab"
-            href="#user"
-            role="tab"
-            aria-controls="user"
-            aria-selected="true"
-            >Utilisateurs</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="role-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#role"
-            role="tab"
-            aria-controls="role"
-            aria-selected="false"
-            >Rôles</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="permission-tab5"
-            class="nav-link"
-            data-toggle="tab"
-            href="#permission"
-            role="tab"
-            aria-controls="permission"
-            aria-selected="false"
-            >Permissions</a
-          >
-        </li>
-      </ul>
-      <div id="tabParametreContent" class="tab-content mg-t-20">
-        <div
-          id="user"
-          class="tab-pane fade show active"
-          role="tabpanel"
-          aria-labelledby="user-tab"
-        >
+      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
+        <b-tab title="Utilisateurs" lazy :title-link-class="linkClass(0)">
           <ListeUser v-if="!archive.user" @archivage="archive.user = true" />
           <ListeUserArchive v-else @back="archive.user = false" />
-        </div>
-        <div
-          id="role"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="role-tab"
-        >
+        </b-tab>
+        <b-tab title="Rôles" lazy :title-link-class="linkClass(1)">
           <ListeRole />
-        </div>
-        <div
-          id="permission"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="permission-tab"
-        >
+        </b-tab>
+        <b-tab title="Permissions" lazy :title-link-class="linkClass(2)">
           <ListePermission />
-        </div>
-      </div>
+        </b-tab>
+      </b-tabs>
     </div>
   </div>
 </template>
@@ -87,8 +34,20 @@ export default {
   data: () => ({
     liens: [{ path: '#', text: 'Utilisateurs & fonctions' }],
     archive: { user: false },
+    tabIndex: 0,
   }),
-  methods: {},
+  methods: {
+    onBack(numero) {
+      if (numero === 0) this.archive.user = false
+    },
+    linkClass(idx) {
+      if (this.tabIndex === idx) {
+        return ['bg-white', 'text-primary']
+      } else {
+        return ['bg-light', 'text-primary']
+      }
+    },
+  },
 }
 </script>
 <style></style>
