@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
             <feather
               v-b-tooltip.hover.top
@@ -128,6 +129,7 @@ import CreateEmplacementModal from './CreateEmplacementModal.vue'
 import EditEmplacementModal from './EditEmplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { EMPLACEMENT } from '~/helper/constantes'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
@@ -186,6 +188,18 @@ export default {
       zones: 'architecture/zone/zones',
       emplacements: 'architecture/emplacement/emplacements',
     }),
+    records() {
+      return this.emplacements.map((emplacement) => {
+        return {
+          code: emplacement.code,
+          niveau: emplacement.zone.niveau.nom,
+          pavillon: emplacement.zone.niveau.pavillon.nom,
+          zone: emplacement.zone.nom,
+          site: emplacement.zone.niveau.pavillon.site.nom,
+          date: this.$moment(emplacement.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -195,7 +209,19 @@ export default {
       getEmplacements: 'architecture/emplacement/getAll',
       getTypesEmplacement: 'architecture/typEmplacement/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['code', 'niveau', 'pavillon', 'zone', 'site', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des emplacements')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -88,6 +89,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreateMarcheModal from './CreateMarcheModal.vue'
 import EditMarcheModal from './EditMarcheModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreateMarcheModal,
@@ -122,13 +124,36 @@ export default {
   },
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches' }),
+    records() {
+      return this.marches.map((marche) => {
+        return {
+          nom: marche.nom,
+          commune: marche.commune,
+          ville: marche.ville,
+          pays: marche.pays,
+          date: this.$moment(marche.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
       getOne: 'architecture/marche/getOne',
       getMarches: 'architecture/marche/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['nom', 'commune', 'ville', 'pays', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des marches')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

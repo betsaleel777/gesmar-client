@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -97,6 +98,7 @@ import FinishAbonnementModal from './FinishAbonnementModal.vue'
 import CreateAbonnementModal from './CreateAbonnementModal.vue'
 import ValidateAbonnementModal from './ValidateAbonnementModal.vue'
 import { ABONNEMENT } from '~/helper/constantes'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreateAbonnementModal,
@@ -168,6 +170,18 @@ export default {
       emplacements: 'architecture/emplacement/equipables',
       abonnements: 'architecture/abonnement/abonnements',
     }),
+    records() {
+      return this.abonnements.map((elt) => {
+        return {
+          code: elt.code,
+          equipement: elt.equipement.code,
+          emplacement: elt.emplacement.code,
+          indexD: elt.index_autre ?? elt.index_depart,
+          indexF: elt.index_fin,
+          date: this.$moment(elt.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -177,7 +191,19 @@ export default {
       getAbonnements: 'architecture/abonnement/getAll',
       getEquipements: 'architecture/equipement/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['code', 'equipement', 'emplacement', 'indexD', 'indexF', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des abonnements')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     resilier({ id }) {
       this.getOne(id).then(({ abonnement }) => {
         this.edit.abonnement = abonnement

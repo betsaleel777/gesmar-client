@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -88,6 +89,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreateZoneModal from './CreateZoneModal.vue'
 import EditZoneModal from './EditZoneModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreateZoneModal,
@@ -124,6 +126,17 @@ export default {
   },
   computed: {
     ...mapGetters({ niveaux: 'architecture/niveau/niveaux', zones: 'architecture/zone/zones' }),
+    records() {
+      return this.zones.map((zone) => {
+        return {
+          code: zone.code,
+          niveau: zone.niveau.nom,
+          pavillon: zone.niveau.pavillon.nom,
+          site: zone.niveau.pavillon.site.nom,
+          date: this.$moment(zone.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -131,7 +144,19 @@ export default {
       getNiveaux: 'architecture/niveau/getAll',
       getZones: 'architecture/zone/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['code', 'niveau', 'pavillon', 'site', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des zones')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

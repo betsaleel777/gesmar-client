@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -88,6 +89,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateBanqueModal from './CreateBanqueModal.vue'
 import EditBanqueModal from './EditBanqueModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreateBanqueModal,
@@ -121,13 +123,34 @@ export default {
   },
   computed: {
     ...mapGetters({ banques: 'caisse/banque/banques' }),
+    records() {
+      return this.banques.map((banque) => {
+        return {
+          nom: banque.nom,
+          sigle: banque.sigle,
+          date: this.$moment(banque.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
       getOne: 'caisse/banque/getOne',
       getBanques: 'caisse/banque/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['nom', 'sigle', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des banques')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     editer({ id }) {
       this.getOne(id).then(({ banque }) => {
         this.edit.modal = true

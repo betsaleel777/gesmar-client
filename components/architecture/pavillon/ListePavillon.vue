@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -96,6 +97,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreatePavillonModal from './CreatePavillonModal.vue'
 import EditPavillonModal from './EditPavillonModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreatePavillonModal,
@@ -130,6 +132,15 @@ export default {
   },
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches', pavillons: 'architecture/pavillon/pavillons' }),
+    records() {
+      return this.pavillons.map((pavillon) => {
+        return {
+          pavillon: pavillon.nom,
+          site: pavillon.site.nom,
+          date: this.$moment(pavillon.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -137,7 +148,19 @@ export default {
       getMarches: 'architecture/marche/getAll',
       getPavillons: 'architecture/pavillon/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['pavillon', 'site', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des pavillons')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

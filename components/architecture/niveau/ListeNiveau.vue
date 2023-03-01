@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
           </div>
         </div>
@@ -93,6 +94,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreateNiveauModal from './CreateNiveauModal.vue'
 import EditNiveauModal from './EditNiveauModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     CreateNiveauModal,
@@ -128,6 +130,16 @@ export default {
   },
   computed: {
     ...mapGetters({ pavillons: 'architecture/pavillon/pavillons', niveaux: 'architecture/niveau/niveaux' }),
+    records() {
+      return this.niveaux.map((niveau) => {
+        return {
+          nom: niveau.nom,
+          pavillon: niveau.pavillon.nom,
+          site: niveau.pavillon.site.nom,
+          date: this.$moment(niveau.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -135,7 +147,19 @@ export default {
       getPavillons: 'architecture/pavillon/getAll',
       getNiveaux: 'architecture/niveau/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['nom', 'pavillon', 'site', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des zones')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

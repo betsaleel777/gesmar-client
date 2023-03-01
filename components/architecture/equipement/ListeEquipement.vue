@@ -20,6 +20,7 @@
               stroke-width="2"
               size="18"
               type="printer"
+              @click="imprimer"
             />
             <feather
               v-b-tooltip.hover.top
@@ -124,6 +125,7 @@ import CreateEquipementModal from './CreateEquipementModal.vue'
 import EditEquipementModal from './EditEquipementModal.vue'
 import { EQUIPEMENT } from '~/helper/constantes'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
@@ -172,6 +174,17 @@ export default {
       types: 'architecture/typEquipement/types',
       equipements: 'architecture/equipement/equipements',
     }),
+    records() {
+      return this.equipements.map((gear) => {
+        return {
+          code: gear.code,
+          prix: this.$options.filters.currency(gear.prix_unitaire),
+          type: gear.type.nom,
+          site: gear.site.nom,
+          date: this.$moment(gear.created_at).format('llll'),
+        }
+      })
+    },
   },
   methods: {
     ...mapActions({
@@ -180,7 +193,19 @@ export default {
       getTypesEquipement: 'architecture/typEquipement/getAll',
       getEquipements: 'architecture/equipement/getAll',
     }),
-    imprimer() {},
+    imprimer() {
+      const columns = ['code', 'type', 'prix', 'site', 'date']
+      const cols = columns.map((elt) => {
+        return { header: capitalize(elt), dataKey: elt }
+      })
+      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des equipements')
+      else
+        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
+          title: 'attention'.toLocaleUpperCase(),
+          variant: 'warning',
+          solid: true,
+        })
+    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
