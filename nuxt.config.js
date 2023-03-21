@@ -53,6 +53,7 @@ export default {
     '~/plugins/perfect-scrollbar.js',
     '~/plugins/user.js',
     '~/plugins/vue-gates',
+    '~/plugins/currency.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -103,7 +104,7 @@ export default {
         },
       },
     },
-    plugins: ['~/plugins/currency.js', '~/plugins/axios.js'],
+    plugins: ['~/plugins/axios.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

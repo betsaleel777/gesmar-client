@@ -171,6 +171,14 @@
                 >Caisse</nuxt-link
               >
             </nav>
+            <nav class="nav nav-sub">
+              <nuxt-link
+                to="/parametre/societe"
+                class="nav-sub-link"
+                :class="{ active: $route.name === 'parametre-societe' }"
+                >Societes</nuxt-link
+              >
+            </nav>
           </li>
         </ul>
       </div>

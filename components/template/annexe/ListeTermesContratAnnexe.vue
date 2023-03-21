@@ -14,14 +14,6 @@
           />
           <feather
             v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-          <feather
-            v-b-tooltip.hover.top
             title="archives"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -65,9 +57,6 @@
           <a type="button" @click="pdf(data.item)">
             <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
-          <!-- <a type="button" @click="editer(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
-          </a> -->
           <a type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>

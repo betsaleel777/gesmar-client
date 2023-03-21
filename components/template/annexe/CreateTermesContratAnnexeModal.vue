@@ -1,14 +1,7 @@
 <template>
-  <b-modal
-    id="modalCreateTermeContratAnnexe"
-    scrollable
-    size="lg"
-    @show="reset"
-  >
+  <b-modal id="modalCreateTermeContratAnnexe" scrollable size="lg" @show="reset">
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">
-        Création de Terme de contrats produits annexes
-      </h5>
+      <h5 id="archiver" class="modal-title text-primary">Création de Terme de contrats produits annexes</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -36,25 +29,12 @@
             </v-col>
           </v-row>
         </v-app>
-        <quill-editor
-          v-model="terme.contenu"
-          :options="editorOption"
-          theme="snow"
-        ></quill-editor>
+        <quill-editor v-model="terme.contenu" :options="editorOption" theme="snow"></quill-editor>
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -64,17 +44,6 @@ import { quillEditor } from 'vue-quill-editor'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
-const texte = `<p>
-                 <b>Disposez ces différentes variables là où elles seront utilisés dans le contrat</b><br>
-                 <b>$infosLocataire</b>: Les informations concernant le locataire <br />
-                 <b>$serviceAnnexeInfos</b>: Le service annexe concernant le contrat <br />
-                 <b>$usageLieux</b>: L'utilisation des lieux par le locataire <br/>
-                 <b>$dureeContrat</b>: La date de création du contrat <br/>
-                 <b>$redevance</b>: Prix en chiffre et en lettre du service annexe avec les charges<br/>
-                 <b>$caution</b>: La caution en chiffre et en lettre <br/>
-                 <b>$dateCreation</b>: Date à laquelle le contrat a été émis <br/>
-                 <b>$nomPrenoms</b>: nom et prénoms du locataire <br/>
-               </p>`
 export default {
   components: {
     quillEditor,
@@ -87,7 +56,7 @@ export default {
   },
   data: () => ({
     terme: {
-      contenu: texte,
+      contenu: null,
       site_id: null,
     },
     errors: {
@@ -140,7 +109,7 @@ export default {
     },
     reset() {
       this.terme = {
-        contenu: texte,
+        contenu: null,
         site_id: null,
       }
       errorsInitialise(this.errors)

@@ -1,56 +1,65 @@
 <template>
-  <b-modal id="modalCreateBanque" scrollable @show="reset">
+  <b-modal id="modalCreateSociete" scrollable @show="reset">
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Création de banque</h5>
+      <h5 id="archiver" class="modal-title text-primary">Création de société</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
       <form ref="form">
-        <div class="form-group required">
-          <label class="form-label mg-t-10">Nom de Banque<span class="text-danger">*</span></label>
+        <div class="form-group my-1">
+          <label class="form-label mg-t-10">Nom de la société<span class="text-danger">*</span></label>
           <input
-            v-model="compte.nom"
+            v-model="societe.nom"
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer le nom de la banque"
+            placeholder="Entrer le nom de la société"
           />
           <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.nom.message }}</strong>
           </span>
         </div>
-        <div class="form-group required">
-          <label class="form-label mg-t-10">Sigle de la banque<span class="text-danger">*</span></label>
+        <div class="form-group my-1">
+          <label class="form-label mg-t-10">Sigle de la société<span class="text-danger">*</span></label>
           <input
-            v-model="compte.sigle"
+            v-model="societe.sigle"
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errors.sigle.exist }"
-            placeholder="Entrer le sigle de la banque"
+            placeholder="Entrer le sigle de la société"
           />
           <span v-if="errors.sigle.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.sigle.message }}</strong>
           </span>
         </div>
-        <v-app>
-          <v-autocomplete
-            v-model="compte.site_id"
-            :items="marches"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            :error="errors.site_id.exist"
-            :error-messages="errors.site_id.message"
-          >
-            <template #label>
-              Choix du marché
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-          </v-autocomplete>
-        </v-app>
+        <div class="form-group my-1">
+          <label class="form-label mg-t-10">Siège<span class="text-danger">*</span></label>
+          <input
+            v-model="societe.siege"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.siege.exist }"
+            placeholder="Entrer le siège de la société"
+          />
+          <span v-if="errors.siege.exist" class="invalid-feedback" role="alert">
+            <strong>{{ errors.siege.message }}</strong>
+          </span>
+        </div>
+        <div class="form-group my-1">
+          <label class="form-label mg-t-10">Capital<span class="text-danger">*</span></label>
+          <input
+            v-model="societe.capital"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.siege.exist }"
+            placeholder="Entrer le capital"
+          />
+          <span v-if="errors.capital.exist" class="invalid-feedback" role="alert">
+            <strong>{{ errors.capital.message }}</strong>
+          </span>
+        </div>
       </form>
     </template>
     <template #modal-footer>
@@ -64,29 +73,28 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
-    compte: {
+    societe: {
       nom: '',
       sigle: '',
-      site_id: null,
+      siege: '',
+      capital: null,
     },
     errors: {
       nom: { exist: false, message: null },
       sigle: { exist: false, message: null },
-      site_id: { exist: false, message: null },
+      siege: { exist: false, message: null },
+      capital: { exist: false, message: null },
     },
   }),
   computed: {
     ...mapGetters('architecture/marche', ['marches']),
   },
-  mounted() {
-    this.getSites()
-  },
   methods: {
-    ...mapActions({ ajouter: 'caisse/banque/ajouter', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({ ajouter: 'architecture/societe/ajouter' }),
     save() {
-      this.ajouter(this.banque)
+      this.ajouter(this.societe)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateBanque')
+          this.$bvModal.hide('modalCreateSociete')
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -102,13 +110,14 @@ export default {
         })
     },
     reset() {
-      this.compte = {
+      this.societe = {
         nom: '',
         sigle: '',
-        site_id: null,
+        siege: '',
+        capital: null,
       }
       errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateBanque')
+      this.$bvModal.hide('modalCreateSociete')
     },
   },
 }

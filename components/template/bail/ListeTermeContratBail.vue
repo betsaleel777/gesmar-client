@@ -1,8 +1,5 @@
 <template>
-  <b-card
-    aria-hidden="true"
-    header="Termes de contrats pour emplacements (bails)"
-  >
+  <b-card aria-hidden="true" header="Termes de contrats pour emplacements (bails)">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <div class="">
@@ -14,14 +11,6 @@
             size="18"
             type="plus"
             @click="$bvModal.show('modalCreateTermeContratBail')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
           />
           <feather
             v-b-tooltip.hover.top
@@ -65,8 +54,8 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
+          <a type="button" @click="pdf(data.item)">
+            <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
           <a type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
@@ -110,6 +99,7 @@
 import { mapActions } from 'vuex'
 import CreateTermeContratBailModal from './CreateTermeContratBailModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { downloadPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
@@ -153,8 +143,8 @@ export default {
   methods: {
     ...mapActions({
       getOne: 'template/terme-bail/getOne',
+      getPdf: 'template/terme-bail/getPdf',
     }),
-    imprimer() {},
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id
@@ -164,6 +154,12 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    pdf({ id }) {
+      this.getPdf(id).then(({ path }) => {
+        const chemin = String(process.env.API + '/storage/' + path)
+        downloadPdf(chemin)
+      })
     },
   },
 }
