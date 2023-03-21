@@ -54,6 +54,7 @@ export default {
     '~/plugins/user.js',
     '~/plugins/vue-gates',
     '~/plugins/currency.js',
+    '~/plugins/axios.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -104,7 +105,6 @@ export default {
         },
       },
     },
-    plugins: ['~/plugins/axios.js'],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

@@ -49,8 +49,8 @@
                   <th class="text-left">Client</th>
                   <th class="text-left">Emplacement</th>
                   <th class="text-left">Equipement</th>
-                  <th class="text-left">Idepart</th>
-                  <th class="text-left" style="width: 20%">Ifin</th>
+                  <th class="text-left">Index Départ</th>
+                  <th class="text-left" style="width: 20%">Index Fin</th>
                   <th class="text-right">Montant</th>
                 </tr>
               </thead>

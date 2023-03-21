@@ -15,7 +15,7 @@
           </li> -->
           <li class="nav-item" :class="{ show: active.exploitation }" @click="activer('exploitation')">
             <a class="nav-link with-sub" :class="{ active: $route.name.match(/^exploitation/) }"
-              ><feather type="activity" /> Exploitation</a
+              ><feather type="activity" />Exploitation</a
             >
             <nav class="nav nav-sub">
               <nuxt-link
@@ -30,7 +30,7 @@
                 to="/exploitation/ordonnancement"
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'exploitation-ordonnancement' }"
-                >ordonnancement</nuxt-link
+                >Ordonnancement</nuxt-link
               >
             </nav>
             <nav class="nav nav-sub">
@@ -71,70 +71,6 @@
               >
             </nav>
           </li>
-          <!-- <li
-            class="nav-item"
-            :class="{ show: active.paiement }"
-            @click="activer('paiement')"
-          >
-            <a class="nav-link with-sub">
-              <feather type="file-text" />Comptabilité & Paiement</a
-            >
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Encaissement/Paiement</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Encaissement Mobile & TPE</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Export/Import SAGE</nuxt-link
-              >
-            </nav>
-          </li> -->
-          <!-- <li
-            class="nav-item"
-            :class="{ show: active.outils }"
-            @click="activer('outils')"
-          >
-            <a class="nav-link with-sub">
-              <feather type="cpu" />Outils & Taches</a
-            >
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Quittancement Automatique</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Génération d’Emplacements</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Génération d’Emplacements</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Devis de Location</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link"
-                >Révision de Loyers & Indice</nuxt-link
-              >
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link">Forums</nuxt-link>
-            </nav>
-            <nav class="nav nav-sub">
-              <nuxt-link to="" class="nav-sub-link">Répertoire</nuxt-link>
-            </nav>
-          </li> -->
           <li class="nav-item" :class="{ show: active.setting }" @click="activer('setting')">
             <a class="nav-link with-sub" :class="{ active: $route.name.match(/^parametre/) }"
               ><feather type="settings" />Paramètres</a

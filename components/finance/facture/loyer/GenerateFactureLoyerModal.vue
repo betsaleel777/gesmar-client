@@ -66,7 +66,7 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" class="btn btn-primary text-white" @click="save">Générer</button>
     </template>
   </b-modal>
 </template>
@@ -83,13 +83,13 @@ export default {
     mois: '',
     headers: [
       {
-        text: 'Code',
+        text: 'Emplacement',
         align: 'start',
         sortable: false,
         value: 'code',
       },
       { text: 'Clients', value: 'contrat_actuel.personne.alias' },
-      { text: 'Loyer (FCFA)', value: 'loyer', align: 'right' },
+      { text: 'Loyer (FCFA)', value: 'loyer', align: 'right', sortable: false },
     ],
   }),
   methods: {

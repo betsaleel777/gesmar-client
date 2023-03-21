@@ -113,13 +113,13 @@ export default {
       },
       {
         key: 'index_depart',
-        label: 'IDépart',
+        label: 'Index D',
         tdClass: 'text-center',
         thClass: 'text-center',
       },
       {
         key: 'index_fin',
-        label: 'IFin',
+        label: 'Index F',
         tdClass: 'text-center',
         thClass: 'text-center',
       },
