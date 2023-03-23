@@ -7,7 +7,17 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <form ref="form" enctype="multipart/form-data">
+        <div class="form-group my-1">
+          <div v-if="!societe.image" class="avatar avatar-xxl">
+            <img v-if="societe.logo" :src="societe.logo" class="rounded-circle" alt="image de profil" />
+            <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
+          </div>
+          <ImagePreview v-model="societe.image" />
+          <div v-if="errors.logo.exist" class="text-danger text-thin" role="alert">
+            <strong>{{ errors.logo.message }}</strong>
+          </div>
+        </div>
         <div class="form-group my-1">
           <label class="form-label mg-t-10">Nom de la société<span class="text-danger">*</span></label>
           <input
@@ -69,9 +79,13 @@
   </b-modal>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import ImagePreview from '~/components/tools/ImagePreview.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
+  components: {
+    ImagePreview,
+  },
   props: {
     current: {
       type: Object,
@@ -80,10 +94,13 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    logo: null,
     societe: {
       nom: '',
       sigle: '',
       siege: '',
+      logo: null,
+      image: null,
       capital: null,
     },
     errors: {
@@ -91,10 +108,10 @@ export default {
       sigle: { exist: false, message: null },
       siege: { exist: false, message: null },
       capital: { exist: false, message: null },
+      logo: { exist: false, message: null },
     },
   }),
   computed: {
-    ...mapGetters('architecture/marche', ['marches']),
     dialog: {
       get() {
         return this.value
@@ -110,7 +127,11 @@ export default {
   methods: {
     ...mapActions({ modifier: 'architecture/societe/modifier' }),
     save() {
-      this.modifier(this.societe)
+      const data = new FormData()
+      for (const key in this.societe) {
+        data.append(key, this.societe[key])
+      }
+      this.modifier(data)
         .then(({ message }) => {
           this.$bvModal.hide('modalEditSociete')
           this.$root.$bvToast.toast(message, {
@@ -132,6 +153,8 @@ export default {
         nom: '',
         sigle: '',
         siege: '',
+        logo: null,
+        image: null,
         capital: null,
       }
       errorsInitialise(this.errors)
@@ -140,4 +163,4 @@ export default {
   },
 }
 </script>
-<style></style>
+<style scoped></style>

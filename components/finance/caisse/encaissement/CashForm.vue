@@ -66,7 +66,6 @@
         dense
         :error="errors.numero.exist"
         :error-messages="errors.numero.message"
-        suffix="FCFA"
       >
         <template #label>
           Numéro du cheque

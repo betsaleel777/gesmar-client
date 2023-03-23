@@ -35,7 +35,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
-  components: {},
   data: () => ({
     caissier: {
       user_id: null,

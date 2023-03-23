@@ -7,7 +7,13 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <form ref="form" enctype="multipart/form-data">
+        <div class="form-group my-1">
+          <ImagePreview v-model="societe.logo" :error-state="errors.logo.exist" />
+          <div v-if="errors.logo.exist" class="text-danger text-thin" role="alert">
+            <strong>{{ errors.logo.message }}</strong>
+          </div>
+        </div>
         <div class="form-group my-1">
           <label class="form-label mg-t-10">Nom de la société<span class="text-danger">*</span></label>
           <input
@@ -69,14 +75,19 @@
   </b-modal>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import ImagePreview from '~/components/tools/ImagePreview.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
+  components: {
+    ImagePreview,
+  },
   data: () => ({
     societe: {
       nom: '',
       sigle: '',
       siege: '',
+      logo: null,
       capital: null,
     },
     errors: {
@@ -84,15 +95,17 @@ export default {
       sigle: { exist: false, message: null },
       siege: { exist: false, message: null },
       capital: { exist: false, message: null },
+      logo: { exist: false, message: null },
     },
   }),
-  computed: {
-    ...mapGetters('architecture/marche', ['marches']),
-  },
   methods: {
     ...mapActions({ ajouter: 'architecture/societe/ajouter' }),
     save() {
-      this.ajouter(this.societe)
+      const data = new FormData()
+      for (const key in this.societe) {
+        data.append(key, this.societe[key])
+      }
+      this.ajouter(data)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateSociete')
           this.$bvToast.toast(message, {
@@ -114,6 +127,7 @@ export default {
         nom: '',
         sigle: '',
         siege: '',
+        logo: null,
         capital: null,
       }
       errorsInitialise(this.errors)

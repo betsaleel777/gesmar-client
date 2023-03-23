@@ -4,14 +4,8 @@
       v-if="previewImage"
       class="imagePreviewWrapper"
       :style="{ 'background-image': `url(${previewImage})` }"
-      @click="selectImage"
     ></div>
-    <b-form-file
-      ref="fileInput"
-      class="mg-t-5"
-      placeholder="choix de l'avatar"
-      @input="pickFile"
-    >
+    <b-form-file ref="fileInput" class="mg-t-5" placeholder="choix de l'image" @input="pickFile">
       <template slot="file-name" slot-scope="{ names }">
         <b-badge variant="dark">{{ names[0] }}</b-badge>
       </template>
@@ -26,9 +20,6 @@ export default {
     }
   },
   methods: {
-    selectImage() {
-      this.$refs.fileInput.click()
-    },
     pickFile() {
       const input = this.$refs.fileInput
       const file = input.files
