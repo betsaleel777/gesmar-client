@@ -81,8 +81,11 @@ export default {
       this.$auth
         .loginWith('laravelSanctum', { data: this.utilisateur })
         .then(() => {
-          // this.$gates.setPermissions(this.profile.permissions)
-          // this.$router.push('/')
+          this.$root.$bvToast.toast('Gestion intelligente de marché, made in seggor', {
+            title: 'Bienvenu dans gesmar'.toLocaleUpperCase(),
+            variant: 'info',
+            solid: true,
+          })
         })
         .catch((err) => {
           const { data } = err.response

@@ -10,7 +10,13 @@
       <form ref="form" enctype="multipart/form-data">
         <div class="form-group my-1">
           <div v-if="!societe.image" class="avatar avatar-xxl">
-            <img v-if="societe.logo" :src="societe.logo" class="rounded-circle" alt="image de profil" />
+            <b-img
+              v-if="societe.logo"
+              lazy
+              :src="societe.logo"
+              class="rounded-circle"
+              alt="image de profil"
+            />
             <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
           <ImagePreview v-model="societe.image" />

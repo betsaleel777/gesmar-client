@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalCreateTermeContratBail" scrollable size="lg" @show="reset">
+  <b-modal id="modalCreateTermeContratBail" scrollable size="xl" @show="reset">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création de Terme de contrats pour emplacements</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -34,7 +34,7 @@
               <v-expansion-panel-content>
                 <v-row>
                   <v-col>
-                    <p class="caption">
+                    <p class="subtitle-0">
                       <b>$nomComplet:</b> Le nom complet du locataire.<br />
                       <b>$adresseLocataire:</b> L'adresse du locataire.<br />
                       <b>$telephone:</b> Le téléphone du locataire.<br />
@@ -50,7 +50,7 @@
                   </v-col>
                   <v-divider vertical></v-divider>
                   <v-col>
-                    <p class="caption">
+                    <p class="subtitle-0">
                       <b>$dateLocalisationMariage:</b> Date et lieu du mariage.<br />
                       <b>$regimeMatrimonial:</b> Régime matrimonial.<br />
                       <b>$siteVille:</b> La ville du site.<br />
@@ -61,7 +61,6 @@
                       <b>$contratFin:</b> La date de fin du contrat.<br />
                       <b>$montantCaution:</b> Le montant de la caution de l'emplacement.<br />
                       <b>$dateContrat:</b> La date d'émission du contrat.<br />
-                      <b>$professionEpoux:</b> La profession de l'époux du locataire.<br />
                     </p>
                   </v-col>
                 </v-row>

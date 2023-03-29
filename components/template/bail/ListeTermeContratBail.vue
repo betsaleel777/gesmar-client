@@ -157,8 +157,7 @@ export default {
     },
     pdf({ id }) {
       this.getPdf(id).then(({ path }) => {
-        const chemin = String(process.env.API + '/storage/' + path)
-        downloadPdf(chemin)
+        downloadPdf(path)
       })
     },
   },
