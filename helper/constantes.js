@@ -56,6 +56,11 @@ const FACTURE = Object.freeze({
     equipement: 'équipement',
   },
 })
+const MATRIMONIALE = Object.freeze({
+  mariage: 'marier',
+  concubinage: 'concubinage',
+  celibat: 'celibataire',
+})
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,
@@ -66,4 +71,5 @@ module.exports = {
   EMPLACEMENT,
   ORDONNANCEMENT,
   ATTRIBUTION,
+  MATRIMONIALE,
 }
