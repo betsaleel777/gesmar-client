@@ -94,16 +94,16 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'contrat.code', label: 'Contrat', sortable: true },
-      { key: 'contrat.personne.alias', label: 'Personne', sortable: true },
+      { key: 'contrat', label: 'Contrat', sortable: true },
+      { key: 'personne', label: 'Personne', sortable: true },
       {
-        key: 'contrat.emplacement.code',
+        key: 'emplacement',
         label: 'Emplacement',
         tdClass: 'text-center',
         sortable: true,
       },
       {
-        key: 'contrat.emplacement.loyer',
+        key: 'loyer',
         label: 'Loyer',
         formatter: (value) => {
           return value + ' FCFA'

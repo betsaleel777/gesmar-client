@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-overlay :show="$fetchState.pending" rounded="sm">
     <b-card aria-hidden="true" header="Liste des Ouvertures de Caisse">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -62,6 +62,9 @@
           <template #cell(created_at)="data">
             {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
+          <template #cell(status)="data">
+            <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
+          </template>
           <template #empty="scope">
             <h6 class="text-center text-muted pd-y-10">
               {{ scope.emptyText }}
@@ -81,12 +84,13 @@
         <EditOuvertureModal v-if="edit.modal" v-model="edit.modal" :current="edit.EditOuvertureModal" />
       </b-card-text>
     </b-card>
-  </div>
+  </b-overlay>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateOuvertureModal from './CreateOuvertureModal.vue'
 import EditOuvertureModal from './EditOuvertureModal.vue'
+import { OUVERTURE } from '~/helper/constantes'
 import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
@@ -97,9 +101,11 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code' },
-      { key: 'guichet.site.nom', label: 'Marché' },
-      { key: 'caissier.user.name', label: 'Caissier' },
+      { key: 'site', label: 'Marché' },
+      { key: 'caissier', label: 'Caissier' },
+      { key: 'guichet', label: 'Guichet' },
       { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'status', label: 'Statut' },
       {
         key: 'option',
         label: 'Options',
@@ -167,6 +173,13 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    statusClass(value) {
+      const classes = {
+        [OUVERTURE.confirmed]: 'badge badge-danger-light',
+        [OUVERTURE.using]: 'badge badge-primary-light',
+      }
+      return classes[value]
     },
   },
 }
