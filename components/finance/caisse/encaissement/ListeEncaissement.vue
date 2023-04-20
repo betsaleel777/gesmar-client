@@ -22,6 +22,15 @@
               type="printer"
               @click="imprimer"
             />
+            <feather
+              v-b-tooltip.hover.top
+              title="fermer"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="x-square"
+              @click="fermer"
+            />
           </div>
         </div>
         <hr class="mg-t-4" />
@@ -171,6 +180,18 @@ export default {
           variant: 'warning',
           solid: true,
         })
+    },
+    fermer() {
+      this.$bvModal
+        .msgBoxOk('Voulez vous réelement fermer la caisse pour ce jour?', {
+          title: 'Confirmer la fermeture de caisse',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'primary',
+          footerClass: 'p-2 border-top-0',
+          centered: true,
+        })
+        .then((value) => {})
     },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
