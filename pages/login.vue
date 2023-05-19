@@ -5,7 +5,7 @@
       <div class="signin-sidebar-body">
         <a href="dashboard-one.html" class="sidebar-logo mg-b-40"><span>Gesmar</span></a>
         <h4 class="signin-title">Bienvenue Gesmar</h4>
-        <h5 class="signin-subtitle">Se Connectez</h5>
+        <h5 class="signin-subtitle">Se Connecter</h5>
         <form @submit.prevent="login()">
           <div class="signin-form">
             <div class="form-group">
@@ -78,28 +78,19 @@ export default {
   },
   methods: {
     login() {
-      this.$auth
-        .loginWith('laravelSanctum', { data: this.utilisateur })
-        .then(() => {
-          this.$root.$bvToast.toast('Gestion intelligente de marché, made in seggor', {
-            title: 'Bienvenu dans gesmar'.toLocaleUpperCase(),
-            variant: 'info',
+      this.$auth.loginWith('laravelSanctum', { data: this.utilisateur }).catch((err) => {
+        const { data } = err.response
+        if (data && data.credentials) {
+          this.$root.$bvToast.toast(data.message, {
+            title: "echec de l'opération".toLocaleUpperCase(),
+            variant: 'danger',
             solid: true,
           })
-        })
-        .catch((err) => {
-          const { data } = err.response
-          if (data && data.credentials) {
-            this.$root.$bvToast.toast(data.message, {
-              title: "echec de l'opération".toLocaleUpperCase(),
-              variant: 'danger',
-              solid: true,
-            })
-          } else {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
-        })
+        } else {
+          errorsInitialise(this.errors)
+          errorsWriting(data.errors, this.errors)
+        }
+      })
     },
   },
 }

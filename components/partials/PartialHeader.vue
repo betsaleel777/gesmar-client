@@ -64,7 +64,7 @@
       <div class="dropdown dropdown-loggeduser">
         <a href="" class="dropdown-link" data-toggle="dropdown">
           <div class="avatar avatar-sm">
-            <img v-if="user.avatar" :src="baseURL + 'storage/' + user.avatar" class="rounded-circle" alt="" />
+            <img v-if="user.avatar" :src="user.avatar" class="rounded-circle" alt="" />
             <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
           <!-- avatar -->
@@ -73,12 +73,7 @@
           <div class="dropdown-menu-header">
             <div class="media align-items-center">
               <div class="avatar">
-                <img
-                  v-if="user.avatar"
-                  :src="baseURL + 'storage/' + user.avatar"
-                  class="rounded-circle"
-                  alt=""
-                />
+                <img v-if="user.avatar" :src="user.avatar" class="rounded-circle" alt="" />
                 <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
               </div>
               <!-- avatar -->
@@ -114,7 +109,6 @@ export default {
   data() {
     return {
       sidebarHide: false,
-      baseURL: process.env.API,
     }
   },
   head() {

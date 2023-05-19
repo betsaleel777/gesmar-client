@@ -169,6 +169,7 @@ export default {
         this.getOne(this.encaissement.ordonnancement_id).then(({ ordonnancement }) => {
           this.ordonnancement = ordonnancement
           this.validable = true
+          this.key = !this.key
         })
       }
     },

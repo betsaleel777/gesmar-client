@@ -21,19 +21,38 @@
             <strong>{{ errors.nom.message }}</strong>
           </span>
         </div>
-        <div class="form-group">
-          <label class="form-label">Commune<span class="text-danger">*</span></label>
-          <input
+        <v-app>
+          <v-autocomplete
             v-model="marche.commune"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.commune.exist }"
-            placeholder="Entrer la commune"
-          />
-          <span v-if="errors.commune.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.commune.message }}</strong>
-          </span>
-        </div>
+            :items="communes"
+            item-text="COMMUNE"
+            item-value="COMMUNE"
+            outlined
+            dense
+            :error="errors.commune.exist"
+            :error-messages="errors.commune.message"
+          >
+            <template #label>
+              Commune
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="marche.pays"
+            :items="pays"
+            item-text="name"
+            item-value="name"
+            outlined
+            dense
+            :error="errors.pays.exist"
+            :error-messages="errors.pays.message"
+          >
+            <template #label>
+              Pays
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+        </v-app>
         <div class="form-group">
           <label class="form-label">Ville<span class="text-danger">*</span></label>
           <input
@@ -45,19 +64,6 @@
           />
           <span v-if="errors.ville.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.ville.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pays<span class="text-danger">*</span></label>
-          <input
-            v-model="marche.pays"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.pays.exist }"
-            placeholder="Entrer le pays"
-          />
-          <span v-if="errors.pays.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.pays.message }}</strong>
           </span>
         </div>
         <div class="form-group">
@@ -84,6 +90,8 @@ export default {
       pays: '',
       postale: '',
     },
+    communes: [],
+    pays: [],
     errors: {
       nom: { exist: false, message: null },
       commune: { exist: false, message: null },
@@ -91,6 +99,14 @@ export default {
       pays: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    let response = await this.$axios.get(
+      'https://data.gouv.ci/data-fair/api/v1/datasets/liste-des-circonscriptions-administratives-et-des-communes/lines?select=COMMUNE&size=252'
+    )
+    this.communes = response.data.results
+    response = await this.$axios.get('/json/countries.json', { baseURL: 'http://localhost:3000' })
+    this.pays = response.data
+  },
   methods: {
     ...mapActions('architecture/marche', ['ajouter']),
     save() {

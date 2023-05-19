@@ -109,10 +109,10 @@
             </nav>
             <nav class="nav nav-sub">
               <nuxt-link
-                to="/parametre/societe"
+                to="/parametre/application"
                 class="nav-sub-link"
-                :class="{ active: $route.name === 'parametre-societe' }"
-                >Societes</nuxt-link
+                :class="{ active: $route.name === 'parametre-application' }"
+                >Application</nuxt-link
               >
             </nav>
           </li>

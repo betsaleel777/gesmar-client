@@ -6,7 +6,10 @@
       <b>Période</b>: Du {{ $moment(ordonnancement.contrat.debut).format('ll') }} au
       {{ $moment(ordonnancement.contrat.fin).format('ll') }}
     </p>
-    <p><b>Emplacement</b>: {{ ordonnancement.contrat.emplacement.code }}</p>
+    <p v-if="ordonnancement.contrat.emplacement">
+      <b>Emplacement</b>: {{ ordonnancement.contrat.emplacement.code }}
+    </p>
+    <p v-else><b>Emplacement</b>: {{ ordonnancement.contrat.annexe.code }}</p>
     <p><b>Locataire</b>: {{ ordonnancement.contrat.personne.alias }}</p>
     <p><b>Montant à payer</b>: {{ ordonnancement.total | currency }}</p>
   </v-container>

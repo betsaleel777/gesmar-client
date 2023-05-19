@@ -8,7 +8,7 @@
           <div v-if="!utilisateur.image" class="avatar avatar-xxl">
             <img
               v-if="utilisateur.avatar"
-              :src="baseURL + '/storage/' + utilisateur.avatar"
+              :src="utilisateur.avatar"
               class="rounded-circle"
               alt="image de profil"
             />
@@ -121,6 +121,7 @@ export default {
             variant: 'success',
             solid: true,
           })
+          location.reload()
         })
         .catch((err) => {
           const { data } = err.response
