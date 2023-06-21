@@ -66,7 +66,9 @@
               <v-autocomplete
                 v-model="emplacement.zone_id"
                 :items="zones"
-                item-text="nom"
+                :loading="loading"
+                :search-input.sync="search"
+                item-text="texte"
                 item-value="id"
                 outlined
                 dense
@@ -76,12 +78,6 @@
                 <template #label>
                   Choix de la zone
                   <span class="red--text"><strong>* </strong></span>
-                </template>
-                <template #item="data">
-                  {{ data.item.niveau.pavillon.site.nom }}
-                  {{ data.item.niveau.pavillon.nom }}
-                  {{ data.item.niveau.nom }}
-                  {{ data.item.nom }}
                 </template>
               </v-autocomplete>
             </v-app>
@@ -179,12 +175,11 @@ export default {
       type: Array,
       required: true,
     },
-    zones: {
-      type: Array,
-      required: true,
-    },
   },
   data: () => ({
+    zones: [],
+    loading: false,
+    search: null,
     automatiq: false,
     emplacement: {
       nom: '',
@@ -205,8 +200,14 @@ export default {
       type_emplacement_id: { exist: false, message: null },
     },
   }),
+  watch: {
+    search(val) {
+      val && val !== this.emplacement.zone_id && this.querySelections(val)
+    },
+  },
   methods: {
     ...mapActions('architecture/emplacement', ['ajouter', 'push']),
+    ...mapActions({ getSearch: 'architecture/zone/getSearch' }),
     save() {
       if (!this.automatiq) {
         this.ajouter(this.emplacement)
@@ -264,6 +265,12 @@ export default {
     },
     switcher() {
       errorsInitialise(this.errors)
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((zones) => (this.zones = zones))
+        .finally(() => (this.loading = false))
     },
   },
 }

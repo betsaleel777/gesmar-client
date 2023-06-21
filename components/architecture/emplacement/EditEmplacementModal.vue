@@ -47,7 +47,9 @@
               <v-autocomplete
                 v-model="emplacement.zone_id"
                 :items="zones"
-                item-text="nom"
+                :loading="loading"
+                :search-input.sync="search"
+                item-text="texte"
                 item-value="id"
                 outlined
                 dense
@@ -57,12 +59,6 @@
                 <template #label>
                   Choix de la zone
                   <span class="red--text"><strong>* </strong></span>
-                </template>
-                <template #item="data">
-                  {{ data.item.niveau.pavillon.site.nom }}
-                  {{ data.item.niveau.pavillon.nom }}
-                  {{ data.item.niveau.nom }}
-                  {{ data.item.nom }}
                 </template>
               </v-autocomplete>
             </v-app>
@@ -160,10 +156,6 @@ export default {
       type: Array,
       required: true,
     },
-    zones: {
-      type: Array,
-      required: true,
-    },
     current: {
       type: Object,
       required: true,
@@ -171,6 +163,9 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    zones: [],
+    loading: false,
+    search: null,
     emplacement: {
       id: null,
       nom: '',
@@ -199,12 +194,23 @@ export default {
       },
     },
   },
+  watch: {
+    search(oldVal, newVal) {
+      newVal && newVal !== this.emplacement.zone_id && this.querySelections(newVal)
+    },
+  },
   mounted() {
     this.emplacement.id = this.current.id
     this.emplacement.nom = this.current.nom
     this.emplacement.superficie = this.current.superficie
     this.emplacement.loyer = this.current.loyer
     this.emplacement.pas_porte = this.current.pas_porte
+    this.getOne(this.current.zone_id).then(({ zone }) =>
+      this.zones.push({
+        texte: zone.nom + ' ' + zone.pavillon.nom + ' ' + zone.niveau.nom + ' ' + zone.site.nom,
+        id: zone.id,
+      })
+    )
     this.emplacement.zone_id = this.current.zone_id
     this.emplacement.type_emplacement_id = this.current.type_emplacement_id
     this.emplacement.caution = this.current.caution
@@ -212,6 +218,8 @@ export default {
   methods: {
     ...mapActions({
       modifier: 'architecture/emplacement/modifier',
+      getSearch: 'architecture/zone/getSearch',
+      getOne: 'architecture/zone/getOne',
     }),
     save() {
       this.modifier(this.emplacement)
@@ -248,6 +256,12 @@ export default {
     },
     onPushed(id) {
       this.emplacement.type_emplacement_id = id
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((zones) => (this.zones = zones))
+        .finally(() => (this.loading = false))
     },
   },
 }

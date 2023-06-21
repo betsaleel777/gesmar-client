@@ -17,6 +17,11 @@ export const actions = {
     commit('SET_PAVILLON', requete.data.pavillons)
   },
 
+  async getSearch({ commit }, search) {
+    const requete = await this.$axios.get('api/parametres/pavillons/select', { params: { search } })
+    return requete.data
+  },
+
   async getByMarche({ commit }, id) {
     commit('SET_SELECTED', [])
     const requete = await this.$axios.get('api/parametres/pavillons/marche/' + id)

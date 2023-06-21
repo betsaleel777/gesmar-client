@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay rounded="sm">
     <b-card aria-hidden="true" header="Liste des pavillons">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -47,18 +47,19 @@
           :per-page="perPage"
           responsive
           empty-text="Aucun Pavillon"
+          :busy="$fetchState.pending"
           show-empty
           :filter="filter"
           @filtered="onFiltered"
         >
+          <template #table-busy>
+            <div class="text-center text-primary my-2">
+              <b-spinner class="align-middle"></b-spinner>
+              <strong>Chargement...</strong>
+            </div>
+          </template>
           <template #cell(index)="data">
             {{ data.index + 1 }}
-          </template>
-          <template #cell(marche)="data">
-            {{ data.item.site.nom }}
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
           <template #cell(option)="data">
             <a type="button" @click="editer(data.item)">
@@ -124,11 +125,10 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getMarches()
-    this.getPavillons().then(() => {
-      this.totalRows = this.pavillons.length
-    })
+  async fetch() {
+    await this.getMarches()
+    await this.getPavillons()
+    this.totalRows = this.pavillons.length
   },
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches', pavillons: 'architecture/pavillon/pavillons' }),
@@ -136,8 +136,8 @@ export default {
       return this.pavillons.map((pavillon) => {
         return {
           pavillon: pavillon.nom,
-          site: pavillon.site.nom,
-          date: this.$moment(pavillon.created_at).format('llll'),
+          site: pavillon.site,
+          date: pavillon.created_at,
         }
       })
     },

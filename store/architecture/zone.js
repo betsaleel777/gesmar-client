@@ -13,6 +13,11 @@ export const actions = {
     commit('SET_ZONE', requete.data.zones)
   },
 
+  async getSearch({ commit }, search) {
+    const requete = await this.$axios.get('api/parametres/zones/select', { params: { search } })
+    return requete.data
+  },
+
   async getTrashAll({ commit }) {
     commit('SET_ZONE', [])
     const requete = await this.$axios.get('api/parametres/zones/trashed')

@@ -18,7 +18,9 @@
             <v-autocomplete
               v-model="niveau.pavillon_id"
               :items="pavillons"
-              item-text="nom"
+              :loading="loading"
+              :search-input.sync="search"
+              item-text="texte"
               item-value="id"
               outlined
               dense
@@ -29,7 +31,6 @@
                 Choix du pavillon
                 <span class="red--text"><strong>* </strong></span>
               </template>
-              <template #item="data"> {{ data.item.site.nom }} {{ data.item.nom }} </template>
             </v-autocomplete>
           </v-app>
           <div v-if="!niveau.automatiq" class="form-group">
@@ -69,13 +70,10 @@
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
-  props: {
-    pavillons: {
-      type: Array,
-      required: true,
-    },
-  },
   data: () => ({
+    pavillons: [],
+    loading: false,
+    search: null,
     niveau: {
       nom: '',
       pavillon_id: '',
@@ -88,9 +86,15 @@ export default {
       nombre: { exist: false, message: null },
     },
   }),
+  watch: {
+    search(val) {
+      val && val !== this.niveau.pavillon_id && this.querySelections(val)
+    },
+  },
   methods: {
     ...mapActions({
       ajouter: 'architecture/niveau/ajouter',
+      getSearch: 'architecture/pavillon/getSearch',
     }),
     save() {
       this.ajouter(this.niveau)
@@ -128,6 +132,12 @@ export default {
     close() {
       this.initState()
       this.$bvModal.hide('modalCreateNiveau')
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((pavillons) => (this.pavillons = pavillons))
+        .finally(() => (this.loading = false))
     },
   },
 }

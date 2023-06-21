@@ -13,6 +13,11 @@ export const actions = {
     commit('SET_NIVEAUX', requete.data.niveaux)
   },
 
+  async getSearch({ commit }, search) {
+    const requete = await this.$axios.get('api/parametres/niveaux/select', { params: { search } })
+    return requete.data
+  },
+
   async getTrashAll({ commit }) {
     commit('SET_NIVEAUX', [])
     const requete = await this.$axios.get('api/parametres/niveaux/trashed')

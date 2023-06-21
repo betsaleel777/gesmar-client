@@ -60,6 +60,12 @@
         :filter="filter"
         @filtered="onFiltered"
       >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
@@ -80,11 +86,7 @@
           </span>
         </template>
         <template #empty="scope">
-          <div v-if="$fetchState.pending" class="text-center text-primary my-2">
-            <b-spinner class="align-middle"></b-spinner>
-            <strong>Chargement...</strong>
-          </div>
-          <h6 v-else class="text-center text-muted pd-y-10">
+          <h6 class="text-center text-muted pd-y-10">
             {{ scope.emptyText }}
           </h6>
         </template>
@@ -138,16 +140,11 @@ export default {
   data: () => ({
     fields: [
       'ordre',
-      { key: 'type.nom', label: 'Type' },
       { key: 'code', label: 'Code', sortable: true },
       { key: 'nom', label: 'Nom', sortable: true },
-      {
-        key: 'prix_unitaire',
-        label: 'Prix Unitaire',
-        tdClass: 'text-right',
-        sortable: true,
-      },
-      { key: 'site.nom', label: 'Site' },
+      { key: 'type', label: 'Type' },
+      { key: 'prix_unitaire', label: 'Prix Unitaire', tdClass: 'text-right', sortable: true },
+      { key: 'site', label: 'Site' },
       { key: 'status', label: 'Statuts' },
       {
         key: 'option',
@@ -164,12 +161,11 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getMarches()
-    this.getTypesEquipement()
-    this.getEquipements().then(() => {
-      this.totalRows = this.equipements.length
-    })
+  async fetch() {
+    await this.getMarches()
+    await this.getTypesEquipement()
+    await this.getEquipements()
+    this.totalRows = this.equipements.length
   },
   computed: {
     ...mapGetters({
@@ -182,9 +178,9 @@ export default {
         return {
           code: gear.code,
           prix: this.$options.filters.currency(gear.prix_unitaire),
-          type: gear.type.nom,
-          site: gear.site.nom,
-          date: this.$moment(gear.created_at).format('llll'),
+          type: gear.type,
+          site: gear.site,
+          date: gear.created_at,
         }
       })
     },

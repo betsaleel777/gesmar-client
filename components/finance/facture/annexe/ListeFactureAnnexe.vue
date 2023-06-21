@@ -1,73 +1,73 @@
 <template>
-  <div>
-    <b-overlay :show="$fetchState.pending" rounded="sm">
-      <b-card aria-hidden="true" header="Liste des factures annexes">
-        <b-card-text>
-          <div class="btn-toolbar d-flex flex-row-reverse">
-            <div class="">
-              <feather
-                v-b-tooltip.hover.top
-                title="imprimer liste"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="printer"
-              />
-            </div>
+  <b-card aria-hidden="true" header="Liste des factures annexes">
+    <b-card-text>
+      <div class="btn-toolbar d-flex flex-row-reverse">
+        <div class="">
+          <feather
+            v-b-tooltip.hover.top
+            title="imprimer liste"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="printer"
+          />
+        </div>
+      </div>
+      <hr class="mg-t-4" />
+      <b-form-input
+        id="filter-input"
+        v-model="filter"
+        type="search"
+        placeholder="Rechercher"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="factures"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        responsive
+        empty-text="Aucune facture"
+        :busy="$fetchState.pending"
+        show-empty
+        :filter="filter"
+        @filtered="onFiltered"
+      >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
           </div>
-          <hr class="mg-t-4" />
-          <b-form-input
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Rechercher"
-            class="mg-y-10"
-            :debounce="500"
-          ></b-form-input>
-          <b-table
-            id="table"
-            class="table"
-            hover
-            small
-            bordered
-            primary-key="id"
-            :items="factures"
-            :fields="fields"
-            :current-page="currentPage"
-            :per-page="perPage"
-            responsive
-            empty-text="Aucune facture"
-            show-empty
-            :filter="filter"
-            @filtered="onFiltered"
-          >
-            <template #cell(ordre)="data">
-              {{ data.index + 1 }}
-            </template>
-            <template #cell(status)="data">
-              <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
-            </template>
-            <template #cell(created_at)="data">
-              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-            </template>
-            <template #empty="scope">
-              <h6 class="text-center text-muted pd-y-10">
-                {{ scope.emptyText }}
-              </h6>
-            </template>
-          </b-table>
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="right"
-            size="sm"
-            aria-controls="table"
-          ></b-pagination>
-        </b-card-text>
-      </b-card>
-    </b-overlay>
-  </div>
+        </template>
+        <template #cell(ordre)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(status)="data">
+          <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
+        </template>
+        <template #empty="scope">
+          <h6 class="text-center text-muted pd-y-10">
+            {{ scope.emptyText }}
+          </h6>
+        </template>
+      </b-table>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="right"
+        size="sm"
+        aria-controls="table"
+      ></b-pagination>
+    </b-card-text>
+  </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -77,16 +77,16 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'contrat.code', label: 'Contrat', sortable: true },
-      { key: 'contrat.personne.nom', label: 'Personne', sortable: true },
+      { key: 'contrat_code', label: 'Contrat', sortable: true },
+      { key: 'personne', label: 'Personne', sortable: true },
       {
-        key: 'annexe.nom',
+        key: 'annexe',
         label: 'Service',
         tdClass: 'text-center',
         sortable: true,
       },
       {
-        key: 'annexe.prix',
+        key: 'prix',
         label: 'Prix',
         formatter: (value) => {
           return Number(value)
@@ -115,12 +115,11 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getContrats()
-    this.getPersonnes()
-    this.getFactures(() => {
-      this.totalRows = this.factures.length
-    })
+  async fetch() {
+    await this.getContrats()
+    await this.getPersonnes()
+    await this.getFactures()
+    this.totalRows = this.factures.length
   },
   computed: {
     ...mapGetters({

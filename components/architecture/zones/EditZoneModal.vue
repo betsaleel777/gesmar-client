@@ -13,7 +13,9 @@
             <v-autocomplete
               v-model="zone.niveau_id"
               :items="niveaux"
-              item-text="nom"
+              :loading="loading"
+              :search-input.sync="search"
+              item-text="texte"
               item-value="id"
               outlined
               dense
@@ -24,11 +26,6 @@
               <template #label>
                 Choix du niveau
                 <span class="red--text"><strong>* </strong></span>
-              </template>
-              <template #item="data">
-                {{ data.item.pavillon.site.nom }}
-                {{ data.item.pavillon.nom }}
-                {{ data.item.nom }}
               </template>
             </v-autocomplete>
           </v-app>
@@ -59,10 +56,6 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    niveaux: {
-      type: Array,
-      required: true,
-    },
     current: {
       type: Object,
       required: true,
@@ -70,6 +63,9 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    niveaux: [],
+    loading: false,
+    search: null,
     zone: {
       id: null,
       nom: '',
@@ -90,14 +86,27 @@ export default {
       },
     },
   },
+  watch: {
+    search(oldVal, newVal) {
+      newVal && newVal !== this.zone.niveau_id && this.querySelections(newVal)
+    },
+  },
   mounted() {
     this.zone.id = this.current.id
+    this.getOne(this.current.niveau_id).then(({ niveau }) =>
+      this.niveaux.push({
+        texte: niveau.nom + ' ' + niveau.pavillon.nom + '' + niveau.site.nom,
+        id: niveau.id,
+      })
+    )
     this.zone.niveau_id = this.current.niveau_id
     this.zone.nom = this.current.nom
   },
   methods: {
     ...mapActions({
       modifier: 'architecture/zone/modifier',
+      getSearch: 'architecture/niveau/getSearch',
+      getOne: 'architecture/niveau/getOne',
     }),
     save() {
       this.modifier(this.zone)
@@ -126,6 +135,12 @@ export default {
       }
       errorsInitialise(this.errors)
       this.dialog = false
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((niveaux) => (this.niveaux = niveaux))
+        .finally(() => (this.loading = false))
     },
   },
 }

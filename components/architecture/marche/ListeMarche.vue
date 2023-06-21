@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay rounded="sm">
     <b-card aria-hidden="true" header="Liste des marchés">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -47,10 +47,17 @@
           :per-page="perPage"
           responsive
           empty-text="Aucun marché"
+          :busy="$fetchState.pending"
           show-empty
           :filter="filter"
           @filtered="onFiltered"
         >
+          <template #table-busy>
+            <div class="text-center text-primary my-2">
+              <b-spinner class="align-middle"></b-spinner>
+              <strong>Chargement...</strong>
+            </div>
+          </template>
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
@@ -117,10 +124,9 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getMarches().then(() => {
-      this.totalRows = this.marches.length
-    })
+  async fetch() {
+    await this.getMarches()
+    this.totalRows = this.marches.length
   },
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches' }),
@@ -131,7 +137,7 @@ export default {
           commune: marche.commune,
           ville: marche.ville,
           pays: marche.pays,
-          date: this.$moment(marche.created_at).format('llll'),
+          date: marche.created_at,
         }
       })
     },

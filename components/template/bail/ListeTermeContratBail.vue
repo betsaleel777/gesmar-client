@@ -12,20 +12,10 @@
             type="plus"
             @click="$bvModal.show('modalCreateTermeContratBail')"
           />
-          <feather
-            v-b-tooltip.hover.top
-            title="archives"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="archive"
-            @click="$emit('archivage')"
-          />
         </div>
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
         v-model="filter"
         type="search"
@@ -46,18 +36,28 @@
         :per-page="perPage"
         responsive
         empty-text="Aucun Terme"
+        :busy="$fetchState.pending"
         show-empty
         :filter="filter"
         @filtered="onFiltered"
       >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
         <template #cell(index)="data">
           {{ data.index + 1 }}
+        </template>
+        <template #cell(status)="data">
+          <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
         <template #cell(option)="data">
           <a type="button" @click="pdf(data.item)">
             <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
-          <a type="button" @click="dialoger(data.item)">
+          <a v-if="data.item.status === STATUS.unuse" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -96,31 +96,29 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTermeContratBailModal from './CreateTermeContratBailModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
-import { downloadPdf } from '~/helper/helpers'
+import { GABARI } from '~/helper/constantes'
 export default {
   components: {
     ConfirmationModal,
     CreateTermeContratBailModal,
   },
   props: {
-    termes: {
-      type: Array,
-      required: true,
-    },
     marches: {
       type: Array,
       required: true,
     },
   },
   data: () => ({
+    STATUS: GABARI,
     fields: [
       'index',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'user.name', label: 'Utilisateur', sortable: true },
       { key: 'site.nom', label: 'Marché', sortable: true },
+      { key: 'status', label: 'Statut', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -132,18 +130,22 @@ export default {
     ],
     dialogData: { modal: false, id: 0, code: '' },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  async fetch() {
+    await this.getAll()
+    this.totalRows = this.termes.length
+  },
   computed: {
-    totalRows() {
-      return this.termes.length
-    },
+    ...mapGetters({ termes: 'template/terme-bail/termes' }),
   },
   methods: {
     ...mapActions({
       getOne: 'template/terme-bail/getOne',
       getPdf: 'template/terme-bail/getPdf',
+      getAll: 'template/terme-bail/getAll',
     }),
     dialoger({ id, code }) {
       this.dialogData.code = code
@@ -157,8 +159,15 @@ export default {
     },
     pdf({ id }) {
       this.getPdf(id).then(({ path }) => {
-        downloadPdf(path)
+        window.open(path)
       })
+    },
+    statusClass(value) {
+      const classes = {
+        [GABARI.onuse]: 'badge badge-primary-light',
+        [GABARI.unuse]: 'badge badge-warning-light',
+      }
+      return classes[value]
     },
   },
 }

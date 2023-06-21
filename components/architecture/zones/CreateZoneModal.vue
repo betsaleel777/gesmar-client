@@ -17,7 +17,9 @@
           <v-autocomplete
             v-model="zone.niveau_id"
             :items="niveaux"
-            item-text="nom"
+            :loading="loading"
+            :search-input.sync="search"
+            item-text="texte"
             item-value="id"
             outlined
             dense
@@ -27,11 +29,6 @@
             <template #label>
               Choix du niveau
               <span class="red--text"><strong>* </strong></span>
-            </template>
-            <template #item="data">
-              {{ data.item.pavillon.site.nom }}
-              {{ data.item.pavillon.nom }}
-              {{ data.item.nom }}
             </template>
           </v-autocomplete>
         </v-app>
@@ -67,13 +64,10 @@
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
-  props: {
-    niveaux: {
-      type: Array,
-      required: true,
-    },
-  },
   data: () => ({
+    niveaux: [],
+    loading: false,
+    search: null,
     zone: {
       nom: '',
       niveau_id: '',
@@ -86,9 +80,15 @@ export default {
       nombre: { exist: false, message: null },
     },
   }),
+  watch: {
+    search(val) {
+      val && val !== this.zone.niveau_id && this.querySelections(val)
+    },
+  },
   methods: {
     ...mapActions({
       ajouter: 'architecture/zone/ajouter',
+      getSearch: 'architecture/niveau/getSearch',
     }),
     save() {
       this.ajouter(this.zone)
@@ -126,6 +126,12 @@ export default {
     close() {
       this.initState()
       this.$bvModal.hide('modalCreateZone')
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((niveaux) => (this.niveaux = niveaux))
+        .finally(() => (this.loading = false))
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay rounded="sm">
     <b-card aria-hidden="true" header="Liste des types d'emplacements">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
@@ -20,15 +20,6 @@
               stroke-width="2"
               size="18"
               type="printer"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="archives"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="archive"
-              @click="$emit('archivage')"
             />
           </div>
         </div>
@@ -55,10 +46,17 @@
           :per-page="perPage"
           responsive
           empty-text="Aucun type d'emplacement"
+          :busy="$fetchState.pending"
           show-empty
           :filter="filter"
           @filtered="onFiltered"
         >
+          <template #table-busy>
+            <div class="text-center text-primary my-2">
+              <b-spinner class="align-middle"></b-spinner>
+              <strong>Chargement...</strong>
+            </div>
+          </template>
           <template #cell(index)="data">
             {{ data.index + 1 }}
           </template>
@@ -69,9 +67,6 @@
             <a type="button" @click="dialoger(data.item)">
               <feather title="archiver" type="trash-2" size="20" stroke="red" />
             </a>
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
           <template #cell(equipable)="data">
             <span :class="statusClass(data.item.equipable)">{{
@@ -134,7 +129,7 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'site.nom', label: 'Marché', sortable: true },
+      { key: 'site', label: 'Marché', sortable: true },
       {
         key: 'created_at',
         label: 'Crée le',
@@ -163,11 +158,10 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getMarches()
-    this.getTypesEmplacement().then(() => {
-      this.totalRows = this.types.length
-    })
+  async fetch() {
+    await this.getMarches()
+    await this.getTypesEmplacement()
+    this.totalRows = this.types.length
   },
   computed: {
     ...mapGetters({

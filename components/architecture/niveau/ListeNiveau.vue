@@ -1,94 +1,91 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
-    <b-card aria-hidden="true" header="Liste des niveaux">
-      <b-card-text>
-        <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="créer"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="plus"
-              @click="$bvModal.show('modalCreateNiveau')"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-              @click="imprimer"
-            />
-          </div>
-        </div>
-        <hr class="mg-t-4" />
-        <b-form-input
-          v-if="totalRows > 0"
-          id="filter-input"
-          v-model="filter"
-          type="search"
-          placeholder="Rechercher"
-          class="mg-y-10"
-          :debounce="500"
-        ></b-form-input>
-        <b-table
-          id="table"
-          class="table"
-          hover
-          small
-          bordered
-          primary-key="id"
-          :items="niveaux"
-          :fields="fields"
-          :current-page="currentPage"
-          :per-page="perPage"
-          responsive
-          empty-text="Aucun niveau"
-          show-empty
-          :filter="filter"
-          @filtered="onFiltered"
-        >
-          <template #cell(index)="data">
-            {{ data.index + 1 }}
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-          </template>
-          <template #cell(option)="data">
-            <a type="button" @click="editer(data.item)">
-              <feather title="modifier" type="edit" size="20" stroke="blue" />
-            </a>
-          </template>
-          <template #empty="scope">
-            <h6 class="text-center text-muted pd-y-10">
-              {{ scope.emptyText }}
-            </h6>
-          </template>
-        </b-table>
-        <b-pagination
-          v-if="totalRows > 0"
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          align="right"
-          size="sm"
-          aria-controls="table"
-        ></b-pagination>
-        <CreateNiveauModal :pavillons="pavillons" />
-        <div>
-          <EditNiveauModal
-            :key="edit.modal"
-            v-model="edit.modal"
-            :pavillons="pavillons"
-            :current="edit.niveau"
+  <b-card aria-hidden="true" header="Liste des niveaux">
+    <b-card-text>
+      <div class="btn-toolbar d-flex flex-row-reverse">
+        <div class="">
+          <feather
+            v-b-tooltip.hover.top
+            title="créer"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="plus"
+            @click="$bvModal.show('modalCreateNiveau')"
+          />
+          <feather
+            v-b-tooltip.hover.top
+            title="imprimer liste"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="printer"
+            @click="imprimer"
           />
         </div>
-      </b-card-text>
-    </b-card>
-  </b-overlay>
+      </div>
+      <hr class="mg-t-4" />
+      <b-form-input
+        v-if="totalRows > 0"
+        id="filter-input"
+        v-model="filter"
+        type="search"
+        placeholder="Rechercher"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="niveaux"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        responsive
+        empty-text="Aucun niveau"
+        :busy="$fetchState.pending"
+        show-empty
+        :filter="filter"
+        @filtered="onFiltered"
+      >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(option)="data">
+          <a type="button" @click="editer(data.item)">
+            <feather title="modifier" type="edit" size="20" stroke="blue" />
+          </a>
+        </template>
+        <template #empty="scope">
+          <h6 class="text-center text-muted pd-y-10">
+            {{ scope.emptyText }}
+          </h6>
+        </template>
+      </b-table>
+      <b-pagination
+        v-if="totalRows > 0"
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="right"
+        size="sm"
+        aria-controls="table"
+      ></b-pagination>
+      <CreateNiveauModal />
+      <div>
+        <EditNiveauModal v-if="edit.modal" v-model="edit.modal" :current="edit.niveau" />
+      </div>
+    </b-card-text>
+  </b-card>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
@@ -104,8 +101,8 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'pavillon.nom', label: 'Pavillon', sortable: true },
-      { key: 'pavillon.site.nom', label: 'Site', sortable: true },
+      { key: 'pavillon', label: 'Pavillon', sortable: true },
+      { key: 'site', label: 'Site', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -122,21 +119,19 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getNiveaux()
-    this.getPavillons().then(() => {
-      this.totalRows = this.niveaux.length
-    })
+  async fetch() {
+    await this.getNiveaux()
+    this.totalRows = this.niveaux.length
   },
   computed: {
-    ...mapGetters({ pavillons: 'architecture/pavillon/pavillons', niveaux: 'architecture/niveau/niveaux' }),
+    ...mapGetters({ niveaux: 'architecture/niveau/niveaux' }),
     records() {
       return this.niveaux.map((niveau) => {
         return {
           nom: niveau.nom,
-          pavillon: niveau.pavillon.nom,
-          site: niveau.pavillon.site.nom,
-          date: this.$moment(niveau.created_at).format('llll'),
+          pavillon: niveau.pavillon,
+          site: niveau.site,
+          date: niveau.created_at,
         }
       })
     },
@@ -144,7 +139,6 @@ export default {
   methods: {
     ...mapActions({
       getOne: 'architecture/niveau/getOne',
-      getPavillons: 'architecture/pavillon/getAll',
       getNiveaux: 'architecture/niveau/getAll',
     }),
     imprimer() {

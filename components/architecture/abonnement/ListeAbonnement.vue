@@ -115,29 +115,10 @@ export default {
     fields: [
       'index',
       { key: 'code', label: 'Code', sortable: true },
-      {
-        key: 'equipement.code',
-        label: 'Equipement',
-        tdClass: 'text-primary',
-        sortable: true,
-      },
-      {
-        key: 'emplacement.code',
-        label: 'Emplacement',
-        tdClass: 'text-primary',
-        sortable: true,
-      },
-      { key: 'index_autre', label: 'Index lu', sortable: true },
-      {
-        key: 'index_fin',
-        label: 'Index fin',
-        formatter: (value) => {
-          return Number(value)
-        },
-        filterByFormatted: true,
-        sortByFormatted: true,
-        sortable: true,
-      },
+      { key: 'equipement', label: 'Equipement', tdClass: 'text-primary', sortable: true },
+      { key: 'emplacement', label: 'Emplacement', tdClass: 'text-primary', sortable: true },
+      { key: 'index_lu', label: 'Index lu', sortable: true },
+      { key: 'index_fin', label: 'Index fin', sortable: true },
       {
         key: 'status',
         label: 'Statut',
@@ -160,13 +141,12 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getMarches()
-    this.getEmplacements()
-    this.getEquipements()
-    this.getAbonnements().then(() => {
-      this.totalRows = this.abonnements.length
-    })
+  async fetch() {
+    await this.getEmplacements()
+    await this.getMarches()
+    await this.getEquipements()
+    await this.getAbonnements()
+    this.totalRows = this.abonnements.length
   },
   computed: {
     ...mapGetters({
@@ -179,11 +159,11 @@ export default {
       return this.abonnements.map((elt) => {
         return {
           code: elt.code,
-          equipement: elt.equipement.code,
-          emplacement: elt.emplacement.code,
-          indexD: elt.index_autre ?? elt.index_depart,
-          indexF: elt.index_fin,
-          date: this.$moment(elt.created_at).format('llll'),
+          equipement: elt.equipement,
+          emplacement: elt.emplacement,
+          indexLu: elt.index_lu,
+          indexFin: elt.index_fin,
+          date: elt.created_at,
         }
       })
     },

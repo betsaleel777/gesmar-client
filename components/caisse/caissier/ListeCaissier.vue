@@ -51,17 +51,21 @@
           :fields="fields"
           :current-page="currentPage"
           :per-page="perPage"
+          :busy="$fetchState.pending"
           responsive
           empty-text="Tableau vide"
           show-empty
           :filter="filter"
           @filtered="onFiltered"
         >
+          <template #table-busy>
+            <div class="text-center text-primary my-2">
+              <b-spinner class="align-middle"></b-spinner>
+              <strong>Chargement...</strong>
+            </div>
+          </template>
           <template #cell(ordre)="data">
             {{ data.index + 1 }}
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
           </template>
           <template #cell(option)="data">
             <a type="button" class="mr-1" @click="details(data.item)">
@@ -115,7 +119,7 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'user.name', label: 'Nom', sortable: true },
+      { key: 'user', label: 'Nom', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -133,10 +137,9 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
-  fetch() {
-    this.getAll().then(() => {
-      this.totalRows = this.caissiers.length
-    })
+  async fetch() {
+    await this.getAll()
+    this.totalRows = this.caissiers.length
   },
   computed: {
     ...mapGetters('caisse/caissier', ['caissiers']),

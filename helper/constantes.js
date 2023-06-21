@@ -65,6 +65,10 @@ const OUVERTURE = Object.freeze({
   confirmed: 'terminée',
   using: 'en cours',
 })
+const GABARI = Object.freeze({
+  onuse: 'en utilisation',
+  unuse: 'pas utilisé',
+})
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,
@@ -77,4 +81,5 @@ module.exports = {
   ATTRIBUTION,
   MATRIMONIALE,
   OUVERTURE,
+  GABARI,
 }

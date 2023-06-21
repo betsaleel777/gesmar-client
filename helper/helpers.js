@@ -1,5 +1,4 @@
 import { jsPDF as JsPDF } from 'jspdf'
-import axios from 'axios'
 import 'jspdf-autotable'
 const remove = (item, selected, targetArray = []) => {
   let indexFound = targetArray.findIndex((elt) => elt.id === item.id)
@@ -30,19 +29,4 @@ function arrayPdf(cols, records, filename) {
   doc.save(filename + '.pdf')
 }
 
-function downloadPdf(path) {
-  axios({
-    url: path,
-    method: 'GET',
-    responseType: 'blob',
-  }).then((response) => {
-    const fileURL = window.URL.createObjectURL(new Blob([response.data]))
-    const fileLink = document.createElement('a')
-    fileLink.href = fileURL
-    fileLink.setAttribute('download', 'file.pdf')
-    document.body.appendChild(fileLink)
-    fileLink.click()
-  })
-}
-
-export { remove, add, capitalize, arrayPdf, downloadPdf }
+export { remove, add, capitalize, arrayPdf }

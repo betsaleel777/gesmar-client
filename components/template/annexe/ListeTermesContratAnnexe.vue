@@ -12,20 +12,10 @@
             type="plus"
             @click="$bvModal.show('modalCreateTermeContratAnnexe')"
           />
-          <feather
-            v-b-tooltip.hover.top
-            title="archives"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="archive"
-            @click="$emit('archivage')"
-          />
         </div>
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
         v-model="filter"
         type="search"
@@ -46,10 +36,17 @@
         :per-page="perPage"
         responsive
         empty-text="Aucun Terme"
+        :busy="$fetchState.pending"
         show-empty
         :filter="filter"
         @filtered="onFiltered"
       >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
         <template #cell(index)="data">
           {{ data.index + 1 }}
         </template>
@@ -96,20 +93,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTermesContratAnnexeModal from './CreateTermesContratAnnexeModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
-import { downloadPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
     CreateTermesContratAnnexeModal,
   },
   props: {
-    termes: {
-      type: Array,
-      required: true,
-    },
     marches: {
       type: Array,
       required: true,
@@ -132,18 +124,22 @@ export default {
     ],
     dialogData: { modal: false, id: 0, code: '' },
     filter: null,
+    totalRows: 0,
     currentPage: 1,
     perPage: 10,
   }),
+  async fetch() {
+    await this.getAll()
+    this.totalRows = this.termes.length
+  },
   computed: {
-    totalRows() {
-      return this.termes.length
-    },
+    ...mapGetters({ termes: 'template/terme-annexe/termes' }),
   },
   methods: {
     ...mapActions({
       getOne: 'template/terme-annexe/getOne',
       getPdf: 'template/terme-annexe/getPdf',
+      getAll: 'template/terme-annexe/getAll',
     }),
     imprimer() {},
     dialoger({ id, code }) {
@@ -158,8 +154,7 @@ export default {
     },
     pdf({ id }) {
       this.getPdf(id).then(({ path }) => {
-        const chemin = String(process.env.API + '/storage/' + path)
-        downloadPdf(chemin)
+        window.open(path)
       })
     },
   },

@@ -12,7 +12,9 @@
           <v-autocomplete
             v-model="niveau.pavillon_id"
             :items="pavillons"
-            item-text="nom"
+            :loading="loading"
+            :search-input.sync="search"
+            item-text="texte"
             item-value="id"
             outlined
             dense
@@ -23,7 +25,6 @@
               Choix du pavillon
               <span class="red--text"><strong>* </strong></span>
             </template>
-            <template #item="data"> {{ data.item.site.nom }} {{ data.item.nom }} </template>
           </v-autocomplete>
         </v-app>
         <div class="form-group required">
@@ -52,10 +53,6 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    pavillons: {
-      type: Array,
-      required: true,
-    },
     current: {
       type: Object,
       required: true,
@@ -63,6 +60,9 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    pavillons: [],
+    loading: false,
+    search: null,
     niveau: {
       id: null,
       nom: '',
@@ -83,14 +83,24 @@ export default {
       },
     },
   },
+  watch: {
+    search(oldVal, newVal) {
+      newVal && newVal !== this.niveau.pavillon_id && this.querySelections(newVal)
+    },
+  },
   mounted() {
     this.niveau.id = this.current.id
+    this.getOne(this.current.pavillon_id).then(({ pavillon }) =>
+      this.pavillons.push({ texte: pavillon.nom + ' ' + pavillon.site.nom, id: pavillon.id })
+    )
     this.niveau.pavillon_id = this.current.pavillon_id
     this.niveau.nom = this.current.nom
   },
   methods: {
     ...mapActions({
       modifier: 'architecture/niveau/modifier',
+      getSearch: 'architecture/pavillon/getSearch',
+      getOne: 'architecture/pavillon/getOne',
     }),
     save() {
       this.modifier(this.niveau)
@@ -119,6 +129,12 @@ export default {
       }
       errorsInitialise(this.errors)
       this.dialog = false
+    },
+    querySelections(search) {
+      this.loading = true
+      this.getSearch(search)
+        .then((pavillons) => (this.pavillons = pavillons))
+        .finally(() => (this.loading = false))
     },
   },
 }
