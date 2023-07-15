@@ -59,7 +59,9 @@
       </template>
       <template #modal-footer>
         <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-        <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+        <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+          Valider
+        </button>
       </template>
     </b-modal>
   </v-app>
@@ -75,6 +77,7 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     pavillon: {
       nom: '',
       site_id: '',
@@ -92,6 +95,7 @@ export default {
       ajouter: 'architecture/pavillon/ajouter',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.pavillon)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreatePavillon')
@@ -108,6 +112,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     initState(autoValueChange = false) {
       errorsInitialise(this.errors)

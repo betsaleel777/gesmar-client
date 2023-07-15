@@ -77,7 +77,9 @@
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
         Fermer
       </button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -94,6 +96,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     modification: {
       id: null,
       code: null,
@@ -127,6 +130,7 @@ export default {
   methods: {
     ...mapActions('facture/initiale', ['modifier']),
     save() {
+      this.submiting = true
       this.modifier(this.modification)
         .then(({ message }) => {
           this.$root.$bvToast.toast(message, {
@@ -143,6 +147,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
   },
 }

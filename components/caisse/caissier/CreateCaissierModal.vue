@@ -27,7 +27,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -36,6 +38,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     caissier: {
       user_id: null,
     },
@@ -53,6 +56,7 @@ export default {
     ...mapActions('caisse/caissier', ['ajouter']),
     ...mapActions('user-role/user', ['getUncashiers']),
     save() {
+      this.submiting = true
       this.ajouter(this.caissier)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateCaissier')
@@ -69,6 +73,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.caissier = {

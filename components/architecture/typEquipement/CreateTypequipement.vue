@@ -82,7 +82,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -98,6 +100,7 @@ export default {
   },
   emits: ['pushed'],
   data: () => ({
+    submiting: false,
     type: {
       nom: '',
       frais_penalite: '',
@@ -114,6 +117,7 @@ export default {
   methods: {
     ...mapActions('architecture/typEquipement', ['ajouter']),
     save() {
+      this.submiting = true
       this.ajouter(this.type)
         .then(({ message, id }) => {
           this.$emit('pushed', id)
@@ -131,6 +135,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.type = {

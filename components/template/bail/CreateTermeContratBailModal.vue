@@ -73,7 +73,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -94,6 +96,7 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     terme: {
       contenu: null,
       site_id: null,
@@ -129,6 +132,7 @@ export default {
       ajouter: 'template/terme-bail/ajouter',
     }),
     save() {
+      this.submiting = true
       this.ajouter({ ...this.terme, user_id: this.user.id })
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateTermeContratBail')
@@ -145,6 +149,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.terme = {

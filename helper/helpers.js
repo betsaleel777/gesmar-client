@@ -1,4 +1,6 @@
+import jsPDFInvoiceTemplate from 'jspdf-invoice-template'
 import { jsPDF as JsPDF } from 'jspdf'
+import { ENCAISSEMENT } from './constantes'
 import 'jspdf-autotable'
 const remove = (item, selected, targetArray = []) => {
   let indexFound = targetArray.findIndex((elt) => elt.id === item.id)
@@ -29,4 +31,214 @@ function arrayPdf(cols, records, filename) {
   doc.save(filename + '.pdf')
 }
 
-export { remove, add, capitalize, arrayPdf }
+const invoicePrinter = (societe, encaissement) => {
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    fileName: encaissement.code,
+    orientationLandscape: false,
+    compress: true,
+    // logo: {
+    //   src: societe.logo,
+    //   width: 53.33,
+    //   height: 26.66,
+    //   margin: {
+    //     top: 0,
+    //     left: 0,
+    //   },
+    // },
+    business: {
+      name: societe.nom,
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    contact: {
+      label: 'facturé à:',
+      name: `${encaissement.personne.nom} ${encaissement.personne.prenom}`,
+      address: `${encaissement.personne.ville}, ${encaissement.personne.adresse}`,
+      phone: encaissement.personne.contact,
+      email: encaissement.personne.email,
+      otherInfo: encaissement.personne.code,
+    },
+    invoice: {
+      label: 'Facture #: ',
+      num: encaissement.code,
+      invDate: encaissement.created_at,
+      invGenDate: 'Invoice Date: 02/02/2021 10:17',
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [
+        {
+          title: 'Emplacement',
+        },
+        {
+          title: 'Prix',
+          style: {
+            width: 20,
+          },
+        },
+        {
+          title: 'Devise',
+          style: {
+            width: 20,
+          },
+        },
+      ],
+      table: Array.from(Array(1), () => [encaissement.emplacement, encaissement.payable.montant, 'FCFA']),
+      additionalRows: [
+        {
+          col1: 'Montant versé',
+          col2: String(encaissement.payable.versement),
+          col3: 'FCFA',
+          style: {
+            fontSize: 14,
+          },
+        },
+        {
+          col1: 'Monnaie rendue:',
+          col2: String(encaissement.payable.versement - encaissement.payable.montant),
+          col3: 'FCFA',
+          style: {
+            fontSize: 10,
+          },
+        },
+      ],
+      invDescLabel: 'Notez bien',
+      invDesc:
+        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: true,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save()
+}
+
+const caissePointPrinter = (societe, infos) => {
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    fileName: 'point de caisse ' + infos.created_at,
+    orientationLandscape: false,
+    compress: true,
+    business: {
+      name: societe.nom,
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    invoice: {
+      label: 'Fait par: ',
+      num: infos.caissier,
+      invDate: infos.created_at,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [
+        {
+          title: '#',
+          style: {
+            width: 10,
+          },
+        },
+        {
+          title: 'Mode de paiement',
+        },
+        {
+          title: 'Montant à payer',
+          style: {
+            width: 40,
+          },
+        },
+        {
+          title: 'Montant versé',
+          style: {
+            width: 40,
+          },
+        },
+        {
+          title: 'Monnaie',
+          style: {
+            width: 40,
+          },
+        },
+        {
+          title: 'Date',
+          style: {
+            width: 30,
+          },
+        },
+      ],
+      table: Array.from(Array(infos.encaissements.length), (item, index) => [
+        index + 1,
+        infos.encaissements[index].type,
+        infos.encaissements[index].type === ENCAISSEMENT.type.espece
+          ? infos.encaissements[index].payable.montant
+          : infos.encaissements[index].payable.valeur,
+        infos.encaissements[index].type === ENCAISSEMENT.type.espece
+          ? infos.encaissements[index].payable.versement
+          : infos.encaissements[index].payable.valeur,
+        infos.encaissements[index].type === ENCAISSEMENT.type.espece
+          ? infos.encaissements[index].payable.versement - infos.encaissements[index].payable.montant
+          : 0,
+        infos.encaissements[index].created_at,
+      ]),
+      additionalRows: [
+        {
+          col1: 'Total espèce:',
+          col2: String(infos.totalEspece),
+          col3: 'FCFA',
+          style: {
+            fontSize: 10,
+          },
+        },
+        {
+          col1: 'Total cheque:',
+          col2: String(infos.totalCheque),
+          col3: 'FCFA',
+          style: {
+            fontSize: 10,
+          },
+        },
+        {
+          col1: 'Total Espece et cheque:',
+          col2: String(infos.totalTransaction),
+          col3: 'FCFA',
+          style: {
+            fontSize: 11,
+          },
+        },
+        {
+          col1: 'Montant initial en caisse:',
+          col2: String(infos.initial),
+          col3: 'FCFA',
+          style: {
+            fontSize: 10,
+          },
+        },
+        {
+          col1: 'Total:',
+          col2: String(infos.total),
+          col3: 'FCFA',
+          style: {
+            fontSize: 12,
+          },
+        },
+      ],
+      invDescLabel: 'Notez bien',
+      invDesc: 'En cas de rélicat le montant du rélicat sera déduit du salaire.',
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: true,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save()
+}
+
+export { remove, add, capitalize, arrayPdf, invoicePrinter, caissePointPrinter }

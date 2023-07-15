@@ -69,6 +69,13 @@ const GABARI = Object.freeze({
   onuse: 'en utilisation',
   unuse: 'pas utilisé',
 })
+const ENCAISSEMENT = Object.freeze({
+  type: {
+    espece: 'Espece',
+    cheque: 'Cheque',
+  },
+  status: {},
+})
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,
@@ -82,4 +89,5 @@ module.exports = {
   MATRIMONIALE,
   OUVERTURE,
   GABARI,
+  ENCAISSEMENT,
 }

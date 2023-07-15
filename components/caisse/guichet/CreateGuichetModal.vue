@@ -42,7 +42,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -51,6 +53,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     guichet: {
       nom: '',
       site_id: null,
@@ -69,6 +72,7 @@ export default {
   methods: {
     ...mapActions({ ajouter: 'caisse/guichet/ajouter', getSites: 'architecture/marche/getAll' }),
     save() {
+      this.submiting = true
       this.ajouter(this.guichet)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateGuichet')
@@ -85,6 +89,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.guichet = {

@@ -87,7 +87,9 @@
     </v-app>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button :disabled="errorFind" type="button" class="btn btn-primary" @click="save">Valider</button>
+      <button :disabled="errorFind || submiting" type="button" class="btn btn-primary" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -95,6 +97,7 @@
 import { mapActions } from 'vuex'
 export default {
   data: () => ({
+    submiting: false,
     menu: false,
     search: null,
     factures: [],
@@ -166,14 +169,17 @@ export default {
       }
     },
     save() {
-      this.ajouter(this.factures).then(({ message }) => {
-        this.$bvToast.toast(message, {
-          title: 'succès de la création'.toLocaleUpperCase(),
-          variant: 'success',
-          solid: true,
+      this.submiting = true
+      this.ajouter(this.factures)
+        .then(({ message }) => {
+          this.$bvToast.toast(message, {
+            title: 'succès de la création'.toLocaleUpperCase(),
+            variant: 'success',
+            solid: true,
+          })
+          this.$bvModal.hide('genererGear')
         })
-        this.$bvModal.hide('genererGear')
-      })
+        .finally(() => (this.submiting = false))
     },
   },
 }

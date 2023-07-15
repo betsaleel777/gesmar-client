@@ -55,7 +55,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -64,6 +66,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     compte: {
       nom: '',
       code: '',
@@ -84,6 +87,7 @@ export default {
   methods: {
     ...mapActions({ ajouter: 'caisse/compte/ajouter', getSites: 'architecture/marche/getAll' }),
     save() {
+      this.submiting = true
       this.ajouter(this.compte)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateCompte')
@@ -100,6 +104,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.compte = {

@@ -1,9 +1,6 @@
 <template>
   <div class="">
-    <v-switch
-      v-model="isNew"
-      :label="isNew ? 'anciens marché' : 'nouveau marché'"
-    ></v-switch>
+    <v-switch v-model="isNew" :label="isNew ? 'anciens marché' : 'nouveau marché'"></v-switch>
     <v-autocomplete
       v-if="!isNew"
       v-model="selected"
@@ -23,11 +20,7 @@
         <v-col cols="6" class="pa-2">
           <div class="form-group">
             <label>Nom<span class="text-danger">*</span></label>
-            <input
-              v-model="marche.nom"
-              class="form-control"
-              :class="{ 'is-invalid': errors.nom.exist }"
-            />
+            <input v-model="marche.nom" class="form-control" :class="{ 'is-invalid': errors.nom.exist }" />
             <span v-if="errors.nom" class="invalid-feedback" role="alert">
               <strong>{{ errors.nom.message }}</strong>
             </span>
@@ -39,11 +32,7 @@
               class="form-control"
               :class="{ 'is-invalid': errors.commune.exist }"
             />
-            <span
-              v-if="errors.commune.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.commune.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.commune.message }}</strong>
             </span>
           </div>
@@ -56,26 +45,14 @@
               class="form-control"
               :class="{ 'is-invalid': errors.ville.exist }"
             />
-            <span
-              v-if="errors.ville.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <span v-if="errors.ville.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.ville.message }}</strong>
             </span>
           </div>
           <div class="form-group">
             <label> Pays <span class="text-danger">*</span> </label>
-            <input
-              v-model="marche.pays"
-              class="form-control"
-              :class="{ 'is-invalid': errors.pays.exist }"
-            />
-            <span
-              v-if="errors.pays.exist"
-              class="invalid-feedback"
-              role="alert"
-            >
+            <input v-model="marche.pays" class="form-control" :class="{ 'is-invalid': errors.pays.exist }" />
+            <span v-if="errors.pays.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.pays.message }}</strong>
             </span>
           </div>
@@ -90,7 +67,7 @@
         </v-col>
       </v-row>
     </form>
-    <v-btn small color="primary" @click="save"> Continuer </v-btn>
+    <v-btn small color="primary" :disabled="submiting" @click="save"> Continuer </v-btn>
   </div>
 </template>
 <script>
@@ -99,6 +76,7 @@ import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 export default {
   emits: ['suivant'],
   data: () => ({
+    submiting: false,
     marche: {
       nom: '',
       commune: '',
@@ -131,6 +109,7 @@ export default {
     }),
     save() {
       if (this.isNew) {
+        this.submiting = true
         this.push(this.marche)
           .then(({ message, donnees }) => {
             this.$root.$bvToast.toast(message, {
@@ -148,6 +127,7 @@ export default {
               errorsWriting(data.errors, this.errors)
             }
           })
+          .finally(() => (this.submiting = false))
       } else if (this.selected) {
         this.getOne(this.selected).then(({ marche: donnees }) => {
           this.$emit('suivant', { step: 2, donnees })

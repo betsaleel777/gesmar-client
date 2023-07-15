@@ -143,7 +143,9 @@
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
         Fermer
       </button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -159,6 +161,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     menu: null,
     zones: [],
     loading: false,
@@ -232,6 +235,7 @@ export default {
       ajouter: 'finance/attribution/ajouter',
     }),
     save() {
+      this.submiting = true
       if (this.validable)
         this.ajouter(this.attribution)
           .then(({ message }) => {
@@ -249,6 +253,7 @@ export default {
               errorsWriting(data.errors, this.errors)
             }
           })
+          .finally(() => (this.submiting = false))
       else
         this.$bvToast.toast("Aucun emplacement n'as été selectionné", {
           title: "échec de l'opération".toLocaleUpperCase(),

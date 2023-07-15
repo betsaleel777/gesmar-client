@@ -56,7 +56,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -65,6 +67,7 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     niveaux: [],
     loading: false,
     search: null,
@@ -91,6 +94,7 @@ export default {
       getSearch: 'architecture/niveau/getSearch',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.zone)
         .then(({ message }) => {
           this.$bvToast.toast(message, {
@@ -107,6 +111,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     initState(autoValueChange = false) {
       errorsInitialise(this.errors)

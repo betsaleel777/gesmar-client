@@ -135,7 +135,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -156,6 +158,7 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     equipement: {
       prix_unitaire: '',
       prix_fixe: '',
@@ -182,6 +185,7 @@ export default {
       getEmplacement: 'architecture/emplacement/getByMarcheUnlinked',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.equipement)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateEquipement')
@@ -198,6 +202,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.equipement = {

@@ -93,7 +93,9 @@
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
         Fermer
       </button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -109,6 +111,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     menu: null,
     marche: null,
     loading: false,
@@ -147,7 +150,7 @@ export default {
       attribuer: 'caisse/caissier/attribuer',
     }),
     save() {
-      // console.log(this.attribution)
+      this.submiting = true
       this.attribution.caissier_id = this.caissier.id
       this.attribuer(this.attribution)
         .then(({ message }) => {
@@ -165,6 +168,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     getGuichets() {
       if (this.marche) {

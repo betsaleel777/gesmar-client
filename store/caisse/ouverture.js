@@ -18,6 +18,11 @@ export const actions = {
     return requete.data
   },
 
+  async getByCaissier({ commit }, id) {
+    const requete = await this.$axios.get('api/finances/caisses/ouvertures/current/caissier/' + id)
+    return requete.data
+  },
+
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/caisses/ouvertures/' + payload.id, payload)
     dispatch('getAll')

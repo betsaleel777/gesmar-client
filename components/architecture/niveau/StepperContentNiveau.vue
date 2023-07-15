@@ -8,18 +8,14 @@
       </h5>
       <div class="form-group">
         <label>Nombre de niveaux<span class="text-danger">*</span></label>
-        <input
-          v-model="nombre"
-          class="form-control"
-          :class="{ 'is-invalid': errors.nombre.exist }"
-        />
+        <input v-model="nombre" class="form-control" :class="{ 'is-invalid': errors.nombre.exist }" />
         <span v-if="errors.nombre" class="invalid-feedback" role="alert">
           <strong>{{ errors.nombre.message }}</strong>
         </span>
       </div>
     </form>
     <v-btn small color="primary" @click="$emit('precedant')"> Précédent </v-btn>
-    <v-btn small color="primary" @click="save"> Continuer </v-btn>
+    <v-btn small :disabled="submiting" color="primary" @click="save"> Continuer </v-btn>
   </div>
 </template>
 <script>
@@ -42,6 +38,7 @@ export default {
   },
   emits: ['suivant', 'precedant'],
   data: () => ({
+    submiting: false,
     nombre: null,
     errors: {
       nombre: { exist: false, message: null },
@@ -52,6 +49,7 @@ export default {
       push: 'architecture/niveau/push',
     }),
     save() {
+      this.submiting = false
       const ids = this.pavillons.map((pavillon) => pavillon.id)
       this.push({ pavillons: ids, nombre: this.nombre })
         .then(({ message, donnees }) => {
@@ -71,6 +69,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
   },
 }

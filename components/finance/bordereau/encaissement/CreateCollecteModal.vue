@@ -79,7 +79,9 @@
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
         Fermer
       </button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -92,6 +94,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     commercial: null,
     bordereau: null,
     attribution: null,
@@ -140,6 +143,7 @@ export default {
       ajouter: 'finance/collecte/ajouter',
     }),
     save() {
+      this.submiting = true
       const collecte = {
         montant: this.totalCollect,
         nombre: this.nombre,
@@ -163,6 +167,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
   },
 }

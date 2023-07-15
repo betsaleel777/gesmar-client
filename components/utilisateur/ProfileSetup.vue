@@ -67,7 +67,9 @@
           vous nous donnez votre consentement pour partager ces données où que vous soyez.
         </div>
         <hr class="op-0" />
-        <button type="button" class="btn btn-brand-02" @click="save">Modifier le profile</button>
+        <button type="button" :disabled="submiting" class="btn btn-brand-02" @click="save">
+          Modifier le profile
+        </button>
       </form>
     </div>
   </div>
@@ -91,6 +93,7 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     utilisateur: {
       image: null,
       avatar: null,
@@ -110,6 +113,7 @@ export default {
   methods: {
     ...mapActions('user-role/user', ['profile']),
     save() {
+      this.submiting = true
       const data = new FormData()
       for (const key in this.utilisateur) {
         data.append(key, this.utilisateur[key])
@@ -130,6 +134,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
   },
 }

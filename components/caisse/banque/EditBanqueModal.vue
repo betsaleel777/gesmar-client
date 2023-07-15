@@ -55,7 +55,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -71,6 +73,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     compte: {
       nom: '',
       sigle: '',
@@ -100,6 +103,7 @@ export default {
   methods: {
     ...mapActions({ modifier: 'caisse/banque/modifier', getSites: 'architecture/marche/getAll' }),
     save() {
+      this.submiting = true
       this.modifier(this.banque)
         .then(({ message }) => {
           this.$bvModal.hide('modalEditBanque')
@@ -116,6 +120,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     close() {
       this.banque = {

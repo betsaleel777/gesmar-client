@@ -156,7 +156,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -177,6 +179,7 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     zones: [],
     loading: false,
     search: null,
@@ -210,6 +213,7 @@ export default {
     ...mapActions({ getSearch: 'architecture/zone/getSearch' }),
     save() {
       if (!this.automatiq) {
+        this.submiting = true
         this.ajouter(this.emplacement)
           .then(({ message }) => {
             this.$bvModal.hide('modalCreateEmplacement')
@@ -226,6 +230,7 @@ export default {
               errorsWriting(data.errors, this.errors)
             }
           })
+          .finally(() => (this.submiting = false))
       } else {
         this.push(this.emplacement)
           .then(({ message }) => {

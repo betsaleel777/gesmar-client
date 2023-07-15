@@ -47,7 +47,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -63,6 +65,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     niveaux: [],
     loading: false,
     search: null,
@@ -109,6 +112,7 @@ export default {
       getOne: 'architecture/niveau/getOne',
     }),
     save() {
+      this.submiting = true
       this.modifier(this.zone)
         .then(({ message }) => {
           this.$root.$bvToast.toast(message, {
@@ -126,6 +130,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     close() {
       this.zone = {

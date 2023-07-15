@@ -42,7 +42,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -58,6 +60,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     guichet: {
       nom: '',
       site_id: null,
@@ -85,6 +88,7 @@ export default {
   methods: {
     ...mapActions({ modifier: 'caisse/guichet/modifier', getSites: 'architecture/marche/getAll' }),
     save() {
+      this.submiting = true
       this.modifier(this.guichet)
         .then(({ message }) => {
           this.$bvModal.hide('modalEditGuichet')
@@ -101,6 +105,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     close() {
       this.guichet = {

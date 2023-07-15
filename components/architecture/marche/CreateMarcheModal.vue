@@ -74,7 +74,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -83,6 +85,7 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     marche: {
       nom: '',
       commune: '',
@@ -110,6 +113,7 @@ export default {
   methods: {
     ...mapActions('architecture/marche', ['ajouter']),
     save() {
+      this.submiting = true
       this.ajouter(this.marche)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateMarche')
@@ -126,6 +130,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.marche = {

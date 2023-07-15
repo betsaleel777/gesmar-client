@@ -42,7 +42,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -77,6 +79,7 @@ export default {
       getSites: 'architecture/marche/getAll',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.commercial)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateCommercial')
@@ -93,6 +96,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.commercial = {

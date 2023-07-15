@@ -87,7 +87,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -100,6 +102,7 @@ export default {
     ImagePreview,
   },
   data: () => ({
+    submiting: false,
     utilisateur: {
       name: '',
       email: '',
@@ -120,6 +123,7 @@ export default {
   methods: {
     ...mapActions('user-role/user', ['ajouter']),
     save() {
+      this.submiting = true
       const data = new FormData()
       for (const key in this.utilisateur) {
         data.append(key, this.utilisateur[key])
@@ -140,6 +144,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.utilisateur = {

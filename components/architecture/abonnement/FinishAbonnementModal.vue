@@ -28,7 +28,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -44,6 +46,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     abonnement: {
       id: null,
       index_fin: null,
@@ -69,6 +72,7 @@ export default {
   methods: {
     ...mapActions('architecture/abonnement', ['resilier']),
     save() {
+      this.submiting = true
       this.resilier(this.abonnement)
         .then(({ message }) => {
           this.$bvToast.toast(message, {
@@ -85,6 +89,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     close() {
       this.abonnement = {

@@ -1,23 +1,17 @@
 <template>
   <div class="">
     <form>
-      <h4>
-        Création automatique de pavillons pour le site: "{{ marche.nom }}"
-      </h4>
+      <h4>Création automatique de pavillons pour le site: "{{ marche.nom }}"</h4>
       <div class="form-group">
         <label>Nombre de pavillons<span class="text-danger">*</span></label>
-        <input
-          v-model="nombre"
-          class="form-control"
-          :class="{ 'is-invalid': errors.nombre.exist }"
-        />
+        <input v-model="nombre" class="form-control" :class="{ 'is-invalid': errors.nombre.exist }" />
         <span v-if="errors.nombre" class="invalid-feedback" role="alert">
           <strong>{{ errors.nombre.message }}</strong>
         </span>
       </div>
     </form>
     <v-btn small color="primary" @click="$emit('precedant')"> Précédent </v-btn>
-    <v-btn small color="primary" @click="save"> Continuer </v-btn>
+    <v-btn small :disabled="submiting" color="primary" @click="save"> Continuer </v-btn>
   </div>
 </template>
 <script>
@@ -32,6 +26,7 @@ export default {
   },
   emits: ['suivant', 'precedant'],
   data: () => ({
+    submiting: false,
     nombre: null,
     errors: {
       nombre: { exist: false, message: null },
@@ -42,6 +37,7 @@ export default {
       push: 'architecture/pavillon/push',
     }),
     save() {
+      this.submiting = true
       this.push({ id: this.marche.id, nombre: this.nombre })
         .then(({ message, donnees }) => {
           this.$root.$bvToast.toast(message, {
@@ -60,6 +56,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
   },
 }

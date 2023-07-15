@@ -16,7 +16,7 @@
                   <v-autocomplete
                     v-model="encaissement.caissier_id"
                     :items="caissiers"
-                    item-text="user.name"
+                    item-text="user"
                     item-value="id"
                     outlined
                     dense
@@ -70,7 +70,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" :disabled="!validable" class="btn btn-primary" @click="save">Valider</button>
+      <button type="button" :disabled="!validable || submiting" class="btn btn-primary" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -84,6 +86,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     menu: null,
     disabled: true,
     ordonnancement: {},
@@ -92,7 +95,6 @@ export default {
       ordonnancement_id: null,
     },
     validable: false,
-    errors: {},
     key: true,
     mode: 1,
   }),
@@ -123,6 +125,7 @@ export default {
       ouvertureExists: 'caisse/ouverture/ouvertureExists',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.encaissement)
         .then(({ message }) => {
           this.dialog = false
@@ -138,6 +141,7 @@ export default {
           this.errors = data
           this.key = !this.key
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.disabled = true

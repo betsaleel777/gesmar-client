@@ -36,7 +36,7 @@
           <v-autocomplete
             v-model="ouverture.caissier_id"
             :items="caissiers"
-            item-text="user.name"
+            item-text="user"
             item-value="id"
             outlined
             dense
@@ -101,11 +101,17 @@
             </v-date-picker>
           </v-menu>
         </v-app>
+        <div class="form-group required">
+          <label class="form-label">Montant initial de caisse</label>
+          <input v-model="ouverture.montant" type="text" class="form-control" />
+        </div>
       </form>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -121,12 +127,14 @@ export default {
     },
   },
   data: () => ({
+    submiting: false,
     menu: null,
     disabled: true,
     ouverture: {
       date: '',
       caissier_id: null,
       guichet_id: null,
+      montant: null,
     },
     loading: {
       caissier: false,
@@ -170,6 +178,7 @@ export default {
       getCaissiers: 'caisse/caissier/getAll',
     }),
     save() {
+      this.submiting = true
       this.ajouter(this.ouverture)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateOuverture')
@@ -186,6 +195,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     reset() {
       this.disabled = true
@@ -193,6 +203,7 @@ export default {
         date: '',
         caissier_id: null,
         guichet_id: null,
+        montant: null,
       }
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateOuverture')

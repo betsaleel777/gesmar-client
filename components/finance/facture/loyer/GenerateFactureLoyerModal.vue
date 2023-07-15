@@ -66,7 +66,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">Générer</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        Générer
+      </button>
     </template>
   </b-modal>
 </template>
@@ -75,6 +77,7 @@ import { mapActions } from 'vuex'
 export default {
   components: {},
   data: () => ({
+    submiting: false,
     menu: false,
     search: null,
     emplacements: [],
@@ -106,6 +109,7 @@ export default {
     },
     save() {
       if (this.selected.length > 0) {
+        this.submiting = true
         const factures = this.selected.map((emplacement) => {
           const {
             contrat_actuel: { id },
@@ -113,6 +117,7 @@ export default {
           return { contrat_id: id, periode: this.mois + '-01' }
         })
         this.ajouter(factures).then(({ message }) => {
+          this.submiting = false
           this.$bvModal.hide('modalGenererLoyer')
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),

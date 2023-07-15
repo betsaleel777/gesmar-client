@@ -32,7 +32,9 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">fermer</button>
-      <button type="button" class="btn btn-primary text-white" @click="save">valider</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+        valider
+      </button>
     </template>
   </b-modal>
 </template>
@@ -48,6 +50,7 @@ export default {
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     validation: {
       abonnement_id: null,
       raison: null,
@@ -75,6 +78,7 @@ export default {
   methods: {
     ...mapActions('architecture/validationAbonnement', ['ajouter']),
     save() {
+      this.submiting = true
       this.ajouter(this.validation)
         .then(({ message }) => {
           this.$root.$bvToast.toast(message, {
@@ -91,6 +95,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.submiting = false))
     },
     close() {
       this.validation = {
