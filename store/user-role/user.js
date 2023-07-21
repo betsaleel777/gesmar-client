@@ -82,6 +82,11 @@ export const actions = {
     dispatch('getAll')
     return { message: requete.data.message }
   },
+
+  async attribuer({ dispatch }, payload) {
+    const requete = await this.$axios.post('api/parametres/users/attribuer-role', payload)
+    return requete.data.message
+  },
 }
 
 export const mutations = {

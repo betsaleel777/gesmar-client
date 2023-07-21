@@ -1,92 +1,83 @@
 <template>
-  <div id="paneBilling" class="tab-pane">
-    <v-app>
-      <ul id="tabPermission" class="nav nav-line" role="tablist">
-        <li class="nav-item">
-          <a
-            id="edrole-tab"
-            class="nav-link active"
-            data-toggle="tab"
-            href="#edrole"
-            role="tab"
-            aria-controls="edrole"
-            aria-selected="true"
-            >Assignation par Rôle</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="direct-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#direct"
-            role="tab"
-            aria-controls="direct"
-            aria-selected="false"
-            >Assignation Directe</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            id="apercu-tab"
-            class="nav-link"
-            data-toggle="tab"
-            href="#apercu"
-            role="tab"
-            aria-controls="apercu"
-            aria-selected="false"
-            >Aperçu</a
-          >
-        </li>
-      </ul>
-      <div id="tabPermissionContent" class="tab-content mg-t-20">
-        <div
-          id="edrole"
-          class="tab-pane fade show active"
-          role="tabpanel"
-          aria-labelledby="edrole-tab"
+  <div id="panePermissions" class="tab-pane">
+    <b-overlay :show="$fetchState.pending" rounded="sm">
+      <v-app>
+        <v-autocomplete
+          v-model="role"
+          :items="roles"
+          item-text="name"
+          item-value="id"
+          outlined
+          dense
+          :error="errors.role.exist"
+          :error-messages="errors.role.message"
         >
-          <PermissionRole />
-        </div>
-        <div
-          id="direct"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="direct-tab"
+          <template #label>
+            Role actuel
+            <span class="red--text"><strong>* </strong></span>
+          </template>
+        </v-autocomplete>
+        <PermissionTable :key="role" :role="role" />
+        <v-btn block color="primary" small :disabled="submiting" @click="save"
+          >valider la selection du rôle</v-btn
         >
-          <PermissionDirect />
-        </div>
-        <div
-          id="apercu"
-          class="tab-pane fade"
-          role="tabpanel"
-          aria-labelledby="apercu-tab"
-        >
-          <PermissionShow />
-        </div>
-      </div>
-    </v-app>
+      </v-app>
+    </b-overlay>
   </div>
 </template>
 <script>
-import PermissionRole from './permissions-tabs/PermissionRole.vue'
-import PermissionDirect from './permissions-tabs/PermissionDirect.vue'
-import PermissionShow from './permissions-tabs/PermissionShow.vue'
+import { mapActions, mapGetters } from 'vuex'
+import PermissionTable from './PermissionTable.vue'
+import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   components: {
-    PermissionRole,
-    PermissionDirect,
-    PermissionShow,
-  },
-  provide() {
-    return {
-      id: this.id,
-    }
+    PermissionTable,
   },
   props: {
     id: {
       type: Number,
       required: true,
+    },
+  },
+  data: () => ({
+    role: 0,
+    submiting: false,
+    errors: {
+      role: { exist: false, message: null },
+    },
+  }),
+  async fetch() {
+    await this.getRoles()
+    const { user: utilisateur } = await this.getOne(this.id)
+    if (utilisateur.roles.length > 0) this.role = utilisateur.roles[0].id
+  },
+  computed: {
+    ...mapGetters({ roles: 'user-role/role/roles' }),
+  },
+  methods: {
+    ...mapActions({
+      getRoles: 'user-role/role/getAll',
+      getOne: 'user-role/user/getOne',
+      attribuer: 'user-role/user/attribuer',
+    }),
+    save() {
+      this.submiting = true
+      this.attribuer({ role: this.role, user: this.id })
+        .then((message) => {
+          this.$bvToast.toast(message, {
+            title: "succès de l'opération".toLocaleUpperCase(),
+            variant: 'success',
+            solid: true,
+          })
+        })
+        .catch((err) => {
+          const { data } = err.response
+          if (data) {
+            errorsInitialise(this.errors)
+            errorsWriting(data.errors, this.errors)
+          }
+        })
+        .finally(() => (this.submiting = false))
     },
   },
 }

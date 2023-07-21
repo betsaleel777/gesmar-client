@@ -33,16 +33,7 @@
               </a>
             </li>
             <li class="list-group-item list-group-item-action">
-              <a href="#paneNotification" data-toggle="tab" class="media">
-                <feather type="bell" />
-                <div class="media-body">
-                  <h6>Notifications</h6>
-                  <span>Configurer les notifications à recevoir</span>
-                </div>
-              </a>
-            </li>
-            <li class="list-group-item list-group-item-action">
-              <a href="#paneBilling" data-toggle="tab" class="media">
+              <a href="#panePermissions" data-toggle="tab" class="media">
                 <feather type="users" />
                 <div class="media-body">
                   <h6>Permissions</h6>
@@ -62,9 +53,9 @@
               <!-- tab-pane -->
               <SecuritySetup :id="id" />
               <!-- tab-pane -->
-              <NotificationSetup :id="id" />
+              <PermissionSetup :id="id" />
               <!-- tab-pane -->
-              <!-- <PermissionSetup :id="id" /> -->
+              <!-- <NotificationSetup :id="id" /> -->
               <!-- tab-pane -->
             </div>
             <!-- tab-content -->
@@ -82,16 +73,14 @@
 import ProfileSetup from '~/components/utilisateur/ProfileSetup.vue'
 import AccountSetup from '~/components/utilisateur/AccountSetup.vue'
 import SecuritySetup from '~/components/utilisateur/SecuritySetup.vue'
-import NotificationSetup from '~/components/utilisateur/NotificationSetup.vue'
-// import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
+import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
   components: {
     ProfileSetup,
     AccountSetup,
     SecuritySetup,
-    NotificationSetup,
-    // PermissionSetup,
+    PermissionSetup,
     PartialBreadcrumb,
   },
   async asyncData({ params, store }) {
@@ -103,9 +92,12 @@ export default {
       nom: name,
       id: Number(params.id),
       profileData,
-      liens: [{ path: '#', text: `utilisateur ${name}` }],
+      liens: [
+        { path: '/parametre/utilisateur', text: 'Utilisateurs' },
+        { path: '#', text: `utilisateur ${name}` },
+      ],
     }
   },
 }
 </script>
-<style lang=""></style>
+<style scoped></style>

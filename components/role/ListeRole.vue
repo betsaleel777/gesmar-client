@@ -52,18 +52,8 @@
             :filter="filter"
             @filtered="onFiltered"
           >
-            <template #cell(index)="data">
-              {{ data.index + 1 }}
-            </template>
             <template #cell(option)="data">
-              <nuxt-link :to="`/parametre/role/${data.item.id}`">
-                <feather title="détails" type="eye" class="mr-10" size="20" />
-              </nuxt-link>
-              <a
-                v-if="data.item.name !== 'Super-Admin'"
-                type="button"
-                @click="dialoger(data.item.id)"
-              >
+              <a type="button" @click="dialoger(data.item.id)">
                 <feather title="modifier" type="edit" size="20" stroke="blue" />
               </a>
             </template>
@@ -108,7 +98,6 @@ export default {
   },
   data: () => ({
     fields: [
-      'index',
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },
       {
         key: 'created_at',

@@ -21,21 +21,15 @@
             <strong>{{ errors.name.message }}</strong>
           </span>
         </div>
+        <span v-if="errors.permissions.exist" class="text-danger" role="alert">
+          <strong>{{ errors.permissions.message }}</strong>
+        </span>
         <SelectPermissionTable v-model="role.permissions" />
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -61,6 +55,7 @@ export default {
     },
     errors: {
       name: { exist: false, message: null },
+      permissions: { exist: false, message: null },
     },
   }),
   computed: {

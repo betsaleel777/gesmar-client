@@ -43,14 +43,6 @@
             :filter="filter"
             @filtered="onFiltered"
           >
-            <template #cell(index)="data">
-              {{ data.index + 1 }}
-            </template>
-            <template #cell(option)="data">
-              <nuxt-link :to="`/parametre/permission/${data.item.id}`">
-                <feather title="détails" type="eye" class="mr-auto" size="20" />
-              </nuxt-link>
-            </template>
             <template #cell(created_at)="data">
               {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
             </template>
@@ -79,7 +71,6 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data: () => ({
     fields: [
-      'index',
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },
       {
         key: 'created_at',
@@ -87,19 +78,12 @@ export default {
         tdClass: 'wd-10p',
         sortable: true,
       },
-      {
-        key: 'option',
-        label: 'Options',
-        tdClass: 'wd-10p text-center',
-        thClass: 'wd-10p text-center',
-        sortable: false,
-      },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     filter: null,
     totalRows: 1,
     currentPage: 1,
-    perPage: 10,
+    perPage: 20,
   }),
   fetch() {
     this.getAll().then(() => {

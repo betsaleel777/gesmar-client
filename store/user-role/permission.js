@@ -12,6 +12,14 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/permissions')
     commit('SET_PERMISSIONS', requete.data.permissions)
   },
+  async getByRole({ commit }, id) {
+    if (id) {
+      const requete = await this.$axios.get('api/parametres/permissions/' + id)
+      commit('SET_PERMISSIONS', requete.data.permissions)
+    } else {
+      commit('SET_PERMISSIONS', [])
+    }
+  },
 }
 
 export const mutations = {

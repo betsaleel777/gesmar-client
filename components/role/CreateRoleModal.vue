@@ -1,7 +1,7 @@
 <template>
   <b-modal id="modalCreateRole" scrollable size="lg" @show="reset">
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Nouveau rôle</h5>
+      <h5 id="archiver" class="modal-title text-primary">Créer un rôle</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -21,21 +21,15 @@
             <strong>{{ errors.name.message }}</strong>
           </span>
         </div>
+        <span v-if="errors.permissions.exist" class="text-danger" role="alert">
+          <strong>{{ errors.permissions.message }}</strong>
+        </span>
         <SelectPermissionTable v-model="role.permissions" />
       </form>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-warning"
-        data-dismiss="modal"
-        @click="reset"
-      >
-        Fermer
-      </button>
-      <button type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -54,6 +48,7 @@ export default {
     },
     errors: {
       name: { exist: false, message: null },
+      permissions: { exist: false, message: null },
     },
   }),
   methods: {

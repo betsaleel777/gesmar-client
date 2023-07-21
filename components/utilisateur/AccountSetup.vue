@@ -6,12 +6,10 @@
       <div class="form-group">
         <label class="form-label text-danger">Supprimer le compte</label>
         <p class="tx-sm tx-color-04">
-          Une fois que vous supprimez votre compte, il n'y a pas de retour en
-          arrière. S'il vous plaît soyez certain.
+          Une fois que vous supprimez votre compte, il n'y a pas de retour en arrière. S'il vous plaît soyez
+          certain.
         </p>
-        <button href="#modal" data-toggle="modal" class="btn btn-sm btn-danger">
-          suppression du compte
-        </button>
+        <button href="#modal" data-toggle="modal" class="btn btn-sm btn-danger">suppression du compte</button>
         <div
           id="modal"
           class="modal fade"
@@ -23,15 +21,8 @@
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h6 id="exampleModalLabel" class="modal-title">
-                  Confirmation de suppression
-                </h6>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
+                <h6 id="exampleModalLabel" class="modal-title">Confirmation de suppression</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true"><feather type="x" /></span>
                 </button>
               </div>
@@ -42,16 +33,8 @@
                 </p>
               </div>
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="button" class="btn btn-danger" @click="save">
-                  Confirmer
-                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" @click="save">Confirmer</button>
               </div>
             </div>
           </div>
