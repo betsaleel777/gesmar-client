@@ -17,6 +17,9 @@
             <span class="red--text"><strong>* </strong></span>
           </template>
         </v-autocomplete>
+        <v-alert v-if="isSuperole" dense text type="info">
+          L'utilisateur avec le rôle {{ superole }} a tout les droits
+        </v-alert>
         <PermissionTable :key="role" :role="role" />
         <v-btn block color="primary" small :disabled="submiting" @click="save"
           >valider la selection du rôle</v-btn
@@ -29,6 +32,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import PermissionTable from './PermissionTable.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   components: {
     PermissionTable,
@@ -40,6 +44,7 @@ export default {
     },
   },
   data: () => ({
+    superole: SUPERROLE,
     role: 0,
     submiting: false,
     errors: {
@@ -49,10 +54,17 @@ export default {
   async fetch() {
     await this.getRoles()
     const { user: utilisateur } = await this.getOne(this.id)
-    if (utilisateur.roles.length > 0) this.role = utilisateur.roles[0].id
+    this.role = utilisateur.role.id
   },
   computed: {
     ...mapGetters({ roles: 'user-role/role/roles' }),
+    isSuperole() {
+      if (!this.role) return false
+      else {
+        const role = this.roles.filter((role) => role.id === this.role)[0]
+        return role.name === SUPERROLE
+      }
+    },
   },
   methods: {
     ...mapActions({
@@ -69,6 +81,7 @@ export default {
             variant: 'success',
             solid: true,
           })
+          location.reload()
         })
         .catch((err) => {
           const { data } = err.response

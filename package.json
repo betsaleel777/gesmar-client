@@ -25,7 +25,6 @@
     "jspdf-invoice-template": "^1.4.3",
     "nuxt": "^2.15.8",
     "quill-image-drop-module": "^1.0.3",
-    "tiptap-vuetify": "^2.24.0",
     "vue": "2",
     "vue-feather": "1",
     "vue-gates": "^2.1.2",

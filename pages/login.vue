@@ -78,19 +78,25 @@ export default {
   },
   methods: {
     login() {
-      this.$auth.loginWith('laravelSanctum', { data: this.utilisateur }).catch((err) => {
-        const { data } = err.response
-        if (data && data.credentials) {
-          this.$root.$bvToast.toast(data.message, {
-            title: "echec de l'opération".toLocaleUpperCase(),
-            variant: 'danger',
-            solid: true,
-          })
-        } else {
-          errorsInitialise(this.errors)
-          errorsWriting(data.errors, this.errors)
-        }
-      })
+      this.$auth
+        .loginWith('laravelSanctum', { data: this.utilisateur })
+        .then(() => {
+          this.$gates.setRoles([this.user.role.name])
+          this.$gates.setPermissions(this.user.permissions)
+        })
+        .catch((err) => {
+          const { data } = err.response
+          if (data && data.credentials) {
+            this.$root.$bvToast.toast(data.message, {
+              title: "echec de l'opération".toLocaleUpperCase(),
+              variant: 'danger',
+              solid: true,
+            })
+          } else {
+            errorsInitialise(this.errors)
+            errorsWriting(data.errors, this.errors)
+          }
+        })
     },
   },
 }

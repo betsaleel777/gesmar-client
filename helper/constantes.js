@@ -76,6 +76,7 @@ const ENCAISSEMENT = Object.freeze({
   },
   status: {},
 })
+const SUPERROLE = 'Super-admin'
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,
@@ -90,4 +91,5 @@ module.exports = {
   OUVERTURE,
   GABARI,
   ENCAISSEMENT,
+  SUPERROLE,
 }
