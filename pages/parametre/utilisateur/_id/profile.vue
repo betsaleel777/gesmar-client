@@ -5,38 +5,14 @@
       <div class="profile-sidebar">
         <div class="profile-sidebar-header">
           <div class="avatar">
-            <img v-if="user.avatar" :src="baseURL + 'storage/' + user.avatar" class="rounded-circle" alt="" />
+            <img v-if="user.avatar" :src="user.avatar" class="rounded-circle" alt="" />
             <img v-else src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
           </div>
           <h5>{{ user.name }}</h5>
-          <p>UI Developer (Savior of Mankind)</p>
+          <p>{{ user.role.name }}</p>
           <span>{{ user.adresse }}</span>
-
-          <!-- <div class="d-flex align-self-stretch mg-t-30">
-          <a href="" class="btn btn-brand-01 btn-sm btn-uppercase flex-fill"
-            >Follow</a
-          >
-          <a href="" class="btn btn-white btn-sm btn-uppercase flex-fill mg-l-5"
-            >Message</a
-          >
-        </div> -->
         </div>
-        <!-- profile-sidebar-header -->
         <div class="profile-sidebar-body">
-          <!-- <label class="content-label">Websites &amp; Social Channel</label>
-        <ul class="list-unstyled profile-info-list">
-          <li>
-            <i data-feather="globe"></i> <a href="">http://fenchiumao.me/</a>
-          </li>
-          <li><i data-feather="github"></i> <a href="">@fenchiumao</a></li>
-          <li><i data-feather="twitter"></i> <a href="">@fenmao</a></li>
-          <li><i data-feather="instagram"></i> <a href="">@fenchiumao</a></li>
-          <li><i data-feather="facebook"></i> <a href="">@fenchiumao</a></li>
-        </ul>
-
-        <hr class="mg-y-25" /> -->
-
-          <label class="content-label">Contact Information</label>
           <ul class="list-unstyled profile-info-list mg-b-0">
             <li>
               <feather size="17" stroke-width="2" type="briefcase" />
@@ -46,14 +22,14 @@
               <feather size="17" stroke-width="2" type="home" />
               <span class="tx-color-03">{{ user.adresse }}</span>
             </li>
-            <li>
+            <!-- <li>
               <feather size="17" stroke-width="2" type="smartphone" />
               <a href="">(+1) 012 345 6789</a>
             </li>
             <li>
               <feather size="17" stroke-width="2" type="phone" />
               <a href="">(+1) 987 654 3201</a>
-            </li>
+            </li> -->
             <li>
               <feather size="17" stroke-width="2" type="mail" />
               <a href="">{{ user.email }}</a>
@@ -228,9 +204,6 @@ export default {
   components: {
     PartialBreadcrumb,
   },
-  data: () => ({
-    baseURL: process.env.API || 'http://localhost:8000/',
-  }),
   computed: {
     liens() {
       return [{ path: '#', text: `profile ${this.user.name}` }]

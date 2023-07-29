@@ -36,6 +36,7 @@ const CONTRAT = Object.freeze({
     onEndorsed: 'à signer',
     onValidated: 'à valider',
     attente: 'en attente',
+    resilied: 'résilié',
   },
   type: { annexe: 'annexe', bail: 'bail' },
 })

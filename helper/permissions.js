@@ -1,5 +1,5 @@
 const parametre = {
-  acceder: 'acces au menu parametre',
+  acceder: 'accès au menu parametre',
   configuration: {
     acceder: 'accès à la configuration des sites',
   },
@@ -74,15 +74,17 @@ const exploitation = {
     dashboard: 'accès au dashboard de la réception',
     acceder: 'accès au menu réception',
     demande: {
-      acceder: "accès aux demandes d'emplacement",
+      create: 'création de demande',
+      acceder: 'accès aux demandes',
       edit: 'modifier une demande',
       trash: 'archiver une demande',
       restore: 'restorer une demande',
       global: 'toutes les demandes sont visibles',
       own: 'demandes visibles par leur créateur',
-      validate: "valider une demande d'emplacement",
+      validate: 'valider une demande',
     },
     prospect: {
+      create: 'création de prospect',
       acceder: 'accès aux prospects',
       edit: 'modifier un prospect',
       trash: 'archiver un prospect',

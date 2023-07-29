@@ -21,39 +21,41 @@
                 <h5 v-else>SIGLE</h5>
                 <p v-if="enterprise.nom">{{ enterprise.nom }}</p>
                 <p v-else>nom complet de la société</p>
-                <span v-if="enterprise.siege">{{ enterprise.siege }}</span>
-                <span v-else>siège de la société</span>
               </div>
-              <!-- profile-sidebar-header -->
+              <hr class="mg-y-20" />
               <div class="profile-sidebar-body">
-                <hr class="mg-y-25" />
-
-                <label class="content-label text-center">Contact Information</label>
-                <div class="d-flex">
-                  <ul class="list-unstyled mx-auto justify-content-center">
-                    <li>
-                      <i data-feather="briefcase"></i>
-                      <span v-if="enterprise.siege" class="tx-color-03">{{ enterprise.siege }}</span>
-                      <span v-else class="tx-color-03">siège de la société</span>
-                    </li>
-                    <!-- <li><i data-feather="home"></i> <span class="tx-color-03">Westfield, Oakland, CA</span></li> -->
-                    <li v-if="enterprise.smartphone">
-                      <feather type="smartphone" :size="15" /><a href="#">{{ enterprise.smartphone }}</a>
-                    </li>
-                    <li v-else><feather type="smartphone" :size="15" /><a href="#">Téléphone mobile</a></li>
-                    <li v-if="enterprise.phone">
-                      <feather type="phone" :size="15" /><a href="#">{{ enterprise.phone }}</a>
-                    </li>
-                    <li v-else><feather type="phone" :size="15" /><a href="#">Téléphone fixe</a></li>
-                    <li v-if="enterprise.email">
-                      <feather type="mail" :size="15" /><a href="">{{ enterprise.email }}</a>
-                    </li>
-                    <li v-else><feather type="mail" :size="15" /><a href="">email entreprise</a></li>
-                  </ul>
+                <div class="row">
+                  <div class="col-md-2">
+                    <feather stroke-width="2" stroke="blue" size="18" type="map" />
+                  </div>
+                  <div class="col-md-10">
+                    <h5 v-if="enterprise.siege" class="lead">{{ enterprise.siege }}</h5>
+                    <h5 v-else class="lead">siège de la société</h5>
+                  </div>
+                  <div class="col-md-2">
+                    <feather stroke-width="2" stroke="blue" size="18" type="smartphone" />
+                  </div>
+                  <div class="col-md-10">
+                    <h5 v-if="enterprise.smartphone" class="lead">{{ enterprise.smartphone }}</h5>
+                    <h5 v-else class="lead">Téléphone mobile</h5>
+                  </div>
+                  <div class="col-md-2">
+                    <feather stroke-width="2" stroke="blue" size="18" type="phone" />
+                  </div>
+                  <div class="col-md-10">
+                    <h5 v-if="enterprise.phone" class="lead">{{ enterprise.phone }}</h5>
+                    <h5 v-else class="lead">Téléphone fixe</h5>
+                  </div>
+                  <div class="col-md-2">
+                    <feather stroke-width="2" stroke="blue" size="18" type="mail" />
+                  </div>
+                  <div class="col-md-10">
+                    <h5 v-if="enterprise.mail" class="lead">{{ enterprise.mail }}</h5>
+                    <h5 v-else class="lead">Adresse Email</h5>
+                  </div>
                 </div>
               </div>
             </b-overlay>
-            <!-- profile-sidebar-body -->
           </div>
           <!-- profile-sidebar -->
           <b-card class="col-sm-6 col-md-9">
@@ -233,7 +235,6 @@ export default {
       errorsInitialise(this.errors)
       traiter(data)
         .then(({ message }) => {
-          this.processing = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -241,13 +242,13 @@ export default {
           })
         })
         .catch((err) => {
-          this.processing = false
           const { data } = err.response
           if (data) {
             errorsInitialise(this.errors)
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.processing = false))
     },
   },
 }
