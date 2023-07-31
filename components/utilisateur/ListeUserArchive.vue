@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-overlay :show="$fetchState.pending" rounded="sm">
+    <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
       <b-card aria-hidden="true" header="Utilisateurs Archivées">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
@@ -53,15 +53,8 @@
             @filtered="onFiltered"
           >
             <template #cell(option)="data">
-              <nuxt-link
-                :to="`/parametre/utilisateur/${data.item.id}/settings`"
-              >
-                <feather
-                  title="parametres"
-                  type="settings"
-                  class="mr-auto"
-                  size="20"
-                />
+              <nuxt-link :to="`/parametre/utilisateur/${data.item.id}/settings`">
+                <feather title="parametres" type="settings" class="mr-auto" size="20" />
               </nuxt-link>
               <feather
                 title="restaurer"

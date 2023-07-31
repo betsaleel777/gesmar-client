@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
     <button type="button" class="btn btn-primary text-white" @click="$bvModal.show('structure')">
       Création d'architecture de marché
     </button>

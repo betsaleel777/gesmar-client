@@ -2,7 +2,7 @@
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="container">
-      <b-overlay :show="$fetchState.pending" rounded="sm">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <div class="row">
           <div class="col-sm-6 col-md-3">
             <b-overlay :show="processing" rounded="sm">

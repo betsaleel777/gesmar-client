@@ -1,9 +1,6 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
-    <b-card
-      aria-hidden="true"
-      header="Termes de contrats pour emplacements archivés"
-    >
+  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+    <b-card aria-hidden="true" header="Termes de contrats pour emplacements archivés">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
           <div class="">

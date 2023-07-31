@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
     <v-data-table
       :items="permissions"
       :value="selected"
@@ -72,9 +72,7 @@ export default {
   fetch() {
     this.getAll()
     const directesIds = this.permissionsDirectes.map((elt) => elt.id)
-    const permissionsViaRoles = this.selected.filter(
-      (elt) => !directesIds.includes(elt.id)
-    )
+    const permissionsViaRoles = this.selected.filter((elt) => !directesIds.includes(elt.id))
     this.ids = permissionsViaRoles.map((elt) => elt.id)
   },
   computed: {
@@ -94,9 +92,7 @@ export default {
       if (value) {
         this.selected.push(item)
       } else {
-        const index = this.selected.findIndex(
-          (element) => element.id === item.id
-        )
+        const index = this.selected.findIndex((element) => element.id === item.id)
         this.selected.splice(index, 1)
       }
     },
@@ -107,9 +103,7 @@ export default {
         })
       } else {
         items.forEach((item) => {
-          const index = this.selected.findIndex(
-            (element) => element.id === item.id
-          )
+          const index = this.selected.findIndex((element) => element.id === item.id)
           this.selected.splice(index, 1)
         })
       }

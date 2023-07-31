@@ -63,9 +63,21 @@
           </span>
         </div>
         <!-- form-group -->
-        <div class="form-group tx-13 tx-color-04">
-          vous nous donnez votre consentement pour partager ces données où que vous soyez.
-        </div>
+        <v-app v-if="superadmin !== utilisateur.roleName">
+          <v-autocomplete
+            v-model="utilisateur.sites"
+            :items="marches"
+            item-text="nom"
+            item-value="id"
+            dense
+            chips
+            small-chips
+            multiple
+            outlined
+            label="Choix des marchés"
+          >
+          </v-autocomplete>
+        </v-app>
         <hr class="op-0" />
         <button type="button" :disabled="submiting" class="btn btn-brand-02" @click="save">
           Modifier le profile
@@ -75,9 +87,10 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '../tools/ImagePreview.vue'
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   components: {
     ImagePreview,
@@ -93,6 +106,7 @@ export default {
     },
   },
   data: () => ({
+    superadmin: SUPERROLE,
     submiting: false,
     utilisateur: {
       image: null,
@@ -100,18 +114,23 @@ export default {
       name: null,
       description: null,
       adresse: null,
+      sites: [],
+      roleName: null,
     },
     errors: {
       name: { exist: false, message: null },
       adresse: { exist: false, message: null },
     },
-    baseURL: process.env.API || 'http://localhost:8000/',
   }),
+  computed: {
+    ...mapGetters({ marches: 'architecture/marche/marches' }),
+  },
   mounted() {
+    this.getSites()
     this.utilisateur = this.profileData
   },
   methods: {
-    ...mapActions('user-role/user', ['profile']),
+    ...mapActions({ profile: 'user-role/user/profile', getSites: 'architecture/marche/getAll' }),
     save() {
       this.submiting = true
       const data = new FormData()

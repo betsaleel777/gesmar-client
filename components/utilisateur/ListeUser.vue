@@ -10,7 +10,7 @@
             stroke-width="2"
             size="18"
             type="plus"
-            @click="$bvModal.show('modalCreateUser')"
+            @click="modal = true"
           />
           <feather
             v-b-tooltip.hover.top
@@ -93,7 +93,7 @@
         action="user-role/user/supprimer"
         :message="`Voulez vous réelement archiver l'utilisateur ${dialogData.nom}`"
       />
-      <CreateUserModal />
+      <CreateUserModal v-if="modal" v-model="modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -107,6 +107,7 @@ export default {
     CreateUserModal,
   },
   data: () => ({
+    modal: false,
     fields: [
       'index',
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },

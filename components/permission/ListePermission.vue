@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-overlay :show="$fetchState.pending" rounded="sm">
+    <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
       <b-card aria-hidden="true" header="Liste des permissions">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">

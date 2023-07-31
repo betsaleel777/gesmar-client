@@ -1,9 +1,13 @@
+import { SUPERROLE } from '~/helper/constantes'
 export const state = () => ({
   roles: [],
 })
 export const getters = {
   roles: (state) => {
     return state.roles
+  },
+  superAdminWihout: (state) => {
+    return state.roles.filter((role) => role.name !== SUPERROLE)
   },
 }
 export const actions = {

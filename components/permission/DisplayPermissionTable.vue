@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="$fetchState.pending" rounded="sm">
+  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
     <v-data-table
       :items="permissions"
       :headers="fields"

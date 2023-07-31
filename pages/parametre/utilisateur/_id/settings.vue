@@ -85,9 +85,16 @@ export default {
   },
   async asyncData({ params, store }) {
     const {
-      user: { avatar, name, description, adresse },
+      user: {
+        avatar,
+        name,
+        description,
+        adresse,
+        sites,
+        role: { name: roleName },
+      },
     } = await store.dispatch('user-role/user/getOne', params.id)
-    const profileData = { avatar, name, description, adresse, id: params.id }
+    const profileData = { avatar, name, description, adresse, id: params.id, sites, roleName }
     return {
       nom: name,
       id: Number(params.id),

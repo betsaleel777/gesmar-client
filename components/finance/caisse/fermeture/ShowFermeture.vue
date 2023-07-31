@@ -7,7 +7,7 @@
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending" rounded="sm">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <div v-if="fermeture" class="card card-invoice">
           <div class="card-header">
             <div>

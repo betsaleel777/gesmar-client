@@ -1,6 +1,6 @@
 <template>
   <div id="panePermissions" class="tab-pane">
-    <b-overlay :show="$fetchState.pending" rounded="sm">
+    <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
       <v-app>
         <v-autocomplete
           v-model="role"
