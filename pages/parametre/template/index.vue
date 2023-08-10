@@ -1,12 +1,8 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <div class="content-body content-body-components">
-      <b-tabs
-        v-model="tabIndex"
-        content-class="mt-7"
-        active-nav-item-class="font-weight-bold"
-      >
+    <div class="col-md-12 col-sm-12">
+      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
         <b-tab title="Gabaris de Contrat" :title-link-class="linkClass(0)">
           <ListeTermeContrat :marches="marches" />
         </b-tab>

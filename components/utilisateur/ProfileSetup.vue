@@ -66,7 +66,7 @@
         <v-app v-if="superadmin !== utilisateur.roleName">
           <v-autocomplete
             v-model="utilisateur.sites"
-            :items="marches"
+            :items="sites"
             item-text="nom"
             item-value="id"
             dense
@@ -124,6 +124,9 @@ export default {
   }),
   computed: {
     ...mapGetters({ marches: 'architecture/marche/marches' }),
+    sites() {
+      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
+    },
   },
   mounted() {
     this.getSites()

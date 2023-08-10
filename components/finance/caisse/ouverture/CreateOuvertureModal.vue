@@ -43,6 +43,7 @@
             :error="errors.caissier_id.exist"
             :error-messages="errors.caissier_id.message"
             :loading="loading.caissier"
+            @change="getCaissier"
           >
             <template #label>
               Choix du caissier
@@ -140,6 +141,7 @@ export default {
       caissier: false,
       guichet: false,
     },
+    caissier: null,
     errors: {
       caissier_id: { exist: false, message: null },
       guichet_id: { exist: false, message: null },
@@ -176,6 +178,7 @@ export default {
       ajouter: 'caisse/ouverture/ajouter',
       getGuichets: 'caisse/guichet/getAll',
       getCaissiers: 'caisse/caissier/getAll',
+      getOne: 'caisse/caissier/getOne',
     }),
     save() {
       this.submiting = true
@@ -208,6 +211,11 @@ export default {
       errorsInitialise(this.errors)
       this.$bvModal.hide('modalCreateOuverture')
     },
+    getCaissier() {
+      this.getOne(this.ouverture.caissier_id).then(({ caissier }) => {
+        this.caissier = caissier
+      })
+    },
     activeDate() {
       this.disabled = false
       datesNonPermises = this.ouvertures
@@ -218,7 +226,14 @@ export default {
         .map((ouverture) => ouverture.date)
     },
     datesPermises(val) {
-      return !datesNonPermises.includes(val)
+      const attributions = this.caissier.attributions.filter(
+        ({ pivot: { guichet_id: id } }) => id === this.ouverture.guichet_id
+      )
+      const datesPermises = attributions.map(({ pivot: { date } }) => date)
+      const dates = datesPermises.filter(
+        (date) => !datesNonPermises.includes(this.$moment(date).format('DD-MM-YYYY'))
+      )
+      return dates.includes(val)
     },
   },
 }

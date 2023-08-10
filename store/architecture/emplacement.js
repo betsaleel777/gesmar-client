@@ -9,6 +9,10 @@ export const getters = {
   equipables: (state) => {
     return state.equipables
   },
+  emplacementsBySites: (state) => (sites) => {
+    const ids = sites.map((site) => site.id)
+    return state.emplacements.filter((emplacement) => ids.includes(emplacement.site_id))
+  },
 }
 export const actions = {
   async getAll({ commit }) {

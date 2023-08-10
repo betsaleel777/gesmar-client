@@ -5,6 +5,10 @@ export const getters = {
   niveaux: (state) => {
     return state.niveaux
   },
+  niveauxBySites: (state) => (sites) => {
+    const ids = sites.map((site) => site.id)
+    return state.niveaux.filter((niveau) => ids.includes(niveau.site_id))
+  },
 }
 export const actions = {
   async getAll({ commit }) {

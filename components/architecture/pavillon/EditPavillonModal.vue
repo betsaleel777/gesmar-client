@@ -11,7 +11,7 @@
         <v-app>
           <v-autocomplete
             v-model="pavillon.site_id"
-            :items="marches"
+            :items="sites"
             item-text="nom"
             item-value="id"
             outlined
@@ -52,6 +52,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   props: {
     marches: {
@@ -83,6 +84,9 @@ export default {
       set(value) {
         this.$emit('input', value)
       },
+    },
+    sites() {
+      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
     },
   },
   mounted() {

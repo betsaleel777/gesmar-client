@@ -1,7 +1,7 @@
 <template>
   <div>
     <PartialBreadcrumb :liens="liens" />
-    <div class="content-body content-body-components">
+    <div class="col-sm-12 col-md-12">
       <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
         <b-tab title="Utilisateurs" lazy :title-link-class="linkClass(0)">
           <ListeUser v-if="!archive.user" @archivage="archive.user = true" />

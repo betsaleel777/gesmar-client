@@ -17,7 +17,7 @@
             ></v-switch>
             <v-autocomplete
               v-model="pavillon.site_id"
-              :items="marches"
+              :items="sites"
               item-text="nom"
               item-value="id"
               outlined
@@ -69,6 +69,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   props: {
     marches: {
@@ -90,6 +91,11 @@ export default {
       nombre: { exist: false, message: null },
     },
   }),
+  computed: {
+    sites() {
+      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
+    },
+  },
   methods: {
     ...mapActions({
       ajouter: 'architecture/pavillon/ajouter',

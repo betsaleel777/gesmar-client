@@ -86,7 +86,7 @@
           <v-app>
             <v-autocomplete
               v-model="utilisateur.sites"
-              :items="marches"
+              :items="sites"
               item-text="nom"
               item-value="id"
               dense
@@ -133,6 +133,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   components: {
     ImagePreview,
@@ -177,6 +178,9 @@ export default {
       set(value) {
         this.$emit('input', value)
       },
+    },
+    sites() {
+      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
     },
   },
   methods: {

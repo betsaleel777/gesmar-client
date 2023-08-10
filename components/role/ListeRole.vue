@@ -53,7 +53,7 @@
             @filtered="onFiltered"
           >
             <template #cell(option)="data">
-              <a type="button" @click="dialoger(data.item.id)">
+              <a v-if="superole !== data.item.name" type="button" @click="dialoger(data.item.id)">
                 <feather title="modifier" type="edit" size="20" stroke="blue" />
               </a>
             </template>
@@ -91,12 +91,14 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateRoleModal from './CreateRoleModal.vue'
 import EditRoleModal from './EditRoleModal.vue'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   components: {
     CreateRoleModal,
     EditRoleModal,
   },
   data: () => ({
+    superole: SUPERROLE,
     fields: [
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },
       {

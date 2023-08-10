@@ -22,6 +22,7 @@
               :search-input.sync="search"
               item-text="texte"
               item-value="id"
+              cache-items
               outlined
               dense
               :error="errors.pavillon_id.exist"
@@ -77,6 +78,7 @@ export default {
     pavillons: [],
     loading: false,
     search: null,
+    timer: null,
     niveau: {
       nom: '',
       pavillon_id: '',
@@ -140,9 +142,12 @@ export default {
     },
     querySelections(search) {
       this.loading = true
-      this.getSearch(search)
-        .then((pavillons) => (this.pavillons = pavillons))
-        .finally(() => (this.loading = false))
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.getSearch(search)
+          .then((pavillons) => (this.pavillons = pavillons))
+          .finally(() => (this.loading = false))
+      }, 1150)
     },
   },
 }

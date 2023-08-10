@@ -38,6 +38,7 @@ const finance = {
       acceder: 'accès à la liste des bordereau',
       global: 'tout les bordereaux sont visibles',
       own: 'bordereaux visible par leur créateur',
+      show: "voir les détails d'un bordereau",
     },
     collecte: {
       acceder: 'accès à la collecte des emplacements',
@@ -82,6 +83,7 @@ const exploitation = {
       global: 'toutes les demandes sont visibles',
       own: 'demandes visibles par leur créateur',
       validate: 'valider une demande',
+      show: "voir les détails d'une demande",
     },
     prospect: {
       create: 'création de prospect',
@@ -91,6 +93,7 @@ const exploitation = {
       restore: 'restorer un prospect',
       global: 'tout les prospects sont visibles',
       own: 'prospect visibles par leur créateur',
+      show: "voir les détails d'un propspect",
     },
     client: {
       acceder: 'accès aux clients',
@@ -99,10 +102,13 @@ const exploitation = {
       restore: 'restorer un client',
       global: 'tout les clients sont visibles',
       own: 'client visibles par leur créateur',
+      show: "voir les détails d'un client",
     },
     contrat: {
+      acceder: 'accès aux contrats',
       global: 'tout les contrats sont visibles',
       own: 'contrat visibles par leur créateur',
+      show: "voir les détails d'un contrat",
     },
   },
   ordonnancements: {
@@ -110,6 +116,7 @@ const exploitation = {
     acceder: 'accès au menu ordonnancements',
     ordonnancement: {
       create: "création d'ordonnancement",
+      show: "voir les détails d'un ordonnancement",
     },
   },
   maintenance: {

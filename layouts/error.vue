@@ -35,6 +35,9 @@
       <div v-else-if="Number($route.query.code) === 505">
         <h1 class="tx-28 tx-sm-36 tx-numeric tx-md-40 tx-semibold">Version HTTP non gérée par le serveur.</h1>
       </div>
+      <div v-else-if="Number($route.query.code) === 403">
+        <h1 class="tx-28 tx-sm-36 tx-numeric tx-md-40 tx-semibold">L'accès à cette page est interdit.</h1>
+      </div>
       <div v-else>
         <h1 class="tx-28 tx-sm-36 tx-numeric tx-md-40 tx-semibold">Une erreure très rare a eu lieu.</h1>
       </div>

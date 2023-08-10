@@ -96,9 +96,9 @@
         <AttribuerGuichetModal
           v-if="attribution.modal"
           v-model="attribution.modal"
-          :caissier="attribution.caissier"
+          :caissier-id="attribution.caissier"
         />
-        <ShowCaissierModal v-if="show.modal" v-model="show.modal" :caissier="show.caissier" />
+        <ShowCaissierModal v-if="show.modal" v-model="show.modal" :caissier-id="show.caissier" />
       </b-card-text>
     </b-card>
   </div>
@@ -147,22 +147,15 @@ export default {
   methods: {
     ...mapActions({
       getAll: 'caisse/caissier/getAll',
-      getOne: 'caisse/caissier/getOne',
     }),
     imprimer() {},
     details({ id }) {
-      this.loading = true
-      this.getOne(id).then(({ caissier }) => {
-        this.show.caissier = caissier
-        this.show.modal = true
-        this.loading = false
-      })
+      this.show.caissier = id
+      this.show.modal = true
     },
     attribuer({ id }) {
-      this.getOne(id).then(({ caissier }) => {
-        this.attribution.caissier = caissier
-        this.attribution.modal = true
-      })
+      this.attribution.caissier = id
+      this.attribution.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

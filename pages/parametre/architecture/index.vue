@@ -6,7 +6,7 @@
         <b-tab title="Acceuil" lazy :title-link-class="linkClass(0)">
           <AcceuilArchitecture />
         </b-tab>
-        <b-tab title="Marchés" lazy :title-link-class="linkClass(1)">
+        <b-tab v-role="superole" title="Marchés" lazy :title-link-class="linkClass(1)">
           <ListeMarche v-if="!archive.marche" @archivage="archive.marche = true" />
           <ListeMarcheArchive v-else @back="onBack(1)" />
         </b-tab>
@@ -56,6 +56,7 @@ import ListeEquipement from '~/components/architecture/equipement/ListeEquipemen
 import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
 import ListeAbonnement from '~/components/architecture/abonnement/ListeAbonnement.vue'
+import { SUPERROLE } from '~/helper/constantes'
 export default {
   components: {
     PartialBreadcrumb,
@@ -76,6 +77,7 @@ export default {
     ListeAbonnement,
   },
   data: () => ({
+    superole: SUPERROLE,
     liens: [{ path: '#', text: 'Configuration de marché' }],
     archive: {
       marche: false,

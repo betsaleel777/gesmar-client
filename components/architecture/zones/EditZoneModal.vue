@@ -17,6 +17,7 @@
               :search-input.sync="search"
               item-text="texte"
               item-value="id"
+              cache-items
               outlined
               dense
               label="choix du niveau"

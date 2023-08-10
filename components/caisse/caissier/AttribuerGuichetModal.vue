@@ -10,83 +10,86 @@
     </template>
     <template #default>
       <v-app>
-        <v-form>
-          <v-autocomplete
-            v-model="marche"
-            :items="marches"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            @change="getGuichets"
-          >
-            <template #label> Choix du marche </template>
-          </v-autocomplete>
-          <v-autocomplete
-            v-model="attribution.guichet_id"
-            :items="setGuichets"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            :error="errors.guichet_id.exist"
-            :error-messages="errors.guichet_id.message"
-            :loading="loading"
-          >
-            <template #label>
-              Choix du guichet
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-            <template #progress>
-              <v-progress-linear v-if="loading" indeterminate color="primary" absolute></v-progress-linear>
-            </template>
-          </v-autocomplete>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="attribution.dates"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template #activator="{ on, attrs }">
-              <v-combobox
-                v-model="attribution.dates"
-                multiple
-                chips
-                small-chips
-                label="Dates d'attribution"
-                prepend-inner-icon="mdi-calendar"
-                readonly
-                outlined
-                dense
-                :error="errors.dates.exist"
-                :error-messages="errors.dates.message"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <template #label>
-                  Dates d'attribution <span class="red--text"><strong>* </strong></span>
-                </template>
-              </v-combobox>
-            </template>
-            <v-date-picker
-              v-model="attribution.dates"
-              locale="fr"
-              no-title
-              multiple
-              scrollable
-              color="primary"
-              :allowed-dates="allowedDates"
+        <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+          <v-form>
+            <v-autocomplete
+              v-model="marche"
+              :items="marches"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              @change="getGuichets"
             >
-              <v-spacer></v-spacer>
-              <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(attribution.dates)"> OK </v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-form>
+              <template #label> Choix du marche </template>
+            </v-autocomplete>
+            <v-autocomplete
+              v-model="attribution.guichet_id"
+              :items="setGuichets"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              :error="errors.guichet_id.exist"
+              :error-messages="errors.guichet_id.message"
+              :loading="loading"
+            >
+              <template #label>
+                Choix du guichet
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+              <template #progress>
+                <v-progress-linear v-if="loading" indeterminate color="primary" absolute></v-progress-linear>
+              </template>
+            </v-autocomplete>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="attribution.dates"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-combobox
+                  v-model="attribution.dates"
+                  multiple
+                  chips
+                  small-chips
+                  label="Dates d'attribution"
+                  prepend-inner-icon="mdi-calendar"
+                  readonly
+                  outlined
+                  dense
+                  :error="errors.dates.exist"
+                  :error-messages="errors.dates.message"
+                  v-bind="attrs"
+                  :disabled="!enableDate"
+                  v-on="on"
+                >
+                  <template #label>
+                    Dates d'attribution <span class="red--text"><strong>* </strong></span>
+                  </template>
+                </v-combobox>
+              </template>
+              <v-date-picker
+                v-model="attribution.dates"
+                locale="fr"
+                no-title
+                multiple
+                scrollable
+                color="primary"
+                :allowed-dates="allowedDates"
+              >
+                <v-spacer></v-spacer>
+                <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(attribution.dates)"> OK </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-form>
+        </b-overlay>
       </v-app>
     </template>
     <template #modal-footer>
@@ -104,8 +107,8 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    caissier: {
-      type: Object,
+    caissierId: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -121,11 +124,19 @@ export default {
       dates: null,
       caissier_id: null,
     },
+    caissier: {
+      user: { name: '' },
+    },
     errors: {
       guichet_id: { exist: false, message: null },
       dates: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getSites()
+    const { caissier } = await this.getOne(this.caissierId)
+    this.caissier = caissier
+  },
   computed: {
     ...mapGetters({
       marches: 'architecture/marche/marches',
@@ -139,15 +150,16 @@ export default {
         this.$emit('input', value)
       },
     },
-  },
-  mounted() {
-    this.getSites()
+    enableDate() {
+      return Boolean(this.attribution.guichet_id)
+    },
   },
   methods: {
     ...mapActions({
       getSites: 'architecture/marche/getAll',
       allGuichets: 'caisse/guichet/getAll',
       attribuer: 'caisse/caissier/attribuer',
+      getOne: 'caisse/caissier/getOne',
     }),
     save() {
       this.submiting = true
@@ -179,7 +191,6 @@ export default {
         })
       }
     },
-    saveDates(dates) {},
     allowedDates(val) {
       const dates = this.caissier.attributions.map(({ pivot: { date } }) => date)
       return !dates.includes(val)

@@ -6,6 +6,10 @@ export const getters = {
   equipements: (state) => {
     return state.equipements
   },
+  equipementsBySites: (state) => (sites) => {
+    const ids = sites.map((site) => site.id)
+    return state.equipements.filter((equipement) => ids.includes(equipement.site_id))
+  },
 }
 
 export const actions = {

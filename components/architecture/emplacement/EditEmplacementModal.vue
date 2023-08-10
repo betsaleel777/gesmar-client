@@ -51,6 +51,7 @@
                 :search-input.sync="search"
                 item-text="texte"
                 item-value="id"
+                cache-items
                 outlined
                 dense
                 :error="errors.zone_id.exist"

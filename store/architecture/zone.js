@@ -5,6 +5,10 @@ export const getters = {
   zones: (state) => {
     return state.zones
   },
+  zonesBySites: (state) => (sites) => {
+    const ids = sites.map((site) => site.id)
+    return state.zones.filter((zone) => ids.includes(zone.site_id))
+  },
 }
 export const actions = {
   async getAll({ commit }) {
