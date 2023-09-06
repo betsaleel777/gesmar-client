@@ -53,6 +53,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   data: () => ({
+    submiting: false,
     commercial: {
       user_id: null,
       site_id: null,

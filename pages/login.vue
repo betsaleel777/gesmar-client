@@ -36,9 +36,11 @@
                 <strong>{{ errors.password.message }}</strong>
               </span>
             </div>
-            <div class="form-group d-flex mg-b-0">
-              <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill">Se connecter</button>
-            </div>
+            <b-overlay :show="processing" rounded opacity="0.6" spinner-small spinner-variant="primary">
+              <div class="form-group d-flex mg-b-0">
+                <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill">Se connecter</button>
+              </div>
+            </b-overlay>
           </div>
         </form>
       </div>
@@ -62,6 +64,7 @@ export default {
         email: { exist: false, message: null },
         password: { exist: false, message: null },
       },
+      processing: false,
     }
   },
   head() {
@@ -78,6 +81,7 @@ export default {
   },
   methods: {
     login() {
+      this.processing = true
       this.$auth
         .loginWith('laravelSanctum', { data: this.utilisateur })
         .then(() => {
@@ -97,6 +101,7 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
+        .finally(() => (this.processing = false))
     },
   },
 }

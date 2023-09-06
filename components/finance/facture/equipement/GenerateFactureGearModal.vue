@@ -39,7 +39,7 @@
             </v-date-picker>
           </v-menu>
           <div v-if="loading" class="text-center">
-            <v-progress-circular indeterminate color="black"></v-progress-circular>
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </div>
           <v-simple-table v-else dense>
             <template #default>

@@ -74,7 +74,7 @@
             <a type="button" class="mr-1" @click="attribuer(data.item)">
               <feather title="attribuer" type="calendar" size="20" stroke="green" />
             </a>
-            <nuxt-link :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
+            <nuxt-link :to="`/parametre/utilisateur/${data.item.user_id}/settings`">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
             </nuxt-link>
           </template>

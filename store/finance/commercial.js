@@ -14,6 +14,11 @@ export const actions = {
     const requete = await this.$axios.get('api/finances/commerciaux')
     commit('SET_COMMERCIAUX', requete.data.commerciaux)
   },
+  async getForSelect({ commit }) {
+    commit('SET_COMMERCIAUX', [])
+    const requete = await this.$axios.get('api/finances/commerciaux/select')
+    commit('SET_COMMERCIAUX', requete.data.commerciaux)
+  },
 
   // async getCommercialsWithBordereau({ commit }) {
   //   commit('SET_COMMERCIAUX', [])

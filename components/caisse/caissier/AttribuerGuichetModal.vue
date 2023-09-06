@@ -192,7 +192,7 @@ export default {
       }
     },
     allowedDates(val) {
-      const dates = this.caissier.attributions.map(({ pivot: { date } }) => date)
+      const dates = this.caissier.attributions.map(({ date }) => date)
       return !dates.includes(val)
     },
   },

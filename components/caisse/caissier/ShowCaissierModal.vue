@@ -114,7 +114,7 @@ export default {
       },
     },
     events() {
-      return this.caissier.attributions.map(({ id: guichet, code, pivot: { id, date } }) => {
+      return this.caissier.attributions.map(({ guichet_id: guichet, code, id, date }) => {
         return { id, guichet, start: date, end: date, name: code, timed: true }
       })
     },

@@ -14,7 +14,7 @@
           return-object
           outlined
           dense
-          item-text="user.name"
+          item-text="name"
           item-value="id"
           :error="errors.commercial.exist"
           :error-messages="errors.commercial.message"
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getCommerciaux: 'finance/commercial/getAll',
+      getCommerciaux: 'finance/commercial/getForSelect',
       ajouter: 'finance/collecte/ajouter',
     }),
     save() {

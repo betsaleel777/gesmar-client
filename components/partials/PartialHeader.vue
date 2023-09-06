@@ -94,7 +94,9 @@
             <!-- <a href="" class="dropdown-item"
               ><i data-feather="shield"></i> Privacy Settings</a
             > -->
-            <a href="#" class="dropdown-item" @click="logout"><feather type="log-out" /> deconnexion</a>
+            <b-overlay :show="processing" rounded opacity="0.6" spinner-small spinner-variant="light">
+              <a href="#" class="dropdown-item" @click="logout"><feather type="log-out" /> deconnexion</a>
+            </b-overlay>
           </div>
         </div>
         <!-- dropdown-menu -->
@@ -109,6 +111,7 @@ export default {
   data() {
     return {
       sidebarHide: false,
+      processing: false,
     }
   },
   head() {
@@ -120,10 +123,14 @@ export default {
   },
   methods: {
     async logout() {
+      this.processing = true
       await this.$axios.post('api/deconnecter', this.user)
-      this.$auth.logout().then(() => {
-        this.$router.push('/login')
-      })
+      this.$auth
+        .logout()
+        .then(() => {
+          this.$router.push('/login')
+        })
+        .finally(() => (this.processing = false))
     },
   },
 }

@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" size="lg">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">
-        Attribuer des emplacements au commercial {{ commercial.user.name }}
+        Attribuer des emplacements au commercial {{ commercial.name }}
       </h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>

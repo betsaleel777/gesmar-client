@@ -29,9 +29,16 @@
         responsive
         empty-text="Tableau vide"
         show-empty
+        :busy="$fetchState.pending"
         :filter="filter"
         @filtered="onFiltered"
       >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
@@ -92,6 +99,11 @@ export default {
     currentPage: 1,
     perPage: 10,
   }),
+  async fetch() {
+    const { bordereau } = await this.getOne(this.bordereau.id)
+    this.attributions = bordereau.attributions
+    this.totalRows = bordereau.attributions.length
+  },
   computed: {
     dialog: {
       get() {
@@ -101,12 +113,6 @@ export default {
         this.$emit('input', value)
       },
     },
-  },
-  mounted() {
-    this.getOne(this.bordereau.id).then(({ bordereau }) => {
-      this.attributions = bordereau.attributions
-      this.totalRows = bordereau.attributions.length
-    })
   },
   methods: {
     ...mapActions({
