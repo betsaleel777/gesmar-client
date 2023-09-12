@@ -1,11 +1,11 @@
 <template>
-  <div class="signin-panel">
-    <nuxt-img src="/images/bermuda-circle.svg" loading="lazy" class-name="svg-bg" />
-    <div class="signin-sidebar">
-      <div class="signin-sidebar-body">
-        <a href="dashboard-one.html" class="sidebar-logo mg-b-40"><span>Gesmar</span></a>
-        <h4 class="signin-title">Bienvenue Gesmar</h4>
-        <h5 class="signin-subtitle">Se Connecter</h5>
+  <div class="d-flex justify-content-center wrapper-login bg-transparent">
+    <!-- <nuxt-img src="/images/bermuda-circle.svg" loading="lazy" class-name="svg-bg" /> -->
+    <div class="card my-auto card-login shadow-lg">
+      <div class="card-header text-center bg-primary">
+        <h4 class="card-title text-white text-uppercase">Bienvenue dans Gesmar</h4>
+      </div>
+      <div class="card-body">
         <form @submit.prevent="login()">
           <div class="signin-form">
             <div class="form-group">
@@ -38,7 +38,9 @@
             </div>
             <b-overlay :show="processing" rounded opacity="0.6" spinner-small spinner-variant="primary">
               <div class="form-group d-flex mg-b-0">
-                <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill">Se connecter</button>
+                <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill text-white rounded-5">
+                  Se connecter
+                </button>
               </div>
             </b-overlay>
           </div>
@@ -106,3 +108,11 @@ export default {
   },
 }
 </script>
+<style scoped>
+.wrapper-login {
+  height: 100%;
+}
+.card-login {
+  width: 30%;
+}
+</style>
