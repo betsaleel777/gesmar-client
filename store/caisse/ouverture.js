@@ -39,6 +39,12 @@ export const actions = {
     const requete = await this.$axios.get('api/finances/caisses/ouvertures/exists/' + caissier)
     return Boolean(requete.data.exists)
   },
+  async ouvertureUsingExists({ dispatch }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/caisses/ouvertures/using/caissier/${payload.caissier_id}`
+    )
+    return Boolean(requete.data.exists)
+  },
 }
 
 export const mutations = {

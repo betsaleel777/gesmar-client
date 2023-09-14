@@ -1,96 +1,94 @@
 <template>
-  <b-overlay rounded="sm">
-    <b-card aria-hidden="true" header="Liste des marchés">
-      <b-card-text>
-        <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="créer"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="plus"
-              @click="$bvModal.show('modalCreateMarche')"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-              @click="imprimer"
-            />
+  <b-card aria-hidden="true" header="Liste des marchés">
+    <b-card-text>
+      <div class="btn-toolbar d-flex flex-row-reverse">
+        <div class="">
+          <feather
+            v-b-tooltip.hover.top
+            title="créer"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="plus"
+            @click="create = true"
+          />
+          <feather
+            v-b-tooltip.hover.top
+            title="imprimer liste"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="printer"
+            @click="imprimer"
+          />
+        </div>
+      </div>
+      <hr class="mg-t-4" />
+      <b-form-input
+        v-if="totalRows > 0"
+        id="filter-input"
+        v-model="filter"
+        type="search"
+        placeholder="Rechercher"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="marches"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        responsive
+        empty-text="Aucun marché"
+        :busy="$fetchState.pending"
+        show-empty
+        :filter="filter"
+        @filtered="onFiltered"
+      >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
           </div>
-        </div>
-        <hr class="mg-t-4" />
-        <b-form-input
-          v-if="totalRows > 0"
-          id="filter-input"
-          v-model="filter"
-          type="search"
-          placeholder="Rechercher"
-          class="mg-y-10"
-          :debounce="500"
-        ></b-form-input>
-        <b-table
-          id="table"
-          class="table"
-          hover
-          small
-          bordered
-          primary-key="id"
-          :items="marches"
-          :fields="fields"
-          :current-page="currentPage"
-          :per-page="perPage"
-          responsive
-          empty-text="Aucun marché"
-          :busy="$fetchState.pending"
-          show-empty
-          :filter="filter"
-          @filtered="onFiltered"
-        >
-          <template #table-busy>
-            <div class="text-center text-primary my-2">
-              <b-spinner class="align-middle"></b-spinner>
-              <strong>Chargement...</strong>
-            </div>
-          </template>
-          <template #cell(index)="data">
-            {{ data.index + 1 }}
-          </template>
-          <template #cell(option)="data">
-            <a type="button" @click="editer(data.item)">
-              <feather title="modifier" type="edit" size="20" stroke="blue" />
-            </a>
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-          </template>
-          <template #empty="scope">
-            <h6 class="text-center text-muted pd-y-10">
-              {{ scope.emptyText }}
-            </h6>
-          </template>
-        </b-table>
-        <b-pagination
-          v-if="totalRows > 0"
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          align="right"
-          size="sm"
-          aria-controls="table"
-        ></b-pagination>
-        <CreateMarcheModal />
-        <div>
-          <EditMarcheModal :key="edit.modal" v-model="edit.modal" :current="edit.marche" />
-        </div>
-      </b-card-text>
-    </b-card>
-  </b-overlay>
+        </template>
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(option)="data">
+          <a type="button" @click="editer(data.item)">
+            <feather title="modifier" type="edit" size="20" stroke="blue" />
+          </a>
+        </template>
+        <template #cell(created_at)="data">
+          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
+        </template>
+        <template #empty="scope">
+          <h6 class="text-center text-muted pd-y-10">
+            {{ scope.emptyText }}
+          </h6>
+        </template>
+      </b-table>
+      <b-pagination
+        v-if="totalRows > 0"
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="right"
+        size="sm"
+        aria-controls="table"
+      ></b-pagination>
+      <CreateMarcheModal v-if="create" v-model="create" />
+      <div>
+        <EditMarcheModal v-if="edit.modal" :id="edit.marche" v-model="edit.modal" />
+      </div>
+    </b-card-text>
+  </b-card>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
@@ -118,7 +116,8 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, marche: {} },
+    edit: { modal: false, marche: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
@@ -143,10 +142,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getOne: 'architecture/marche/getOne',
-      getMarches: 'architecture/marche/getAll',
-    }),
+    ...mapActions({ getMarches: 'architecture/marche/getAll' }),
     imprimer() {
       const columns = ['nom', 'commune', 'ville', 'pays', 'date']
       const cols = columns.map((elt) => {
@@ -167,11 +163,8 @@ export default {
       this.$bvModal.show('marcheConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ marche }) => {
-        this.edit.marche = marche
-        this.edit.modal = true
-        this.$bvModal.show('modalEditMarche')
-      })
+      this.edit.marche = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

@@ -59,7 +59,7 @@
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="details(data.item)">
+          <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
@@ -85,6 +85,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import ShowBordereauModal from './ShowBordereauModal.vue'
 import { ATTRIBUTION } from '~/helper/constantes'
+import { finance } from '~/helper/permissions'
+const permissions = finance.bordereaux.bordereau
 export default {
   components: {
     ShowBordereauModal,
@@ -110,6 +112,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions,
   }),
   async fetch() {
     await this.getAll()

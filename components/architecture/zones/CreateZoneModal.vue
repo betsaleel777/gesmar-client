@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalCreateZone" scrollable @show="initState">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvelle Zone</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
@@ -9,11 +9,7 @@
     <template #default>
       <form ref="form">
         <v-app>
-          <v-switch
-            v-model="zone.automatiq"
-            :label="zone.automatiq ? 'automatique' : 'manuel'"
-            @change="initState(true)"
-          ></v-switch>
+          <v-switch v-model="zone.automatiq" :label="zone.automatiq ? 'automatique' : 'manuel'"></v-switch>
           <v-autocomplete
             v-model="zone.niveau_id"
             :items="niveaux"
@@ -67,6 +63,7 @@
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     niveaux: [],
@@ -84,6 +81,16 @@ export default {
       nombre: { exist: false, message: null },
     },
   }),
+  computed: {
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   watch: {
     search(val) {
       val && val !== this.zone.niveau_id && this.querySelections(val)
@@ -114,24 +121,10 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    initState(autoValueChange = false) {
-      errorsInitialise(this.errors)
-      if (autoValueChange) {
-        this.zone.nom = ''
-        this.zone.niveau_id = ''
-        this.zone.nombre = null
-      } else {
-        this.zone = {
-          nom: '',
-          niveau_id: '',
-          nombre: null,
-          automatiq: false,
-        }
-      }
-    },
     close() {
-      this.initState()
-      this.$bvModal.hide('modalCreateZone')
+      this.zone = {}
+      errorsInitialise(this.errors)
+      this.dialog = false
     },
     querySelections(search) {
       this.loading = true

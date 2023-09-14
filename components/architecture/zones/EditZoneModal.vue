@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalEditZone" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier la zone {{ zone.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
@@ -7,8 +7,8 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <div class="form-group">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <form ref="form">
           <v-app>
             <v-autocomplete
               v-model="zone.niveau_id"
@@ -30,21 +30,21 @@
               </template>
             </v-autocomplete>
           </v-app>
-        </div>
-        <div class="form-group required">
-          <label class="form-label">Nom<span class="text-danger">*</span></label>
-          <input
-            v-model="zone.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
-          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.nom.message }}</strong>
-          </span>
-        </div>
-      </form>
+          <div class="form-group">
+            <label class="form-label">Nom<span class="text-danger">*</span></label>
+            <input
+              v-model="zone.nom"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.nom.exist }"
+              placeholder="Entrer votre nom complet"
+            />
+            <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.nom.message }}</strong>
+            </span>
+          </div>
+        </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
@@ -59,8 +59,8 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -80,6 +80,15 @@ export default {
       niveau_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { zone } = await this.getOne(this.id)
+    const { niveau } = await this.getNiveau(zone.niveau_id)
+    this.niveaux.push({
+      texte: niveau.nom + ' ' + niveau.pavillon.nom + ' ' + niveau.site.nom,
+      id: niveau.id,
+    })
+    this.zone = zone
+  },
   computed: {
     dialog: {
       get() {
@@ -95,22 +104,12 @@ export default {
       newVal && newVal !== this.zone.niveau_id && this.querySelections(newVal)
     },
   },
-  mounted() {
-    this.zone.id = this.current.id
-    this.getOne(this.current.niveau_id).then(({ niveau }) =>
-      this.niveaux.push({
-        texte: niveau.nom + ' ' + niveau.pavillon.nom + '' + niveau.site.nom,
-        id: niveau.id,
-      })
-    )
-    this.zone.niveau_id = this.current.niveau_id
-    this.zone.nom = this.current.nom
-  },
   methods: {
     ...mapActions({
       modifier: 'architecture/zone/modifier',
       getSearch: 'architecture/niveau/getSearch',
-      getOne: 'architecture/niveau/getOne',
+      getNiveau: 'architecture/niveau/getOne',
+      getOne: 'architecture/zone/getOne',
     }),
     save() {
       this.submiting = true
@@ -134,11 +133,7 @@ export default {
         .finally(() => (this.submiting = false))
     },
     close() {
-      this.zone = {
-        id: null,
-        nom: '',
-        niveau_id: '',
-      }
+      this.zone = {}
       errorsInitialise(this.errors)
       this.dialog = false
     },

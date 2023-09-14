@@ -6,13 +6,28 @@
         <b-tab id="tableau" title="Tableau" :title-link-class="linkClass(0)">
           <TableauBordereau />
         </b-tab>
-        <b-tab id="commerciaux" title="Commerciaux" :title-link-class="linkClass(1)">
+        <b-tab
+          id="commerciaux"
+          :disabled="disableCommerciaux"
+          title="Commerciaux"
+          :title-link-class="linkClass(1)"
+        >
           <ListeCommercial />
         </b-tab>
-        <b-tab id="bordereaux" title="Bordereaux" :title-link-class="linkClass(2)">
+        <b-tab
+          id="bordereaux"
+          :disabled="disableBordereau"
+          title="Bordereaux"
+          :title-link-class="linkClass(2)"
+        >
           <ListeBordereau />
         </b-tab>
-        <b-tab id="Encaissement" title="Collecte et statut" :title-link-class="linkClass(3)">
+        <b-tab
+          id="Encaissement"
+          :disabled="disableCollecte"
+          title="Collecte et statut"
+          :title-link-class="linkClass(3)"
+        >
           <ListeCollecte />
         </b-tab>
       </b-tabs>
@@ -26,6 +41,8 @@ import TableauBordereau from '~/components/finance/TableauBordereau.vue'
 import ListeBordereau from '~/components/finance/bordereau/ListeBordereau.vue'
 import ListeCommercial from '~/components/finance/commerciaux/ListeCommercial.vue'
 import ListeCollecte from '~/components/finance/bordereau/encaissement/ListeCollecte.vue'
+import { finance } from '~/helper/permissions'
+const permissions = finance.bordereaux
 export default {
   components: {
     PartialBreadcrumb,
@@ -37,7 +54,19 @@ export default {
   data: () => ({
     liens: [{ path: '#', text: 'Bordereaux' }],
     tabIndex: 0,
+    permissions,
   }),
+  computed: {
+    disableBordereau() {
+      return !this.$gates.hasPermission(permissions.bordereau.acceder)
+    },
+    disableCollecte() {
+      return !this.$gates.hasPermission(permissions.collecte.acceder)
+    },
+    disableCommerciaux() {
+      return !this.$gates.hasPermission(permissions.commerciaux.acceder)
+    },
+  },
   methods: {
     linkClass(idx) {
       if (this.tabIndex === idx) {

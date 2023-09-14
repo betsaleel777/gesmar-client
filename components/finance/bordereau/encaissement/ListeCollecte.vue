@@ -5,6 +5,7 @@
         <div class="">
           <feather
             v-b-tooltip.hover.top
+            v-can="permissions.create"
             title="créer"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -94,6 +95,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateCollecteModal from './CreateCollecteModal.vue'
 import { ATTRIBUTION } from '~/helper/constantes'
+import { finance } from '~/helper/permissions'
+const permissions = finance.bordereaux.collecte
 export default {
   components: { CreateCollecteModal },
   data: () => ({
@@ -116,6 +119,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions,
   }),
   async fetch() {
     await this.getAll()

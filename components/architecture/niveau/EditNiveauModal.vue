@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalEditNiveau" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le niveau {{ niveau.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
@@ -7,41 +7,43 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <v-app>
-          <v-autocomplete
-            v-model="niveau.pavillon_id"
-            :items="pavillons"
-            :loading="loading"
-            :search-input.sync="search"
-            item-text="texte"
-            item-value="id"
-            cache-items
-            outlined
-            dense
-            :error="errors.pavillon_id.exist"
-            :error-messages="errors.pavillon_id.message"
-          >
-            <template #label>
-              Choix du pavillon
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-          </v-autocomplete>
-        </v-app>
-        <div class="form-group required">
-          <label class="form-label">Nom<span class="text-danger">*</span></label>
-          <input
-            v-model="niveau.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
-          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.nom.message }}</strong>
-          </span>
-        </div>
-      </form>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <form ref="form">
+          <v-app>
+            <v-autocomplete
+              v-model="niveau.pavillon_id"
+              :items="pavillons"
+              :loading="loading"
+              :search-input.sync="search"
+              item-text="texte"
+              item-value="id"
+              cache-items
+              outlined
+              dense
+              :error="errors.pavillon_id.exist"
+              :error-messages="errors.pavillon_id.message"
+            >
+              <template #label>
+                Choix du pavillon
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+            </v-autocomplete>
+          </v-app>
+          <div class="form-group required">
+            <label class="form-label">Nom<span class="text-danger">*</span></label>
+            <input
+              v-model="niveau.nom"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.nom.exist }"
+              placeholder="Entrer votre nom complet"
+            />
+            <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.nom.message }}</strong>
+            </span>
+          </div>
+        </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
@@ -56,8 +58,8 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -77,6 +79,12 @@ export default {
       pavillon_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { niveau } = await this.getOne(this.id)
+    const { pavillon } = await this.getPavillon(niveau.pavillon_id)
+    this.pavillons.push({ texte: pavillon.nom + ' ' + pavillon.site.nom, id: pavillon.id })
+    this.niveau = niveau
+  },
   computed: {
     dialog: {
       get() {
@@ -92,19 +100,12 @@ export default {
       newVal && newVal !== this.niveau.pavillon_id && this.querySelections(newVal)
     },
   },
-  mounted() {
-    this.niveau.id = this.current.id
-    this.getOne(this.current.pavillon_id).then(({ pavillon }) =>
-      this.pavillons.push({ texte: pavillon.nom + ' ' + pavillon.site.nom, id: pavillon.id })
-    )
-    this.niveau.pavillon_id = this.current.pavillon_id
-    this.niveau.nom = this.current.nom
-  },
   methods: {
     ...mapActions({
       modifier: 'architecture/niveau/modifier',
       getSearch: 'architecture/pavillon/getSearch',
-      getOne: 'architecture/pavillon/getOne',
+      getPavillon: 'architecture/pavillon/getOne',
+      getOne: 'architecture/niveau/getOne',
     }),
     save() {
       this.submiting = true
@@ -128,11 +129,7 @@ export default {
         .finally(() => (this.submiting = false))
     },
     close() {
-      this.niveau = {
-        id: null,
-        nom: '',
-        pavillon_id: '',
-      }
+      this.niveau = {}
       errorsInitialise(this.errors)
       this.dialog = false
     },

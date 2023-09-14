@@ -110,7 +110,12 @@
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
+      <button
+        type="button"
+        :disabled="submiting || noSubmit"
+        class="btn btn-primary text-white"
+        @click="save"
+      >
         Valider
       </button>
     </template>
@@ -131,6 +136,7 @@ export default {
     submiting: false,
     menu: null,
     disabled: true,
+    noSubmit: false,
     ouverture: {
       date: '',
       caissier_id: null,
@@ -160,7 +166,12 @@ export default {
   watch: {
     guichetCaissier(recent) {
       const [guichet, caissier] = recent.split('|')
-      if (guichet !== 'null' && caissier !== 'null') this.activeDate()
+      if (guichet !== 'null' && caissier !== 'null') {
+        this.activeDate()
+      }
+    },
+    'ouverture.caissier_id'() {
+      this.checkExistOuverture()
     },
   },
   mounted() {
@@ -179,6 +190,7 @@ export default {
       getGuichets: 'caisse/guichet/getAll',
       getCaissiers: 'caisse/caissier/getAll',
       getOne: 'caisse/caissier/getOne',
+      checkUsing: 'caisse/ouverture/ouvertureUsingExists',
     }),
     save() {
       this.submiting = true
@@ -217,7 +229,6 @@ export default {
       })
     },
     activeDate() {
-      this.disabled = false
       datesNonPermises = this.ouvertures
         .filter(
           ({ guichet_id: guichet, caissier_id: caissier }) =>
@@ -227,13 +238,35 @@ export default {
     },
     datesPermises(val) {
       const attributions = this.caissier.attributions.filter(
-        ({ pivot: { guichet_id: id } }) => id === this.ouverture.guichet_id
+        ({ guichet_id: id }) => id === this.ouverture.guichet_id
       )
-      const datesPermises = attributions.map(({ pivot: { date } }) => date)
+      const datesPermises = attributions.map(({ date }) => date)
       const dates = datesPermises.filter(
         (date) => !datesNonPermises.includes(this.$moment(date).format('DD-MM-YYYY'))
       )
       return dates.includes(val)
+    },
+    // vérifier si il existe une ouverture en cours pour un caissier et un guichet choisit
+    checkExistOuverture() {
+      if (this.ouverture.caissier_id) {
+        this.checkUsing(this.ouverture).then((exists) => {
+          this.disabled = false
+          if (exists) {
+            this.noSubmit = true
+            this.$bvToast.toast(
+              `Ce caissier est toujours en cours d'utilisation de sa caisse, veuillez fermer la caisse
+        précedement ouverte avant de créer une autre ouverture de caisse.`,
+              {
+                title: 'ATTENTION',
+                variant: 'warning',
+                solid: true,
+              }
+            )
+          } else {
+            this.noSubmit = false
+          }
+        })
+      }
     },
   },
 }

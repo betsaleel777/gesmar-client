@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalEditMarche" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le marché {{ marche.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
@@ -7,64 +7,66 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <div class="form-group required">
-          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
-          <input
-            v-model="marche.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
-          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.nom.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Commune<span class="text-danger">*</span></label>
-          <input
-            v-model="marche.commune"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.commune.exist }"
-            placeholder="Entrer la commune"
-          />
-          <span v-if="errors.commune.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.commune.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Ville<span class="text-danger">*</span></label>
-          <input
-            v-model="marche.ville"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.ville.exist }"
-            placeholder="Entrer la ville"
-          />
-          <span v-if="errors.ville.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.ville.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pays<span class="text-danger">*</span></label>
-          <input
-            v-model="marche.pays"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.pays.exist }"
-            placeholder="Entrer le pays"
-          />
-          <span v-if="errors.pays.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.pays.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Adresse Postale</label>
-          <input v-model="marche.postale" type="text" class="form-control" placeholder="Adresse postale" />
-        </div>
-      </form>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <form ref="form">
+          <div class="form-group required">
+            <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
+            <input
+              v-model="marche.nom"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.nom.exist }"
+              placeholder="Entrer votre nom complet"
+            />
+            <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.nom.message }}</strong>
+            </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Commune<span class="text-danger">*</span></label>
+            <input
+              v-model="marche.commune"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.commune.exist }"
+              placeholder="Entrer la commune"
+            />
+            <span v-if="errors.commune.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.commune.message }}</strong>
+            </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ville<span class="text-danger">*</span></label>
+            <input
+              v-model="marche.ville"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.ville.exist }"
+              placeholder="Entrer la ville"
+            />
+            <span v-if="errors.ville.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.ville.message }}</strong>
+            </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pays<span class="text-danger">*</span></label>
+            <input
+              v-model="marche.pays"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.pays.exist }"
+              placeholder="Entrer le pays"
+            />
+            <span v-if="errors.pays.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.pays.message }}</strong>
+            </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Adresse Postale</label>
+            <input v-model="marche.postale" type="text" class="form-control" placeholder="Adresse postale" />
+          </div>
+        </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
@@ -77,8 +79,8 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -99,6 +101,10 @@ export default {
       pays: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { marche } = await this.getOne(this.id)
+    this.marche = marche
+  },
   computed: {
     dialog: {
       get() {
@@ -109,17 +115,10 @@ export default {
       },
     },
   },
-  mounted() {
-    this.marche.id = this.current.id
-    this.marche.nom = this.current.nom
-    this.marche.commune = this.current.commune
-    this.marche.ville = this.current.ville
-    this.marche.pays = this.current.pays
-    this.marche.postale = this.current.postale
-  },
   methods: {
     ...mapActions({
       modifier: 'architecture/marche/modifier',
+      getOne: 'architecture/marche/getOne',
     }),
     save() {
       this.submiting = true
@@ -143,13 +142,7 @@ export default {
         .finally(() => (this.submiting = false))
     },
     close() {
-      this.marche = {
-        nom: '',
-        commune: '',
-        ville: '',
-        pays: '',
-        postale: '',
-      }
+      this.marche = {}
       errorsInitialise(this.errors)
       this.dialog = false
     },

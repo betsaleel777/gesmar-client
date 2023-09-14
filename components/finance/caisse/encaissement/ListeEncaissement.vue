@@ -5,6 +5,7 @@
         <div class="">
           <feather
             v-b-tooltip.hover.top
+            v-can="permissions.create"
             title="créer"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -23,6 +24,7 @@
           />
           <feather
             v-b-tooltip.hover.top
+            v-can="permissions.closable"
             title="fermer"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -100,6 +102,8 @@ import CreateEncaissement from './CreateEncaissement.vue'
 import ShowEncaissementModal from './ShowEncaissementModal.vue'
 import CloseEncaissementModal from './CloseEncaissementModal.vue'
 import { capitalize, arrayPdf } from '~/helper/helpers'
+import { finance } from '~/helper/permissions'
+const permissions = finance.caisse.ouverture
 export default {
   components: {
     CreateEncaissement,
@@ -150,6 +154,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions,
   }),
   async fetch() {
     await this.getEncaissements()

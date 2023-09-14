@@ -10,7 +10,7 @@
             stroke-width="2"
             size="18"
             type="plus"
-            @click="$bvModal.show('modalCreateNiveau')"
+            @click="create = true"
           />
           <feather
             v-b-tooltip.hover.top
@@ -80,10 +80,8 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateNiveauModal />
-      <div>
-        <EditNiveauModal v-if="edit.modal" v-model="edit.modal" :current="edit.niveau" />
-      </div>
+      <CreateNiveauModal v-if="create" v-model="create" />
+      <EditNiveauModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -113,7 +111,8 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, niveau: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
@@ -137,10 +136,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getOne: 'architecture/niveau/getOne',
-      getNiveaux: 'architecture/niveau/getAll',
-    }),
+    ...mapActions({ getNiveaux: 'architecture/niveau/getAll' }),
     imprimer() {
       const columns = ['nom', 'pavillon', 'site', 'date']
       const cols = columns.map((elt) => {
@@ -161,11 +157,8 @@ export default {
       this.$bvModal.show('niveauConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ niveau }) => {
-        this.edit.niveau = niveau
-        this.edit.modal = true
-        this.$bvModal.show('modalEditNiveau')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

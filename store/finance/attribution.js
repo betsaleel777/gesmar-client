@@ -64,7 +64,6 @@ export const actions = {
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/attributions/store', payload)
-    dispatch('getAll')
     return { message: requete.data.message }
   },
 

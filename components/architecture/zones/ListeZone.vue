@@ -10,7 +10,7 @@
             stroke-width="2"
             size="18"
             type="plus"
-            @click="$bvModal.show('modalCreateZone')"
+            @click="create = true"
           />
           <feather
             v-b-tooltip.hover.top
@@ -80,9 +80,9 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateZoneModal />
+      <CreateZoneModal v-if="create" v-model="create" />
       <div>
-        <EditZoneModal v-if="edit.modal" v-model="edit.modal" :current="edit.zone" />
+        <EditZoneModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
       </div>
     </b-card-text>
   </b-card>
@@ -114,7 +114,8 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, zone: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
@@ -139,10 +140,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getOne: 'architecture/zone/getOne',
-      getZones: 'architecture/zone/getAll',
-    }),
+    ...mapActions({ getZones: 'architecture/zone/getAll' }),
     imprimer() {
       const columns = ['code', 'niveau', 'pavillon', 'site', 'date']
       const cols = columns.map((elt) => {
@@ -163,11 +161,8 @@ export default {
       this.$bvModal.show('zoneConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ zone }) => {
-        this.edit.zone = zone
-        this.edit.modal = true
-        this.$bvModal.show('modalEditZone')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

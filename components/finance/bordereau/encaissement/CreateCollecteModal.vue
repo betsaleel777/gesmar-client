@@ -7,73 +7,75 @@
       </button>
     </template>
     <template #default>
-      <v-app>
-        <v-autocomplete
-          v-model="commercial"
-          :items="commerciaux"
-          return-object
-          outlined
-          dense
-          item-text="name"
-          item-value="id"
-          :error="errors.commercial.exist"
-          :error-messages="errors.commercial.message"
-        >
-          <template #label>
-            Commercial
-            <span class="red--text"><strong>* </strong></span>
-          </template>
-        </v-autocomplete>
-        <v-autocomplete
-          v-model="bordereau"
-          return-object
-          :items="bordereaux"
-          item-text="code"
-          item-value="id"
-          outlined
-          dense
-          :error="errors.bordereau.exist"
-          :error-messages="errors.bordereau.message"
-        >
-          <template #label>
-            Bordereaux
-            <span class="red--text"><strong>* </strong></span>
-          </template>
-        </v-autocomplete>
-        <v-autocomplete
-          v-model="attribution"
-          :items="attributions"
-          item-text="emplacement.code"
-          item-value="emplacement_id"
-          return-object
-          outlined
-          dense
-          :error="errors.attribution_id.exist"
-          :error-messages="errors.attribution_id.message"
-        >
-          <template #label>
-            Emplacements
-            <span class="red--text"><strong>* </strong></span>
-          </template>
-          <template #item="data">
-            {{ data.item.emplacement.code }}
-          </template>
-        </v-autocomplete>
-        <v-row>
-          <v-col>
-            <v-text-field v-model="nombre" label="Nombre de jours" outlined dense></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              label="total collecté"
-              :value="totalCollect | currency"
-              readonly
-              outlined
-              dense
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-app>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <v-app>
+          <v-autocomplete
+            v-model="commercial"
+            :items="commerciaux"
+            return-object
+            outlined
+            dense
+            item-text="name"
+            item-value="id"
+            :error="errors.commercial.exist"
+            :error-messages="errors.commercial.message"
+          >
+            <template #label>
+              Commercial
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="bordereau"
+            return-object
+            :items="bordereaux"
+            item-text="code"
+            item-value="id"
+            outlined
+            dense
+            :error="errors.bordereau.exist"
+            :error-messages="errors.bordereau.message"
+          >
+            <template #label>
+              Bordereaux
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete
+            v-model="attribution"
+            :items="attributions"
+            item-text="emplacement.code"
+            item-value="emplacement_id"
+            return-object
+            outlined
+            dense
+            :error="errors.attribution_id.exist"
+            :error-messages="errors.attribution_id.message"
+          >
+            <template #label>
+              Emplacements
+              <span class="red--text"><strong>* </strong></span>
+            </template>
+            <template #item="data">
+              {{ data.item.emplacement.code }}
+            </template>
+          </v-autocomplete>
+          <v-row>
+            <v-col>
+              <v-text-field v-model="nombre" label="Nombre de jours" outlined dense></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                label="total collecté"
+                :value="totalCollect | currency"
+                readonly
+                outlined
+                dense
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-app>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
@@ -105,6 +107,9 @@ export default {
       attribution_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getCommerciaux()
+  },
   computed: {
     ...mapGetters({
       commerciaux: 'finance/commercial/commerciaux',
@@ -133,9 +138,6 @@ export default {
         this.$emit('input', value)
       },
     },
-  },
-  mounted() {
-    this.getCommerciaux()
   },
   methods: {
     ...mapActions({

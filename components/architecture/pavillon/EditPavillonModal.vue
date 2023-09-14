@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalEditPavillon" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le pavillon {{ pavillon.nom }}</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
@@ -7,39 +7,41 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <v-app>
-          <v-autocomplete
-            v-model="pavillon.site_id"
-            :items="sites"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            label="choix du marché"
-            :error="errors.site_id.exist"
-            :error-messages="errors.site_id.message"
-          >
-            <template #label>
-              Choix du marché
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-          </v-autocomplete>
-        </v-app>
-        <div class="form-group required">
-          <label class="form-label">Nom<span class="text-danger">*</span></label>
-          <input
-            v-model="pavillon.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
-          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.nom.message }}</strong>
-          </span>
-        </div>
-      </form>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <form ref="form">
+          <v-app>
+            <v-autocomplete
+              v-model="pavillon.site_id"
+              :items="sites"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              label="choix du marché"
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            >
+              <template #label>
+                Choix du marché
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+            </v-autocomplete>
+          </v-app>
+          <div class="form-group required">
+            <label class="form-label">Nom<span class="text-danger">*</span></label>
+            <input
+              v-model="pavillon.nom"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.nom.exist }"
+              placeholder="Entrer votre nom complet"
+            />
+            <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.nom.message }}</strong>
+            </span>
+          </div>
+        </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
@@ -50,22 +52,19 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { SUPERROLE } from '~/helper/constantes'
 export default {
   props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
   },
   data: () => ({
+    submiting: false,
     pavillon: {
       id: null,
       nom: '',
@@ -76,7 +75,13 @@ export default {
       site_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getMarches()
+    const { pavillon } = await this.getOne(this.id)
+    this.pavillon = pavillon
+  },
   computed: {
+    ...mapGetters({ marches: 'architecture/marche/marches' }),
     dialog: {
       get() {
         return this.value
@@ -89,13 +94,10 @@ export default {
       return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
     },
   },
-  mounted() {
-    this.pavillon.id = this.current.id
-    this.pavillon.site_id = this.current.site_id
-    this.pavillon.nom = this.current.nom
-  },
   methods: {
     ...mapActions({
+      getMarches: 'architecture/marche/getAll',
+      getOne: 'architecture/pavillon/getOne',
       modifier: 'architecture/pavillon/modifier',
     }),
     save() {
@@ -120,11 +122,7 @@ export default {
         .finally(() => (this.submiting = false))
     },
     close() {
-      this.pavillon = {
-        id: null,
-        nom: '',
-        site_id: '',
-      }
+      this.pavillon = {}
       errorsInitialise(this.errors)
       this.dialog = false
     },

@@ -5,6 +5,7 @@
         <div class="">
           <feather
             v-b-tooltip.hover.top
+            v-can="permissions.created_at"
             title="créer"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -59,11 +60,6 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
-          </a>
-        </template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
@@ -83,20 +79,19 @@
         aria-controls="table"
       ></b-pagination>
       <CreateOuvertureModal :ouvertures="ouvertures" />
-      <EditOuvertureModal v-if="edit.modal" v-model="edit.modal" :current="edit.EditOuvertureModal" />
     </b-card-text>
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateOuvertureModal from './CreateOuvertureModal.vue'
-import EditOuvertureModal from './EditOuvertureModal.vue'
 import { OUVERTURE } from '~/helper/constantes'
 import { capitalize, arrayPdf } from '~/helper/helpers'
+import { finance } from '~/helper/permissions'
+const permissions = finance.caisse.ouverture
 export default {
   components: {
     CreateOuvertureModal,
-    EditOuvertureModal,
   },
   data: () => ({
     fields: [
@@ -107,13 +102,6 @@ export default {
       { key: 'guichet', label: 'Guichet' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       { key: 'status', label: 'Statut' },
-      {
-        key: 'option',
-        label: 'Options',
-        tdClass: 'wd-10p text-center',
-        thClass: 'wd-10p text-center',
-        sortable: false,
-      },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, ouverture: {} },
@@ -121,6 +109,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions,
   }),
   async fetch() {
     await this.getAll()
@@ -162,13 +151,6 @@ export default {
       this.dialogData.id = id
       this.dialogData.modal = true
       this.$bvModal.show('ouvertureConfirmationListe')
-    },
-    editer({ id }) {
-      this.getOne(id).then(({ ouverture }) => {
-        this.edit.modal = true
-        this.edit.ouverture = ouverture
-        this.$bvModal.show('modalEditOuverture')
-      })
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

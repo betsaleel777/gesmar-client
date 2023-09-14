@@ -38,17 +38,17 @@ const invoicePrinter = (societe, encaissement) => {
     fileName: encaissement.code,
     orientationLandscape: false,
     compress: true,
-    // logo: {
-    //   src: societe.logo,
-    //   width: 53.33,
-    //   height: 26.66,
-    //   margin: {
-    //     top: 0,
-    //     left: 0,
-    //   },
-    // },
+    logo: {
+      src: `${societe.logo}`,
+      width: 53.33,
+      height: 26.66,
+      margin: {
+        top: 0,
+        left: 0,
+      },
+    },
     business: {
-      name: societe.nom,
+      name: societe.sigle.toUpperCase(),
       address: societe.siege,
       phone: societe.phone,
       email: societe.email,
@@ -65,7 +65,7 @@ const invoicePrinter = (societe, encaissement) => {
       label: 'Facture #: ',
       num: encaissement.code,
       invDate: encaissement.created_at,
-      invGenDate: 'Invoice Date: 02/02/2021 10:17',
+      invGenDate: '',
       headerBorder: true,
       tableBodyBorder: true,
       header: [
@@ -104,9 +104,8 @@ const invoicePrinter = (societe, encaissement) => {
           },
         },
       ],
-      invDescLabel: 'Notez bien',
-      invDesc:
-        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+      invDescLabel: '',
+      invDesc: '',
     },
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,

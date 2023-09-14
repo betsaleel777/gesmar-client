@@ -7,88 +7,90 @@
       </button>
     </template>
     <template #default>
-      <v-app>
-        <v-expansion-panels v-model="panel" popout focusable tile>
-          <v-expansion-panel>
-            <v-expansion-panel-header
-              ><h6>Calendrier d'attribution des emplacements</h6></v-expansion-panel-header
-            >
-            <v-expansion-panel-content>
-              <v-row class="fill-height">
-                <v-col>
-                  <v-sheet height="64">
-                    <v-toolbar flat>
-                      <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-                        Aujourd'hui
-                      </v-btn>
-                      <v-btn fab text small color="grey darken-2" @click="$refs.calendar.prev()">
-                        <v-icon small> mdi-chevron-left </v-icon>
-                      </v-btn>
-                      <v-btn fab text small color="grey darken-2" @click="$refs.calendar.next()">
-                        <v-icon small> mdi-chevron-right </v-icon>
-                      </v-btn>
-                      <v-toolbar-title v-if="$refs.calendar">
-                        {{ $refs.calendar.title }}
-                      </v-toolbar-title>
-                      <v-spacer></v-spacer>
-                      <v-menu bottom right>
-                        <template #activator="{ on, attrs }">
-                          <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
-                            <span>{{ typeToLabel[type] }}</span>
-                            <v-icon right> mdi-menu-down </v-icon>
-                          </v-btn>
-                        </template>
-                        <v-list>
-                          <v-list-item @click="type = 'day'">
-                            <v-list-item-title>Jour</v-list-item-title>
-                          </v-list-item>
-                          <v-list-item @click="type = 'week'">
-                            <v-list-item-title>Semaine</v-list-item-title>
-                          </v-list-item>
-                          <v-list-item @click="type = 'month'">
-                            <v-list-item-title>Mois</v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
-                    </v-toolbar>
-                  </v-sheet>
-                  <v-sheet height="700">
-                    <v-calendar
-                      ref="calendar"
-                      v-model="focus"
-                      locale="fr-FR"
-                      color="primary"
-                      :weekdays="weekday"
-                      :events="events"
-                      :type="type"
-                      @click:event="deleteItem"
-                      @click:more="viewDay"
-                      @click:date="viewDay"
-                    ></v-calendar>
-                  </v-sheet>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <v-row justify="center">
-          <v-dialog v-model="dialogDelete" persistent max-width="450">
-            <v-card>
-              <v-card-title class="text-h6 error--text">Confirmation d'annulation ?</v-card-title>
-              <v-card-text>
-                Voulez-vous réelement supprimer l'attribution de l'emplacement
-                {{ editedItem.name }} pour la date du
-                {{ $moment(editedItem.jour).format('DD-MM-YYYY') }}
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="error darken-1" text @click="dialogDelete = false"> abandonner </v-btn>
-                <v-btn color="primary darken-1" text @click="remove"> accepter </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-row>
-      </v-app>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <v-app>
+          <v-expansion-panels v-model="panel" popout focusable tile>
+            <v-expansion-panel>
+              <v-expansion-panel-header
+                ><h6>Calendrier d'attribution des emplacements</h6></v-expansion-panel-header
+              >
+              <v-expansion-panel-content>
+                <v-row class="fill-height">
+                  <v-col>
+                    <v-sheet height="64">
+                      <v-toolbar flat>
+                        <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+                          Aujourd'hui
+                        </v-btn>
+                        <v-btn fab text small color="grey darken-2" @click="$refs.calendar.prev()">
+                          <v-icon small> mdi-chevron-left </v-icon>
+                        </v-btn>
+                        <v-btn fab text small color="grey darken-2" @click="$refs.calendar.next()">
+                          <v-icon small> mdi-chevron-right </v-icon>
+                        </v-btn>
+                        <v-toolbar-title v-if="$refs.calendar">
+                          {{ $refs.calendar.title }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-menu bottom right>
+                          <template #activator="{ on, attrs }">
+                            <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
+                              <span>{{ typeToLabel[type] }}</span>
+                              <v-icon right> mdi-menu-down </v-icon>
+                            </v-btn>
+                          </template>
+                          <v-list>
+                            <v-list-item @click="type = 'day'">
+                              <v-list-item-title>Jour</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="type = 'week'">
+                              <v-list-item-title>Semaine</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="type = 'month'">
+                              <v-list-item-title>Mois</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </v-toolbar>
+                    </v-sheet>
+                    <v-sheet height="700">
+                      <v-calendar
+                        ref="calendar"
+                        v-model="focus"
+                        locale="fr-FR"
+                        color="primary"
+                        :weekdays="weekday"
+                        :events="events"
+                        :type="type"
+                        @click:event="deleteItem"
+                        @click:more="viewDay"
+                        @click:date="viewDay"
+                      ></v-calendar>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <v-row justify="center">
+            <v-dialog v-model="dialogDelete" persistent max-width="450">
+              <v-card>
+                <v-card-title class="text-h6 error--text">Confirmation d'annulation ?</v-card-title>
+                <v-card-text>
+                  Voulez-vous réelement supprimer l'attribution de l'emplacement
+                  {{ editedItem.name }} pour la date du
+                  {{ $moment(editedItem.jour).format('DD-MM-YYYY') }}
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error darken-1" text @click="dialogDelete = false"> abandonner </v-btn>
+                  <v-btn color="primary darken-1" text @click="remove"> accepter </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </v-app>
+      </b-overlay>
     </template>
   </b-modal>
 </template>
@@ -97,8 +99,8 @@
 import { mapActions } from 'vuex'
 export default {
   props: {
-    commercial: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -118,6 +120,7 @@ export default {
       jour: null,
     },
     dialogDelete: false,
+    commercial: { user: { name: '' } },
     headers: [
       {
         text: 'Code',
@@ -131,6 +134,10 @@ export default {
       { text: 'Annuler', value: 'actions', sortable: false, align: 'right', groupable: false },
     ],
   }),
+  async fetch() {
+    const { commercial } = await this.getOne(this.id)
+    this.commercial = commercial
+  },
   computed: {
     dialog: {
       get() {
@@ -141,15 +148,17 @@ export default {
       },
     },
     events() {
-      return this.commercial.attributions.map(
-        ({ id, emplacement_id: emplacement, emplacement: { code }, jour }) => {
-          return { id, emplacement, start: jour, end: jour, name: code, timed: true }
-        }
-      )
+      return this.commercial.attributions
+        ? this.commercial.attributions.map(
+            ({ id, emplacement_id: emplacement, emplacement: { code }, jour }) => {
+              return { id, emplacement, start: jour, end: jour, name: code, timed: true }
+            }
+          )
+        : []
     },
   },
   methods: {
-    ...mapActions('finance/attribution', ['supprimer']),
+    ...mapActions({ supprimer: 'finance/attribution/supprimer', getOne: 'finance/commercial/getOne' }),
     deleteItem({ event }) {
       this.editedItem = Object.assign({}, event)
       this.dialogDelete = true

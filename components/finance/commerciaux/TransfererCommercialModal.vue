@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" size="lg">
     <template #modal-header>
       <h5 class="modal-title text-primary">
-        Transférer Des Tâches de Collecte au commercial {{ commercial.user.name }}
+        Transférer Des Tâches de Collecte au commercial {{ commercial.name }}
       </h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
@@ -115,8 +115,8 @@ export default {
       type: Array,
       required: true,
     },
-    commercial: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       transfert: {
-        id: this.commercial.id,
+        id: this.id,
         commercial_id: null,
         date: null,
       },
@@ -159,7 +159,10 @@ export default {
       },
     },
     commercials() {
-      return this.commerciaux.filter(({ id }) => this.commercial.id !== id)
+      return this.commerciaux.filter(({ id }) => this.id !== id)
+    },
+    commercial() {
+      return this.commerciaux.find(({ id }) => (id === this.id) !== id)
     },
     dates() {
       let datesDistincts = []
@@ -182,7 +185,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('finance/attribution', ['transferer']),
+    ...mapActions({ transferer: 'finance/attribution/transferer', getOne: 'finance/commercial/getOne' }),
     save() {
       if (this.validable())
         this.transferer(this.transfert)
