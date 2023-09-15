@@ -25,7 +25,7 @@
         <b-tab
           id="Encaissement"
           :disabled="disableCollecte"
-          title="Collecte et statut"
+          title="Collectes"
           :title-link-class="linkClass(3)"
         >
           <ListeCollecte />

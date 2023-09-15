@@ -16,7 +16,19 @@ export const actions = {
   async getAll({ commit }) {
     commit('SET_ATTRIBUTION', [])
     const requete = await this.$axios.get('api/finances/attributions')
-    commit('SET_ATTRIBUTION', requete.data.attributions)
+    commit('SET_ATTRIBUTION', requete.data)
+  },
+
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/attributions/paginate?page=${page}`)
+    commit('SET_ATTRIBUTION', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/attributions/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_ATTRIBUTION', requete.data)
   },
 
   async getAllWithBorderau({ commit }) {

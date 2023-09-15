@@ -26,29 +26,26 @@
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
         placeholder="Rechercher"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
       <b-table
-        id="table"
+        ref="table"
         class="table"
         hover
         small
         bordered
         primary-key="id"
-        :items="attributions"
+        :items="attributions.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Tableau vide"
         show-empty
-        :busy="$fetchState.pending"
-        :filter="filter"
-        @filtered="onFiltered"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -68,25 +65,20 @@
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
-        <template #cell(option)="data">
-          <a type="button" @click="details(data.item)">
-            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
-          </a>
-        </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
             {{ scope.emptyText }}
           </h6>
         </template>
       </b-table>
-      <b-pagination
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
     </b-card-text>
     <CreateCollecteModal v-if="dialog" v-model="dialog" />
   </b-card>
@@ -101,11 +93,12 @@ export default {
   components: { CreateCollecteModal },
   data: () => ({
     dialog: false,
+    search: null,
     fields: [
       'ordre',
-      { key: 'bordereau.code', label: 'Numéro du bordereau', sortable: false },
-      { key: 'emplacement.code', label: "Code d'emplacement", sortable: false },
-      { key: 'commercial.user.name', label: 'Nom Du commercial', sortable: false },
+      { key: 'bordereau', label: 'Numéro du bordereau', sortable: false },
+      { key: 'emplacement', label: "Code d'emplacement", sortable: false },
+      { key: 'commercial', label: 'Nom Du commercial', sortable: false },
       { key: 'jour', label: 'Date', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
@@ -116,31 +109,63 @@ export default {
       },
     ],
     filter: null,
-    totalRows: 0,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
     permissions,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.attributions.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters('finance/attribution', ['attributions']),
   },
-  methods: {
-    ...mapActions({ getAll: 'finance/attribution/getAllWithBorderau' }),
-    imprimer() {},
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
     },
+  },
+  methods: {
+    ...mapActions({
+      getPaginate: 'finance/attribution/getPaginate',
+      getSearch: 'finance/attribution/getSearch',
+    }),
+    imprimer() {},
     statusClass(value) {
       const classes = {
         [ATTRIBUTION.cashed]: 'badge badge-success-light',
         [ATTRIBUTION.uncashed]: 'badge badge-danger-light',
       }
       return classes[value]
+    },
+    pageInit() {
+      this.pages = this.attributions.meta.last_page
+      this.currentPage = this.attributions.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe() {
+      this.loading = true
+      await this.getPaginate()
+      this.pageInit()
+      this.loading = false
     },
   },
 }
