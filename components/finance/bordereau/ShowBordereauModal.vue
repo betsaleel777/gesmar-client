@@ -115,9 +115,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getOne: 'finance/bordereau/getOne',
-    }),
+    ...mapActions({ getOne: 'finance/bordereau/getOne' }),
     imprimer() {},
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

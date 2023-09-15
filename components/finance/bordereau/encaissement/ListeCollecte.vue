@@ -28,7 +28,7 @@
         id="filter-input"
         v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon bordereau, emplacement, commercial"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>

@@ -19,6 +19,18 @@ export const actions = {
     commit('SET_BORDEREAU', requete.data.bordereaux)
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/bordereaux/paginate?page=${page}`)
+    commit('SET_BORDEREAU', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/bordereaux/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_BORDEREAU', requete.data)
+  },
+
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/finances/bordereaux/' + id)
     return requete.data

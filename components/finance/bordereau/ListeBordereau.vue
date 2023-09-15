@@ -16,9 +16,9 @@
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon code, commercial et date"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -29,16 +29,13 @@
         small
         bordered
         primary-key="id"
-        :items="bordereaux"
+        :items="bordereaux.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Tableau vide"
         show-empty
-        :filter="filter"
-        :busy="$fetchState.pending"
-        @filtered="onFiltered"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -48,12 +45,6 @@
         </template>
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
-        </template>
-        <template #cell(created_at)="data">
-          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-        </template>
-        <template #cell(date_attribution)="data">
-          {{ $moment(data.item.date_attribution).format('DD-MM-YYYY') }}
         </template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
@@ -69,14 +60,14 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
       <ShowBordereauModal v-if="show.modal" v-model="show.modal" :bordereau="show.bordereau" />
     </b-card-text>
   </b-card>
@@ -108,32 +99,34 @@ export default {
       },
     ],
     show: { modal: false, bordereau: {} },
-    filter: null,
-    totalRows: 0,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
     permissions,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.bordereaux.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters('finance/bordereau', ['bordereaux']),
   },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+  },
   methods: {
-    ...mapActions({
-      getAll: 'finance/bordereau/getAll',
-      getOne: 'finance/bordereau/getOne',
-    }),
+    ...mapActions({ getPaginate: 'finance/bordereau/getPaginate', getSearch: 'finance/bordereau/getSearch' }),
     imprimer() {},
     details({ id, code }) {
       this.show.bordereau = { id, code }
       this.show.modal = true
-    },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
     },
     statusClass(value) {
       const classes = {
@@ -141,6 +134,30 @@ export default {
         [ATTRIBUTION.uncashed]: 'badge badge-danger-light',
       }
       return classes[value]
+    },
+    pageInit() {
+      this.pages = this.bordereaux.meta.last_page
+      this.currentPage = this.bordereaux.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe() {
+      this.loading = true
+      await this.getPaginate()
+      this.pageInit()
+      this.loading = false
     },
   },
 }
