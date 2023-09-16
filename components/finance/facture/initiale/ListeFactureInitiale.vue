@@ -155,10 +155,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getPaginate: 'facture/initiale/getPaginate',
-      getSearch: 'facture/initiale/getSearch',
-    }),
+    ...mapActions({ getPaginate: 'facture/initiale/getPaginate', getSearch: 'facture/initiale/getSearch' }),
     imprimer() {},
     editer({ id }) {
       this.edit.facture = id

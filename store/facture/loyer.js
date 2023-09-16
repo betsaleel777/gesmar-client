@@ -27,13 +27,13 @@ export const actions = {
   },
 
   async getPaginate({ commit }, page = 1) {
-    const requete = await this.$axios.get(`api/finances/factures/loyer/paginate?page=${page}`)
+    const requete = await this.$axios.get(`api/finances/factures/loyers/paginate?page=${page}`)
     commit('SET_FACTURE', requete.data)
   },
 
   async getSearch({ commit }, payload) {
     const requete = await this.$axios.get(
-      `api/finances/factures/loyer/search/${payload.search}/paginate?page=${payload.page}`
+      `api/finances/factures/loyers/search/${payload.search}/paginate?page=${payload.page}`
     )
     commit('SET_FACTURE', requete.data)
   },

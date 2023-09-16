@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalGenererLoyer" no-close-on-backdrop size="lg" @show="reset">
+  <b-modal v-model="dialog" no-close-on-backdrop size="lg">
     <template #modal-header>
       <h5 class="modal-title text-primary">Génerer les factures de loyer</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -75,7 +75,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
-  components: {},
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     menu: false,
@@ -95,6 +95,16 @@ export default {
       { text: 'Loyer (FCFA)', value: 'loyer', align: 'right', sortable: false },
     ],
   }),
+  computed: {
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
     ...mapActions({
       getMonthRental: 'architecture/emplacement/getMonthRental',
@@ -105,7 +115,7 @@ export default {
       this.selected = []
       this.mois = ''
       this.loading = false
-      this.$bvModal.hide('modalGenererLoyer')
+      this.dialog = false
     },
     save() {
       if (this.selected.length > 0) {
@@ -118,12 +128,12 @@ export default {
         })
         this.ajouter(factures).then(({ message }) => {
           this.submiting = false
-          this.$bvModal.hide('modalGenererLoyer')
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
             solid: true,
           })
+          this.dialog = false
         })
       } else {
         this.$bvToast.toast("Aucun client n'a été sélectionné", {

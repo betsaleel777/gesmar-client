@@ -116,16 +116,19 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters({
-      factures: 'facture/annexe/factures',
-    }),
+    ...mapGetters({ factures: 'facture/annexe/factures' }),
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
   },
   methods: {
-    ...mapActions({
-      getFactures: 'facture/annexe/getAll',
-      getPaginate: 'facture/annexe/getPaginate',
-      getSearch: 'facture/annexe/getSearch',
-    }),
+    ...mapActions({ getPaginate: 'facture/annexe/getPaginate', getSearch: 'facture/annexe/getSearch' }),
     imprimer() {},
     statusClass(value) {
       const classes = {

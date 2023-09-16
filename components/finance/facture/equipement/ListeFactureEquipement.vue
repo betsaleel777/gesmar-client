@@ -25,9 +25,9 @@
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon code, contrat, client, emplacement"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -38,16 +38,13 @@
         small
         bordered
         primary-key="id"
-        :items="factures"
+        :items="factures.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Aucune facture"
-        :busy="$fetchState.pending"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
         show-empty
-        :filter="filter"
-        @filtered="onFiltered"
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -60,11 +57,6 @@
         </template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
-        </template>
-        <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
-          </a>
         </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
@@ -129,48 +121,36 @@ export default {
         tdClass: 'text-center',
         thClass: 'text-center',
       },
-      {
-        key: 'option',
-        label: 'Options',
-        tdClass: 'text-center',
-        thClass: 'wd-5p text-center',
-        sortable: false,
-      },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, facture: {} },
-    filter: null,
-    totalRows: 0,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
   }),
   async fetch() {
-    await this.getFactures()
-    this.totalRows = this.factures.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
-    ...mapGetters({
-      factures: 'facture/equipement/factures',
-    }),
+    ...mapGetters({ factures: 'facture/equipement/factures' }),
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
   },
   methods: {
     ...mapActions({
-      getOne: 'facture/equipement/getOne',
-      getGenerer: 'facture/equipement/generer',
-      getFactures: 'facture/equipement/getAll',
+      getPaginate: 'facture/equipement/getPaginate',
+      getSearch: 'facture/equipement/getSearch',
     }),
     imprimer() {},
-    editer({ id }) {
-      this.getOne(id).then(({ facture }) => {
-        this.edit.facture = facture
-        this.edit.modal = true
-        this.$bvModal.show('modalEditFactureEquipement')
-      })
-    },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
-    },
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',
@@ -179,6 +159,30 @@ export default {
         [FACTURE.status.proforma]: 'badge badge-primary-light',
       }
       return classes[value]
+    },
+    pageInit() {
+      this.pages = this.factures.meta.last_page
+      this.currentPage = this.factures.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe() {
+      this.loading = true
+      await this.getPaginate()
+      this.pageInit()
+      this.loading = false
     },
   },
 }
