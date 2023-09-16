@@ -16,9 +16,9 @@
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon code, contrat, personne, emplacement"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -29,16 +29,13 @@
         small
         bordered
         primary-key="id"
-        :items="factures"
+        :items="factures.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Aucune facture"
-        :busy="$fetchState.pending"
         show-empty
-        :filter="filter"
-        @filtered="onFiltered"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -66,16 +63,16 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
     </b-card-text>
-    <EditFactureInitialeModal v-if="edit.modal" v-model="edit.modal" :facture="edit.facture" />
+    <EditFactureInitialeModal v-if="edit.modal" :id="edit.facture" v-model="edit.modal" />
   </b-card>
 </template>
 <script>
@@ -135,34 +132,37 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, facture: {} },
-    filter: null,
-    totalRows: 0,
+    edit: { modal: false, facture: 0 },
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
   }),
   async fetch() {
-    await this.getFactures()
-    this.totalRows = this.factures.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters('facture/initiale', ['factures']),
   },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+  },
   methods: {
     ...mapActions({
-      getOne: 'facture/initiale/getOne',
-      getFactures: 'facture/initiale/getAll',
+      getPaginate: 'facture/initiale/getPaginate',
+      getSearch: 'facture/initiale/getSearch',
     }),
     imprimer() {},
     editer({ id }) {
-      this.getOne(id).then(({ facture }) => {
-        this.edit.facture = facture
-        this.edit.modal = true
-      })
-    },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+      this.edit.facture = id
+      this.edit.modal = true
     },
     statusClass(value) {
       const classes = {
@@ -172,6 +172,30 @@ export default {
         [FACTURE.status.proforma]: 'badge badge-primary-light',
       }
       return classes[value]
+    },
+    pageInit() {
+      this.pages = this.factures.meta.last_page
+      this.currentPage = this.factures.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe() {
+      this.loading = true
+      await this.getPaginate()
+      this.pageInit()
+      this.loading = false
     },
   },
 }

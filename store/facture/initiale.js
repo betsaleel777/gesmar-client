@@ -26,6 +26,18 @@ export const actions = {
     return requete.data
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/factures/initiales/paginate?page=${page}`)
+    commit('SET_FACTURE', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/factures/initiales/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_FACTURE', requete.data)
+  },
+
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/factures/initiales/' + payload.id, payload)
     dispatch('getAll')

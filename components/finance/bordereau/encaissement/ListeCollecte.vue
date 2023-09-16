@@ -56,12 +56,6 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(created_at)="data">
-          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-        </template>
-        <template #cell(jour)="data">
-          {{ $moment(data.item.jour).format('DD-MM-YYYY') }}
-        </template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
@@ -93,7 +87,6 @@ export default {
   components: { CreateCollecteModal },
   data: () => ({
     dialog: false,
-    search: null,
     fields: [
       'ordre',
       { key: 'bordereau', label: 'Numéro du bordereau', sortable: false },
@@ -108,7 +101,7 @@ export default {
         thClass: 'text-center',
       },
     ],
-    filter: null,
+    search: null,
     pages: 1,
     currentPage: 1,
     loading: false,
