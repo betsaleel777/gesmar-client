@@ -2,34 +2,32 @@
   <b-card aria-hidden="true" header="Liste des Ouvertures de Caisse">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            v-can="permissions.created_at"
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateOuverture')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          v-can="permissions.created_at"
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon mx-1"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          title="imprimer liste"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="printer"
+          @click="imprimer"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon code, caissier, guichet et date"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -40,16 +38,13 @@
         small
         bordered
         primary-key="id"
-        :items="ouvertures"
+        :items="ouvertures.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Aucune Ouverture de caisse"
-        :busy="$fetchState.pending"
+        :busy="$fetchState.pending || loading"
         show-empty
-        :filter="filter"
-        @filtered="onFiltered"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -69,16 +64,15 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-if="totalRows > 0"
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
-      <CreateOuvertureModal :ouvertures="ouvertures" />
+        @change="getPage"
+      ></b-pagination-nav>
+      <CreateOuvertureModal v-if="create" v-model="create" :ouvertures="ouvertures" />
     </b-card-text>
   </b-card>
 </template>
@@ -104,16 +98,16 @@ export default {
       { key: 'status', label: 'Statut' },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, ouverture: {} },
-    filter: null,
-    totalRows: 0,
+    create: false,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
     permissions,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.ouvertures.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters({ ouvertures: 'caisse/ouverture/ouvertures' }),
@@ -128,11 +122,17 @@ export default {
       })
     },
   },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+  },
   methods: {
-    ...mapActions({
-      getAll: 'caisse/ouverture/getAll',
-      getOne: 'caisse/ouverture/getOne',
-    }),
+    ...mapActions({ getPaginate: 'caisse/ouverture/getPaginate', getSearch: 'caisse/ouverture/getSearch' }),
     imprimer() {
       const columns = ['code', 'site', 'caissier', 'date']
       const cols = columns.map((elt) => {
@@ -152,16 +152,36 @@ export default {
       this.dialogData.modal = true
       this.$bvModal.show('ouvertureConfirmationListe')
     },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
-    },
     statusClass(value) {
       const classes = {
         [OUVERTURE.confirmed]: 'badge badge-danger-light',
         [OUVERTURE.using]: 'badge badge-primary-light',
       }
       return classes[value]
+    },
+    pageInit() {
+      this.pages = this.ouvertures.meta.last_page
+      this.currentPage = this.ouvertures.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe() {
+      this.loading = true
+      await this.getPaginate()
+      this.pageInit()
+      this.loading = false
     },
   },
 }

@@ -18,6 +18,18 @@ export const actions = {
     return requete.data
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/caisses/ouvertures/paginate?page=${page}`)
+    commit('SET_OUVERTURE', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/caisses/ouvertures/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_OUVERTURE', requete.data)
+  },
+
   async getByCaissier({ commit }, id) {
     const requete = await this.$axios.get('api/finances/caisses/ouvertures/current/caissier/' + id)
     return requete.data

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalCreateOuverture" scrollable @show="reset">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'une ouverture de caisse</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -131,6 +131,7 @@ export default {
       type: Array,
       required: true,
     },
+    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -161,6 +162,14 @@ export default {
     }),
     guichetCaissier() {
       return `${this.ouverture.guichet_id}|${this.ouverture.caissier_id}`
+    },
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
     },
   },
   watch: {
@@ -196,7 +205,7 @@ export default {
       this.submiting = true
       this.ajouter(this.ouverture)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateOuverture')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -214,14 +223,9 @@ export default {
     },
     reset() {
       this.disabled = true
-      this.ouverture = {
-        date: '',
-        caissier_id: null,
-        guichet_id: null,
-        montant: null,
-      }
+      this.ouverture = {}
       errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateOuverture')
+      this.dialog = false
     },
     getCaissier() {
       this.getOne(this.ouverture.caissier_id).then(({ caissier }) => {
