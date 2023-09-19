@@ -38,7 +38,7 @@ export const actions = {
 
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/bordereaux/' + payload.id, payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
@@ -56,7 +56,7 @@ export const actions = {
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/bordereaux/store', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 }
