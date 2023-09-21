@@ -60,9 +60,16 @@
               {{ data.item.emplacement.code }}
             </template>
           </v-autocomplete>
+          <v-checkbox v-model="non_paye" class="mt-0" :color="'error'" label="non payé"></v-checkbox>
           <v-row>
             <v-col>
-              <v-text-field v-model="nombre" label="Nombre de jours" outlined dense></v-text-field>
+              <v-text-field
+                v-model="nombre"
+                :disabled="non_paye"
+                label="Nombre de jours"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
             <v-col>
               <v-text-field
@@ -90,7 +97,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
-import { ATTRIBUTION } from '~/helper/constantes'
+import { ATTRIBUTION, COLLECTE } from '~/helper/constantes'
 export default {
   props: {
     value: Boolean,
@@ -100,6 +107,7 @@ export default {
     commercial: null,
     bordereau: null,
     attribution: null,
+    non_paye: false,
     nombre: 1,
     errors: {
       commercial: { exist: false, message: null },
@@ -115,12 +123,12 @@ export default {
       commerciaux: 'finance/commercial/commerciaux',
     }),
     totalCollect() {
-      if (this.attribution) return this.nombre * this.attribution.emplacement.loyer
+      if (this.attribution && !this.non_paye) return this.nombre * this.attribution.emplacement.loyer
       return 0
     },
     bordereaux() {
       if (this.commercial)
-        return this.commercial.bordereaux.filter(({ status }) => status === ATTRIBUTION.uncashed)
+        return this.commercial.bordereaux.filter(({ collected }) => collected === COLLECTE.collected)
       return []
     },
     attributions() {
@@ -152,6 +160,7 @@ export default {
         attribution_id: this.attribution?.id,
         commercial: this.commercial?.id,
         bordereau: this.bordereau?.id,
+        non_paye: this.non_paye,
       }
       this.ajouter(collecte)
         .then(({ message }) => {

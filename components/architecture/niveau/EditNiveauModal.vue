@@ -117,7 +117,7 @@ export default {
             solid: true,
             autoHideDelay: 3000,
           })
-          this.$bvModal.hide('modalEditNiveau')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response

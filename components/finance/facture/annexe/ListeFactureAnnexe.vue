@@ -147,7 +147,7 @@ export default {
       if (this.search) {
         this.rechercher(page)
       } else {
-        this.fetchPaginateListe()
+        this.fetchPaginateListe(page)
       }
     },
     rechercher(page = 1) {
@@ -157,9 +157,9 @@ export default {
         this.loading = false
       })
     },
-    async fetchPaginateListe() {
+    async fetchPaginateListe(page) {
       this.loading = true
-      await this.getPaginate()
+      await this.getPaginate(page)
       this.pageInit()
       this.loading = false
     },

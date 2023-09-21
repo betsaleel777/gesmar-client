@@ -57,6 +57,11 @@
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
+        <template #cell(unpaid)="data">
+          <span v-if="data.item.unpaid === false" class="badge badge-success-light">payé</span>
+          <span v-else-if="data.item.unpaid === true" class="badge badge-danger-light">impayé</span>
+          <span v-else class="badge badge-secondary">vide</span>
+        </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
             {{ scope.emptyText }}
@@ -91,7 +96,7 @@ export default {
       { key: 'emplacement', label: "Code d'emplacement", sortable: false },
       { key: 'commercial', label: 'Nom Du commercial', sortable: false },
       { key: 'jour', label: 'Date', sortable: true },
-      { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'unpaid', label: 'Paiement', tdClass: 'text-center', thClass: 'text-center' },
       {
         key: 'status',
         label: 'Statuts',
@@ -142,7 +147,7 @@ export default {
       if (this.search) {
         this.rechercher(page)
       } else {
-        this.fetchPaginateListe()
+        this.fetchPaginateListe(page)
       }
     },
     rechercher(page = 1) {
@@ -152,9 +157,9 @@ export default {
         this.loading = false
       })
     },
-    async fetchPaginateListe() {
+    async fetchPaginateListe(page) {
       this.loading = true
-      await this.getPaginate()
+      await this.getPaginate(page)
       this.pageInit()
       this.loading = false
     },

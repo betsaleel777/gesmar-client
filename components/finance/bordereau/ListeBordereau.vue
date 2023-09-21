@@ -49,6 +49,9 @@
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
+        <template #cell(etat)="data">
+          <span :class="stateClass(data.item.etat)">{{ data.item.etat }}</span>
+        </template>
         <template #cell(option)="data">
           <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
@@ -75,7 +78,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ShowBordereauModal from './ShowBordereauModal.vue'
-import { ATTRIBUTION } from '~/helper/constantes'
+import { ATTRIBUTION, COLLECTE } from '~/helper/constantes'
 import { finance } from '~/helper/permissions'
 const permissions = finance.bordereaux.bordereau
 export default {
@@ -89,6 +92,7 @@ export default {
       { key: 'commercial', label: 'Nom Du commercial', sortable: true },
       { key: 'date_attribution', label: 'Date', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'etat', label: 'Etat', tdClass: 'text-center', thClass: 'text-center' },
       { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center' },
       {
         key: 'option',
@@ -135,6 +139,13 @@ export default {
       }
       return classes[value]
     },
+    stateClass(value) {
+      const classes = {
+        [COLLECTE.collected]: 'badge badge-success-light',
+        [COLLECTE.uncollected]: 'badge badge-danger-light',
+      }
+      return classes[value]
+    },
     pageInit() {
       this.pages = this.bordereaux.meta.last_page
       this.currentPage = this.bordereaux.meta.current_page
@@ -143,7 +154,7 @@ export default {
       if (this.search) {
         this.rechercher(page)
       } else {
-        this.fetchPaginateListe()
+        this.fetchPaginateListe(page)
       }
     },
     rechercher(page = 1) {
@@ -153,9 +164,9 @@ export default {
         this.loading = false
       })
     },
-    async fetchPaginateListe() {
+    async fetchPaginateListe(page) {
       this.loading = true
-      await this.getPaginate()
+      await this.getPaginate(page)
       this.pageInit()
       this.loading = false
     },

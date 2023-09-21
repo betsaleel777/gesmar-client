@@ -37,13 +37,13 @@ export const actions = {
 
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/caisses/ouvertures/' + payload.id, payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/caisses/ouvertures/store', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 

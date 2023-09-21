@@ -1,5 +1,6 @@
 export const state = () => ({
   bordereaux: [],
+  bordereau: {},
 })
 export const getters = {
   bordereaux: (state) => {
@@ -8,32 +9,40 @@ export const getters = {
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_BORDEREAU', [])
     const requete = await this.$axios.get('api/finances/bordereaux')
-    commit('SET_BORDEREAU', requete.data.bordereaux)
+    commit('SET_BORDEREAUX', requete.data.bordereaux)
   },
 
   async getTrashAll({ commit }) {
-    commit('SET_BORDEREAU', [])
     const requete = await this.$axios.get('api/finances/bordereaux/trashed')
-    commit('SET_BORDEREAU', requete.data.bordereaux)
+    commit('SET_BORDEREAUX', requete.data.bordereaux)
+  },
+
+  async getCollected({ commit }) {
+    const requete = await this.$axios.get('api/finances/bordereaux/collected')
+    commit('SET_BORDEREAUX', requete.data.bordereaux)
   },
 
   async getPaginate({ commit }, page = 1) {
     const requete = await this.$axios.get(`api/finances/bordereaux/paginate?page=${page}`)
-    commit('SET_BORDEREAU', requete.data)
+    commit('SET_BORDEREAUX', requete.data)
   },
 
   async getSearch({ commit }, payload) {
     const requete = await this.$axios.get(
       `api/finances/bordereaux/search/${payload.search}/paginate?page=${payload.page}`
     )
-    commit('SET_BORDEREAU', requete.data)
+    commit('SET_BORDEREAUX', requete.data)
   },
 
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/finances/bordereaux/' + id)
     return requete.data
+  },
+
+  async getForEncaissement({ commit }, id) {
+    const requete = await this.$axios.get('api/finances/bordereaux/vue-encaissement/' + id)
+    commit('SET_BORDEREAU', requete.data)
   },
 
   async modifier({ dispatch }, payload) {
@@ -62,7 +71,10 @@ export const actions = {
 }
 
 export const mutations = {
-  SET_BORDEREAU(state, bordereaux) {
+  SET_BORDEREAUX(state, bordereaux) {
     state.bordereaux = bordereaux
+  },
+  SET_BORDEREAU(state, bordereau) {
+    state.bordereau = bordereau
   },
 }

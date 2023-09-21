@@ -132,7 +132,7 @@ export default {
       this.submiting = true
       this.ajouter(this.marche)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateMarche')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',

@@ -113,7 +113,7 @@ export default {
       this.submiting = true
       this.ajouter(this.pavillon)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreatePavillon')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',

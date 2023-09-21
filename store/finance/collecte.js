@@ -44,7 +44,7 @@ export const actions = {
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/collectes/store', payload)
-    dispatch('finance/attribution/getAllWithBorderau', {}, { root: true })
+    dispatch('finance/attribution/getPaginate', {}, { root: true })
     return { message: requete.data.message }
   },
 }

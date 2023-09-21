@@ -2,26 +2,24 @@
   <b-card aria-hidden="true" header="Liste des commerciaux">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            v-can="permissions.create"
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="createModal = true"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          v-can="permissions.create"
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon mx-1"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="createModal = true"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          title="imprimer liste"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="printer"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input

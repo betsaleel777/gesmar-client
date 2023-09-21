@@ -151,7 +151,8 @@ export default {
       return this.commercial.attributions
         ? this.commercial.attributions.map(
             ({ id, emplacement_id: emplacement, emplacement: { code }, jour }) => {
-              return { id, emplacement, start: jour, end: jour, name: code, timed: true }
+              const date = Date.parse(jour)
+              return { id, emplacement, start: date, end: date, name: code, timed: true }
             }
           )
         : []

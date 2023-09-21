@@ -2,37 +2,35 @@
   <b-card aria-hidden="true" header="Liste encaissements">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            v-can="permissions.create"
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="dialog = true"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            v-can="permissions.closable"
-            title="fermer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="x-square"
-            @click="close = true"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          v-can="permissions.closable"
+          title="fermer"
+          class="btn btn-sm btn-danger btn-icon"
+          stroke-width="2"
+          size="18"
+          type="x-square"
+          @click="close = true"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          title="imprimer liste"
+          class="btn btn-sm btn-primary btn-icon mr-1"
+          stroke-width="2"
+          size="18"
+          type="printer"
+          @click="imprimer"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          v-can="permissions.create"
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon mr-1"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="dialog = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -90,7 +88,7 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateEncaissement v-model="dialog" />
+      <CreateEncaissement v-if="dialog" v-model="dialog" />
       <ShowEncaissementModal v-if="show.modal" v-model="show.modal" :encaissement="show.encaissement" />
       <CloseEncaissementModal v-if="close" v-model="close" />
     </b-card-text>

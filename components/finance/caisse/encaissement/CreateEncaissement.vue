@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="dialog" size="xl" @show="reset">
+  <b-modal v-model="dialog" size="xl">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'un encaissement</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
@@ -7,10 +7,10 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <v-app>
-          <v-container>
-            <v-row>
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <form ref="form">
+          <v-app>
+            <v-row class="p-2">
               <v-col cols="3">
                 <v-container>
                   <v-autocomplete
@@ -42,6 +42,21 @@
                       <span class="red--text"><strong>* </strong></span>
                     </template>
                   </v-autocomplete>
+                  <v-autocomplete
+                    v-model="encaissement.bordereau_id"
+                    :items="bordereaux"
+                    item-text="code"
+                    item-value="id"
+                    outlined
+                    dense
+                    :disabled="disabled"
+                    @change="infosBordereaux"
+                  >
+                    <template #label>
+                      Code du bordereau
+                      <span class="red--text"><strong>* </strong></span>
+                    </template>
+                  </v-autocomplete>
                 </v-container>
               </v-col>
               <v-divider vertical></v-divider>
@@ -50,6 +65,7 @@
                   v-if="Object.keys(ordonnancement).length !== 0"
                   :ordonnancement="ordonnancement"
                 />
+                <InfosBordereau v-if="encaissement.bordereau_id" :id="encaissement.bordereau_id" />
               </v-col>
               <v-divider vertical></v-divider>
               <v-col cols="5">
@@ -64,9 +80,9 @@
                 />
               </v-col>
             </v-row>
-          </v-container>
-        </v-app>
-      </form>
+          </v-app>
+        </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
@@ -93,14 +109,22 @@ export default {
     encaissement: {
       caissier_id: null,
       ordonnancement_id: null,
+      bordereau_id: null,
     },
     validable: false,
     key: true,
     mode: 1,
+    errors: {},
   }),
+  async fetch() {
+    await this.getCaissiers()
+    await this.getOrdonnancements()
+    await this.getBordereaux()
+  },
   computed: {
     ...mapGetters({
       ordonnancements: 'exploitation/ordonnancement/ordonnancements',
+      bordereaux: 'finance/bordereau/bordereaux',
       caissiers: 'caisse/caissier/caissiers',
     }),
     dialog: {
@@ -112,15 +136,12 @@ export default {
       },
     },
   },
-  mounted() {
-    this.getCaissiers()
-    this.getOrdonnancements()
-  },
   methods: {
     ...mapActions({
       ajouter: 'caisse/encaissement/ajouter',
       getCaissiers: 'caisse/caissier/getAll',
       getOrdonnancements: 'exploitation/ordonnancement/getAllUnpaid',
+      getBordereaux: 'finance/bordereau/getCollected',
       getOne: 'exploitation/ordonnancement/getOne',
       ouvertureExists: 'caisse/ouverture/ouvertureExists',
     }),
@@ -146,10 +167,7 @@ export default {
     reset() {
       this.disabled = true
       this.ordonnancement = {}
-      this.encaissement = {
-        caissier_id: null,
-        ordonnancement_id: null,
-      }
+      this.encaissement = {}
       this.validable = false
       this.errors = {}
       this.key = !this.key
@@ -161,7 +179,7 @@ export default {
           exists
             ? (this.disabled = false)
             : this.$bvToast.toast("le caissier sélectionné n'est pas programmé pour aujourd'hui", {
-                title: 'ATTENTION'.toLocaleUpperCase(),
+                title: 'ATTENTION',
                 variant: 'warning',
                 solid: true,
               })
@@ -177,11 +195,7 @@ export default {
         })
       }
     },
+    infosBordereaux() {},
   },
 }
 </script>
-<!-- <style lang="scss" scoped>
-::v-deep #modalCreateEncaissement > .modal-dialog {
-  max-width: 100%;
-}
-</style> -->

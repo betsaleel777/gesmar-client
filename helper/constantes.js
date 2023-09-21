@@ -30,6 +30,10 @@ const ATTRIBUTION = Object.freeze({
   cashed: 'encaissé',
   uncashed: 'non encaissé',
 })
+const COLLECTE = Object.freeze({
+  collected: 'collecté',
+  uncollected: 'non collecté',
+})
 const CONTRAT = Object.freeze({
   status: {
     validated: 'validé',
@@ -93,4 +97,5 @@ module.exports = {
   GABARI,
   ENCAISSEMENT,
   SUPERROLE,
+  COLLECTE,
 }
