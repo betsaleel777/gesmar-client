@@ -58,13 +58,13 @@ export const actions = {
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/commerciaux/store', payload)
-    dispatch('getPaginate')
+    dispatch('getAll')
     return { message: requete.data.message }
   },
 
   async attribuer({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/commerciaux/attribuer', payload)
-    dispatch('getPaginate')
+    dispatch('getAll')
     return { message: requete.data.message }
   },
 }

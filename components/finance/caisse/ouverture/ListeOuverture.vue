@@ -115,8 +115,9 @@ export default {
       return this.ouvertures.map((ouverture) => {
         return {
           code: ouverture.code,
-          site: ouverture.guichet.site.nom,
-          caissier: ouverture.caissier.user.name,
+          site: ouverture.site,
+          guichet: ouverture.guichet,
+          caissier: ouverture.caissier,
           date: this.$moment(ouverture.created_at).format('llll'),
         }
       })
@@ -134,7 +135,7 @@ export default {
   methods: {
     ...mapActions({ getPaginate: 'caisse/ouverture/getPaginate', getSearch: 'caisse/ouverture/getSearch' }),
     imprimer() {
-      const columns = ['code', 'site', 'caissier', 'date']
+      const columns = ['code', 'guichet', 'site', 'caissier', 'date']
       const cols = columns.map((elt) => {
         return { header: capitalize(elt), dataKey: elt }
       })

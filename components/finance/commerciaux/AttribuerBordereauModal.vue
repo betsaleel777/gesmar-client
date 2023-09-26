@@ -58,7 +58,14 @@
                       </template>
                     </v-text-field>
                   </template>
-                  <v-date-picker v-model="attribution.jour" locale="fr" no-title scrollable color="primary">
+                  <v-date-picker
+                    v-model="attribution.jour"
+                    locale="fr"
+                    no-title
+                    scrollable
+                    color="primary"
+                    :allowed-dates="allowedDates"
+                  >
                     <v-spacer></v-spacer>
                     <v-btn text color="warning" @click="menu = false"> Cancel </v-btn>
                     <v-btn text color="primary" @click="saveDate(attribution.jour)"> OK </v-btn>
@@ -194,14 +201,12 @@ export default {
     const { commercial } = await this.getOne(this.id)
     this.attribution.commercial = commercial
     await this.getBordereaux()
-    await this.getSites()
     await this.getEmplacements()
     await this.getZones()
   },
   computed: {
     ...mapGetters({
       bordereaux: 'finance/bordereau/bordereaux',
-      marches: 'architecture/marche/marches',
       emplacements: 'architecture/emplacement/emplacements',
     }),
     validable() {
@@ -209,8 +214,8 @@ export default {
     },
     emplacementsUsable() {
       if (this.attribution.jour) {
-        const notUsables = this.commercial.attributions
-          .filter(({ jour }) => this.attribution.jour === jour)
+        const notUsables = this.attribution.commercial.attributions
+          .filter(({ jour }) => this.$moment(jour).format('DD-MM-YYYY') === this.attribution.jour)
           .map(({ emplacement_id: id }) => id)
         return this.emplacements.filter(({ id }) => !notUsables.includes(id))
       } else return this.emplacements
@@ -227,7 +232,6 @@ export default {
   methods: {
     ...mapActions({
       getBordereaux: 'finance/bordereau/getAll',
-      getSites: 'architecture/marche/getAll',
       getZonesByMarche: 'architecture/zone/getByMarche',
       getEmplacements: 'architecture/emplacement/getAutoAll',
       ajouter: 'finance/attribution/ajouter',
@@ -299,6 +303,12 @@ export default {
       this.attribution.zones = []
       this.attribution.emplacements = []
       this.emplacementsByZones = []
+    },
+    allowedDates(val) {
+      const unusableDates = this.attribution.commercial.bordereaux.map(({ date_attribution: date }) =>
+        this.$moment(date).format('YYYY-MM-DD')
+      )
+      return !unusableDates.includes(val)
     },
     saveDate(value) {
       this.$refs.menu.save(value)

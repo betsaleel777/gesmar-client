@@ -1,23 +1,13 @@
 <template>
   <b-card aria-hidden="true" header="Point de caisse">
     <b-card-text>
-      <div class="btn-toolbar d-flex flex-row-reverse">
-        <feather
-          v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon mx-1"
-          stroke-width="2"
-          size="18"
-          type="printer"
-          @click="imprimer"
-        />
-      </div>
+      <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon caissier, guichet, date"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -28,16 +18,13 @@
         small
         bordered
         primary-key="id"
-        :items="fermetures"
+        :items="fermetures.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Liste vide"
-        :busy="$fetchState.pending"
+        :busy="$fetchState.pending || loading"
         show-empty
-        :filter="filter"
-        @filtered="onFiltered"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -59,15 +46,14 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-if="totalRows > 0"
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
       <ShowFermeture v-if="show.modal" :id="show.id" v-model="show.modal" />
     </b-card-text>
   </b-card>
@@ -75,7 +61,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ShowFermeture from './ShowFermeture.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: { ShowFermeture },
   data: () => ({
@@ -95,49 +80,56 @@ export default {
     ],
     show: { modal: false, id: null },
     close: false,
-    filter: null,
-    totalRows: 0,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.fermetures.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters({ fermetures: 'caisse/fermeture/fermetures' }),
-    records() {
-      return this.fermetures.map((fermeture) => {
-        return {
-          code: fermeture.ordonnancement,
-          caissier: fermeture.caissier,
-          date: this.$moment(fermeture.created_at).format('llll'),
-        }
-      })
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
     },
   },
   methods: {
-    ...mapActions({ getAll: 'caisse/fermeture/getAll' }),
-    imprimer() {
-      const columns = ['code', 'caissier', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des points de caisse')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
+    ...mapActions({ getPaginate: 'caisse/fermeture/getPaginate', getSearch: 'caisse/fermeture/getSearch' }),
     detail({ id }) {
       this.show.modal = true
       this.show.id = Number(id)
     },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+    pageInit() {
+      this.pages = this.fermetures.meta.last_page
+      this.currentPage = this.fermetures.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe(page)
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe(page) {
+      this.loading = true
+      await this.getPaginate(page)
+      this.pageInit()
+      this.loading = false
     },
   },
 }

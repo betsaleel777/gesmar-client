@@ -91,7 +91,7 @@ export default {
         sortable: false,
         value: 'code',
       },
-      { text: 'Clients', value: 'contrat_actuel.personne.alias' },
+      { text: 'Clients', value: 'client' },
       { text: 'Loyer (FCFA)', value: 'loyer', align: 'right', sortable: false },
     ],
   }),
@@ -121,9 +121,7 @@ export default {
       if (this.selected.length > 0) {
         this.submiting = true
         const factures = this.selected.map((emplacement) => {
-          const {
-            contrat_actuel: { id },
-          } = emplacement
+          const { contrat_id: id } = emplacement
           return { contrat_id: id, periode: this.mois + '-01' }
         })
         this.ajouter(factures).then(({ message }) => {

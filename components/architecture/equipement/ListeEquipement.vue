@@ -2,43 +2,31 @@
   <b-card aria-hidden="true" header="Liste des équipements">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateEquipement')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="archives"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="archive"
-            @click="$emit('archivage')"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="archives"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="archive"
+          @click="$emit('archivage')"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="$bvModal.show('modalCreateEquipement')"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -49,16 +37,12 @@
         small
         bordered
         primary-key="id"
-        :items="equipements"
+        :items="equipements.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Aucun équipement"
-        :busy="$fetchState.pending"
+        :busy="$fetchState.pending || loading"
         show-empty
-        :filter="filter"
-        @filtered="onFiltered"
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -91,15 +75,14 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-if="totalRows > 0"
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
       <div>
         <ConfirmationModal
           :id="dialogData.id"
@@ -130,7 +113,6 @@ import CreateEquipementModal from './CreateEquipementModal.vue'
 import EditEquipementModal from './EditEquipementModal.vue'
 import { EQUIPEMENT } from '~/helper/constantes'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
 export default {
   components: {
     ConfirmationModal,
@@ -156,16 +138,16 @@ export default {
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, equipement: {} },
-    filter: null,
-    totalRows: 0,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
   }),
   async fetch() {
     await this.getMarches()
     await this.getTypesEquipement()
-    await this.getEquipements()
-    this.totalRows = this.equipements.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
     ...mapGetters({
@@ -173,17 +155,6 @@ export default {
       types: 'architecture/typEquipement/types',
       equipements: 'architecture/equipement/equipements',
     }),
-    records() {
-      return this.equipements.map((gear) => {
-        return {
-          code: gear.code,
-          prix: this.$options.filters.currency(gear.prix_unitaire),
-          type: gear.type,
-          site: gear.site,
-          date: gear.created_at,
-        }
-      })
-    },
   },
   methods: {
     ...mapActions({
@@ -192,19 +163,6 @@ export default {
       getTypesEquipement: 'architecture/typEquipement/getAll',
       getEquipements: 'architecture/equipement/getAll',
     }),
-    imprimer() {
-      const columns = ['code', 'type', 'prix', 'site', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des equipements')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
@@ -217,10 +175,6 @@ export default {
         this.edit.modal = true
         this.$bvModal.show('modalEditEquipement')
       })
-    },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
     },
     statusClass(value) {
       if (value === EQUIPEMENT.unsubscribed || value === EQUIPEMENT.unlinked) {

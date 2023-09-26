@@ -4,20 +4,20 @@
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
           v-b-tooltip.hover.top
-          title="générer"
+          title="imprimer liste"
           class="btn btn-sm btn-primary btn-icon mx-1"
+          stroke-width="2"
+          size="18"
+          type="printer"
+        />
+        <feather
+          v-b-tooltip.hover.top
+          title="générer"
+          class="btn btn-sm btn-primary btn-icon"
           stroke-width="2"
           size="18"
           type="cpu"
           @click="create = true"
-        />
-        <feather
-          v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="printer"
         />
       </div>
       <hr class="mg-t-4" />

@@ -17,6 +17,18 @@ export const actions = {
     commit('SET_FERMETURES', requete.data.fermetures)
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/caisses/fermetures/paginate?page=${page}`)
+    commit('SET_FERMETURES', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/caisses/fermetures/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_FERMETURES', requete.data)
+  },
+
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/finances/caisses/fermetures/' + id)
     commit('SET_FERMETURE', requete.data.fermeture)
