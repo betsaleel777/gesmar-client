@@ -1,20 +1,18 @@
 export const state = () => ({
-  abonnements: [],
+  abonnements: []
 })
 export const getters = {
   abonnements: (state) => {
     return state.abonnements
-  },
+  }
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_ABONNEMENT', [])
     const requete = await this.$axios.get('api/parametres/abonnements')
     commit('SET_ABONNEMENT', requete.data.abonnements)
   },
 
   async getTrashAll({ commit }) {
-    commit('SET_ABONNEMENT', [])
     const requete = await this.$axios.get('api/parametres/abonnements/trashed')
     commit('SET_ABONNEMENT', requete.data.abonnements)
   },
@@ -71,11 +69,11 @@ export const actions = {
   async getLastIndex({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/abonnements/indexing/' + id)
     return { index: requete.data.index }
-  },
+  }
 }
 
 export const mutations = {
   SET_ABONNEMENT(state, abonnements) {
     state.abonnements = abonnements
-  },
+  }
 }

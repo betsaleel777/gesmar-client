@@ -1,6 +1,6 @@
 export const state = () => ({
   marches: [],
-  structure: [],
+  structure: []
 })
 export const getters = {
   marches: (state) => {
@@ -8,18 +8,21 @@ export const getters = {
   },
   structure: (state) => {
     return state.structure
-  },
+  }
 }
 
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_MARCHE', [])
     const requete = await this.$axios.get('api/parametres/marches')
     commit('SET_MARCHE', requete.data.marches)
   },
 
+  async getSelect({ commit }) {
+    const requete = await this.$axios.get('api/parametres/marches/select')
+    commit('SET_MARCHE', requete.data.marches)
+  },
+
   async getTrashAll({ commit }) {
-    commit('SET_MARCHE', [])
     const requete = await this.$axios.get('api/parametres/marches/trashed')
     commit('SET_MARCHE', requete.data.marches)
   },
@@ -61,7 +64,7 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/marches/push', payload)
     dispatch('getAll')
     return { message: requete.data.message, donnees: requete.data.marche }
-  },
+  }
 }
 
 export const mutations = {
@@ -70,5 +73,5 @@ export const mutations = {
   },
   SET_STRUCTURE(state, structure) {
     state.structure = structure
-  },
+  }
 }

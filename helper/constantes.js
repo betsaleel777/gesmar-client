@@ -4,35 +4,35 @@ const EQUIPEMENT = Object.freeze({
   damaged: 'abimé',
   fixed: 'réparé',
   linked: 'lié',
-  unlinked: 'non lié',
+  unlinked: 'non lié'
 })
 const EMPLACEMENT = Object.freeze({
   busy: 'occupé',
   free: 'libre',
   linked: 'lié',
-  unlinked: 'non lié',
+  unlinked: 'non lié'
 })
 const ABONNEMENT = Object.freeze({
   progressing: 'en cours',
   stopped: 'résilié',
-  error: 'erreur index',
+  error: 'erreur index'
 })
 const ORDONNANCEMENT = Object.freeze({
   paid: 'payé',
-  unpaid: 'impayé',
+  unpaid: 'impayé'
 })
 const ANNEXE = Object.freeze({
   quotidien: 'par jour',
   mensuel: 'par mois',
-  forfait: 'forfaitaire',
+  forfait: 'forfaitaire'
 })
 const ATTRIBUTION = Object.freeze({
   cashed: 'encaissé',
-  uncashed: 'non encaissé',
+  uncashed: 'non encaissé'
 })
 const COLLECTE = Object.freeze({
   collected: 'collecté',
-  uncollected: 'non collecté',
+  uncollected: 'non collecté'
 })
 const CONTRAT = Object.freeze({
   status: {
@@ -40,46 +40,51 @@ const CONTRAT = Object.freeze({
     onEndorsed: 'à signer',
     onValidated: 'à valider',
     attente: 'en attente',
-    resilied: 'résilié',
+    resilied: 'résilié'
   },
-  type: { annexe: 'annexe', bail: 'bail' },
+  type: { annexe: 'annexe', bail: 'bail' }
 })
 const TYPEQUIPEMENT = Object.freeze({
-  equipable: { with: 'avec équipement', without: 'sans équipement' },
+  equipable: { with: 'avec équipement', without: 'sans équipement' }
 })
 const FACTURE = Object.freeze({
   status: {
     proforma: 'proforma',
     facture: 'facture',
     paid: 'soldée',
-    unpaid: 'impayée',
+    unpaid: 'impayée'
   },
   type: {
     loyer: 'loyer',
     initiale: 'initiale',
     annexe: 'annexe',
-    equipement: 'équipement',
-  },
+    equipement: 'équipement'
+  }
 })
 const MATRIMONIALE = Object.freeze({
   mariage: 'marier',
   concubinage: 'concubinage',
-  celibat: 'celibataire',
+  celibat: 'celibataire'
 })
 const OUVERTURE = Object.freeze({
   confirmed: 'terminée',
-  using: 'en cours',
+  using: 'en cours'
 })
 const GABARI = Object.freeze({
   onuse: 'en utilisation',
-  unuse: 'pas utilisé',
+  unuse: 'pas utilisé'
 })
 const ENCAISSEMENT = Object.freeze({
   type: {
     espece: 'Espece',
-    cheque: 'Cheque',
+    cheque: 'Cheque'
   },
-  status: {},
+  status: {}
+})
+const REPARATION = Object.freeze({
+  pending: 'en attente',
+  progressing: 'en cours',
+  finished: 'terminée'
 })
 const SUPERROLE = 'Super-admin'
 module.exports = {
@@ -98,4 +103,5 @@ module.exports = {
   ENCAISSEMENT,
   SUPERROLE,
   COLLECTE,
+  REPARATION
 }

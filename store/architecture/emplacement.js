@@ -1,6 +1,6 @@
 export const state = () => ({
   emplacements: [],
-  equipables: [],
+  equipables: []
 })
 export const getters = {
   emplacements: (state) => {
@@ -12,24 +12,31 @@ export const getters = {
   emplacementsBySites: (state) => (sites) => {
     const ids = sites.map((site) => site.id)
     return state.emplacements.filter((emplacement) => ids.includes(emplacement.site_id))
-  },
+  }
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_EMPLACEMENT', [])
     const requete = await this.$axios.get('api/parametres/emplacements')
+    commit('SET_EMPLACEMENT', requete.data.emplacements)
+  },
+
+  async getForSelect({ commit }) {
+    const requete = await this.$axios.get('api/parametres/emplacements/select')
+    commit('SET_EMPLACEMENT', requete.data.emplacements)
+  },
+
+  async getForSimpleSelect({ commit }) {
+    const requete = await this.$axios.get('api/parametres/emplacements/simple-select')
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
   // les emplacements dont les contrat qui ne passent pas par l'ordonnacement pour être validés
   async getAutoAll({ commit }) {
-    commit('SET_EMPLACEMENT', [])
     const requete = await this.$axios.get('api/parametres/emplacements/autos')
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
   async getEquipables({ commit }) {
-    commit('SET_EQUIPABLE', [])
     const requete = await this.$axios.get('api/parametres/emplacements/equipables')
     commit('SET_EQUIPABLE', requete.data.emplacements)
   },
@@ -40,7 +47,6 @@ export const actions = {
   },
 
   async getTrashAll({ commit }) {
-    commit('SET_EMPLACEMENT', [])
     const requete = await this.$axios.get('api/parametres/emplacements/trashed')
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
@@ -52,6 +58,11 @@ export const actions = {
 
   async getByMarche({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/' + id)
+    return requete.data
+  },
+
+  async getByMarcheForSelect({ commit }, id) {
+    const requete = await this.$axios.get('api/parametres/emplacements/marche-select/' + id)
     return requete.data
   },
 
@@ -103,7 +114,7 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/emplacements/push', payload)
     dispatch('getAll')
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
@@ -112,5 +123,5 @@ export const mutations = {
   },
   SET_EQUIPABLE(state, emplacements) {
     state.equipables = emplacements
-  },
+  }
 }

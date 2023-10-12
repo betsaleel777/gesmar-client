@@ -41,19 +41,19 @@ export default {
   props: {
     current: {
       type: Object,
-      required: true,
+      required: true
     },
-    value: Boolean,
+    value: Boolean
   },
   data: () => ({
     submiting: false,
     abonnement: {
       id: null,
-      index_fin: null,
+      index_fin: null
     },
     errors: {
-      index_fin: { exist: false, message: null },
-    },
+      index_fin: { exist: false, message: null }
+    }
   }),
   computed: {
     dialog: {
@@ -62,8 +62,8 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      },
-    },
+      }
+    }
   },
   mounted() {
     this.abonnement.id = this.current.id
@@ -78,7 +78,7 @@ export default {
           this.$bvToast.toast(message, {
             title: 'résilié avec succès'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true,
+            solid: true
           })
           this.close()
         })
@@ -94,12 +94,12 @@ export default {
     close() {
       this.abonnement = {
         id: null,
-        index_fin: null,
+        index_fin: null
       }
       errorsInitialise(this.errors)
       this.dialog = false
-    },
-  },
+    }
+  }
 }
 </script>
 <style scoped></style>

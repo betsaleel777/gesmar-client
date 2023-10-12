@@ -73,13 +73,13 @@ export default {
       nom: '',
       niveau_id: '',
       nombre: null,
-      automatiq: false,
+      automatiq: false
     },
     errors: {
       nom: { exist: false, message: null },
       niveau_id: { exist: false, message: null },
-      nombre: { exist: false, message: null },
-    },
+      nombre: { exist: false, message: null }
+    }
   }),
   computed: {
     dialog: {
@@ -88,29 +88,29 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      },
-    },
+      }
+    }
   },
   watch: {
     search(val) {
       val && val !== this.zone.niveau_id && this.querySelections(val)
-    },
+    }
   },
   methods: {
     ...mapActions({
       ajouter: 'architecture/zone/ajouter',
-      getSearch: 'architecture/niveau/getSearch',
+      getSearch: 'architecture/niveau/getSearch'
     }),
     save() {
       this.submiting = true
       this.ajouter(this.zone)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true,
+            solid: true
           })
-          this.$bvModal.hide('modalCreateZone')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -131,8 +131,8 @@ export default {
       this.getSearch(search)
         .then((niveaux) => (this.niveaux = niveaux))
         .finally(() => (this.loading = false))
-    },
-  },
+    }
+  }
 }
 </script>
 <style scoped></style>

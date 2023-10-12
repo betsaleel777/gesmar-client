@@ -87,7 +87,7 @@ import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    value: Boolean,
+    value: Boolean
   },
   data: () => ({
     submiting: false,
@@ -96,7 +96,7 @@ export default {
       commune: '',
       ville: '',
       pays: '',
-      postale: '',
+      postale: ''
     },
     communes: [],
     pays: [],
@@ -104,8 +104,8 @@ export default {
       nom: { exist: false, message: null },
       commune: { exist: false, message: null },
       ville: { exist: false, message: null },
-      pays: { exist: false, message: null },
-    },
+      pays: { exist: false, message: null }
+    }
   }),
 
   async fetch() {
@@ -123,8 +123,8 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      },
-    },
+      }
+    }
   },
   methods: {
     ...mapActions('architecture/marche', ['ajouter']),
@@ -133,10 +133,10 @@ export default {
       this.ajouter(this.marche)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true,
+            solid: true
           })
         })
         .catch((err) => {
@@ -152,8 +152,8 @@ export default {
       this.marche = {}
       errorsInitialise(this.errors)
       this.dialog = false
-    },
-  },
+    }
+  }
 }
 </script>
 <style></style>

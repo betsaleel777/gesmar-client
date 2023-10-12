@@ -79,13 +79,13 @@ export default {
       nom: '',
       site_id: '',
       nombre: null,
-      automatiq: false,
+      automatiq: false
     },
     errors: {
       nom: { exist: false, message: null },
       site_id: { exist: false, message: null },
-      nombre: { exist: false, message: null },
-    },
+      nombre: { exist: false, message: null }
+    }
   }),
   async fetch() {
     await this.getMarches()
@@ -101,24 +101,24 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      },
-    },
+      }
+    }
   },
   methods: {
     ...mapActions({
       getMarches: 'architecture/marche/getAll',
-      ajouter: 'architecture/pavillon/ajouter',
+      ajouter: 'architecture/pavillon/ajouter'
     }),
     save() {
       this.submiting = true
       this.ajouter(this.pavillon)
         .then(({ message }) => {
-          this.dialog = false
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true,
+            solid: true
           })
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -132,8 +132,8 @@ export default {
     close() {
       errorsInitialise(this.errors)
       this.dialog = false
-    },
-  },
+    }
+  }
 }
 </script>
 <style scoped></style>
