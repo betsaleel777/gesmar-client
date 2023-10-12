@@ -7,8 +7,11 @@ export const MODULES = Object.freeze({
     ALL: reparationRoot + '/getAll',
     PAGINATE: reparationRoot + '/getPaginate',
     SEARCH: reparationRoot + '/getSearch',
+    PAGINATE_TRASHED: reparationRoot + '/getPaginateTrashed',
+    SEARCH_TRASHED: reparationRoot + '/getSearchTrashed',
     ONE: reparationRoot + '/getOne',
     TRASH: reparationRoot + '/supprimer',
+    RESTORE: reparationRoot + '/restaurer',
     ADD: reparationRoot + '/ajouter',
     REPARATIONS: reparationRoot + '/reparations'
   }),

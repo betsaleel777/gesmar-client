@@ -2,12 +2,7 @@
   <b-modal :id="modalId" v-model="dialog" centered>
     <template #modal-header>
       <h6 id="archiver" class="modal-title">Veuillez confirmer l'action</h6>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        @click="dialog = false"
-      >
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -17,17 +12,10 @@
       </p>
     </template>
     <template #modal-footer>
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-dismiss="modal"
-        @click="dialog = false"
-      >
+      <button type="button" class="btn btn-primary text-white" data-dismiss="modal" @click="dialog = false">
         Close
       </button>
-      <button type="button" class="btn btn-danger" @click="save">
-        Confirmer
-      </button>
+      <button type="button" class="btn btn-danger text-white" @click="save">Confirmer</button>
     </template>
   </b-modal>
 </template>
@@ -36,21 +24,21 @@ export default {
   props: {
     id: {
       type: Number,
-      required: true,
+      required: true
     },
     modalId: {
       type: String,
-      required: true,
+      required: true
     },
     message: {
       type: String,
-      required: true,
+      required: true
     },
     action: {
       type: String,
-      required: true,
+      required: true
     },
-    value: Boolean,
+    value: Boolean
   },
   computed: {
     dialog: {
@@ -59,8 +47,8 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      },
-    },
+      }
+    }
   },
   methods: {
     save() {
@@ -69,12 +57,12 @@ export default {
         this.$bvToast.toast(message, {
           title: "succès de l'opération".toLocaleUpperCase(),
           variant: 'success',
-          solid: true,
+          solid: true
         })
         this.$emit('confirmed')
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang=""></style>
