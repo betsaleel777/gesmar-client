@@ -1,6 +1,7 @@
 const reparationRoot = 'exploitation/reparation'
 const bordereauRoot = 'finance/bordereau'
 const emplacementRoot = 'architecture/emplacement'
+const technicienRoot = 'exploitation/technicien'
 const siteRoot = 'architecture/marche'
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -14,6 +15,18 @@ export const MODULES = Object.freeze({
     RESTORE: reparationRoot + '/restaurer',
     ADD: reparationRoot + '/ajouter',
     REPARATIONS: reparationRoot + '/reparations'
+  }),
+  TECHNICIEN: Object.freeze({
+    ALL: technicienRoot + '/getAll',
+    PAGINATE: technicienRoot + '/getPaginate',
+    SEARCH: technicienRoot + '/getSearch',
+    PAGINATE_TRASHED: technicienRoot + '/getPaginateTrashed',
+    SEARCH_TRASHED: technicienRoot + '/getSearchTrashed',
+    ONE: technicienRoot + '/getOne',
+    TRASH: technicienRoot + '/supprimer',
+    RESTORE: technicienRoot + '/restaurer',
+    ADD: technicienRoot + '/ajouter',
+    TECHNICIENS: technicienRoot + '/techniciens'
   }),
   BORDEREAU: Object.freeze({
     ALL: bordereauRoot + '/getAll',

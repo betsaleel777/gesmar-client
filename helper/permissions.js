@@ -107,6 +107,12 @@ const exploitation = {
       show: "voir les détails d'une réparation",
       validate: 'valider une réparation'
     },
+    technicien: {
+      acceder: 'accès au menu technicien',
+      create: 'créer une technicien',
+      trash: 'archiver un technicien',
+      show: "voir les détails d'un technicien"
+    },
     ordre: {
       acceder: 'accès au menu ordre de réparation',
       validate: 'valider un ordre de réparation'
