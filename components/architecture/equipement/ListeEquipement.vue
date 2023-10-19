@@ -5,7 +5,7 @@
         <feather
           v-b-tooltip.hover.top
           title="archives"
-          class="btn btn-sm btn-primary btn-icon"
+          class="btn btn-sm btn-primary btn-icon ml-1"
           stroke-width="2"
           size="18"
           type="archive"

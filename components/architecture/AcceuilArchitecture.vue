@@ -1,8 +1,5 @@
 <template>
   <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
-    <button type="button" class="btn btn-primary text-white" @click="$bvModal.show('structure')">
-      Création d'architecture de marché
-    </button>
     <ModalStepperArchitecture />
     <StructureTreemap :structure="structure" />
   </b-overlay>
@@ -10,15 +7,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import ModalStepperArchitecture from './ModalStepperArchitecture.vue'
 import StructureTreemap from './StructureTreemap.vue'
 export default {
-  components: {
-    ModalStepperArchitecture,
-    StructureTreemap,
-  },
-  fetch() {
-    this.getStructure()
+  components: { StructureTreemap },
+  async fetch() {
+    await this.getStructure()
   },
   computed: {
     ...mapGetters({ structure: 'architecture/marche/structure' }),

@@ -113,7 +113,7 @@
               :error-messages="errors.role_id.message"
             >
               <template #label>
-                Choix des marchés
+                Choix des roles
                 <span class="red--text"><strong>* </strong></span>
               </template>
             </v-autocomplete>

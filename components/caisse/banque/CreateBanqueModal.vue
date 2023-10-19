@@ -88,7 +88,7 @@ export default {
     ...mapActions({ ajouter: 'caisse/banque/ajouter', getSites: 'architecture/marche/getAll' }),
     save() {
       this.submiting = true
-      this.ajouter(this.banque)
+      this.ajouter(this.compte)
         .then(({ message }) => {
           this.$bvModal.hide('modalCreateBanque')
           this.$bvToast.toast(message, {

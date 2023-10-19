@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">Modifier le marché {{ marche.nom }}</h5>
+      <h5 class="modal-title text-primary">Modifier le marché</h5>
       <button type="button" class="close" aria-label="Close" @click="close">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -16,7 +16,7 @@
               type="text"
               class="form-control"
               :class="{ 'is-invalid': errors.nom.exist }"
-              placeholder="Entrer votre nom complet"
+              placeholder="Entrer le nom complet du marché"
             />
             <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
               <strong>{{ errors.nom.message }}</strong>
