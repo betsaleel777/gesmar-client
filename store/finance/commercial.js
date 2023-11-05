@@ -1,11 +1,15 @@
 export const state = () => ({
   commerciaux: [],
+  salesman: []
 })
 
 export const getters = {
   commerciaux: (state) => {
     return state.commerciaux
   },
+  salesman: (state) => {
+    return state.salesman
+  }
 }
 
 export const actions = {
@@ -14,18 +18,12 @@ export const actions = {
     const requete = await this.$axios.get('api/finances/commerciaux')
     commit('SET_COMMERCIAUX', requete.data.commerciaux)
   },
-  async getForSelect({ commit }) {
-    commit('SET_COMMERCIAUX', [])
-    const requete = await this.$axios.get('api/finances/commerciaux/select')
-    commit('SET_COMMERCIAUX', requete.data.commerciaux)
-  },
 
-  // async getCommercialsWithBordereau({ commit }) {
-  //   commit('SET_COMMERCIAUX', [])
-  //   const requete = await this.$axios.get('api/finances/commerciaux')
-  //   const withBordereaux = requete.data.commerciaux.filter(({ bordereaux }) => !isNull(bordereaux))
-  //   commit('SET_COMMERCIAUX', withBordereaux)
-  // },
+  async getForSelect({ commit }) {
+    commit('SET_SALESMAN', [])
+    const requete = await this.$axios.get('api/finances/commerciaux/select')
+    commit('SET_SALESMAN', requete.data.commerciaux)
+  },
 
   async getTrashAll({ commit }) {
     commit('SET_COMMERCIAUX', [])
@@ -66,11 +64,14 @@ export const actions = {
     const requete = await this.$axios.post('api/finances/commerciaux/attribuer', payload)
     dispatch('getAll')
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_COMMERCIAUX(state, commerciaux) {
     state.commerciaux = commerciaux
   },
+  SET_SALESMAN(state, commerciaux) {
+    state.salesman = commerciaux
+  }
 }

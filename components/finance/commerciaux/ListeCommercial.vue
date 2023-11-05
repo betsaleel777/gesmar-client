@@ -67,6 +67,9 @@
           >
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </nuxt-link>
+          <a type="button" @click="attribuer(data.item)">
+            <feather title="attribuer" type="calendar" size="20" stroke="green" />
+          </a>
         </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
@@ -83,17 +86,19 @@
         aria-controls="table"
       ></b-pagination>
       <CreateCommecialModal v-if="createModal" v-model="createModal" />
+      <CreateBorderauModal v-if="attribution.modal" :id="attribution.id" v-model="attribution.modal" />
     </b-card-text>
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import CreateBorderauModal from '../bordereau/CreateBorderauModal.vue'
 import CreateCommecialModal from './CreateCommecialModal.vue'
 import { finance, parametre } from '~/helper/permissions'
 const permissions = finance.bordereaux.commerciaux
 const accesParametre = parametre.acceder
 export default {
-  components: { CreateCommecialModal },
+  components: { CreateCommecialModal, CreateBorderauModal },
   data: () => ({
     fields: [
       'ordre',
@@ -130,6 +135,10 @@ export default {
   methods: {
     ...mapActions({ getAll: 'finance/commercial/getAll' }),
     imprimer() {},
+    attribuer({ id }) {
+      this.attribution.id = id
+      this.attribution.modal = true
+    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
