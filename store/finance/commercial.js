@@ -1,11 +1,15 @@
 export const state = () => ({
   commerciaux: [],
-  salesman: []
+  salesman: [],
+  commercial: {}
 })
 
 export const getters = {
   commerciaux: (state) => {
     return state.commerciaux
+  },
+  commercial: (state) => {
+    return state.commercial
   },
   salesman: (state) => {
     return state.salesman
@@ -33,7 +37,7 @@ export const actions = {
 
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/finances/commerciaux/' + id)
-    return requete.data
+    commit('SET_COMMERCIAL', requete.data.commercial)
   },
 
   async modifier({ dispatch }, payload) {
@@ -73,5 +77,8 @@ export const mutations = {
   },
   SET_SALESMAN(state, commerciaux) {
     state.salesman = commerciaux
+  },
+  SET_COMMERCIAL(state, commercial) {
+    state.commercial = commercial
   }
 }

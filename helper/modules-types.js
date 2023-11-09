@@ -3,6 +3,9 @@ const bordereauRoot = 'finance/bordereau'
 const emplacementRoot = 'architecture/emplacement'
 const technicienRoot = 'exploitation/technicien'
 const siteRoot = 'architecture/marche'
+const zoneRoot = 'architecture/zone'
+const commercialRoot = 'finance/commercial'
+
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
     ALL: reparationRoot + '/getAll',
@@ -62,6 +65,7 @@ export const MODULES = Object.freeze({
       BY_MARCHE_UNLINKED: emplacementRoot + '/getByMarcheUnlinked',
       FREE_BY_MARCHE: emplacementRoot + '/getFreeByMarche',
       BUSY_BY_MARCHE: emplacementRoot + '/getBusyByMarche',
+      BY_ZONE: emplacementRoot + '/getByZones',
       EDIT: emplacementRoot + '/modifier',
       TRASH: emplacementRoot + '/supprimer',
       RESTORE: emplacementRoot + '/restaurer',
@@ -85,6 +89,41 @@ export const MODULES = Object.freeze({
       RESTORE: siteRoot + '/restaurer',
       ADD: siteRoot + '/ajouter',
       PUSH: siteRoot + '/push'
+    })
+  }),
+  ZONE: Object.freeze({
+    GETTERS: Object.freeze({
+      ZONES: zoneRoot + '/zones',
+      BY_SITES: zoneRoot + '/zonesBySites'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: zoneRoot + '/getAll',
+      FOR_ATTRIBUTION: zoneRoot + '/getZoneForAttribution',
+      TRASHED: zoneRoot + '/getTrashAll',
+      BY_MARCHE: zoneRoot + '/getByMarche',
+      EDIT: zoneRoot + '/modifier',
+      ONE: zoneRoot + '/getOne',
+      TRASH: zoneRoot + '/supprimer',
+      RESTORE: zoneRoot + '/restaurer',
+      ADD: zoneRoot + '/ajouter'
+    })
+  }),
+  COMMERCIAL: Object.freeze({
+    GETTERS: Object.freeze({
+      COMMERCIAUX: commercialRoot + '/commerciaux',
+      SALESMAN: commercialRoot + '/salesman',
+      COMMERCIAL: commercialRoot + '/commercial'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: commercialRoot + '/getAll',
+      FOR_SELECT: commercialRoot + '/getForSelect',
+      TRASHED: commercialRoot + '/getTrashAll',
+      ONE: commercialRoot + '/getOne',
+      EDIT: commercialRoot + '/modifier',
+      ADD: commercialRoot + '/ajouter',
+      TRASH: commercialRoot + '/supprimer',
+      RESTORE: commercialRoot + '/restaurer',
+      ASSIGN: commercialRoot + '/attribuer'
     })
   })
 })

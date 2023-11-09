@@ -57,9 +57,6 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(created_at)="data">
-          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-        </template>
         <template #cell(option)="data">
           <nuxt-link
             v-permission:all="permissions.edit + '|' + accesParametre"
@@ -103,7 +100,7 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'name', label: 'Nom', sortable: true },
+      { key: 'user.name', label: 'Nom', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -113,9 +110,7 @@ export default {
         sortable: false,
       },
     ],
-    edit: { modal: false, commercial: {} },
     show: { modal: false, commercial: {} },
-    transfer: { modal: false, commercial: {} },
     attribution: { modal: false, id: 0 },
     filter: null,
     totalRows: 0,

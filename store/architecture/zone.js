@@ -1,5 +1,5 @@
 export const state = () => ({
-  zones: [],
+  zones: []
 })
 export const getters = {
   zones: (state) => {
@@ -8,13 +8,18 @@ export const getters = {
   zonesBySites: (state) => (sites) => {
     const ids = sites.map((site) => site.id)
     return state.zones.filter((zone) => ids.includes(zone.site_id))
-  },
+  }
 }
 export const actions = {
   async getAll({ commit }) {
     commit('SET_ZONE', [])
     const requete = await this.$axios.get('api/parametres/zones')
     commit('SET_ZONE', requete.data.zones)
+  },
+
+  async getZoneForAttribution({ commit }, id) {
+    const requete = await this.$axios.get('api/parametres/zones/zone-attribution/' + id)
+    return requete.data.zones
   },
 
   async getSearch({ commit }, search) {
@@ -60,11 +65,11 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/zones/store', payload)
     dispatch('getAll')
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_ZONE(state, zones) {
     state.zones = zones
-  },
+  }
 }

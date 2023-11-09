@@ -30,6 +30,14 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
+  async getByZones({ commit }, zones) {
+    if (Array.isArray(zones) && zones.length > 0) {
+      const requete = await this.$axios.get('api/parametres/emplacements/zones', { params: { zones } })
+      return requete.data.emplacements
+    }
+    return []
+  },
+
   // les emplacements dont les contrat qui ne passent pas par l'ordonnacement pour être validés
   async getAutoAll({ commit }) {
     const requete = await this.$axios.get('api/parametres/emplacements/autos')
