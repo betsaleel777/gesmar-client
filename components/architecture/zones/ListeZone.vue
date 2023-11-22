@@ -101,9 +101,9 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'niveau', label: 'Niveaux', sortable: true },
-      { key: 'pavillon', label: 'Pavillons', sortable: true },
-      { key: 'site', label: 'Sites', sortable: true },
+      { key: 'niveau.nom', label: 'Niveaux', sortable: true },
+      { key: 'pavillon.nom', label: 'Pavillons', sortable: true },
+      { key: 'site.nom', label: 'Sites', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

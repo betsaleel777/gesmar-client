@@ -60,7 +60,7 @@
         <template #cell(option)="data">
           <nuxt-link
             v-permission:all="permissions.edit + '|' + accesParametre"
-            :to="`/parametre/utilisateur/${data.item.user_id}/settings`"
+            :to="`/parametre/utilisateur/${data.item.user.id}/settings`"
           >
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </nuxt-link>

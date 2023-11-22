@@ -5,6 +5,8 @@ const technicienRoot = 'exploitation/technicien'
 const siteRoot = 'architecture/marche'
 const zoneRoot = 'architecture/zone'
 const commercialRoot = 'finance/commercial'
+const niveauRoot = 'architecture/niveau'
+const pavillonRoot = 'architecture/pavillon'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -112,7 +114,8 @@ export const MODULES = Object.freeze({
     GETTERS: Object.freeze({
       COMMERCIAUX: commercialRoot + '/commerciaux',
       SALESMAN: commercialRoot + '/salesman',
-      COMMERCIAL: commercialRoot + '/commercial'
+      COMMERCIAL: commercialRoot + '/commercial',
+      DISABLE_DATES: commercialRoot + '/disableDates'
     }),
     ACTIONS: Object.freeze({
       ALL: commercialRoot + '/getAll',
@@ -123,7 +126,42 @@ export const MODULES = Object.freeze({
       ADD: commercialRoot + '/ajouter',
       TRASH: commercialRoot + '/supprimer',
       RESTORE: commercialRoot + '/restaurer',
-      ASSIGN: commercialRoot + '/attribuer'
+      ASSIGN: commercialRoot + '/attribuer',
+      MONTH_BORDEREAUX: commercialRoot + '/getMonthBordereaux'
+    })
+  }),
+  NIVEAU: Object.freeze({
+    GETTERS: Object.freeze({
+      NIVEAUX: niveauRoot + '/niveaux',
+      NIVEAUX_BY_SITE: niveauRoot + '/niveauxBySites'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: niveauRoot + '/getAll',
+      SEARCH: niveauRoot + '/getSearch',
+      TRASHED: niveauRoot + '/getTrashAll',
+      ONE: niveauRoot + '/getOne',
+      EDIT: niveauRoot + '/modifier',
+      ADD: niveauRoot + '/ajouter',
+      TRASH: niveauRoot + '/supprimer',
+      RESTORE: niveauRoot + '/restaurer'
+    })
+  }),
+  PAVILLON: Object.freeze({
+    GETTERS: Object.freeze({
+      PAVILLON: pavillonRoot + '/pavillons',
+      SELECTED: pavillonRoot + '/selected'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: pavillonRoot + '/getAll',
+      SEARCH: pavillonRoot + '/getSearch',
+      TRASHED: pavillonRoot + '/getTrashAll',
+      ONE: pavillonRoot + '/getOne',
+      EDIT: pavillonRoot + '/modifier',
+      ADD: pavillonRoot + '/ajouter',
+      TRASH: pavillonRoot + '/supprimer',
+      RESTORE: pavillonRoot + '/restaurer',
+      BY_SITE: pavillonRoot + '/getByMarche',
+      PUSH: pavillonRoot + '/push'
     })
   })
 })

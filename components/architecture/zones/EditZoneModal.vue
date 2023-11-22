@@ -57,6 +57,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
     id: {
@@ -81,11 +82,10 @@ export default {
     },
   }),
   async fetch() {
-    const { zone } = await this.getOne(this.id)
-    const { niveau } = await this.getNiveau(zone.niveau_id)
+    const { zone } = await this.getZone(this.id)
     this.niveaux.push({
-      texte: niveau.nom + ' ' + niveau.pavillon.nom + ' ' + niveau.site.nom,
-      id: niveau.id,
+      texte: zone.niveau.nom + ' ' + zone.pavillon.nom + ' ' + zone.site.nom,
+      id: zone.niveau.id,
     })
     this.zone = zone
   },
@@ -106,10 +106,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      modifier: 'architecture/zone/modifier',
-      getSearch: 'architecture/niveau/getSearch',
-      getNiveau: 'architecture/niveau/getOne',
-      getOne: 'architecture/zone/getOne',
+      modifier: MODULES.ZONE.ACTIONS.EDIT,
+      getSearch: MODULES.NIVEAU.ACTIONS.SEARCH,
+      getZone: MODULES.ZONE.ACTIONS.ONE,
     }),
     save() {
       this.submiting = true

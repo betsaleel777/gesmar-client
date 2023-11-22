@@ -43,7 +43,16 @@
                       </v-text-field>
                     </ValidationProvider>
                   </template>
-                  <v-date-picker v-model="attribution.jour" locale="fr" no-title scrollable color="primary">
+                  <v-date-picker
+                    v-model="attribution.jour"
+                    :min="$moment().startOf('month').format('YYYY-MM-DD')"
+                    :max="$moment().endOf('month').format('YYYY-MM-DD')"
+                    locale="fr"
+                    no-title
+                    scrollable
+                    color="primary"
+                    :allowed-dates="allowedDates"
+                  >
                     <v-spacer></v-spacer>
                     <v-btn text color="warning" @click="menu = false"> annuler </v-btn>
                     <v-btn text color="primary" @click="$refs.menu.save(attribution.jour)"> confirmer </v-btn>
@@ -89,8 +98,6 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapGetters, mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 import TableauAttributionEmplacement from '~/components/finance/bordereau/TableauAttributionEmplacement.vue'
-const ZONE = MODULES.ZONE
-const COMMERCIAL = MODULES.COMMERCIAL
 export default {
   components: { TableauAttributionEmplacement, ValidationObserver, ValidationProvider },
   props: { id: { type: Number, required: true }, value: Boolean },
@@ -106,6 +113,7 @@ export default {
   }),
   async fetch() {
     await this.getCommercial(this.id)
+    await this.getMonthBordereaux(this.id)
     this.zones = await this.getZones(this.id)
   },
   computed: {
@@ -120,19 +128,25 @@ export default {
     zoneKey() {
       return this.zonesSelected.toString()
     },
-    ...mapGetters({ commercial: COMMERCIAL.GETTERS.COMMERCIAL }),
+    ...mapGetters({
+      commercial: MODULES.COMMERCIAL.GETTERS.COMMERCIAL,
+      excludedDates: MODULES.COMMERCIAL.GETTERS.DISABLE_DATES,
+    }),
   },
   methods: {
     ...mapActions({
-      getCommercial: COMMERCIAL.ACTIONS.ONE,
-      getZones: ZONE.ACTIONS.FOR_ATTRIBUTION,
-      attribuer: COMMERCIAL.ACTIONS.ASSIGN,
+      getCommercial: MODULES.COMMERCIAL.ACTIONS.ONE,
+      getMonthBordereaux: MODULES.COMMERCIAL.ACTIONS.MONTH_BORDEREAUX,
+      getZones: MODULES.ZONE.ACTIONS.FOR_ATTRIBUTION,
+      attribuer: MODULES.COMMERCIAL.ACTIONS.ASSIGN,
     }),
     save() {
       this.submiting = true
+      this.attribution.commercial_id = this.id
       this.attribuer(this.attribution)
         .then((message) => {
           this.$bvToast.toast(message, { title: "SUCCES DE L'OPERATION", variant: 'success', solid: true })
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -144,6 +158,9 @@ export default {
     },
     onSelected(selected) {
       this.attribution.emplacements = selected.map(({ id }) => id)
+    },
+    allowedDates(date) {
+      return !this.excludedDates.includes(this.$moment(date).format('DD-MM-YYYY'))
     },
   },
 }

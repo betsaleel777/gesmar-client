@@ -1,6 +1,5 @@
 <template>
   <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
-    <ModalStepperArchitecture />
     <StructureTreemap :structure="structure" />
   </b-overlay>
 </template>

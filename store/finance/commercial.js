@@ -1,7 +1,8 @@
 export const state = () => ({
   commerciaux: [],
   salesman: [],
-  commercial: {}
+  commercial: {},
+  bordereaux: []
 })
 
 export const getters = {
@@ -13,6 +14,12 @@ export const getters = {
   },
   salesman: (state) => {
     return state.salesman
+  },
+  bordereaux: (state) => {
+    return state.bordereaux
+  },
+  disableDates: (state) => {
+    return state.bordereaux.map(({ jour }) => jour)
   }
 }
 
@@ -67,13 +74,20 @@ export const actions = {
   async attribuer({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/commerciaux/attribuer', payload)
     dispatch('getAll')
-    return { message: requete.data.message }
+    return requete.data.message
+  },
+  async getMonthBordereaux({ commit }, id) {
+    const requete = await this.$axios.get('api/finances/commerciaux/bordereaux-month/' + id)
+    commit('SET_ATTRIBUTIONS', requete.data)
   }
 }
 
 export const mutations = {
   SET_COMMERCIAUX(state, commerciaux) {
     state.commerciaux = commerciaux
+  },
+  SET_ATTRIBUTIONS(state, bordereaux) {
+    state.bordereaux = bordereaux
   },
   SET_SALESMAN(state, commerciaux) {
     state.salesman = commerciaux

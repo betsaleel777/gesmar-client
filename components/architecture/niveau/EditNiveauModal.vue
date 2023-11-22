@@ -55,6 +55,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { MODULES } from '~/helper/modules-types'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
@@ -81,8 +82,7 @@ export default {
   }),
   async fetch() {
     const { niveau } = await this.getOne(this.id)
-    const { pavillon } = await this.getPavillon(niveau.pavillon_id)
-    this.pavillons.push({ texte: pavillon.nom + ' ' + pavillon.site.nom, id: pavillon.id })
+    this.pavillons.push({ texte: niveau.pavillon.nom + ' ' + niveau.site.nom, id: niveau.pavillon.id })
     this.niveau = niveau
   },
   computed: {
@@ -102,10 +102,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      modifier: 'architecture/niveau/modifier',
-      getSearch: 'architecture/pavillon/getSearch',
-      getPavillon: 'architecture/pavillon/getOne',
-      getOne: 'architecture/niveau/getOne',
+      modifier: MODULES.NIVEAU.ACTIONS.EDIT,
+      getSearch: MODULES.PAVILLON.ACTIONS.SEARCH,
+      getOne: MODULES.NIVEAU.ACTIONS.ONE,
     }),
     save() {
       this.submiting = true

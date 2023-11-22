@@ -99,8 +99,8 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'pavillon', label: 'Pavillon', sortable: true },
-      { key: 'site', label: 'Site', sortable: true },
+      { key: 'pavillon.nom', label: 'Pavillon', sortable: true },
+      { key: 'site.nom', label: 'Site', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

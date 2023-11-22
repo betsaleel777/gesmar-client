@@ -99,7 +99,7 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'marche', label: 'Site', sortable: true },
+      { key: 'site.nom', label: 'Site', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',

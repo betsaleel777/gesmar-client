@@ -112,15 +112,13 @@
         />
       </div>
       <CreateEmplacementModal :types="types" :marches="marches" />
-      <div>
-        <EditEmplacementModal
-          v-if="edit.modal"
-          v-model="edit.modal"
-          :current="edit.emplacement"
-          :types="types"
-          :marches="marches"
-        />
-      </div>
+      <EditEmplacementModal
+        v-if="edit.modal"
+        v-model="edit.modal"
+        :current="edit.emplacement"
+        :types="types"
+        :marches="marches"
+      />
     </b-card-text>
   </b-card>
 </template>
@@ -142,7 +140,7 @@ export default {
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'superficie', label: 'Superficie', sortable: true },
-      { key: 'type', label: 'Type' },
+      { key: 'type.nom', label: 'Type' },
       { key: 'loyer', label: 'Loyer', tdClass: 'text-right', sortable: true },
       { key: 'pas_porte', label: 'Pas de porte', tdClass: 'text-right', sortable: true },
       { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center' },
