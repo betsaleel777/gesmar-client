@@ -24,9 +24,9 @@
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon le code,le nom, la date"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -37,16 +37,13 @@
         small
         bordered
         primary-key="id"
-        :items="commerciaux"
+        :items="commerciaux.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Tableau vide"
         show-empty
-        :filter="filter"
-        :busy="$fetchState.pending"
-        @filtered="onFiltered"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -74,14 +71,14 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
       <CreateCommecialModal v-if="createModal" v-model="createModal" />
       <CreateBorderauModal v-if="attribution.modal" :id="attribution.id" v-model="attribution.modal" />
     </b-card-text>
@@ -92,6 +89,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateBorderauModal from '../bordereau/CreateBorderauModal.vue'
 import CreateCommecialModal from './CreateCommecialModal.vue'
 import { finance, parametre } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 const permissions = finance.bordereaux.commerciaux
 const accesParametre = parametre.acceder
 export default {
@@ -112,31 +110,62 @@ export default {
     ],
     show: { modal: false, commercial: {} },
     attribution: { modal: false, id: 0 },
-    filter: null,
-    totalRows: 0,
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
     permissions,
     accesParametre,
     createModal: false,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.commerciaux.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
-    ...mapGetters('finance/commercial', ['commerciaux']),
+    ...mapGetters({ commerciaux: MODULES.COMMERCIAL.GETTERS.COMMERCIAUX }),
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
   },
   methods: {
-    ...mapActions({ getAll: 'finance/commercial/getAll' }),
-    imprimer() {},
+    ...mapActions({
+      getPaginate: MODULES.COMMERCIAL.ACTIONS.PAGINATE,
+      getSearch: MODULES.COMMERCIAL.ACTIONS.SEARCH,
+    }),
     attribuer({ id }) {
       this.attribution.id = id
       this.attribution.modal = true
     },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+    pageInit() {
+      this.pages = this.commerciaux.meta.last_page
+      this.currentPage = this.commerciaux.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe(page)
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe(page) {
+      this.loading = true
+      await this.getPaginate(page)
+      this.pageInit()
+      this.loading = false
     },
   },
 }

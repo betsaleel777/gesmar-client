@@ -120,6 +120,8 @@ export const MODULES = Object.freeze({
     ACTIONS: Object.freeze({
       ALL: commercialRoot + '/getAll',
       FOR_SELECT: commercialRoot + '/getForSelect',
+      PAGINATE: commercialRoot + '/getPaginate',
+      SEARCH: commercialRoot + '/getSearch',
       TRASHED: commercialRoot + '/getTrashAll',
       ONE: commercialRoot + '/getOne',
       EDIT: commercialRoot + '/modifier',

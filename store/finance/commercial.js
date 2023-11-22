@@ -30,6 +30,18 @@ export const actions = {
     commit('SET_COMMERCIAUX', requete.data.commerciaux)
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/commerciaux/paginate?page=${page}`)
+    commit('SET_COMMERCIAUX', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/finances/commerciaux/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_COMMERCIAUX', requete.data)
+  },
+
   async getForSelect({ commit }) {
     commit('SET_SALESMAN', [])
     const requete = await this.$axios.get('api/finances/commerciaux/select')
