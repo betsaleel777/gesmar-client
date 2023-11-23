@@ -14,6 +14,14 @@
         >
           <ListeCommercial />
         </b-tab>
+        <b-tab
+          id="bordereaux"
+          :disabled="disableBordereau"
+          title="Bordereaux"
+          :title-link-class="linkClass(2)"
+        >
+          <ListeBordereaux />
+        </b-tab>
       </b-tabs>
     </div>
     <!-- content-right -->
@@ -23,6 +31,7 @@
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import TableauBordereau from '~/components/finance/TableauBordereau.vue'
 import ListeCommercial from '~/components/finance/commerciaux/ListeCommercial.vue'
+import ListeBordereaux from '~/components/finance/bordereau/ListeBordereaux.vue'
 import { finance } from '~/helper/permissions'
 const permissions = finance.bordereaux
 export default {
@@ -30,6 +39,7 @@ export default {
     PartialBreadcrumb,
     TableauBordereau,
     ListeCommercial,
+    ListeBordereaux,
   },
   data: () => ({
     liens: [{ path: '#', text: 'Bordereaux' }],

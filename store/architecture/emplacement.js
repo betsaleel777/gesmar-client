@@ -44,6 +44,11 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
+  async getAutoBySite({ commit }, id) {
+    const requete = await this.$axios.get('api/parametres/emplacements/autos/site/' + id)
+    commit('SET_EMPLACEMENT', requete.data)
+  },
+
   async getEquipables({ commit }) {
     const requete = await this.$axios.get('api/parametres/emplacements/equipables')
     commit('SET_EQUIPABLE', requete.data.emplacements)

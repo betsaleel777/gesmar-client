@@ -90,7 +90,7 @@ export const actions = {
   },
   async getMonthBordereaux({ commit }, id) {
     const requete = await this.$axios.get('api/finances/commerciaux/bordereaux-month/' + id)
-    commit('SET_ATTRIBUTIONS', requete.data)
+    commit('SET_BORDEREAUX', requete.data)
   }
 }
 
@@ -98,7 +98,7 @@ export const mutations = {
   SET_COMMERCIAUX(state, commerciaux) {
     state.commerciaux = commerciaux
   },
-  SET_ATTRIBUTIONS(state, bordereaux) {
+  SET_BORDEREAUX(state, bordereaux) {
     state.bordereaux = bordereaux
   },
   SET_SALESMAN(state, commerciaux) {

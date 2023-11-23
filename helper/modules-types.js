@@ -34,18 +34,24 @@ export const MODULES = Object.freeze({
     TECHNICIENS: technicienRoot + '/techniciens'
   }),
   BORDEREAU: Object.freeze({
-    ALL: bordereauRoot + '/getAll',
-    TRASHED: bordereauRoot + '/getTrashAll',
-    COLLECTED: bordereauRoot + '/getCollected',
-    FOR_ENCAISSEMENT: bordereauRoot + '/getForEncaissement',
-    PAGINATE: bordereauRoot + '/getPaginate',
-    SEARCH: bordereauRoot + '/getSearch',
-    ONE: bordereauRoot + '/getOne',
-    EDIT: bordereauRoot + '/modifier',
-    TRASH: bordereauRoot + '/supprimer',
-    RESTORE: bordereauRoot + '/restaurer',
-    ADD: bordereauRoot + '/ajouter',
-    BORDEREAUX: bordereauRoot + '/bordereaux'
+    GETTERS: {
+      BORDEREAUX: bordereauRoot + '/bordereaux',
+      SELECT: bordereauRoot + '/select',
+      BORDEREAU: bordereauRoot + '/bordereau'
+    },
+    ACTIONS: {
+      ALL: bordereauRoot + '/getAll',
+      TRASHED: bordereauRoot + '/getTrashAll',
+      SELECT: bordereauRoot + '/getForSelect',
+      PAGINATE: bordereauRoot + '/getPaginate',
+      SEARCH: bordereauRoot + '/getSearch',
+      ONE: bordereauRoot + '/getOne',
+      ONE_EDIT: bordereauRoot + '/getEdit',
+      EDIT: bordereauRoot + '/modifier',
+      TRASH: bordereauRoot + '/supprimer',
+      RESTORE: bordereauRoot + '/restaurer',
+      ADD: bordereauRoot + '/ajouter'
+    }
   }),
   EMPLACEMENT: Object.freeze({
     GETTERS: Object.freeze({
@@ -57,6 +63,7 @@ export const MODULES = Object.freeze({
       SELECT: emplacementRoot + '/getForSelect',
       SIMPLE_SELECT: emplacementRoot + '/getForSimpleSelect',
       AUTO: emplacementRoot + '/getAutoAll',
+      AUTO_BY_SITE: emplacementRoot + '/getAutoBySite',
       EQUIPABLES: emplacementRoot + '/getEquipables',
       MONTH_RENTAL: emplacementRoot + '/getMonthRental',
       TRASHED: emplacementRoot + '/getTrashAll',
