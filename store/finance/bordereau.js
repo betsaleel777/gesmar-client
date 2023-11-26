@@ -50,6 +50,7 @@ export const actions = {
   },
 
   async getEdit({ commit }, id) {
+    commit('SET_BORDEREAU', [])
     const requete = await this.$axios.get('api/finances/bordereaux/edit/' + id)
     commit('SET_BORDEREAU', requete.data)
   },
@@ -57,7 +58,7 @@ export const actions = {
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/bordereaux/' + payload.bordereau_id, payload)
     dispatch('getPaginate')
-    return { message: requete.data.message }
+    return requete.data.message
   },
 
   async supprimer({ dispatch }, id) {

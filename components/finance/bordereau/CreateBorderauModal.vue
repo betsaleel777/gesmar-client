@@ -55,7 +55,7 @@
                   >
                     <v-spacer></v-spacer>
                     <v-btn text color="warning" @click="menu = false"> annuler </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(attribution.jour)"> confirmer </v-btn>
+                    <v-btn text color="primary" @click="confirmation"> confirmer </v-btn>
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -73,6 +73,7 @@
                     deletable-chips
                     attach
                     :error-messages="errors"
+                    :disabled="disableZone"
                   >
                     <template #label>
                       Choix de la zone
@@ -82,7 +83,12 @@
                 </ValidationProvider>
               </v-col>
             </v-row>
-            <TableauAttributionEmplacement :key="zoneKey" :zones="zonesSelected" @selected="onSelected" />
+            <TableauAttributionEmplacement
+              :key="zoneKey"
+              :infos="infos"
+              :zones="zonesSelected"
+              @selected="onSelected"
+            />
             <v-btn color="primary" :loading="submiting" block @click="handleSubmit(save)"
               >assigner les emplacements</v-btn
             >
@@ -114,7 +120,7 @@ export default {
   async fetch() {
     await this.getCommercial(this.id)
     await this.getMonthBordereaux(this.id)
-    this.zones = await this.getZones(this.id)
+    this.zones = await this.getZones(this.commercial.site_id)
   },
   computed: {
     dialog: {
@@ -127,6 +133,12 @@ export default {
     },
     zoneKey() {
       return this.zonesSelected.toString()
+    },
+    disableZone() {
+      return !this.attribution.jour
+    },
+    infos() {
+      return { site: this.commercial.site_id, jour: this.attribution.jour }
     },
     ...mapGetters({
       commercial: MODULES.COMMERCIAL.GETTERS.COMMERCIAL,
@@ -145,7 +157,11 @@ export default {
       this.attribution.commercial_id = this.id
       this.attribuer(this.attribution)
         .then((message) => {
-          this.$bvToast.toast(message, { title: "SUCCES DE L'OPERATION", variant: 'success', solid: true })
+          this.$root.$bvToast.toast(message, {
+            title: "SUCCES DE L'OPERATION",
+            variant: 'success',
+            solid: true,
+          })
           this.dialog = false
         })
         .catch((err) => {
@@ -161,6 +177,10 @@ export default {
     },
     allowedDates(date) {
       return !this.excludedDates.includes(this.$moment(date).format('DD-MM-YYYY'))
+    },
+    confirmation() {
+      this.$refs.menu.save(this.attribution.jour)
+      this.zonesSelected.splice(0)
     },
   },
 }

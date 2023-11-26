@@ -30,9 +30,11 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
-  async getByZones({ commit }, zones) {
-    if (Array.isArray(zones) && zones.length > 0) {
-      const requete = await this.$axios.get('api/parametres/emplacements/zones', { params: { zones } })
+  async getByZones({ commit }, payload) {
+    if (Array.isArray(payload.zones) && payload.zones.length > 0) {
+      const requete = await this.$axios.get('api/parametres/emplacements/zones', {
+        params: { ...payload }
+      })
       return requete.data.emplacements
     }
     return []
@@ -44,8 +46,10 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
-  async getAutoBySite({ commit }, id) {
-    const requete = await this.$axios.get('api/parametres/emplacements/autos/site/' + id)
+  async getAutoBySite({ commit }, payload) {
+    const requete = await this.$axios.get('api/parametres/emplacements/autos/site/', {
+      params: { ...payload }
+    })
     commit('SET_EMPLACEMENT', requete.data)
   },
 

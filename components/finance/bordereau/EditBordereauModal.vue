@@ -18,8 +18,8 @@
             <ValidationProvider v-slot="{ errors }" name="emplacements">
               <v-alert v-if="errors.length > 0" type="error" outlined>{{ errors }}</v-alert>
               <TableauEditBordereau
-                :preselected="bordereau.emplacements"
-                :site="bordereau.site_id"
+                v-if="bordereauExist"
+                :key="bordereau.toString()"
                 @selected="onSelected"
               />
             </ValidationProvider>
@@ -78,7 +78,11 @@ export default {
       this.submiting = true
       this.modifier(this.assignation)
         .then((message) => {
-          this.$bvToast.toast(message, { title: "SUCCES DE L'OPERATION", variant: 'success', solid: true })
+          this.$root.$bvToast.toast(message, {
+            title: "SUCCES DE L'OPERATION",
+            variant: 'success',
+            solid: true,
+          })
           this.dialog = false
         })
         .catch((err) => {

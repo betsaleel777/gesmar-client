@@ -79,13 +79,13 @@ export const actions = {
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/commerciaux/store', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async attribuer({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/commerciaux/attribuer', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return requete.data.message
   },
   async getMonthBordereaux({ commit }, id) {

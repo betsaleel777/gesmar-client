@@ -27,6 +27,10 @@ import { mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
+    infos: {
+      type: Object,
+      required: true,
+    },
     zones: {
       type: Array,
       required: true,
@@ -46,7 +50,8 @@ export default {
     search: null,
   }),
   async fetch() {
-    const emplacements = await this.getByZones(this.zones)
+    const payload = { ...this.infos, zones: this.zones }
+    const emplacements = await this.getByZones(payload)
     this.emplacements = emplacements
     this.selected = []
   },

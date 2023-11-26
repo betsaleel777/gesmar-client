@@ -26,16 +26,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  props: {
-    preselected: {
-      type: Array,
-      required: true,
-    },
-    site: {
-      type: Number,
-      required: true,
-    },
-  },
   emits: ['selected'],
   data: () => ({
     selected: [],
@@ -49,11 +39,20 @@ export default {
     search: null,
   }),
   async fetch() {
-    if (this.site) await this.getEmplacements(this.site)
+    const { site_id: site, jour, commercial } = this.bordereau
+    const { id } = commercial
+    const infos = { commercial: id, jour, site }
+    await this.getEmplacements(infos)
     this.selected = this.preselected
   },
   computed: {
-    ...mapGetters({ emplacements: MODULES.EMPLACEMENT.GETTERS.EMPLACEMENTS }),
+    ...mapGetters({
+      emplacements: MODULES.EMPLACEMENT.GETTERS.EMPLACEMENTS,
+      bordereau: MODULES.BORDEREAU.GETTERS.BORDEREAU,
+    }),
+    preselected() {
+      return this.bordereau.emplacements
+    },
   },
   watch: {
     selected(newValue) {
