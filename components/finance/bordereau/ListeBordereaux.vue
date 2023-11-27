@@ -44,6 +44,11 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
+        <template #cell(status)="data">
+          <span :class="statusClass(data.item.status)">
+            {{ data.item.status }}
+          </span>
+        </template>
         <template #cell(option)="data">
           <a type="button" @click="editDialog(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -70,6 +75,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import EditBordereauModal from './EditBordereauModal.vue'
+import { BORDEREAU } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
 export default {
   components: { EditBordereauModal },
@@ -79,6 +85,7 @@ export default {
       { key: 'code', label: 'Code' },
       { key: 'commercial.user.name', label: 'Commercial', sortable: true },
       { key: 'site.nom', label: 'Marché' },
+      { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
         key: 'option',
@@ -144,6 +151,13 @@ export default {
       await this.getPaginate(page)
       this.pageInit()
       this.loading = false
+    },
+    statusClass(value) {
+      if (value === BORDEREAU.cashed) {
+        return 'badge badge-success-light'
+      } else {
+        return 'badge badge-danger-light'
+      }
     },
   },
 }

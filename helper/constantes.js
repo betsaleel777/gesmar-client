@@ -26,7 +26,7 @@ const ANNEXE = Object.freeze({
   mensuel: 'par mois',
   forfait: 'forfaitaire'
 })
-const ATTRIBUTION = Object.freeze({
+const BORDEREAU = Object.freeze({
   cashed: 'encaissé',
   uncashed: 'non encaissé'
 })
@@ -96,7 +96,7 @@ module.exports = {
   FACTURE,
   EMPLACEMENT,
   ORDONNANCEMENT,
-  ATTRIBUTION,
+  BORDEREAU,
   MATRIMONIALE,
   OUVERTURE,
   GABARI,
