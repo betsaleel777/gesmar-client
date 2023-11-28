@@ -48,7 +48,6 @@ export default {
         emplacements: [],
       },
       submiting: false,
-      zones: [],
     }
   },
   async fetch() {

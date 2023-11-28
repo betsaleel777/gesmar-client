@@ -53,6 +53,9 @@
           <a type="button" @click="editDialog(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
+          <a type="button" @click="collecter(data.item)">
+            <feather title="collecter" type="calendar" size="20" stroke="orange" />
+          </a>
         </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
@@ -69,16 +72,18 @@
         @change="getPage"
       ></b-pagination-nav>
       <EditBordereauModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
+      <CollectBordereauModal v-if="collect.modal" :id="collect.id" v-model="collect.modal" />
     </b-card-text>
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import EditBordereauModal from './EditBordereauModal.vue'
+import CollectBordereauModal from './CollectBordereauModal.vue'
 import { BORDEREAU } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { EditBordereauModal },
+  components: { EditBordereauModal, CollectBordereauModal },
   data: () => ({
     fields: [
       'ordre',
@@ -97,6 +102,7 @@ export default {
     ],
     show: { modal: false, id: 0 },
     edit: { modal: false, id: 0 },
+    collect: { modal: false, id: 0 },
     search: null,
     pages: 1,
     currentPage: 1,
@@ -127,6 +133,10 @@ export default {
     editDialog({ id }) {
       this.edit.id = id
       this.edit.modal = true
+    },
+    collecter({ id }) {
+      this.collect.id = id
+      this.collect.modal = true
     },
     pageInit() {
       this.pages = this.bordereaux.meta.last_page

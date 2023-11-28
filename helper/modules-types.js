@@ -1,5 +1,6 @@
 const reparationRoot = 'exploitation/reparation'
 const bordereauRoot = 'finance/bordereau'
+const collecteRoot = 'finance/collecte'
 const emplacementRoot = 'architecture/emplacement'
 const technicienRoot = 'exploitation/technicien'
 const siteRoot = 'architecture/marche'
@@ -47,10 +48,10 @@ export const MODULES = Object.freeze({
       SEARCH: bordereauRoot + '/getSearch',
       ONE: bordereauRoot + '/getOne',
       ONE_EDIT: bordereauRoot + '/getEdit',
+      ONE_COLLECT: bordereauRoot + '/getOneForCollect',
       EDIT: bordereauRoot + '/modifier',
       TRASH: bordereauRoot + '/supprimer',
-      RESTORE: bordereauRoot + '/restaurer',
-      ADD: bordereauRoot + '/ajouter'
+      RESTORE: bordereauRoot + '/restaurer'
     }
   }),
   EMPLACEMENT: Object.freeze({
@@ -171,6 +172,17 @@ export const MODULES = Object.freeze({
       RESTORE: pavillonRoot + '/restaurer',
       BY_SITE: pavillonRoot + '/getByMarche',
       PUSH: pavillonRoot + '/push'
+    })
+  }),
+  COLLECTE: Object.freeze({
+    GETTERS: Object.freeze({
+      COLLECTES: collecteRoot + '/collectes',
+      DAYS_COLLECTED: collecteRoot + '/daysCollected'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: collecteRoot + '/getAll',
+      COLLECTED: collecteRoot + '/getAlreadyCollected',
+      ADD: collecteRoot + '/ajouter'
     })
   })
 })

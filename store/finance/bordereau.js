@@ -49,6 +49,12 @@ export const actions = {
     commit('SET_BORDEREAU', requete.data.bordereau)
   },
 
+  async getOneForCollect({ commit }, id) {
+    commit('SET_BORDEREAU', [])
+    const requete = await this.$axios.get('api/finances/bordereaux/for-collecte/' + id)
+    commit('SET_BORDEREAU', requete.data)
+  },
+
   async getEdit({ commit }, id) {
     commit('SET_BORDEREAU', [])
     const requete = await this.$axios.get('api/finances/bordereaux/edit/' + id)
@@ -69,12 +75,6 @@ export const actions = {
 
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.patch('api/finances/bordereaux/restore/' + id)
-    dispatch('getAll')
-    return { message: requete.data.message }
-  },
-
-  async ajouter({ dispatch }, payload) {
-    const requete = await this.$axios.post('api/finances/bordereaux/store', payload)
     dispatch('getAll')
     return { message: requete.data.message }
   }
