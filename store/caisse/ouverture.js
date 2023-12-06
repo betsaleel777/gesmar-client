@@ -1,14 +1,13 @@
 export const state = () => ({
-  ouvertures: [],
+  ouvertures: []
 })
 export const getters = {
   ouvertures: (state) => {
     return state.ouvertures
-  },
+  }
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_OUVERTURE', [])
     const requete = await this.$axios.get('api/finances/caisses/ouvertures')
     commit('SET_OUVERTURE', requete.data.ouvertures)
   },
@@ -56,11 +55,11 @@ export const actions = {
       `api/finances/caisses/ouvertures/using/caissier/${payload.caissier_id}`
     )
     return Boolean(requete.data.exists)
-  },
+  }
 }
 
 export const mutations = {
   SET_OUVERTURE(state, ouvertures) {
     state.ouvertures = ouvertures
-  },
+  }
 }

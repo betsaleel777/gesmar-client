@@ -25,7 +25,6 @@
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
         v-model="filter"
         type="search"

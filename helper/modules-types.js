@@ -3,11 +3,16 @@ const bordereauRoot = 'finance/bordereau'
 const collecteRoot = 'finance/collecte'
 const emplacementRoot = 'architecture/emplacement'
 const technicienRoot = 'exploitation/technicien'
+const ordonnancementRoot = 'exploitation/ordonnancement/'
 const siteRoot = 'architecture/marche'
 const zoneRoot = 'architecture/zone'
 const commercialRoot = 'finance/commercial'
 const niveauRoot = 'architecture/niveau'
 const pavillonRoot = 'architecture/pavillon'
+const caissierRoot = 'caisse/caissier'
+const encaissementRoot = 'caisse/encaissement/'
+const ouvertureRoot = 'caisse/ouverture/'
+const applicationRoot = 'architecture/application/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -49,9 +54,12 @@ export const MODULES = Object.freeze({
       ONE: bordereauRoot + '/getOne',
       ONE_EDIT: bordereauRoot + '/getEdit',
       ONE_COLLECT: bordereauRoot + '/getOneForCollect',
+      ONE_CASHOUT: bordereauRoot + '/getOneForCashout',
       EDIT: bordereauRoot + '/modifier',
       TRASH: bordereauRoot + '/supprimer',
-      RESTORE: bordereauRoot + '/restaurer'
+      RESTORE: bordereauRoot + '/restaurer',
+      UNCASHED: bordereauRoot + '/getUncashed',
+      CASHOUT: bordereauRoot + '/getForCashout'
     }
   }),
   EMPLACEMENT: Object.freeze({
@@ -183,6 +191,75 @@ export const MODULES = Object.freeze({
       ALL: collecteRoot + '/getAll',
       COLLECTED: collecteRoot + '/getAlreadyCollected',
       ADD: collecteRoot + '/ajouter'
+    })
+  }),
+  CAISSIER: Object.freeze({
+    GETTERS: Object.freeze({
+      CAISSIERS: caissierRoot + '/caissiers'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: caissierRoot + '/getAll',
+      TRASHED: caissierRoot + '/getTrashAll',
+      ONE: caissierRoot + '/getOne',
+      EDIT: caissierRoot + '/modifier',
+      TRASH: caissierRoot + '/supprimer',
+      RESTORE: caissierRoot + '/restaurer',
+      ADD: caissierRoot + '/ajouter',
+      ATTRIBUTE: caissierRoot + '/attribuer',
+      REMOVE: caissierRoot + '/desattribuer'
+    })
+  }),
+  ORDONNANCEMENT: Object.freeze({
+    GETTERS: Object.freeze({
+      ORDONNANCEMENTS: ordonnancementRoot + 'ordonnancements'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: ordonnancementRoot + 'getAll',
+      PAGINATE: ordonnancementRoot + 'getPaginate',
+      SEARCH: ordonnancementRoot + 'getSearch',
+      UNPAIDS: ordonnancementRoot + 'getAllUnpaid',
+      BY_SITE: ordonnancementRoot + 'getByMarche',
+      ONE: ordonnancementRoot + 'getOne',
+      EDIT: ordonnancementRoot + 'modifier',
+      TRASH: ordonnancementRoot + 'supprimer',
+      ADD: ordonnancementRoot + 'ajouter'
+    })
+  }),
+  OUVERTURE: Object.freeze({
+    GETTERS: Object.freeze({
+      OUVERTURES: ouvertureRoot + 'ouvertures'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: ouvertureRoot + 'getAll',
+      ONE: ouvertureRoot + 'getOne',
+      PAGINATE: ouvertureRoot + 'getPaginate',
+      SEARCH: ouvertureRoot + 'getSearch',
+      BY_CAISSIER: ouvertureRoot + 'getByCaissier',
+      EDIT: ouvertureRoot + 'modifier',
+      ADD: ouvertureRoot + 'ajouter',
+      EXISTS: ouvertureRoot + 'ouvertureExists',
+      USING_EXISTS: ouvertureRoot + 'ouvertureUsingExists'
+    })
+  }),
+  ENCAISSEMENT: Object.freeze({
+    GETTERS: Object.freeze({
+      ENCAISSEMENTS: encaissementRoot + 'encaissements'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: encaissementRoot + 'getAll',
+      ONE: encaissementRoot + 'getOne',
+      EDIT: encaissementRoot + 'modifier',
+      ADD: encaissementRoot + 'ajouter'
+    })
+  }),
+  APPLICATION: Object.freeze({
+    GETTERS: Object.freeze({
+      SOCIETE: applicationRoot + 'societe'
+    }),
+    ACTIONS: Object.freeze({
+      ONE: applicationRoot + 'getOne',
+      ADD: applicationRoot + 'ajouter',
+      EDIT: applicationRoot + 'modifier'
     })
   })
 })

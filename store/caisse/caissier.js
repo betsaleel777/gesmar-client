@@ -1,22 +1,20 @@
 export const state = () => ({
-  caissiers: [],
+  caissiers: []
 })
 
 export const getters = {
   caissiers: (state) => {
     return state.caissiers
-  },
+  }
 }
 
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_CAISSIER', [])
     const requete = await this.$axios.get('api/parametres/caissiers')
     commit('SET_CAISSIER', requete.data.caissiers)
   },
 
   async getTrashAll({ commit }) {
-    commit('SET_CAISSIER', [])
     const requete = await this.$axios.get('api/parametres/caissiers/trashed')
     commit('SET_CAISSIER', requete.data.caissiers)
   },
@@ -60,11 +58,11 @@ export const actions = {
     const requete = await this.$axios.delete('api/parametres/caissiers/desattribuer/' + id)
     dispatch('getAll')
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_CAISSIER(state, caissiers) {
     state.caissiers = caissiers
-  },
+  }
 }

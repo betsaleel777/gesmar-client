@@ -50,7 +50,6 @@
                     outlined
                     dense
                     :disabled="disabled"
-                    @change="infosBordereaux"
                   >
                     <template #label>
                       Code du bordereau
@@ -78,6 +77,7 @@
                   :mode="mode"
                   @statusButton="(value) => (validable = value)"
                 />
+                <BordereauForm v-if="encaissement.bordereau_id" v-model="encaissement" @setForm="onSetForm" />
               </v-col>
             </v-row>
           </v-app>
@@ -95,12 +95,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import InfosContrat from './InfosContrat.vue'
+import InfosBordereau from './InfosBordereau.vue'
+import BordereauForm from './BordereauForm.vue'
 import CashForm from './CashForm.vue'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { InfosContrat, CashForm },
-  props: {
-    value: Boolean,
-  },
+  components: { InfosContrat, InfosBordereau, CashForm, BordereauForm },
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     menu: null,
@@ -123,9 +124,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      ordonnancements: 'exploitation/ordonnancement/ordonnancements',
-      bordereaux: 'finance/bordereau/bordereaux',
-      caissiers: 'caisse/caissier/caissiers',
+      ordonnancements: MODULES.ORDONNANCEMENT.GETTERS.ORDONNANCEMENTS,
+      bordereaux: MODULES.BORDEREAU.GETTERS.BORDEREAUX,
+      caissiers: MODULES.CAISSIER.GETTERS.CAISSIERS,
     }),
     dialog: {
       get() {
@@ -138,12 +139,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      ajouter: 'caisse/encaissement/ajouter',
-      getCaissiers: 'caisse/caissier/getAll',
-      getOrdonnancements: 'exploitation/ordonnancement/getAllUnpaid',
-      getBordereaux: 'finance/bordereau/getCollected',
-      getOne: 'exploitation/ordonnancement/getOne',
-      ouvertureExists: 'caisse/ouverture/ouvertureExists',
+      ajouter: MODULES.ENCAISSEMENT.ACTIONS.ADD,
+      getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
+      getOrdonnancements: MODULES.ORDONNANCEMENT.ACTIONS.UNPAIDS,
+      getBordereaux: MODULES.BORDEREAU.ACTIONS.CASHOUT,
+      getOne: MODULES.ORDONNANCEMENT.ACTIONS.ONE,
+      ouvertureExists: MODULES.OUVERTURE.ACTIONS.EXISTS,
     }),
     save() {
       this.submiting = true
@@ -195,7 +196,10 @@ export default {
         })
       }
     },
-    infosBordereaux() {},
+    onSetForm(data) {
+      this.validable = true
+      this.encaissement = { ...this.encaissement, ...data }
+    },
   },
 }
 </script>

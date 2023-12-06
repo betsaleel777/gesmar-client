@@ -66,8 +66,8 @@ export default {
   data: () => ({
     fields: [
       'ordre',
-      { key: 'caissier', label: 'Caissier' },
-      { key: 'guichet', label: 'Guichet' },
+      { key: 'caissier.user.name', label: 'Caissier' },
+      { key: 'guichet.nom', label: 'Guichet' },
       { key: 'total', label: 'Total encaissé' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {

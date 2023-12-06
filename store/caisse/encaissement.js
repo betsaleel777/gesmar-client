@@ -1,14 +1,13 @@
 export const state = () => ({
-  encaissements: [],
+  encaissements: []
 })
 export const getters = {
   encaissements: (state) => {
     return state.encaissements
-  },
+  }
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_ENCAISSEMENT', [])
     const requete = await this.$axios.get('api/finances/caisses/encaissements')
     commit('SET_ENCAISSEMENT', requete.data.encaissements)
   },
@@ -29,11 +28,11 @@ export const actions = {
     dispatch('getAll')
     dispatch('exploitation/ordonnancement/getAllUnpaid', {}, { root: true })
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_ENCAISSEMENT(state, encaissements) {
     state.encaissements = encaissements
-  },
+  }
 }

@@ -1,10 +1,10 @@
 export const state = () => ({
-  societe: {},
+  societe: {}
 })
 export const getters = {
   societe: (state) => {
     return state.societe
-  },
+  }
 }
 export const actions = {
   async getOne({ commit }) {
@@ -26,11 +26,11 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/societes/store', payload)
     dispatch('getOne')
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_SOCIETE(state, societe) {
     state.societe = societe
-  },
+  }
 }

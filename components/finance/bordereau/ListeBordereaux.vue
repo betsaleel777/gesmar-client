@@ -50,11 +50,16 @@
           </span>
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editDialog(data.item)">
-            <feather title="modifier" type="edit" size="20" stroke="blue" />
-          </a>
-          <a type="button" @click="collecter(data.item)">
-            <feather title="collecter" type="calendar" size="20" stroke="orange" />
+          <span v-if="data.item.status === status.uncashed">
+            <a type="button" @click="editDialog(data.item)">
+              <feather title="modifier" type="edit" size="20" stroke="blue" />
+            </a>
+            <a type="button" @click="collecter(data.item)">
+              <feather title="collecter" type="calendar" size="20" stroke="orange" />
+            </a>
+          </span>
+          <a type="button" @click="visualiser(data.item)">
+            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
         <template #empty="scope">
@@ -72,6 +77,7 @@
         @change="getPage"
       ></b-pagination-nav>
       <EditBordereauModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
+      <ShowBordereauModal v-if="show.modal" :id="show.id" v-model="show.modal" />
       <CollectBordereauModal v-if="collect.modal" :id="collect.id" v-model="collect.modal" />
     </b-card-text>
   </b-card>
@@ -80,11 +86,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import EditBordereauModal from './EditBordereauModal.vue'
 import CollectBordereauModal from './CollectBordereauModal.vue'
+import ShowBordereauModal from './ShowBordereauModal.vue'
 import { BORDEREAU } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { EditBordereauModal, CollectBordereauModal },
+  components: { EditBordereauModal, CollectBordereauModal, ShowBordereauModal },
   data: () => ({
+    status: BORDEREAU,
     fields: [
       'ordre',
       { key: 'code', label: 'Code' },
@@ -137,6 +145,10 @@ export default {
     collecter({ id }) {
       this.collect.id = id
       this.collect.modal = true
+    },
+    visualiser({ id }) {
+      this.show.id = id
+      this.show.modal = true
     },
     pageInit() {
       this.pages = this.bordereaux.meta.last_page

@@ -14,15 +14,6 @@
         />
         <feather
           v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon mr-1"
-          stroke-width="2"
-          size="18"
-          type="printer"
-          @click="imprimer"
-        />
-        <feather
-          v-b-tooltip.hover.top
           v-can="permissions.create"
           title="créer"
           class="btn btn-sm btn-primary btn-icon mr-1"
@@ -89,7 +80,7 @@
         aria-controls="table"
       ></b-pagination>
       <CreateEncaissement v-if="dialog" v-model="dialog" />
-      <ShowEncaissementModal v-if="show.modal" v-model="show.modal" :encaissement="show.encaissement" />
+      <ShowEncaissementModal v-if="show.modal" :id="show.id" v-model="show.modal" />
       <CloseEncaissementModal v-if="close" v-model="close" />
     </b-card-text>
   </b-card>
@@ -99,8 +90,8 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateEncaissement from './CreateEncaissement.vue'
 import ShowEncaissementModal from './ShowEncaissementModal.vue'
 import CloseEncaissementModal from './CloseEncaissementModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
 import { finance } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 const permissions = finance.caisse.ouverture
 export default {
   components: {
@@ -111,8 +102,14 @@ export default {
   data: () => ({
     fields: [
       'ordre',
-      { key: 'ordonnancement', label: 'Code' },
-      { key: 'caissier', label: 'Caissier' },
+      {
+        key: 'code',
+        label: 'Code',
+        formatter: (value, key, item) => {
+          return item.ordonnancement ? item.ordonnancement.code : item.bordereau.code
+        },
+      },
+      { key: 'caissier.user.name', label: 'Caissier' },
       { key: 'type', label: 'Payement' },
       {
         key: 'montant',
@@ -146,7 +143,7 @@ export default {
     ],
     dialog: false,
     dialogData: { modal: false, id: 0, nom: '' },
-    show: { modal: false, encaissement: {} },
+    show: { modal: false, id: 0 },
     close: false,
     filter: null,
     totalRows: 0,
@@ -159,46 +156,13 @@ export default {
     this.totalRows = this.encaissements.length
   },
   computed: {
-    ...mapGetters({ encaissements: 'caisse/encaissement/encaissements' }),
-    records() {
-      return this.encaissements.map((encaissement) => {
-        return {
-          code: encaissement.ordonnancement,
-          caissier: encaissement.caissier,
-          date: this.$moment(encaissement.created_at).format('llll'),
-        }
-      })
-    },
+    ...mapGetters({ encaissements: MODULES.ENCAISSEMENT.GETTERS.ENCAISSEMENTS }),
   },
   methods: {
-    ...mapActions({
-      getEncaissements: 'caisse/encaissement/getAll',
-      getOne: 'caisse/encaissement/getOne',
-    }),
-    imprimer() {
-      const columns = ['code', 'caissier', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des encaissements')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
-    dialoger({ id, nom }) {
-      this.dialogData.nom = nom
-      this.dialogData.id = id
-      this.dialogData.modal = true
-      this.$bvModal.show('encaissementConfirmationListe')
-    },
+    ...mapActions({ getEncaissements: MODULES.ENCAISSEMENT.ACTIONS.ALL }),
     detail({ id }) {
-      this.getOne(id).then(({ encaissement }) => {
-        this.show.modal = true
-        this.show.encaissement = encaissement
-      })
+      this.show.id = id
+      this.show.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

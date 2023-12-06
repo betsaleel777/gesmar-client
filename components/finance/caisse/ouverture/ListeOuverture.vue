@@ -12,15 +12,6 @@
           type="plus"
           @click="create = true"
         />
-        <feather
-          v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="printer"
-          @click="imprimer"
-        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -80,7 +71,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateOuvertureModal from './CreateOuvertureModal.vue'
 import { OUVERTURE } from '~/helper/constantes'
-import { capitalize, arrayPdf } from '~/helper/helpers'
 import { finance } from '~/helper/permissions'
 const permissions = finance.caisse.ouverture
 export default {
@@ -91,9 +81,9 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code' },
-      { key: 'site', label: 'Marché' },
-      { key: 'caissier', label: 'Caissier' },
-      { key: 'guichet', label: 'Guichet' },
+      { key: 'guichet.site.nom', label: 'Marché' },
+      { key: 'caissier.user.name', label: 'Caissier' },
+      { key: 'guichet.nom', label: 'Guichet' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       { key: 'status', label: 'Statut' },
     ],
@@ -111,17 +101,6 @@ export default {
   },
   computed: {
     ...mapGetters({ ouvertures: 'caisse/ouverture/ouvertures' }),
-    records() {
-      return this.ouvertures.map((ouverture) => {
-        return {
-          code: ouverture.code,
-          site: ouverture.site,
-          guichet: ouverture.guichet,
-          caissier: ouverture.caissier,
-          date: this.$moment(ouverture.created_at).format('llll'),
-        }
-      })
-    },
   },
   watch: {
     search(recent) {
@@ -134,19 +113,6 @@ export default {
   },
   methods: {
     ...mapActions({ getPaginate: 'caisse/ouverture/getPaginate', getSearch: 'caisse/ouverture/getSearch' }),
-    imprimer() {
-      const columns = ['code', 'guichet', 'site', 'caissier', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des ouvertures')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'information'.toLocaleUpperCase(),
-          variant: 'info',
-          solid: true,
-        })
-    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

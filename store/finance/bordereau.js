@@ -39,6 +39,16 @@ export const actions = {
     commit('SET_SELECT', requete.data.bordereaux)
   },
 
+  async getForCashout({ commit }) {
+    const requete = await this.$axios.get('api/finances/bordereaux/for-cashout')
+    commit('SET_BORDEREAUX', requete.data)
+  },
+
+  async getUncashed({ commit }) {
+    const requete = await this.$axios.get('api/finances/bordereaux/uncashed')
+    commit('SET_BORDEREAUX', requete.data)
+  },
+
   async getTrashAll({ commit }) {
     const requete = await this.$axios.get('api/finances/bordereaux/trashed')
     commit('SET_BORDEREAUX', requete.data.bordereaux)
@@ -47,6 +57,12 @@ export const actions = {
   async getOne({ commit }, id) {
     const requete = await this.$axios.get('api/finances/bordereaux/' + id)
     commit('SET_BORDEREAU', requete.data.bordereau)
+  },
+
+  async getOneForCashout({ commit }, id) {
+    commit('SET_BORDEREAU', [])
+    const requete = await this.$axios.get('api/finances/bordereaux/one-for-cashout/' + id)
+    commit('SET_BORDEREAU', requete.data)
   },
 
   async getOneForCollect({ commit }, id) {
