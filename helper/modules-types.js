@@ -190,6 +190,7 @@ export const MODULES = Object.freeze({
     ACTIONS: Object.freeze({
       ALL: collecteRoot + '/getAll',
       COLLECTED: collecteRoot + '/getAlreadyCollected',
+      GLOBALE_COLLECTED: collecteRoot + '/getAlreadyGlobaleCollected',
       ADD: collecteRoot + '/ajouter'
     })
   }),

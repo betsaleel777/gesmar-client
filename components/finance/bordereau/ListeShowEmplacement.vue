@@ -45,16 +45,19 @@
       size="sm"
       aria-controls="table"
     ></b-pagination>
+    <CalendarCollecteModal
+      v-if="calendar.modal"
+      v-model="calendar.modal"
+      :emplacement="calendar.emplacement"
+    />
   </div>
 </template>
 
 <script>
+import CalendarCollecteModal from './CalendarCollecteModal.vue'
 export default {
+  components: { CalendarCollecteModal },
   props: {
-    bordereau: {
-      type: Number,
-      required: true,
-    },
     emplacements: {
       type: Array,
       required: true,
@@ -90,7 +93,7 @@ export default {
         sortable: false,
       },
     ],
-    show: { modal: false, id: 0 },
+    calendar: { modal: false, emplacement: {} },
     filter: null,
     totalRows: 0,
     currentPage: 1,
@@ -100,7 +103,10 @@ export default {
     this.totalRows = this.emplacements.length
   },
   methods: {
-    details({ id }) {},
+    details({ id, code }) {
+      this.calendar.emplacement = { id, code }
+      this.calendar.modal = true
+    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1

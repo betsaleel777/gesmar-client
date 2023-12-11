@@ -20,6 +20,10 @@ export const actions = {
     const requete = await this.$axios.get('api/finances/collectes/collected', { params: { ...payload } })
     commit('SET_COLLECTE', requete.data)
   },
+  async getAlreadyGlobaleCollected({ commit }, payload) {
+    const requete = await this.$axios.get('api/finances/collectes/globale-collected', { params: { ...payload } })
+    commit('SET_COLLECTE', requete.data)
+  },
   async ajouter({ commit }, payload) {
     const requete = await this.$axios.post('api/finances/collectes/store', payload)
     return requete.data

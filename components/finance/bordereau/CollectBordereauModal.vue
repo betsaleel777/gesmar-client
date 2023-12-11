@@ -138,7 +138,7 @@ export default {
   methods: {
     ...mapActions({
       getOne: MODULES.BORDEREAU.ACTIONS.ONE_COLLECT,
-      getCollecte: MODULES.COLLECTE.ACTIONS.COLLECTED,
+      getCollecte: MODULES.COLLECTE.ACTIONS.GLOBALE_COLLECTED,
       ajouter: MODULES.COLLECTE.ACTIONS.ADD,
     }),
     save() {
@@ -182,7 +182,7 @@ export default {
       if (this.daysCollected.includes(this.$moment(date).format('DD-MM-YYYY'))) return 'green'
     },
     onChangeEmplacement() {
-      const payload = { emplacement: this.collecte.emplacement.id, bordereau: this.bordereau.id }
+      const payload = { emplacement: this.collecte.emplacement.id, jour: this.bordereau.jour }
       this.getCollecte(payload)
       this.collecte.jours.splice(0)
     },

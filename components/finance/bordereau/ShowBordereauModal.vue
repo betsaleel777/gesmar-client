@@ -17,7 +17,7 @@
               >Crée par le commercial <b>{{ bordereau.commercial.user.name }}</b></span
             >
           </div>
-          <ListeShowEmplacement :bordereau="bordereau.id" :emplacements="bordereau.emplacements" />
+          <ListeShowEmplacement :emplacements="bordereau.emplacements" />
         </div>
         <!-- <pre>{{ bordereau }}</pre> -->
       </b-overlay>
@@ -51,6 +51,10 @@ export default {
       },
     },
     ...mapGetters({ bordereau: MODULES.BORDEREAU.GETTERS.BORDEREAU }),
+    infosBordereau() {
+      const { id, jour, code } = this.bordereau
+      return { id, jour, code }
+    },
   },
   methods: {
     ...mapActions({ getOne: MODULES.BORDEREAU.ACTIONS.ONE }),
