@@ -13,6 +13,7 @@ const caissierRoot = 'caisse/caissier'
 const encaissementRoot = 'caisse/encaissement/'
 const ouvertureRoot = 'caisse/ouverture/'
 const applicationRoot = 'architecture/application/'
+const dashboardRoot = 'dashboard/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -261,6 +262,14 @@ export const MODULES = Object.freeze({
       ONE: applicationRoot + 'getOne',
       ADD: applicationRoot + 'ajouter',
       EDIT: applicationRoot + 'modifier'
+    })
+  }),
+  DASHBOARD: Object.freeze({
+    GETTERS: Object.freeze({
+      RECEPTION: dashboardRoot + 'reception'
+    }),
+    ACTIONS: Object.freeze({
+      RECEPTION: dashboardRoot + 'getReception'
     })
   })
 })
