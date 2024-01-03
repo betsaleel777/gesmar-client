@@ -81,8 +81,8 @@ export default {
           logout: { url: '/api/logout', method: 'post' }
         }
       }
-    },
-    plugins: ['~/plugins/axios.js']
+    }
+    // plugins: ['~/plugins/axios.js']
   },
 
   build: {}

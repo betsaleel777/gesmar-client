@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateAbonnement" @show="reset">
+  <b-modal v-model="dialog">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'abonnement</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-autocomplete
             v-model="abonnement.site_id"
@@ -130,10 +130,12 @@
             </v-col>
           </v-row>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -142,18 +144,14 @@
 </template>
 <script>
 import { isNull } from 'url/util'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import { MODULES } from '~/helper/modules-types'
 import { EQUIPEMENT } from '~/helper/constantes'
 import { remove } from '~/helper/helpers'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 let message = ''
 export default {
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-  },
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     equipements: [],
@@ -173,10 +171,28 @@ export default {
       index_autre: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getMarches()
+  },
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
-    ...mapActions('architecture/abonnement', ['ajouter', 'getLastIndex']),
-    ...mapActions('architecture/equipement', ['getGearsUnlinkedsubscribed']),
-    ...mapActions('architecture/emplacement', ['getByMarcheWithGearsLinked']),
+    ...mapActions({
+      ajouter: MODULES.ABONNEMENT.ACTIONS.ADD,
+      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getLastIndex: MODULES.ABONNEMENT.ACTIONS.LAST_INDEX,
+      getGearsUnlinkedsubscribed: MODULES.EQUIPEMENT.ACTIONS.GEARS_UNLINKEDSUBCRIBED,
+      getByMarcheWithGearsLinked: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_WITH_GEARS,
+    }),
     save() {
       this.submiting = true
       if (this.validable())
@@ -205,18 +221,6 @@ export default {
         })
         message = ''
       }
-    },
-    reset() {
-      this.abonnement = {
-        site_id: null,
-        emplacement_id: null,
-        equipements: [],
-      }
-      this.equipements = []
-      this.emplacements = []
-      this.liaisons = []
-      this.selected = []
-      errorsInitialise(this.errors)
     },
     getEmplacements() {
       if (this.abonnement.site_id) {
@@ -251,10 +255,6 @@ export default {
     },
     supprimer(item) {
       remove(item, this.selected, this.abonnement.equipements)
-    },
-    close() {
-      this.reset()
-      this.$bvModal.hide('modalCreateAbonnement')
     },
     validable() {
       return this.equipementsExist() && !this.indexMissing()

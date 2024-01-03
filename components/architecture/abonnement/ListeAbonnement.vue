@@ -10,26 +10,16 @@
             stroke-width="2"
             size="18"
             type="plus"
-            @click="$bvModal.show('modalCreateAbonnement')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
+            @click="create = true"
           />
         </div>
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
-        v-model="filter"
+        v-model="search"
         type="search"
-        placeholder="Rechercher"
+        placeholder="Rechercher selon le code,equipement,emplacement"
         class="mg-y-10"
         :debounce="500"
       ></b-form-input>
@@ -40,16 +30,12 @@
         small
         bordered
         primary-key="id"
-        :items="abonnements"
+        :items="abonnements.data"
         :fields="fields"
-        :current-page="currentPage"
-        :per-page="perPage"
         responsive
         empty-text="Aucun abonnement"
         show-empty
-        :filter="filter"
-        :busy="$fetchState.pending"
-        @filtered="onFiltered"
+        :busy="$fetchState.pending || loading"
       >
         <template #table-busy>
           <div class="text-center text-primary my-2">
@@ -80,20 +66,17 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-if="totalRows > 0"
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
-      <CreateAbonnementModal :marches="marches" />
-      <div>
-        <FinishAbonnementModal v-if="edit.modal" v-model="edit.modal" :current="edit.abonnement" />
-        <ValidateAbonnementModal v-if="confirm.modal" v-model="confirm.modal" :infos="confirm.validation" />
-      </div>
+        @change="getPage"
+      ></b-pagination-nav>
+      <CreateAbonnementModal v-if="create" v-model="create" />
+      <FinishAbonnementModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
+      <ValidateAbonnementModal v-if="confirm.modal" :id="confirm.id" v-model="confirm.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -103,7 +86,7 @@ import FinishAbonnementModal from './FinishAbonnementModal.vue'
 import CreateAbonnementModal from './CreateAbonnementModal.vue'
 import ValidateAbonnementModal from './ValidateAbonnementModal.vue'
 import { ABONNEMENT } from '~/helper/constantes'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: {
     CreateAbonnementModal,
@@ -134,78 +117,69 @@ export default {
         sortable: false,
       },
     ],
-    edit: { modal: false, abonnement: {} },
-    confirm: { modal: false, validation: {} },
-    filter: null,
-    totalRows: 0,
+    edit: { modal: false, id: 0 },
+    confirm: { modal: false, id: 0 },
+    search: null,
+    pages: 1,
     currentPage: 1,
-    perPage: 10,
+    loading: false,
+    create: false,
   }),
   async fetch() {
-    await this.getEmplacements()
-    await this.getMarches()
-    await this.getEquipements()
-    await this.getAbonnements()
-    this.totalRows = this.abonnements.length
+    await this.getPaginate()
+    this.pageInit()
   },
   computed: {
-    ...mapGetters({
-      marches: 'architecture/marche/marches',
-      equipements: 'architecture/equipement/equipements',
-      emplacements: 'architecture/emplacement/equipables',
-      abonnements: 'architecture/abonnement/abonnements',
-    }),
-    records() {
-      return this.abonnements.map((elt) => {
-        return {
-          code: elt.code,
-          equipement: elt.equipement,
-          emplacement: elt.emplacement,
-          indexLu: elt.index_lu,
-          indexFin: elt.index_fin,
-          date: elt.created_at,
-        }
-      })
+    ...mapGetters({ abonnements: MODULES.ABONNEMENT.GETTERS.ABONNEMENTS }),
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
     },
   },
   methods: {
     ...mapActions({
-      getOne: 'architecture/abonnement/getOne',
-      getEmplacements: 'architecture/emplacement/getEquipables',
-      getMarches: 'architecture/marche/getAll',
-      getAbonnements: 'architecture/abonnement/getAll',
-      getEquipements: 'architecture/equipement/getAll',
+      getPaginate: MODULES.ABONNEMENT.ACTIONS.PAGINATE,
+      getSearch: MODULES.ABONNEMENT.ACTIONS.SEARCH,
     }),
-    imprimer() {
-      const columns = ['code', 'equipement', 'emplacement', 'indexD', 'indexF', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des abonnements')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
     resilier({ id }) {
-      this.getOne(id).then(({ abonnement }) => {
-        this.edit.abonnement = abonnement
-        this.edit.modal = true
-        this.$bvModal.show('modalFinishAbonnement')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
-    confirmer({ id, code }) {
-      this.confirm.validation = { abonnement_id: id, code }
+    confirmer({ id }) {
+      this.confirm.id = id
       this.confirm.modal = true
-    },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
     },
     statusClass(value) {
       return value === ABONNEMENT.progressing ? 'badge badge-primary-light' : 'badge badge-danger-light'
+    },
+    pageInit() {
+      this.pages = this.abonnements.meta.last_page
+      this.currentPage = this.abonnements.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe(page)
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe(page) {
+      this.loading = true
+      await this.getPaginate(page)
+      this.pageInit()
+      this.loading = false
     },
   },
 }

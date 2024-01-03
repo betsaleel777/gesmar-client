@@ -14,6 +14,10 @@ const encaissementRoot = 'caisse/encaissement/'
 const ouvertureRoot = 'caisse/ouverture/'
 const applicationRoot = 'architecture/application/'
 const dashboardRoot = 'dashboard/'
+const equipementRoot = 'architecture/equipement/'
+const typeEquipementRoot = 'architecture/typEquipement/'
+const abonnementRoot = 'architecture/abonnement/'
+const abonnementValidationRoot = 'architecture/validationAbonnement/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -264,12 +268,78 @@ export const MODULES = Object.freeze({
       EDIT: applicationRoot + 'modifier'
     })
   }),
+  EQUIPEMENT: Object.freeze({
+    GETTERS: Object.freeze({
+      EQUIPEMENTS: equipementRoot + 'equipements',
+      BY_SITE: equipementRoot + 'equipementsBySites'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: equipementRoot + 'getAll',
+      PAGINATE: equipementRoot + 'getPaginate',
+      SEARCH: equipementRoot + 'getSearch',
+      TRASHED: equipementRoot + 'getTrashAll',
+      ONE: equipementRoot + 'getOne',
+      BY_TYPE: equipementRoot + 'getByType',
+      GEARS_UNLINKEDSUBCRIBED: equipementRoot + 'getGearsUnlinkedsubscribed',
+      EDIT: equipementRoot + 'modifier',
+      TRASH: equipementRoot + 'supprimer',
+      RESTORE: equipementRoot + 'restaurer',
+      ADD: equipementRoot + 'ajouter'
+    })
+  }),
   DASHBOARD: Object.freeze({
     GETTERS: Object.freeze({
       RECEPTION: dashboardRoot + 'reception'
     }),
     ACTIONS: Object.freeze({
       RECEPTION: dashboardRoot + 'getReception'
+    })
+  }),
+  ABONNEMENT: Object.freeze({
+    GETTERS: Object.freeze({
+      ABONNEMENTS: abonnementRoot + 'abonnements'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: abonnementRoot + 'getAll',
+      PAGINATE: abonnementRoot + 'getPaginate',
+      SEARCH: abonnementRoot + 'getSearch',
+      TRASHED: abonnementRoot + 'getTrashAll',
+      MOUNTH_RENTAL_GEAR: abonnementRoot + 'getMonthRentalGear',
+      ONE: abonnementRoot + 'getOne',
+      EDIT: abonnementRoot + 'modifier',
+      ABORT: abonnementRoot + 'resilier',
+      TRASH: abonnementRoot + 'supprimer',
+      RESTORE: abonnementRoot + 'restaurer',
+      ADD: abonnementRoot + 'ajouter',
+      SUBSCRIBE: abonnementRoot + 'abonner',
+      LAST_INDEX: abonnementRoot + 'getLastIndex'
+    }),
+    VALIDATION: Object.freeze({
+      GETTERS: Object.freeze({
+        VALIDATIONS: abonnementValidationRoot + 'validations'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: abonnementValidationRoot + 'getAll',
+        ONE: abonnementValidationRoot + 'getOne',
+        EDIT: abonnementValidationRoot + 'modifer',
+        ADD: abonnementValidationRoot + 'ajouter'
+      })
+    })
+  }),
+  TYPE: Object.freeze({
+    EQUIPEMENT: Object.freeze({
+      GETTERS: Object.freeze({
+        TYPES: typeEquipementRoot + 'types'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: typeEquipementRoot + 'getAll',
+        TRASHED: typeEquipementRoot + 'getTrashAll',
+        ONE: typeEquipementRoot + 'getOne',
+        EDIT: typeEquipementRoot + 'modifier',
+        TRASH: typeEquipementRoot + 'supprimer',
+        RESTORE: typeEquipementRoot + 'restaurer',
+        ADD: typeEquipementRoot + 'ajouter'
+      })
     })
   })
 })

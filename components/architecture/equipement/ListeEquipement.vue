@@ -18,7 +18,7 @@
           stroke-width="2"
           size="18"
           type="plus"
-          @click="$bvModal.show('modalCreateEquipement')"
+          @click="create = true"
         />
       </div>
       <hr class="mg-t-4" />
@@ -90,20 +90,12 @@
           v-model="dialogData.modal"
           :nom="dialogData.nom"
           modal-id="equipementConfirmationListe"
-          action="architecture/equipement/supprimer"
+          :action="actionDelete"
           :message="`Voulez vous réelement archiver l'équipement ${dialogData.nom}`"
         />
       </div>
-      <CreateEquipementModal :types="types" :marches="marches" />
-      <div>
-        <EditEquipementModal
-          :key="edit.modal"
-          v-model="edit.modal"
-          :current="edit.equipement"
-          :types="types"
-          :marches="marches"
-        />
-      </div>
+      <CreateEquipementModal v-if="create" v-model="create" />
+      <EditEquipementModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -112,6 +104,7 @@ import { mapGetters, mapActions } from 'vuex'
 import CreateEquipementModal from './CreateEquipementModal.vue'
 import EditEquipementModal from './EditEquipementModal.vue'
 import { EQUIPEMENT } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
   components: {
@@ -124,9 +117,9 @@ export default {
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'type', label: 'Type' },
+      { key: 'type.nom', label: 'Type' },
       { key: 'prix_unitaire', label: 'Prix Unitaire', tdClass: 'text-right', sortable: true },
-      { key: 'site', label: 'Site' },
+      { key: 'site.nom', label: 'Site' },
       { key: 'status', label: 'Statuts' },
       {
         key: 'option',
@@ -137,31 +130,34 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, equipement: {} },
+    edit: { modal: false, id: 0 },
     search: null,
     pages: 1,
     currentPage: 1,
     loading: false,
+    create: false,
+    actionDelete: MODULES.EQUIPEMENT.ACTIONS.TRASH,
   }),
   async fetch() {
-    await this.getMarches()
-    await this.getTypesEquipement()
     await this.getPaginate()
     this.pageInit()
   },
   computed: {
-    ...mapGetters({
-      marches: 'architecture/marche/marches',
-      types: 'architecture/typEquipement/types',
-      equipements: 'architecture/equipement/equipements',
-    }),
+    ...mapGetters({ equipements: MODULES.EQUIPEMENT.GETTERS.EQUIPEMENTS }),
+  },
+  watch: {
+    search(recent) {
+      if (recent) {
+        this.rechercher()
+      } else {
+        this.fetchPaginateListe()
+      }
+    },
   },
   methods: {
     ...mapActions({
-      getOne: 'architecture/equipement/getOne',
-      getMarches: 'architecture/marche/getAll',
-      getTypesEquipement: 'architecture/typEquipement/getAll',
-      getEquipements: 'architecture/equipement/getAll',
+      getPaginate: MODULES.EQUIPEMENT.ACTIONS.PAGINATE,
+      getSearch: MODULES.EQUIPEMENT.ACTIONS.SEARCH,
     }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
@@ -170,11 +166,8 @@ export default {
       this.$bvModal.show('equipementConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ equipement }) => {
-        this.edit.equipement = equipement
-        this.edit.modal = true
-        this.$bvModal.show('modalEditEquipement')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     statusClass(value) {
       if (value === EQUIPEMENT.unsubscribed || value === EQUIPEMENT.unlinked) {
@@ -182,6 +175,30 @@ export default {
       } else {
         return 'badge badge-danger-light'
       }
+    },
+    pageInit() {
+      this.pages = this.equipements.meta.last_page
+      this.currentPage = this.equipements.meta.current_page
+    },
+    getPage(page) {
+      if (this.search) {
+        this.rechercher(page)
+      } else {
+        this.fetchPaginateListe(page)
+      }
+    },
+    rechercher(page = 1) {
+      this.loading = true
+      this.getSearch({ search: this.search, page }).then(() => {
+        this.pageInit()
+        this.loading = false
+      })
+    },
+    async fetchPaginateListe(page) {
+      this.loading = true
+      await this.getPaginate(page)
+      this.pageInit()
+      this.loading = false
     },
   },
 }

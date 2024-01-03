@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="modalFinishAbonnement" v-model="dialog" size="sm">
+  <b-modal v-model="dialog" size="sm">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">
         Résiliation abonnement: <strong>{{ abonnement.code }}</strong>
@@ -9,7 +9,7 @@
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-text-field
             v-model="abonnement.index_fin"
@@ -24,7 +24,7 @@
             </template>
           </v-text-field>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
@@ -37,24 +37,29 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
-    current: {
-      type: Object,
-      required: true
+    id: {
+      type: Number,
+      required: true,
     },
-    value: Boolean
+    value: Boolean,
   },
   data: () => ({
     submiting: false,
     abonnement: {
       id: null,
-      index_fin: null
+      index_fin: null,
     },
     errors: {
-      index_fin: { exist: false, message: null }
-    }
+      index_fin: { exist: false, message: null },
+    },
   }),
+  async fetch() {
+    const { abonnement } = await this.getOne(this.id)
+    this.abonnement = abonnement
+  },
   computed: {
     dialog: {
       get() {
@@ -62,15 +67,14 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      }
-    }
-  },
-  mounted() {
-    this.abonnement.id = this.current.id
-    this.abonnement.code = this.current.code
+      },
+    },
   },
   methods: {
-    ...mapActions('architecture/abonnement', ['resilier']),
+    ...mapActions({
+      resiler: MODULES.ABONNEMENT.ACTIONS.ABORT,
+      getOne: MODULES.ABONNEMENT.ACTIONS.ONE,
+    }),
     save() {
       this.submiting = true
       this.resilier(this.abonnement)
@@ -78,7 +82,7 @@ export default {
           this.$bvToast.toast(message, {
             title: 'résilié avec succès'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true
+            solid: true,
           })
           this.close()
         })
@@ -91,15 +95,7 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    close() {
-      this.abonnement = {
-        id: null,
-        index_fin: null
-      }
-      errorsInitialise(this.errors)
-      this.dialog = false
-    }
-  }
+  },
 }
 </script>
 <style scoped></style>

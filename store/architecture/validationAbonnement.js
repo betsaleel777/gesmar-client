@@ -1,16 +1,15 @@
 export const state = () => ({
-  validations: [],
+  validations: []
 })
 
 export const getters = {
   validations: (state) => {
     return state.validations
-  },
+  }
 }
 
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_VALIDATION', [])
     const requete = await this.$axios.get('api/parametres/validations/abonnement')
     commit('SET_VALIDATION', requete.data.validations)
   },
@@ -30,11 +29,11 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/validations/abonnement/store', payload)
     dispatch('architecture/abonnement/getAll', {}, { root: true })
     return { message: requete.data.message }
-  },
+  }
 }
 
 export const mutations = {
   SET_VALIDATION(state, validations) {
     state.validations = validations
-  },
+  }
 }

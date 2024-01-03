@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateEquipement" scrollable @show="reset">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvel Equipement</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <b-form-group label-for="prix_unitaire">
           <template #label>
             <span class="form-label">Prix Unitaire <span class="text-danger">*</span></span>
@@ -131,10 +131,12 @@
           </v-autocomplete>
         </v-app>
         <CreateTypequipement :marches="marches" @pushed="onPushed" />
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -142,21 +144,13 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: { CreateTypequipement },
-  props: {
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
-  },
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     equipement: {
@@ -179,21 +173,38 @@ export default {
       site_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getMarches()
+    await this.getTypesEquipement()
+  },
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
     ...mapActions({
-      ajouter: 'architecture/equipement/ajouter',
-      getEmplacement: 'architecture/emplacement/getByMarcheUnlinked',
+      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getTypesEquipement: MODULES.TYPE.EQUIPEMENT.ACTIONS.ALL,
+      ajouter: MODULES.EQUIPEMENT.ACTIONS.ADD,
+      getEmplacement: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_UNLINKED,
     }),
     save() {
       this.submiting = true
       this.ajouter(this.equipement)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateEquipement')
-          this.$bvToast.toast(message, {
+          this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
             solid: true,
           })
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -203,20 +214,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.equipement = {
-        prix_unitaire: '',
-        prix_fixe: '',
-        frais_facture: '',
-        index: '',
-        type_equipement_id: null,
-        site_id: null,
-        emplacement_id: null,
-      }
-      this.emplacements = []
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateEquipement')
     },
     async getEmplacementByMarket() {
       this.loading = true

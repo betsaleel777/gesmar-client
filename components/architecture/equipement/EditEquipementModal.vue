@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditEquipement" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier l'equipement {{ equipement.nom }}</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <b-form-group label-for="prix_unitaire">
           <template #label>
             <span class="form-label">Prix Unitaire <span class="text-danger">*</span></span>
@@ -133,10 +133,12 @@
           </v-autocomplete>
         </v-app>
         <CreateTypequipement :marches="marches" @pushed="onPushed" />
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -144,22 +146,15 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: { CreateTypequipement },
   props: {
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -167,6 +162,7 @@ export default {
   data: () => ({
     submiting: false,
     equipement: {
+      nom: '',
       prix_unitaire: '',
       prix_fixe: '',
       frais_facture: '',
@@ -186,7 +182,15 @@ export default {
       site_id: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { equipement } = await this.getOne(this.id)
+    this.equipement = equipement
+    const { emplacements } = await this.getEmplacement(this.equipement.site_id)
+    this.emplacements = emplacements
+    await this.getMarches()
+  },
   computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
     dialog: {
       get() {
         return this.value
@@ -196,18 +200,12 @@ export default {
       },
     },
   },
-  mounted() {
-    this.equipement = Object.assign({}, this.current)
-    if (this.equipement.site_id) {
-      this.getEmplacement(this.equipement.site_id).then(({ emplacements }) => {
-        this.emplacements = emplacements
-      })
-    }
-  },
   methods: {
     ...mapActions({
-      modifier: 'architecture/equipement/modifier',
-      getEmplacement: 'architecture/emplacement/getByMarcheUnlinked',
+      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getOne: MODULES.EQUIPEMENT.ACTIONS.ONE,
+      modifier: MODULES.EQUIPEMENT.ACTIONS.EDIT,
+      getEmplacement: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_UNLINKED,
     }),
     save() {
       this.submiting = true
@@ -219,7 +217,7 @@ export default {
             solid: true,
             autoHideDelay: 3000,
           })
-          this.$bvModal.hide('modalEditEquipement')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -229,20 +227,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.equipement = {
-        prix_unitaire: '',
-        prix_fixe: '',
-        frais_facture: '',
-        index: '',
-        type_equipement_id: null,
-        site_id: null,
-        emplacement_id: null,
-      }
-      this.emplacements = []
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
     onPushed(id) {
       this.equipement.type_equipement_id = id

@@ -4,12 +4,12 @@
       <h5 id="archiver" class="modal-title text-primary">
         Confirmation d'abonnement: <strong>{{ validation.code }}</strong>
       </h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-switch
             v-model="validation.verdict"
@@ -28,10 +28,12 @@
             </template>
           </v-textarea>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         valider
       </button>
@@ -40,11 +42,12 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { MODULES } from '~/helper/modules-types'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 export default {
   props: {
-    infos: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -61,6 +64,10 @@ export default {
       raison: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { validation } = await this.getOne(this.id)
+    this.validation = validation
+  },
   computed: {
     dialog: {
       get() {
@@ -71,12 +78,11 @@ export default {
       },
     },
   },
-  mounted() {
-    this.validation.code = this.infos.code
-    this.validation.abonnement_id = this.infos.abonnement_id
-  },
   methods: {
-    ...mapActions('architecture/validationAbonnement', ['ajouter']),
+    ...mapActions({
+      ajouter: MODULES.ABONNEMENT.VALIDATION.ACTIONS.ADD,
+      getOne: MODULES.ABONNEMENT.VALIDATION.ACTIONS.ONE,
+    }),
     save() {
       this.submiting = true
       this.ajouter(this.validation)
@@ -96,16 +102,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.validation = {
-        abonnement_id: null,
-        raison: null,
-        code: null,
-        verdict: true,
-      }
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

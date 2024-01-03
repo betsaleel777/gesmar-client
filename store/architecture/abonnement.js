@@ -12,6 +12,18 @@ export const actions = {
     commit('SET_ABONNEMENT', requete.data.abonnements)
   },
 
+  async getPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/parametres/abonnements/paginate?page=${page}`)
+    commit('SET_ABONNEMENT', requete.data)
+  },
+
+  async getSearch({ commit }, payload) {
+    const requete = await this.$axios.get(
+      `api/parametres/abonnements/search/${payload.search}/paginate?page=${payload.page}`
+    )
+    commit('SET_ABONNEMENT', requete.data)
+  },
+
   async getTrashAll({ commit }) {
     const requete = await this.$axios.get('api/parametres/abonnements/trashed')
     commit('SET_ABONNEMENT', requete.data.abonnements)
