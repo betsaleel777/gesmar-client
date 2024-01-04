@@ -13,7 +13,7 @@ const caissierRoot = 'caisse/caissier'
 const encaissementRoot = 'caisse/encaissement/'
 const ouvertureRoot = 'caisse/ouverture/'
 const applicationRoot = 'architecture/application/'
-const dashboardRoot = 'dashboard/'
+const dashboardReceptionRoot = 'dashboard/reception/'
 const equipementRoot = 'architecture/equipement/'
 const typeEquipementRoot = 'architecture/typEquipement/'
 const abonnementRoot = 'architecture/abonnement/'
@@ -288,11 +288,24 @@ export const MODULES = Object.freeze({
     })
   }),
   DASHBOARD: Object.freeze({
-    GETTERS: Object.freeze({
-      RECEPTION: dashboardRoot + 'reception'
-    }),
-    ACTIONS: Object.freeze({
-      RECEPTION: dashboardRoot + 'getReception'
+    RECEPTION: Object.freeze({
+      GETTERS: Object.freeze({
+        VALIDATION: dashboardReceptionRoot + 'validation',
+        CONVERSION: dashboardReceptionRoot + 'conversion',
+        BUSY: dashboardReceptionRoot + 'busy',
+        EQUIPPED: dashboardReceptionRoot + 'equipped',
+        LINKED: dashboardReceptionRoot + 'linked',
+        SUBSCRIBED: dashboardReceptionRoot + 'subscribed',
+        LOADING: dashboardReceptionRoot + 'loading'
+      }),
+      ACTIONS: Object.freeze({
+        VALIDATION_RATE: dashboardReceptionRoot + 'getValidationRate',
+        CONVERSION_RATE: dashboardReceptionRoot + 'getConversionRate',
+        BUSY_RATE: dashboardReceptionRoot + 'getBusyRate',
+        EQUIPPED_RATE: dashboardReceptionRoot + 'getEquippedRate',
+        LINKED_RATE: dashboardReceptionRoot + 'getLinkedRate',
+        SUBSCRIBED_RATE: dashboardReceptionRoot + 'getSubscribedRate'
+      })
     })
   }),
   ABONNEMENT: Object.freeze({
