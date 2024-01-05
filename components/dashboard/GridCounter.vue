@@ -113,10 +113,10 @@ export default {
       return this.options.firstCount + this.options.secondCount
     },
     firstPercent() {
-      return this.maxCount !== 0 ? Math.floor((this.options.firstCount / this.maxCount) * 100) : 0
+      return this.maxCount !== 0 ? Math.round((this.options.firstCount / this.maxCount) * 100) : 0
     },
     secondPercent() {
-      return this.maxCount !== 0 ? Math.floor((this.options.secondCount / this.maxCount) * 100) : 0
+      return this.maxCount !== 0 ? Math.round((this.options.secondCount / this.maxCount) * 100) : 0
     },
     progressData() {
       return [

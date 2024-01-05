@@ -18,6 +18,9 @@ const equipementRoot = 'architecture/equipement/'
 const typeEquipementRoot = 'architecture/typEquipement/'
 const abonnementRoot = 'architecture/abonnement/'
 const abonnementValidationRoot = 'architecture/validationAbonnement/'
+const contratAnnexeRoot = 'exploitation/contrat-annexe/'
+const personneRoot = 'exploitation/personne/'
+const annexeRoot = 'architecture/annexe/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -353,6 +356,58 @@ export const MODULES = Object.freeze({
         RESTORE: typeEquipementRoot + 'restaurer',
         ADD: typeEquipementRoot + 'ajouter'
       })
+    })
+  }),
+  CONTRAT: Object.freeze({
+    ANNEXE: Object.freeze({
+      GETTERS: Object.freeze({
+        CONTRATS: contratAnnexeRoot + 'contrats'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: contratAnnexeRoot + 'getAll',
+        VALIDES: contratAnnexeRoot + 'getAllValides',
+        TRASHED: contratAnnexeRoot + 'getTrashAll',
+        ONE: contratAnnexeRoot + 'getOne',
+        SCHEDULE: contratAnnexeRoot + 'schedule',
+        EDIT: contratAnnexeRoot + 'modifier',
+        TRASH: contratAnnexeRoot + 'supprimer',
+        RESTORE: contratAnnexeRoot + 'restaurer',
+        ADD: contratAnnexeRoot + 'ajouter'
+      })
+    }),
+    BAIL: Object.freeze({
+      GETTERS: Object.freeze({}),
+      ACTIONS: Object.freeze({})
+    })
+  }),
+  PERSONNE: Object.freeze({
+    GETTERS: Object.freeze({
+      PERSONNES: personneRoot + 'personnes'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: personneRoot + 'getAll',
+      TRASHED: personneRoot + 'getTrashAll',
+      BY_MARCHE: personneRoot + 'getByMarche',
+      ONE: personneRoot + 'getOne',
+      EDIT: personneRoot + 'modifier',
+      TRASH: personneRoot + 'supprimer',
+      RESTORE: personneRoot + 'restaurer',
+      ADD: personneRoot + 'ajouter'
+    })
+  }),
+  ANNEXE: Object.freeze({
+    GETTERS: Object.freeze({
+      ANNEXES: annexeRoot + 'annexes'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: annexeRoot + 'getAll',
+      TRASHED: annexeRoot + 'getTrashAll',
+      ONE: annexeRoot + 'getOne',
+      BY_MARCHE: annexeRoot + 'getByMarche',
+      EDIT: annexeRoot + 'modifier',
+      TRASH: annexeRoot + 'supprimer',
+      RESTORE: annexeRoot + 'restaurer',
+      ADD: annexeRoot + 'ajouter'
     })
   })
 })
