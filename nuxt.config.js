@@ -66,6 +66,13 @@ export default {
     baseURL: process.env.API,
     credentials: true
   },
+  bootstrapVue: {
+    icons:false,
+    bootstrapCSS: false,
+    bootstrapVueCSS: false,
+    components:['BOverlay','BModal','BCard','BCardText','BFormInput','BTable','BSpinner','BPagination','BFormGroup','BInputGroup','BInputGroupAppend','BInputGroupText','BPaginationNav','BTabs','BTab','BImg'],
+    componentPlugins: ['ToastPlugin','ModalPlugin'],
+  },
 
   router: {
     middleware: ['auth']
