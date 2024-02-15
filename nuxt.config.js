@@ -2,7 +2,6 @@ export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
   // Global page headers: https://go.nuxtjs.dev/config-head
   env: { API: process.env.API },
   head: {
@@ -11,7 +10,7 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      { hid: 'description', name: 'description', content: 'application de gestion du grand marché de Treichville' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
@@ -21,11 +20,6 @@ export default {
         type: 'text/css',
         href: '/lib/@fortawesome/fontawesome-free/css/all.min.css'
       },
-      {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href: '/lib/ionicons/css/ionicons.min.css'
-      }
     ],
     script: [
       { src: '/lib/jquery/jquery.min.js', body: 'true' },
@@ -38,7 +32,7 @@ export default {
     color: '#5556fd',
     background: 'white'
   },
-  css: ['~/assets/css/cassie.css'],
+  css: [ '~/assets/css/cassie.css' ],
 
   plugins: [
     '~/plugins/feather.js',
@@ -48,34 +42,30 @@ export default {
     '~/plugins/currency.js'
   ],
 
-  components: true,
-
-  buildModules: ['@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image'],
+  buildModules: [ '@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image' ],
 
   moment: {
     defaultLocale: 'fr',
-    locales: ['fr']
+    locales: [ 'fr' ]
   },
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['bootstrap-vue/nuxt', '@nuxtjs/axios', '@nuxtjs/auth-next'],
+  modules: [ 'bootstrap-vue/nuxt', '@nuxtjs/axios', '@nuxtjs/auth-next' ],
 
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: process.env.API,
+    headers: {'Access-Control-Allow-Origin': '*'},
     credentials: true
   },
   bootstrapVue: {
-    icons:false,
+    icons: false,
     bootstrapCSS: false,
     bootstrapVueCSS: false,
-    components:['BOverlay','BModal','BCard','BCardText','BFormInput','BTable','BSpinner','BPagination','BFormGroup','BInputGroup','BInputGroupAppend','BInputGroupText','BPaginationNav','BTabs','BTab','BImg'],
-    componentPlugins: ['ToastPlugin','ModalPlugin'],
+    components: [ 'BOverlay', 'BModal', 'BCard', 'BCardText', 'BFormInput', 'BTable', 'BSpinner', 'BPagination', 'BFormGroup', 'BInputGroup', 'BInputGroupAppend', 'BInputGroupText', 'BPaginationNav', 'BTabs', 'BTab', 'BImg', 'BTooltip', 'BProgress' ],
+    componentPlugins: [ 'ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin' ],
   },
 
   router: {
-    middleware: ['auth']
+    middleware: [ 'auth' ]
   },
 
   auth: {
@@ -89,7 +79,7 @@ export default {
         }
       }
     },
-    plugins: ['~/plugins/axios.js']
+    plugins: [ '~/plugins/axios.js' ]
   },
 
   build: {}
