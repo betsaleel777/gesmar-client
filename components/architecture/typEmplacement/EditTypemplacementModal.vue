@@ -38,7 +38,7 @@
         </div>
         <div class="form-group required">
           <label class="form-label mg-t-10"
-            >Préfixe<span class="text-danger">*</span> Ex:(mag pour magasin)</label
+            >Code<span class="text-danger">*</span> Ex:(MAG pour magasin)</label
           >
           <input
             v-model="type.prefix"
