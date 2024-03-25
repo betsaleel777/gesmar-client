@@ -19,8 +19,12 @@ const typeEquipementRoot = 'architecture/typEquipement/'
 const abonnementRoot = 'architecture/abonnement/'
 const abonnementValidationRoot = 'architecture/validationAbonnement/'
 const contratAnnexeRoot = 'exploitation/contrat-annexe/'
+const contratBailRoot = 'exploitation/contrat-emplacement/'
 const personneRoot = 'exploitation/personne/'
+const prospectRoot = 'exploitation/prospect/'
 const annexeRoot = 'architecture/annexe/'
+const typePersonneRoot = 'exploitation/typePersonne/'
+const typeEmplacementRoot = 'architecture/typEmplacement/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -356,28 +360,81 @@ export const MODULES = Object.freeze({
         RESTORE: typeEquipementRoot + 'restaurer',
         ADD: typeEquipementRoot + 'ajouter'
       })
-    })
+    }),
+    PERSONNE: Object.freeze({
+      GETTERS: Object.freeze({
+        TYPES: typePersonneRoot + 'types'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: typePersonneRoot + 'getAll',
+        TRASHED: typePersonneRoot + 'getTrashAll',
+        ONE: typePersonneRoot + 'getOne',
+        EDIT: typePersonneRoot + 'modifier',
+        TRASH: typePersonneRoot + 'supprimer',
+        RESTORE: typePersonneRoot + 'restaurer',
+        ADD: typePersonneRoot + 'ajouter'
+      })
+    }),
+    EMPLACEMENT: Object.freeze({
+      GETTERS: Object.freeze({
+        TYPES: typeEmplacementRoot + 'types'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: typeEmplacementRoot + 'getAll',
+        TRASHED: typeEmplacementRoot + 'getTrashAll',
+        ONE: typeEmplacementRoot + 'getOne',
+        EDIT: typeEmplacementRoot + 'modifier',
+        TRASH: typeEmplacementRoot + 'supprimer',
+        RESTORE: typeEmplacementRoot + 'restaurer',
+        ADD: typeEmplacementRoot + 'ajouter'
+      })
+    }),
   }),
   CONTRAT: Object.freeze({
     ANNEXE: Object.freeze({
       GETTERS: Object.freeze({
-        CONTRATS: contratAnnexeRoot + 'contrats'
+        CONTRATS: contratAnnexeRoot + 'contrats',
+        VALIDES: contratAnnexeRoot + 'valides'
       }),
       ACTIONS: Object.freeze({
         ALL: contratAnnexeRoot + 'getAll',
         VALIDES: contratAnnexeRoot + 'getAllValides',
+        SEARCH: contratAnnexeRoot + 'getSearch',
+        PAGINATE: contratAnnexeRoot + 'getPaginate',
+        VALIDES_SEARCH: contratAnnexeRoot + 'getValidesSearch',
+        VALIDES_PAGINATE: contratAnnexeRoot + 'getValidesPaginate',
         TRASHED: contratAnnexeRoot + 'getTrashAll',
         ONE: contratAnnexeRoot + 'getOne',
         SCHEDULE: contratAnnexeRoot + 'schedule',
         EDIT: contratAnnexeRoot + 'modifier',
         TRASH: contratAnnexeRoot + 'supprimer',
         RESTORE: contratAnnexeRoot + 'restaurer',
-        ADD: contratAnnexeRoot + 'ajouter'
+        ADD: contratAnnexeRoot + 'ajouter',
       })
     }),
     BAIL: Object.freeze({
-      GETTERS: Object.freeze({}),
-      ACTIONS: Object.freeze({})
+      GETTERS: Object.freeze({
+        CONTRATS: contratBailRoot + 'contrats',
+        VALIDES: contratBailRoot + 'valides'
+      }),
+      ACTIONS: Object.freeze({
+        ALL: contratAnnexeRoot + 'getAll',
+        SEARCH: contratBailRoot + 'getSearch',
+        PAGINATE: contratBailRoot + 'getPaginate',
+        VALIDES_SEARCH: contratBailRoot + 'getValidesSearch',
+        VALIDES_PAGINATE: contratBailRoot + 'getValidesPaginate',
+        VALIDES: contratBailRoot + 'getAllValides',
+        TRASHED: contratBailRoot + 'getTrashAll',
+        ONE: contratBailRoot + 'getOne',
+        SCHEDULE: contratBailRoot + 'schedule',
+        EDIT: contratBailRoot + 'modifier',
+        TRASH: contratBailRoot + 'supprimer',
+        RESTORE: contratBailRoot + 'restaurer',
+        ADD: contratBailRoot + 'ajouter',
+        BY_PERSONNE: contratBailRoot + 'getByPersonne',
+        DETAILS:contratBailRoot + 'getDetails',
+        PRINT:contratBailRoot + 'print',
+      })
     })
   }),
   PERSONNE: Object.freeze({
@@ -393,6 +450,22 @@ export const MODULES = Object.freeze({
       TRASH: personneRoot + 'supprimer',
       RESTORE: personneRoot + 'restaurer',
       ADD: personneRoot + 'ajouter'
+    })
+  }),
+  PROSPECT: Object.freeze({
+    GETTERS: Object.freeze({
+      PROSPECTS: prospectRoot + 'prospects'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: prospectRoot + 'getAll',
+      TRASHED: prospectRoot + 'getTrashAll',
+      BY_MARCHE: prospectRoot + 'getByMarche',
+      ONE: prospectRoot + 'getOne',
+      EDIT: prospectRoot + 'modifier',
+      TRASH: prospectRoot + 'supprimer',
+      RESTORE: prospectRoot + 'restaurer',
+      ADD: prospectRoot + 'ajouter',
+      IMAGE_UPDATE:prospectRoot + 'updateImage'
     })
   }),
   ANNEXE: Object.freeze({
