@@ -81,6 +81,10 @@ const ENCAISSEMENT = Object.freeze({
   },
   status: {}
 })
+const PERSONNE = Object.freeze({
+    prospect: 'PROSPECT',
+    client: 'CLIENT'
+})
 const REPARATION = Object.freeze({
   pending: 'en attente',
   progressing: 'en cours',
@@ -103,5 +107,6 @@ module.exports = {
   ENCAISSEMENT,
   SUPERROLE,
   COLLECTE,
-  REPARATION
+  REPARATION,
+  PERSONNE
 }

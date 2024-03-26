@@ -22,6 +22,8 @@ const contratAnnexeRoot = 'exploitation/contrat-annexe/'
 const contratBailRoot = 'exploitation/contrat-emplacement/'
 const personneRoot = 'exploitation/personne/'
 const prospectRoot = 'exploitation/prospect/'
+const clientRoot = 'exploitation/client/'
+const contratRoot = 'exploitation/contrat/'
 const annexeRoot = 'architecture/annexe/'
 const typePersonneRoot = 'exploitation/typePersonne/'
 const typeEmplacementRoot = 'architecture/typEmplacement/'
@@ -391,6 +393,24 @@ export const MODULES = Object.freeze({
     }),
   }),
   CONTRAT: Object.freeze({
+    GETTERS: Object.freeze({
+      CONTRATS: contratRoot + 'contrats',
+      ATTENTES: contratRoot + 'attentes',
+      VALIDES:contratRoot + 'valides',
+      RESILIES:contratRoot + 'resilies'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: contratRoot + 'getAll',
+      TRASHED: contratRoot + 'getTrashAll',
+      BY_MARCHE: contratRoot + 'getByMarche',
+      BY_PERSONNE:contratRoot + 'getByPersonne',
+      SCHEDULE_VIEW:contratRoot + 'getContratsForScheduleView',
+      ONE: contratRoot + 'getOne',
+      EDIT: contratRoot + 'modifier',
+      TRASH: contratRoot + 'supprimer',
+      RESTORE: contratRoot + 'restaurer',
+      ADD: contratRoot + 'ajouter',
+    }),
     ANNEXE: Object.freeze({
       GETTERS: Object.freeze({
         CONTRATS: contratAnnexeRoot + 'contrats',
@@ -466,6 +486,24 @@ export const MODULES = Object.freeze({
       RESTORE: prospectRoot + 'restaurer',
       ADD: prospectRoot + 'ajouter',
       IMAGE_UPDATE:prospectRoot + 'updateImage'
+    })
+  }),
+  CLIENT: Object.freeze({
+    GETTERS: Object.freeze({
+      CLIENTS: clientRoot + 'clients'
+    }),
+    ACTIONS: Object.freeze({
+      ALL: clientRoot + 'getAll',
+      TRASHED: clientRoot + 'getTrashAll',
+      SEARCH:clientRoot + 'getSearch',
+      PAGINATE: clientRoot + 'getPaginate',
+      BY_MARCHE: clientRoot + 'getByMarche',
+      ONE: clientRoot + 'getOne',
+      EDIT: clientRoot + 'modifier',
+      TRASH: clientRoot + 'supprimer',
+      RESTORE: clientRoot + 'restaurer',
+      ADD: clientRoot + 'ajouter',
+      IMAGE_UPDATE:clientRoot + 'updateImage'
     })
   }),
   ANNEXE: Object.freeze({
