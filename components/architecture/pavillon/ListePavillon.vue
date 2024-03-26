@@ -2,30 +2,18 @@
   <b-card aria-hidden="true" header="Liste des pavillons">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="create = true"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
-        v-if="totalRows > 0"
         id="filter-input"
         v-model="filter"
         type="search"
@@ -89,12 +77,9 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreatePavillonModal from './CreatePavillonModal.vue'
 import EditPavillonModal from './EditPavillonModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreatePavillonModal,
-    EditPavillonModal,
-  },
+  components: { CreatePavillonModal, EditPavillonModal },
   data: () => ({
     fields: [
       'index',
@@ -122,34 +107,10 @@ export default {
     this.totalRows = this.pavillons.length
   },
   computed: {
-    ...mapGetters({ pavillons: 'architecture/pavillon/pavillons' }),
-    records() {
-      return this.pavillons.map((pavillon) => {
-        return {
-          pavillon: pavillon.nom,
-          site: pavillon.site,
-          date: pavillon.created_at,
-        }
-      })
-    },
+    ...mapGetters({ pavillons: MODULES.PAVILLON.GETTERS.PAVILLON }),
   },
   methods: {
-    ...mapActions({
-      getPavillons: 'architecture/pavillon/getAll',
-    }),
-    imprimer() {
-      const columns = ['pavillon', 'site', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des pavillons')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
+    ...mapActions({ getPavillons: MODULES.PAVILLON.ACTIONS.ALL }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

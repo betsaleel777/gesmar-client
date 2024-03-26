@@ -3,7 +3,7 @@
     <b-modal v-model="dialog" scrollable>
       <template #modal-header>
         <h5 id="archiver" class="modal-title text-primary">Nouveau Pavillon</h5>
-        <button type="button" class="close" aria-label="Close" @click="close">
+        <button type="button" class="close" aria-label="Close" @click="dialog = false">
           <span aria-hidden="true"><feather type="x" /></span>
         </button>
       </template>
@@ -59,7 +59,9 @@
         </b-overlay>
       </template>
       <template #modal-footer>
-        <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+          Fermer
+        </button>
         <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
           Valider
         </button>
@@ -70,7 +72,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
-import { SUPERROLE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: { value: Boolean },
   data: () => ({
@@ -79,36 +81,30 @@ export default {
       nom: '',
       site_id: '',
       nombre: null,
-      automatiq: false
+      automatiq: false,
     },
     errors: {
       nom: { exist: false, message: null },
       site_id: { exist: false, message: null },
-      nombre: { exist: false, message: null }
-    }
+      nombre: { exist: false, message: null },
+    },
   }),
   async fetch() {
     await this.getMarches()
   },
   computed: {
-    ...mapGetters({ marches: 'architecture/marche/marches' }),
-    sites() {
-      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
-    },
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
     dialog: {
       get() {
         return this.value
       },
       set(value) {
         this.$emit('input', value)
-      }
-    }
+      },
+    },
   },
   methods: {
-    ...mapActions({
-      getMarches: 'architecture/marche/getAll',
-      ajouter: 'architecture/pavillon/ajouter'
-    }),
+    ...mapActions({ getMarches: MODULES.SITE.ACTIONS.ALL, ajouter: MODULES.PAVILLON.ACTIONS.ALL }),
     save() {
       this.submiting = true
       this.ajouter(this.pavillon)
@@ -116,7 +112,7 @@ export default {
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true
+            solid: true,
           })
           this.dialog = false
         })
@@ -129,11 +125,7 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    close() {
-      errorsInitialise(this.errors)
-      this.dialog = false
-    }
-  }
+  },
 }
 </script>
 <style scoped></style>

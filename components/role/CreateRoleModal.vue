@@ -1,34 +1,32 @@
 <template>
-  <b-modal id="modalCreateRole" scrollable size="lg" @show="reset">
+  <b-modal v-model="dialog" scrollable size="lg">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Créer un rôle</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
-        <div class="form-group required">
-          <label class="form-label mg-t-10">Nom</label>
-          <input
-            v-model="role.name"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.name.exist }"
-            placeholder="Entrer le nom du rôle"
-          />
-          <span v-if="errors.name.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.name.message }}</strong>
-          </span>
-        </div>
-        <span v-if="errors.permissions.exist" class="text-danger" role="alert">
-          <strong>{{ errors.permissions.message }}</strong>
+      <div class="form-group required">
+        <label class="form-label mg-t-10">Nom</label>
+        <input
+          v-model="role.name"
+          type="text"
+          class="form-control"
+          :class="{ 'is-invalid': errors.name.exist }"
+          placeholder="Entrer le nom du rôle"
+        />
+        <span v-if="errors.name.exist" class="invalid-feedback" role="alert">
+          <strong>{{ errors.name.message }}</strong>
         </span>
-        <SelectPermissionTable v-model="role.permissions" />
-      </form>
+      </div>
+      <span v-if="errors.permissions.exist" class="text-danger" role="alert">
+        <strong>{{ errors.permissions.message }}</strong>
+      </span>
+      <SelectPermissionTable v-model="role.permissions" />
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" @click="dialog = false">Fermer</button>
       <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
@@ -37,10 +35,10 @@
 import { mapActions } from 'vuex'
 import SelectPermissionTable from '../permission/SelectPermissionTable.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    SelectPermissionTable,
-  },
+  components: { SelectPermissionTable },
+  props: { value: Boolean },
   data: () => ({
     role: {
       name: '',
@@ -51,13 +49,23 @@ export default {
       permissions: { exist: false, message: null },
     },
   }),
+  computed: {
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
-    ...mapActions('user-role/role', ['ajouter']),
+    ...mapActions({ ajouter: MODULES.ROLE.ACTIONS.ADD }),
     save() {
       this.role.permissions = this.role.permissions.map((elt) => elt.id)
       this.ajouter(this.role)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateRole')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -71,14 +79,6 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
-    },
-    reset() {
-      this.role = {
-        name: '',
-        permissions: [],
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateRole')
     },
   },
 }

@@ -1,8 +1,8 @@
 <template>
-  <b-modal v-model="dialog" scrollable size="lg" @show="reset">
+  <b-modal v-model="dialog" scrollable size="lg">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvel utilisateur</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -122,7 +122,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -133,14 +135,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
-import { SUPERROLE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    ImagePreview,
-  },
-  props: {
-    value: Boolean,
-  },
+  components: { ImagePreview },
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     utilisateur: {
@@ -168,8 +166,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      marches: 'architecture/marche/marches',
-      roles: 'user-role/role/superAdminWihout',
+      sites: MODULES.SITE.GETTERS.SITES,
+      roles: MODULES.ROLE.GETTERS.ADMIN_WITHOUT,
     }),
     dialog: {
       get() {
@@ -179,15 +177,12 @@ export default {
         this.$emit('input', value)
       },
     },
-    sites() {
-      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
-    },
   },
   methods: {
     ...mapActions({
-      ajouter: 'user-role/user/ajouter',
-      getRoles: 'user-role/user/getAll',
-      getSites: 'architecture/marche/getAll',
+      ajouter: MODULES.ROLE.ACTIONS.ADD,
+      getRoles: MODULES.ROLE.ACTIONS.ALL,
+      getSites: MODULES.SITE.ACTIONS.ALL,
     }),
     save() {
       this.submiting = true
@@ -212,22 +207,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.utilisateur = {
-        name: '',
-        email: '',
-        description: '',
-        adresse: '',
-        password: '',
-        password_confirmation: null,
-        avatar: '',
-      }
-      errorsInitialise(this.errors)
-    },
-    close() {
-      this.reset()
-      this.dialog = false
     },
   },
 }

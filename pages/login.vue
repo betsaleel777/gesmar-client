@@ -50,7 +50,6 @@
     </div>
     <!-- signin-sidebar -->
   </div>
-  <!-- signin-panel -->
 </template>
 <script>
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'

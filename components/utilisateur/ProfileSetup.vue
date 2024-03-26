@@ -91,6 +91,7 @@ import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '../tools/ImagePreview.vue'
 import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 import { SUPERROLE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: {
     ImagePreview,
@@ -123,17 +124,14 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters({ marches: 'architecture/marche/marches' }),
-    sites() {
-      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
-    },
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
   },
   mounted() {
     this.getSites()
     this.utilisateur = this.profileData
   },
   methods: {
-    ...mapActions({ profile: 'user-role/user/profile', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({ profile: 'user-role/user/profile', getSites: MODULES.SITE.ACTIONS.ALL }),
     save() {
       this.submiting = true
       const data = new FormData()

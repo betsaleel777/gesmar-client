@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le pavillon {{ pavillon.nom }}</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -44,7 +44,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -54,7 +56,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
-import { SUPERROLE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
     id: {
@@ -81,7 +83,7 @@ export default {
     this.pavillon = pavillon
   },
   computed: {
-    ...mapGetters({ marches: 'architecture/marche/marches' }),
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
     dialog: {
       get() {
         return this.value
@@ -89,9 +91,6 @@ export default {
       set(value) {
         this.$emit('input', value)
       },
-    },
-    sites() {
-      return this.user.role.name === SUPERROLE ? this.marches : this.user.sites
     },
   },
   methods: {
@@ -120,11 +119,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.pavillon = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

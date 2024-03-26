@@ -2,25 +2,15 @@
   <b-card aria-hidden="true" header="Liste des utilisateurs ">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="modal = true"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="modal = true"
+        />
       </div>
       <!-- btn-toolbar -->
       <hr class="mg-t-4" />

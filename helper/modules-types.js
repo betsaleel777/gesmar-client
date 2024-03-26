@@ -27,6 +27,8 @@ const contratRoot = 'exploitation/contrat/'
 const annexeRoot = 'architecture/annexe/'
 const typePersonneRoot = 'exploitation/typePersonne/'
 const typeEmplacementRoot = 'architecture/typEmplacement/'
+const roleRoot = 'user-role/role/'
+const permissionRoot = 'user-role/permission/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -39,7 +41,7 @@ export const MODULES = Object.freeze({
     TRASH: reparationRoot + '/supprimer',
     RESTORE: reparationRoot + '/restaurer',
     ADD: reparationRoot + '/ajouter',
-    REPARATIONS: reparationRoot + '/reparations'
+    REPARATIONS: reparationRoot + '/reparations',
   }),
   TECHNICIEN: Object.freeze({
     ALL: technicienRoot + '/getAll',
@@ -51,13 +53,13 @@ export const MODULES = Object.freeze({
     TRASH: technicienRoot + '/supprimer',
     RESTORE: technicienRoot + '/restaurer',
     ADD: technicienRoot + '/ajouter',
-    TECHNICIENS: technicienRoot + '/techniciens'
+    TECHNICIENS: technicienRoot + '/techniciens',
   }),
   BORDEREAU: Object.freeze({
     GETTERS: {
       BORDEREAUX: bordereauRoot + '/bordereaux',
       SELECT: bordereauRoot + '/select',
-      BORDEREAU: bordereauRoot + '/bordereau'
+      BORDEREAU: bordereauRoot + '/bordereau',
     },
     ACTIONS: {
       ALL: bordereauRoot + '/getAll',
@@ -73,13 +75,13 @@ export const MODULES = Object.freeze({
       TRASH: bordereauRoot + '/supprimer',
       RESTORE: bordereauRoot + '/restaurer',
       UNCASHED: bordereauRoot + '/getUncashed',
-      CASHOUT: bordereauRoot + '/getForCashout'
-    }
+      CASHOUT: bordereauRoot + '/getForCashout',
+    },
   }),
   EMPLACEMENT: Object.freeze({
     GETTERS: Object.freeze({
       EMPLACEMENTS: emplacementRoot + '/emplacements',
-      EQUIPABLES: emplacementRoot + '/equipables'
+      EQUIPABLES: emplacementRoot + '/equipables',
     }),
     ACTIONS: Object.freeze({
       ALL: emplacementRoot + '/getAll',
@@ -102,13 +104,13 @@ export const MODULES = Object.freeze({
       TRASH: emplacementRoot + '/supprimer',
       RESTORE: emplacementRoot + '/restaurer',
       ADD: emplacementRoot + '/ajouter',
-      PUSH: emplacementRoot + '/push'
-    })
+      PUSH: emplacementRoot + '/push',
+    }),
   }),
   SITE: Object.freeze({
     GETTERS: Object.freeze({
       SITES: siteRoot + '/marches',
-      STRUCTURE: siteRoot + '/structure'
+      STRUCTURE: siteRoot + '/structure',
     }),
     ACTIONS: Object.freeze({
       ALL: siteRoot + '/getAll',
@@ -120,13 +122,13 @@ export const MODULES = Object.freeze({
       TRASH: siteRoot + '/supprimer',
       RESTORE: siteRoot + '/restaurer',
       ADD: siteRoot + '/ajouter',
-      PUSH: siteRoot + '/push'
-    })
+      PUSH: siteRoot + '/push',
+    }),
   }),
   ZONE: Object.freeze({
     GETTERS: Object.freeze({
       ZONES: zoneRoot + '/zones',
-      BY_SITES: zoneRoot + '/zonesBySites'
+      BY_SITES: zoneRoot + '/zonesBySites',
     }),
     ACTIONS: Object.freeze({
       ALL: zoneRoot + '/getAll',
@@ -137,15 +139,15 @@ export const MODULES = Object.freeze({
       ONE: zoneRoot + '/getOne',
       TRASH: zoneRoot + '/supprimer',
       RESTORE: zoneRoot + '/restaurer',
-      ADD: zoneRoot + '/ajouter'
-    })
+      ADD: zoneRoot + '/ajouter',
+    }),
   }),
   COMMERCIAL: Object.freeze({
     GETTERS: Object.freeze({
       COMMERCIAUX: commercialRoot + '/commerciaux',
       SALESMAN: commercialRoot + '/salesman',
       COMMERCIAL: commercialRoot + '/commercial',
-      DISABLE_DATES: commercialRoot + '/disableDates'
+      DISABLE_DATES: commercialRoot + '/disableDates',
     }),
     ACTIONS: Object.freeze({
       ALL: commercialRoot + '/getAll',
@@ -159,13 +161,13 @@ export const MODULES = Object.freeze({
       TRASH: commercialRoot + '/supprimer',
       RESTORE: commercialRoot + '/restaurer',
       ASSIGN: commercialRoot + '/attribuer',
-      MONTH_BORDEREAUX: commercialRoot + '/getMonthBordereaux'
-    })
+      MONTH_BORDEREAUX: commercialRoot + '/getMonthBordereaux',
+    }),
   }),
   NIVEAU: Object.freeze({
     GETTERS: Object.freeze({
       NIVEAUX: niveauRoot + '/niveaux',
-      NIVEAUX_BY_SITE: niveauRoot + '/niveauxBySites'
+      NIVEAUX_BY_SITE: niveauRoot + '/niveauxBySites',
     }),
     ACTIONS: Object.freeze({
       ALL: niveauRoot + '/getAll',
@@ -175,13 +177,13 @@ export const MODULES = Object.freeze({
       EDIT: niveauRoot + '/modifier',
       ADD: niveauRoot + '/ajouter',
       TRASH: niveauRoot + '/supprimer',
-      RESTORE: niveauRoot + '/restaurer'
-    })
+      RESTORE: niveauRoot + '/restaurer',
+    }),
   }),
   PAVILLON: Object.freeze({
     GETTERS: Object.freeze({
       PAVILLON: pavillonRoot + '/pavillons',
-      SELECTED: pavillonRoot + '/selected'
+      SELECTED: pavillonRoot + '/selected',
     }),
     ACTIONS: Object.freeze({
       ALL: pavillonRoot + '/getAll',
@@ -193,24 +195,24 @@ export const MODULES = Object.freeze({
       TRASH: pavillonRoot + '/supprimer',
       RESTORE: pavillonRoot + '/restaurer',
       BY_SITE: pavillonRoot + '/getByMarche',
-      PUSH: pavillonRoot + '/push'
-    })
+      PUSH: pavillonRoot + '/push',
+    }),
   }),
   COLLECTE: Object.freeze({
     GETTERS: Object.freeze({
       COLLECTES: collecteRoot + '/collectes',
-      DAYS_COLLECTED: collecteRoot + '/daysCollected'
+      DAYS_COLLECTED: collecteRoot + '/daysCollected',
     }),
     ACTIONS: Object.freeze({
       ALL: collecteRoot + '/getAll',
       COLLECTED: collecteRoot + '/getAlreadyCollected',
       GLOBALE_COLLECTED: collecteRoot + '/getAlreadyGlobaleCollected',
-      ADD: collecteRoot + '/ajouter'
-    })
+      ADD: collecteRoot + '/ajouter',
+    }),
   }),
   CAISSIER: Object.freeze({
     GETTERS: Object.freeze({
-      CAISSIERS: caissierRoot + '/caissiers'
+      CAISSIERS: caissierRoot + '/caissiers',
     }),
     ACTIONS: Object.freeze({
       ALL: caissierRoot + '/getAll',
@@ -221,12 +223,12 @@ export const MODULES = Object.freeze({
       RESTORE: caissierRoot + '/restaurer',
       ADD: caissierRoot + '/ajouter',
       ATTRIBUTE: caissierRoot + '/attribuer',
-      REMOVE: caissierRoot + '/desattribuer'
-    })
+      REMOVE: caissierRoot + '/desattribuer',
+    }),
   }),
   ORDONNANCEMENT: Object.freeze({
     GETTERS: Object.freeze({
-      ORDONNANCEMENTS: ordonnancementRoot + 'ordonnancements'
+      ORDONNANCEMENTS: ordonnancementRoot + 'ordonnancements',
     }),
     ACTIONS: Object.freeze({
       ALL: ordonnancementRoot + 'getAll',
@@ -237,12 +239,12 @@ export const MODULES = Object.freeze({
       ONE: ordonnancementRoot + 'getOne',
       EDIT: ordonnancementRoot + 'modifier',
       TRASH: ordonnancementRoot + 'supprimer',
-      ADD: ordonnancementRoot + 'ajouter'
-    })
+      ADD: ordonnancementRoot + 'ajouter',
+    }),
   }),
   OUVERTURE: Object.freeze({
     GETTERS: Object.freeze({
-      OUVERTURES: ouvertureRoot + 'ouvertures'
+      OUVERTURES: ouvertureRoot + 'ouvertures',
     }),
     ACTIONS: Object.freeze({
       ALL: ouvertureRoot + 'getAll',
@@ -253,34 +255,34 @@ export const MODULES = Object.freeze({
       EDIT: ouvertureRoot + 'modifier',
       ADD: ouvertureRoot + 'ajouter',
       EXISTS: ouvertureRoot + 'ouvertureExists',
-      USING_EXISTS: ouvertureRoot + 'ouvertureUsingExists'
-    })
+      USING_EXISTS: ouvertureRoot + 'ouvertureUsingExists',
+    }),
   }),
   ENCAISSEMENT: Object.freeze({
     GETTERS: Object.freeze({
-      ENCAISSEMENTS: encaissementRoot + 'encaissements'
+      ENCAISSEMENTS: encaissementRoot + 'encaissements',
     }),
     ACTIONS: Object.freeze({
       ALL: encaissementRoot + 'getAll',
       ONE: encaissementRoot + 'getOne',
       EDIT: encaissementRoot + 'modifier',
-      ADD: encaissementRoot + 'ajouter'
-    })
+      ADD: encaissementRoot + 'ajouter',
+    }),
   }),
   APPLICATION: Object.freeze({
     GETTERS: Object.freeze({
-      SOCIETE: applicationRoot + 'societe'
+      SOCIETE: applicationRoot + 'societe',
     }),
     ACTIONS: Object.freeze({
       ONE: applicationRoot + 'getOne',
       ADD: applicationRoot + 'ajouter',
-      EDIT: applicationRoot + 'modifier'
-    })
+      EDIT: applicationRoot + 'modifier',
+    }),
   }),
   EQUIPEMENT: Object.freeze({
     GETTERS: Object.freeze({
       EQUIPEMENTS: equipementRoot + 'equipements',
-      BY_SITE: equipementRoot + 'equipementsBySites'
+      BY_SITE: equipementRoot + 'equipementsBySites',
     }),
     ACTIONS: Object.freeze({
       ALL: equipementRoot + 'getAll',
@@ -293,8 +295,8 @@ export const MODULES = Object.freeze({
       EDIT: equipementRoot + 'modifier',
       TRASH: equipementRoot + 'supprimer',
       RESTORE: equipementRoot + 'restaurer',
-      ADD: equipementRoot + 'ajouter'
-    })
+      ADD: equipementRoot + 'ajouter',
+    }),
   }),
   DASHBOARD: Object.freeze({
     RECEPTION: Object.freeze({
@@ -305,7 +307,7 @@ export const MODULES = Object.freeze({
         EQUIPPED: dashboardReceptionRoot + 'equipped',
         LINKED: dashboardReceptionRoot + 'linked',
         SUBSCRIBED: dashboardReceptionRoot + 'subscribed',
-        LOADING: dashboardReceptionRoot + 'loading'
+        LOADING: dashboardReceptionRoot + 'loading',
       }),
       ACTIONS: Object.freeze({
         VALIDATION_RATE: dashboardReceptionRoot + 'getValidationRate',
@@ -313,13 +315,13 @@ export const MODULES = Object.freeze({
         BUSY_RATE: dashboardReceptionRoot + 'getBusyRate',
         EQUIPPED_RATE: dashboardReceptionRoot + 'getEquippedRate',
         LINKED_RATE: dashboardReceptionRoot + 'getLinkedRate',
-        SUBSCRIBED_RATE: dashboardReceptionRoot + 'getSubscribedRate'
-      })
-    })
+        SUBSCRIBED_RATE: dashboardReceptionRoot + 'getSubscribedRate',
+      }),
+    }),
   }),
   ABONNEMENT: Object.freeze({
     GETTERS: Object.freeze({
-      ABONNEMENTS: abonnementRoot + 'abonnements'
+      ABONNEMENTS: abonnementRoot + 'abonnements',
     }),
     ACTIONS: Object.freeze({
       ALL: abonnementRoot + 'getAll',
@@ -334,24 +336,24 @@ export const MODULES = Object.freeze({
       RESTORE: abonnementRoot + 'restaurer',
       ADD: abonnementRoot + 'ajouter',
       SUBSCRIBE: abonnementRoot + 'abonner',
-      LAST_INDEX: abonnementRoot + 'getLastIndex'
+      LAST_INDEX: abonnementRoot + 'getLastIndex',
     }),
     VALIDATION: Object.freeze({
       GETTERS: Object.freeze({
-        VALIDATIONS: abonnementValidationRoot + 'validations'
+        VALIDATIONS: abonnementValidationRoot + 'validations',
       }),
       ACTIONS: Object.freeze({
         ALL: abonnementValidationRoot + 'getAll',
         ONE: abonnementValidationRoot + 'getOne',
         EDIT: abonnementValidationRoot + 'modifer',
-        ADD: abonnementValidationRoot + 'ajouter'
-      })
-    })
+        ADD: abonnementValidationRoot + 'ajouter',
+      }),
+    }),
   }),
   TYPE: Object.freeze({
     EQUIPEMENT: Object.freeze({
       GETTERS: Object.freeze({
-        TYPES: typeEquipementRoot + 'types'
+        TYPES: typeEquipementRoot + 'types',
       }),
       ACTIONS: Object.freeze({
         ALL: typeEquipementRoot + 'getAll',
@@ -360,12 +362,12 @@ export const MODULES = Object.freeze({
         EDIT: typeEquipementRoot + 'modifier',
         TRASH: typeEquipementRoot + 'supprimer',
         RESTORE: typeEquipementRoot + 'restaurer',
-        ADD: typeEquipementRoot + 'ajouter'
-      })
+        ADD: typeEquipementRoot + 'ajouter',
+      }),
     }),
     PERSONNE: Object.freeze({
       GETTERS: Object.freeze({
-        TYPES: typePersonneRoot + 'types'
+        TYPES: typePersonneRoot + 'types',
       }),
       ACTIONS: Object.freeze({
         ALL: typePersonneRoot + 'getAll',
@@ -374,12 +376,12 @@ export const MODULES = Object.freeze({
         EDIT: typePersonneRoot + 'modifier',
         TRASH: typePersonneRoot + 'supprimer',
         RESTORE: typePersonneRoot + 'restaurer',
-        ADD: typePersonneRoot + 'ajouter'
-      })
+        ADD: typePersonneRoot + 'ajouter',
+      }),
     }),
     EMPLACEMENT: Object.freeze({
       GETTERS: Object.freeze({
-        TYPES: typeEmplacementRoot + 'types'
+        TYPES: typeEmplacementRoot + 'types',
       }),
       ACTIONS: Object.freeze({
         ALL: typeEmplacementRoot + 'getAll',
@@ -388,23 +390,23 @@ export const MODULES = Object.freeze({
         EDIT: typeEmplacementRoot + 'modifier',
         TRASH: typeEmplacementRoot + 'supprimer',
         RESTORE: typeEmplacementRoot + 'restaurer',
-        ADD: typeEmplacementRoot + 'ajouter'
-      })
+        ADD: typeEmplacementRoot + 'ajouter',
+      }),
     }),
   }),
   CONTRAT: Object.freeze({
     GETTERS: Object.freeze({
       CONTRATS: contratRoot + 'contrats',
       ATTENTES: contratRoot + 'attentes',
-      VALIDES:contratRoot + 'valides',
-      RESILIES:contratRoot + 'resilies'
+      VALIDES: contratRoot + 'valides',
+      RESILIES: contratRoot + 'resilies',
     }),
     ACTIONS: Object.freeze({
       ALL: contratRoot + 'getAll',
       TRASHED: contratRoot + 'getTrashAll',
       BY_MARCHE: contratRoot + 'getByMarche',
-      BY_PERSONNE:contratRoot + 'getByPersonne',
-      SCHEDULE_VIEW:contratRoot + 'getContratsForScheduleView',
+      BY_PERSONNE: contratRoot + 'getByPersonne',
+      SCHEDULE_VIEW: contratRoot + 'getContratsForScheduleView',
       ONE: contratRoot + 'getOne',
       EDIT: contratRoot + 'modifier',
       TRASH: contratRoot + 'supprimer',
@@ -414,7 +416,7 @@ export const MODULES = Object.freeze({
     ANNEXE: Object.freeze({
       GETTERS: Object.freeze({
         CONTRATS: contratAnnexeRoot + 'contrats',
-        VALIDES: contratAnnexeRoot + 'valides'
+        VALIDES: contratAnnexeRoot + 'valides',
       }),
       ACTIONS: Object.freeze({
         ALL: contratAnnexeRoot + 'getAll',
@@ -430,12 +432,12 @@ export const MODULES = Object.freeze({
         TRASH: contratAnnexeRoot + 'supprimer',
         RESTORE: contratAnnexeRoot + 'restaurer',
         ADD: contratAnnexeRoot + 'ajouter',
-      })
+      }),
     }),
     BAIL: Object.freeze({
       GETTERS: Object.freeze({
         CONTRATS: contratBailRoot + 'contrats',
-        VALIDES: contratBailRoot + 'valides'
+        VALIDES: contratBailRoot + 'valides',
       }),
       ACTIONS: Object.freeze({
         ALL: contratAnnexeRoot + 'getAll',
@@ -452,14 +454,14 @@ export const MODULES = Object.freeze({
         RESTORE: contratBailRoot + 'restaurer',
         ADD: contratBailRoot + 'ajouter',
         BY_PERSONNE: contratBailRoot + 'getByPersonne',
-        DETAILS:contratBailRoot + 'getDetails',
-        PRINT:contratBailRoot + 'print',
-      })
-    })
+        DETAILS: contratBailRoot + 'getDetails',
+        PRINT: contratBailRoot + 'print',
+      }),
+    }),
   }),
   PERSONNE: Object.freeze({
     GETTERS: Object.freeze({
-      PERSONNES: personneRoot + 'personnes'
+      PERSONNES: personneRoot + 'personnes',
     }),
     ACTIONS: Object.freeze({
       ALL: personneRoot + 'getAll',
@@ -469,12 +471,12 @@ export const MODULES = Object.freeze({
       EDIT: personneRoot + 'modifier',
       TRASH: personneRoot + 'supprimer',
       RESTORE: personneRoot + 'restaurer',
-      ADD: personneRoot + 'ajouter'
-    })
+      ADD: personneRoot + 'ajouter',
+    }),
   }),
   PROSPECT: Object.freeze({
     GETTERS: Object.freeze({
-      PROSPECTS: prospectRoot + 'prospects'
+      PROSPECTS: prospectRoot + 'prospects',
     }),
     ACTIONS: Object.freeze({
       ALL: prospectRoot + 'getAll',
@@ -485,17 +487,17 @@ export const MODULES = Object.freeze({
       TRASH: prospectRoot + 'supprimer',
       RESTORE: prospectRoot + 'restaurer',
       ADD: prospectRoot + 'ajouter',
-      IMAGE_UPDATE:prospectRoot + 'updateImage'
-    })
+      IMAGE_UPDATE: prospectRoot + 'updateImage',
+    }),
   }),
   CLIENT: Object.freeze({
     GETTERS: Object.freeze({
-      CLIENTS: clientRoot + 'clients'
+      CLIENTS: clientRoot + 'clients',
     }),
     ACTIONS: Object.freeze({
       ALL: clientRoot + 'getAll',
       TRASHED: clientRoot + 'getTrashAll',
-      SEARCH:clientRoot + 'getSearch',
+      SEARCH: clientRoot + 'getSearch',
       PAGINATE: clientRoot + 'getPaginate',
       BY_MARCHE: clientRoot + 'getByMarche',
       ONE: clientRoot + 'getOne',
@@ -503,12 +505,12 @@ export const MODULES = Object.freeze({
       TRASH: clientRoot + 'supprimer',
       RESTORE: clientRoot + 'restaurer',
       ADD: clientRoot + 'ajouter',
-      IMAGE_UPDATE:clientRoot + 'updateImage'
-    })
+      IMAGE_UPDATE: clientRoot + 'updateImage',
+    }),
   }),
   ANNEXE: Object.freeze({
     GETTERS: Object.freeze({
-      ANNEXES: annexeRoot + 'annexes'
+      ANNEXES: annexeRoot + 'annexes',
     }),
     ACTIONS: Object.freeze({
       ALL: annexeRoot + 'getAll',
@@ -518,7 +520,29 @@ export const MODULES = Object.freeze({
       EDIT: annexeRoot + 'modifier',
       TRASH: annexeRoot + 'supprimer',
       RESTORE: annexeRoot + 'restaurer',
-      ADD: annexeRoot + 'ajouter'
-    })
-  })
+      ADD: annexeRoot + 'ajouter',
+    }),
+  }),
+  ROLE: Object.freeze({
+    GETTERS: Object.freeze({
+      ROLES: roleRoot + 'roles',
+      ADMIN_WITHOUT: roleRoot + 'superAdminWihout',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: roleRoot + 'getAll',
+      ONE: roleRoot + 'getOne',
+      EDIT: roleRoot + 'modifier',
+      TRASH: roleRoot + 'supprimer',
+      ADD: roleRoot + 'ajouter',
+    }),
+  }),
+  PERMISSION: Object.freeze({
+    GETTERS: Object.freeze({
+      PERMISSIONS: permissionRoot + 'permissions',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: permissionRoot + 'getAll',
+      BY_ROLE: permissionRoot + 'getByRole',
+    }),
+  }),
 })

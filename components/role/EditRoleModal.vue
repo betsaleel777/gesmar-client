@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditRole" v-model="dialog" scrollable size="lg">
+  <b-modal v-model="dialog" scrollable size="lg">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Modifier rôle</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <div class="form-group required">
           <label class="form-label mg-t-10">Nom</label>
           <input
@@ -25,10 +25,10 @@
           <strong>{{ errors.permissions.message }}</strong>
         </span>
         <SelectPermissionTable v-model="role.permissions" />
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" @click="dialog = false">Fermer</button>
       <button type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
@@ -37,10 +37,9 @@
 import { mapActions } from 'vuex'
 import SelectPermissionTable from '../permission/SelectPermissionTable.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    SelectPermissionTable,
-  },
+  components: { SelectPermissionTable },
   props: {
     id: {
       type: Number,
@@ -58,6 +57,9 @@ export default {
       permissions: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    this.role = await this.getOne(this.id)
+  },
   computed: {
     dialog: {
       get() {
@@ -68,11 +70,8 @@ export default {
       },
     },
   },
-  async mounted() {
-    this.role = await this.getOne(this.id)
-  },
   methods: {
-    ...mapActions('user-role/role', ['modifier', 'getOne']),
+    ...mapActions({ modifier: MODULES.ROLE.ACTIONS.EDIT, getOne: MODULES.ROLE.ACTIONS.ONE }),
     save() {
       this.role.permissions = this.role.permissions.map((elt) => elt.id)
       this.modifier(this.role)
@@ -87,11 +86,6 @@ export default {
             errorsWriting(data.errors, this.errors)
           }
         })
-    },
-    reset() {
-      this.role = { name: '', permissions: [] }
-      this.dialog = false
-      errorsInitialise(this.errors)
     },
   },
 }
