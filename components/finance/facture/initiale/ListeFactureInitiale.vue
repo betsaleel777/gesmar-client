@@ -1,18 +1,7 @@
 <template>
   <b-card aria-hidden="true" header="Liste des factures initiales">
     <b-card-text>
-      <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
-      </div>
+      <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
@@ -53,7 +42,10 @@
           {{ data.item.pas_porte | currency }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.show" type="button">
+            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
+          </a>
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -79,6 +71,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import EditFactureInitialeModal from './EditFactureInitialeModal.vue'
 import { FACTURE } from '~/helper/constantes'
+import { factureInitiale } from '~/helper/permissions'
 export default {
   components: { EditFactureInitialeModal },
   data: () => ({
@@ -137,6 +130,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
+    permissions: factureInitiale,
   }),
   async fetch() {
     await this.getPaginate()
@@ -156,7 +150,6 @@ export default {
   },
   methods: {
     ...mapActions({ getPaginate: 'facture/initiale/getPaginate', getSearch: 'facture/initiale/getSearch' }),
-    imprimer() {},
     editer({ id }) {
       this.edit.facture = id
       this.edit.modal = true

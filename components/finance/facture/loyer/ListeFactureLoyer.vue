@@ -53,6 +53,11 @@
             {{ scope.emptyText }}
           </h6>
         </template>
+        <template #cell(option)>
+          <a v-can="permissions.show" type="button">
+            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
+          </a>
+        </template>
       </b-table>
       <b-pagination-nav
         v-model="currentPage"
@@ -70,6 +75,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureLoyerModal from './GenerateFactureLoyerModal.vue'
 import { FACTURE } from '~/helper/constantes'
+import { factureLoyer } from '~/helper/permissions'
 export default {
   components: { GenerateFactureLoyerModal },
   data: () => ({
@@ -97,6 +103,13 @@ export default {
         tdClass: 'text-center',
         thClass: 'text-center',
       },
+      {
+        key: 'option',
+        label: 'Options',
+        tdClass: 'text-center',
+        thClass: 'wd-5p text-center',
+        sortable: false,
+      },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     create: false,
@@ -104,6 +117,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
+    permissions: factureLoyer,
   }),
   async fetch() {
     await this.getPaginate()

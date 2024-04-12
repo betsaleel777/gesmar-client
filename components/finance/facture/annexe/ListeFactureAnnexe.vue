@@ -42,6 +42,11 @@
             {{ scope.emptyText }}
           </h6>
         </template>
+        <template #cell(option)>
+          <a v-can="permissions.show" type="button">
+            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
+          </a>
+        </template>
       </b-table>
       <b-pagination-nav
         v-model="currentPage"
@@ -57,6 +62,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { FACTURE } from '~/helper/constantes'
+import { factureAnnexe } from '~/helper/permissions'
 export default {
   data: () => ({
     fields: [
@@ -99,6 +105,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
+    permissions: factureAnnexe,
   }),
   async fetch() {
     await this.getPaginate()

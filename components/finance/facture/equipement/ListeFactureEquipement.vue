@@ -53,15 +53,20 @@
             {{ scope.emptyText }}
           </h6>
         </template>
+        <template #cell(option)>
+          <a v-can="permissions.show" type="button">
+            <feather title="visualiser" type="eye" size="20" stroke="indigo" />
+          </a>
+        </template>
       </b-table>
-      <b-pagination
+      <b-pagination-nav
         v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
+        :number-of-pages="pages"
         align="right"
+        base-url="#"
         size="sm"
-        aria-controls="table"
-      ></b-pagination>
+        @change="getPage"
+      ></b-pagination-nav>
       <GenerateFactureGearModal />
     </b-card-text>
   </b-card>
@@ -70,6 +75,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureGearModal from './GenerateFactureGearModal.vue'
 import { FACTURE } from '~/helper/constantes'
+import { factureEquipement } from '~/helper/permissions'
 export default {
   components: { GenerateFactureGearModal },
   data: () => ({
@@ -111,6 +117,13 @@ export default {
         tdClass: 'text-center',
         thClass: 'text-center',
       },
+      {
+        key: 'option',
+        label: 'Options',
+        tdClass: 'text-center',
+        thClass: 'wd-5p text-center',
+        sortable: false,
+      },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, facture: {} },
@@ -118,6 +131,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
+    permissions: factureEquipement,
   }),
   async fetch() {
     await this.getPaginate()
@@ -140,7 +154,6 @@ export default {
       getPaginate: 'facture/equipement/getPaginate',
       getSearch: 'facture/equipement/getSearch',
     }),
-    imprimer() {},
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',

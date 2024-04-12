@@ -41,8 +41,8 @@
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
-        <template #cell(option)="data">
-          <a type="button" @click="detailler(data.item)">
+        <template #cell(option)>
+          <a type="button">
             <feather title="détails" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
@@ -115,26 +115,16 @@ export default {
     this.totalRows = this.factures.length
   },
   computed: {
-    ...mapGetters({
-      factures: 'facture/facture/soldees',
-    }),
+    ...mapGetters({ factures: 'facture/facture/soldees' }),
   },
   methods: {
     ...mapActions({
       getOne: 'facture/facture/getOne',
       getFactures: 'facture/facture/getAll',
     }),
-    imprimer() {},
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
-    },
-    detailler(id) {
-      this.getOne(id).then(({ facture }) => {
-        this.show.details = facture
-        this.show.modal = true
-        this.$bvModal.show('modalShowFactureSoldees')
-      })
     },
     statusClass(value) {
       const classes = {
