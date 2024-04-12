@@ -32,7 +32,7 @@
                 </div>
               </a>
             </li>
-            <li class="list-group-item list-group-item-action">
+            <li v-can="permissions.attribuateRole" class="list-group-item list-group-item-action">
               <a href="#panePermissions" data-toggle="tab" class="media">
                 <feather type="users" />
                 <div class="media-body">
@@ -53,7 +53,7 @@
               <!-- tab-pane -->
               <SecuritySetup :id="id" />
               <!-- tab-pane -->
-              <PermissionSetup :id="id" />
+              <PermissionSetup :id="id" v-can="permissions.attribuateRole" />
               <!-- tab-pane -->
               <!-- <NotificationSetup :id="id" /> -->
               <!-- tab-pane -->
@@ -67,7 +67,6 @@
       <!-- row -->
     </div>
   </div>
-  <!-- content-body -->
 </template>
 <script>
 import ProfileSetup from '~/components/utilisateur/ProfileSetup.vue'
@@ -75,6 +74,7 @@ import AccountSetup from '~/components/utilisateur/AccountSetup.vue'
 import SecuritySetup from '~/components/utilisateur/SecuritySetup.vue'
 import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
+import { utilisateur } from '~/helper/permissions'
 export default {
   components: {
     ProfileSetup,
@@ -105,6 +105,9 @@ export default {
       ],
     }
   },
+  data: () => ({
+    permissions: utilisateur,
+  }),
 }
 </script>
 <style scoped></style>

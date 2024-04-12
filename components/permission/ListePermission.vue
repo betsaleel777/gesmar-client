@@ -1,66 +1,68 @@
 <template>
-  <div>
-    <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
-      <b-card aria-hidden="true" header="Liste des permissions">
-        <b-card-text>
-          <div class="btn-toolbar d-flex flex-row-reverse"></div>
-          <!-- btn-toolbar -->
-          <hr class="mg-t-4" />
-          <b-form-input
-            v-if="totalRows > 0"
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Rechercher"
-            class="mg-y-10"
-            :debounce="500"
-          ></b-form-input>
-          <b-table
-            id="table"
-            class="table"
-            hover
-            small
-            bordered
-            primary-key="id"
-            :items="permissions"
-            :fields="fields"
-            :current-page="currentPage"
-            :per-page="perPage"
-            responsive
-            empty-text="Aucune permissions"
-            show-empty
-            :filter="filter"
-            @filtered="onFiltered"
-          >
-            <template #cell(created_at)="data">
-              {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-            </template>
-            <template #empty="scope">
-              <h6 class="text-center text-muted pd-y-10">
-                {{ scope.emptyText }}
-              </h6>
-            </template>
-          </b-table>
-          <b-pagination
-            v-if="totalRows > 0"
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="right"
-            size="sm"
-            aria-controls="table"
-          ></b-pagination>
-        </b-card-text>
-      </b-card>
-    </b-overlay>
-  </div>
+  <b-card aria-hidden="true" header="Liste des permissions">
+    <b-card-text>
+      <div class="btn-toolbar d-flex flex-row-reverse"></div>
+      <hr class="mg-t-4" />
+      <b-form-input
+        v-if="totalRows > 0"
+        id="filter-input"
+        v-model="filter"
+        type="search"
+        placeholder="Rechercher"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="permissions"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        responsive
+        empty-text="Aucune permissions"
+        show-empty
+        :busy="$fetchState.pending"
+        :filter="filter"
+        @filtered="onFiltered"
+      >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
+        <template #cell(created_at)="data">
+          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
+        </template>
+        <template #empty="scope">
+          <h6 class="text-center text-muted pd-y-10">
+            {{ scope.emptyText }}
+          </h6>
+        </template>
+      </b-table>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="right"
+        size="sm"
+        aria-controls="table"
+      ></b-pagination>
+    </b-card-text>
+  </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 export default {
   data: () => ({
     fields: [
-      { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },
+      { key: 'name', label: 'clé', tdClass: 'wd-30p', sortable: true },
+      { key: 'description', label: 'Description', sortable: false },
       {
         key: 'created_at',
         label: 'Créer le',
@@ -74,10 +76,9 @@ export default {
     currentPage: 1,
     perPage: 20,
   }),
-  fetch() {
-    this.getAll().then(() => {
-      this.totalRows = this.permissions.length
-    })
+  async fetch() {
+    await this.getAll()
+    this.totalRows = this.permissions.length
   },
   computed: {
     ...mapGetters('user-role/permission', ['permissions']),
@@ -92,7 +93,6 @@ export default {
       this.$bvModal.show('modal')
     },
     onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },

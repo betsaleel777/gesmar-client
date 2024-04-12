@@ -3,6 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -51,10 +52,10 @@
           <span v-else class="badge badge-danger-light">déconnecté</span>
         </template>
         <template #cell(option)="data">
-          <nuxt-link :to="`/parametre/utilisateur/${data.item.id}/settings`">
+          <nuxt-link v-can="permissions.edit" :to="`/parametre/utilisateur/${data.item.id}/settings`">
             <feather title="parametres" type="settings" stroke="blue" class="mr-auto" size="20" />
           </nuxt-link>
-          <a type="button" @click="dialoger(data.item)">
+          <a v-can="permissions.trash" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -65,7 +66,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -90,11 +90,9 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '../tools/ConfirmationModal.vue'
 import CreateUserModal from './CreateUserModal.vue'
+import { utilisateur } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-    CreateUserModal,
-  },
+  components: { ConfirmationModal, CreateUserModal },
   data: () => ({
     modal: false,
     fields: [
@@ -127,6 +125,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: utilisateur,
   }),
   async fetch() {
     await this.getAll()
@@ -137,7 +136,6 @@ export default {
   },
   methods: {
     ...mapActions('user-role/user', ['getAll']),
-    imprimer() {},
     dialoger({ id, name }) {
       this.dialogData.nom = name
       this.dialogData.id = id

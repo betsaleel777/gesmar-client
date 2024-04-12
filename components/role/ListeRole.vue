@@ -3,6 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -39,8 +40,19 @@
         :filter="filter"
         @filtered="onFiltered"
       >
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Chargement...</strong>
+          </div>
+        </template>
         <template #cell(option)="data">
-          <a v-if="superole !== data.item.name" type="button" @click="dialoger(data.item.id)">
+          <a
+            v-if="superole !== data.item.name"
+            v-can="permissions.edit"
+            type="button"
+            @click="dialoger(data.item.id)"
+          >
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -72,6 +84,7 @@ import CreateRoleModal from './CreateRoleModal.vue'
 import EditRoleModal from './EditRoleModal.vue'
 import { SUPERROLE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { role } from '~/helper/permissions'
 export default {
   components: { CreateRoleModal, EditRoleModal },
   data: () => ({
@@ -93,6 +106,7 @@ export default {
     currentPage: 1,
     perPage: 10,
     create: false,
+    permissions: role,
   }),
   async fetch() {
     await this.getAll()

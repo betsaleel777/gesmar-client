@@ -201,9 +201,7 @@
 <script>
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: {
-    PartialBreadcrumb,
-  },
+  components: { PartialBreadcrumb },
   computed: {
     liens() {
       return [{ path: '#', text: `profile ${this.user.name}` }]
