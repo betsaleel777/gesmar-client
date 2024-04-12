@@ -68,7 +68,6 @@
           </template>
         </b-table>
         <b-pagination
-          v-if="totalRows > 0"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
@@ -95,9 +94,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       'index',

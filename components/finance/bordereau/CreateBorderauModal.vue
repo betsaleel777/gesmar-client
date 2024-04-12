@@ -10,7 +10,7 @@
     </template>
     <template #default>
       <v-app>
-        <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
           <ValidationObserver ref="form" v-slot="{ handleSubmit }">
             <v-row>
               <v-col>

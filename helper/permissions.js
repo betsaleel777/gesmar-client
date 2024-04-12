@@ -100,7 +100,6 @@ const typeEquipement = {
   delete: 'delete-type-equipement',
   edit: 'edit-type-equipement',
 }
-
 const typeEmplacement = {
   global: 'global-type-emplacement',
   own: 'own-type-emplacement',
@@ -168,8 +167,7 @@ const application = {
   edit: 'edit-application',
 }
 const gabariContrat = {
-  global: 'global-gabari-contrat',
-  own: 'own-gabari-contrat',
+  list: 'list-gabari-contrat',
   create: 'create-gabari-contrat',
   trash: 'trash-gabari-contrat',
   delete: 'delete-gabari-contrat',
@@ -219,7 +217,7 @@ const factureDashboard = {
   filter: 'filter-facture-dashboard',
 }
 const factureEquipement = {
-  lobal: 'global-facture-equipement',
+  global: 'global-facture-equipement',
   own: 'own-facture-equipement',
   show: 'show-facture-equipement',
 }
@@ -303,7 +301,6 @@ export {
   compte,
   contrat,
   gabariContrat,
-  personne,
   receptionDashboard,
   caissier,
   guichet,
@@ -321,4 +318,5 @@ export {
   emplacement,
   equipement,
   abonnement,
+  personne,
 }

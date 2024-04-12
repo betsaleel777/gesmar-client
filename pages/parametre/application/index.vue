@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
     <div class="container">
-      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending || processing" spinner-variant="primary" rounded="sm">
         <div class="row">
           <div class="col-sm-6 col-md-3">
             <b-overlay :show="processing" rounded="sm">
@@ -160,6 +160,7 @@
                   </span>
                 </div>
                 <button
+                  v-can="permissions.edit"
                   :disabled="processing"
                   type="button"
                   class="btn btn-primary float-right text-white"
@@ -169,13 +170,10 @@
                 </button>
               </form>
             </div>
-            <!-- tab-content -->
           </b-card>
-          <!-- profile-body -->
         </div>
       </b-overlay>
     </div>
-    <!-- content-body -->
   </div>
 </template>
 <script>
@@ -183,6 +181,7 @@ import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { application } from '~/helper/permissions'
 export default {
   components: {
     PartialBreadcrumb,
@@ -191,6 +190,7 @@ export default {
   data: () => ({
     liens: [{ path: '#', text: 'Application' }],
     processing: false,
+    permissions: application,
     societe: {
       nom: '',
       sigle: '',

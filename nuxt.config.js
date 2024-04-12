@@ -10,62 +10,87 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'application de gestion du grand marché de Treichville' },
-      { name: 'format-detection', content: 'telephone=no' }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'application de gestion du grand marché de Treichville',
+      },
+      { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
         type: 'text/css',
-        href: '/lib/@fortawesome/fontawesome-free/css/all.min.css'
+        href: '/lib/@fortawesome/fontawesome-free/css/all.min.css',
       },
     ],
     script: [
       { src: '/lib/jquery/jquery.min.js', body: 'true' },
-      { src: '/lib/bootstrap/js/bootstrap.bundle.min.js', body: 'true' }
-    ]
+      { src: '/lib/bootstrap/js/bootstrap.bundle.min.js', body: 'true' },
+    ],
   },
   loading: { continuous: true },
   loadingIndicator: {
     name: 'rectangle-bounce',
     color: '#5556fd',
-    background: 'white'
+    background: 'white',
   },
-  css: [ '~/assets/css/cassie.css' ],
+  css: ['~/assets/css/cassie.css'],
 
   plugins: [
     '~/plugins/feather.js',
     '~/plugins/perfect-scrollbar.js',
     '~/plugins/user.js',
     '~/plugins/vue-gates',
-    '~/plugins/currency.js'
+    '~/plugins/currency.js',
   ],
 
-  buildModules: [ '@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image' ],
+  buildModules: ['@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image'],
 
   moment: {
     defaultLocale: 'fr',
-    locales: [ 'fr' ]
+    locales: ['fr'],
   },
 
-  modules: [ 'bootstrap-vue/nuxt', '@nuxtjs/axios', '@nuxtjs/auth-next' ],
+  modules: ['bootstrap-vue/nuxt', '@nuxtjs/axios', '@nuxtjs/auth-next'],
 
   axios: {
     baseURL: process.env.API,
-    headers: {'Access-Control-Allow-Origin': '*'},
-    credentials: true
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    credentials: true,
   },
   bootstrapVue: {
     icons: false,
     bootstrapCSS: false,
     bootstrapVueCSS: false,
-    components: [ 'BOverlay', 'BModal', 'BCard', 'BCardText', 'BFormInput', 'BTable', 'BSpinner', 'BPagination', 'BFormGroup', 'BInputGroup', 'BInputGroupAppend', 'BInputGroupText', 'BPaginationNav', 'BTabs', 'BTab', 'BImg', 'BTooltip', 'BProgress','BFormFile','BButton' ],
-    componentPlugins: [ 'ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin' ],
+    components: [
+      'BOverlay',
+      'BModal',
+      'BCard',
+      'BCardText',
+      'BFormInput',
+      'BTable',
+      'BSpinner',
+      'BPagination',
+      'BFormGroup',
+      'BInputGroup',
+      'BInputGroupAppend',
+      'BInputGroupText',
+      'BPaginationNav',
+      'BTabs',
+      'BTab',
+      'BImg',
+      'BTooltip',
+      'BProgress',
+      'BFormFile',
+      'BButton',
+    ],
+    componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
   },
 
   router: {
-    middleware: [ 'auth' ]
+    middleware: ['auth'],
   },
 
   auth: {
@@ -75,12 +100,12 @@ export default {
         url: process.env.API,
         endpoints: {
           login: { url: '/api/login' },
-          logout: { url: '/api/logout', method: 'post' }
-        }
-      }
+          logout: { url: '/api/logout', method: 'post' },
+        },
+      },
     },
-    plugins: [ '~/plugins/axios.js' ]
+    plugins: ['~/plugins/axios.js'],
   },
 
-  build: {}
+  build: {},
 }

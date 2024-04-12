@@ -8,7 +8,7 @@
     </template>
     <template #default>
       <v-app>
-        <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="lg">
+        <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="lg">
           <v-expansion-panels v-model="panel" popout focusable tile>
             <v-expansion-panel>
               <v-expansion-panel-header

@@ -23,7 +23,6 @@
             />
           </div>
         </div>
-        <!-- btn-toolbar -->
         <hr class="mg-t-4" />
         <b-form-input
           v-if="totalRows > 0"

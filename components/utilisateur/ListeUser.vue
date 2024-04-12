@@ -12,7 +12,6 @@
           @click="modal = true"
         />
       </div>
-      <!-- btn-toolbar -->
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"

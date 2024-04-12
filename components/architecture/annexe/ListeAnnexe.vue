@@ -2,25 +2,15 @@
   <b-card aria-hidden="true" header="Liste des services annexes">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateAnnexe')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="$bvModal.show('modalCreateAnnexe')"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -75,7 +65,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -106,12 +95,9 @@ import { mapGetters, mapActions } from 'vuex'
 import EditAnnexeModal from './EditAnnexeModal.vue'
 import CreateAnnexeModal from './CreateAnnexeModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    ConfirmationModal,
-    EditAnnexeModal,
-    CreateAnnexeModal,
-  },
+  components: { ConfirmationModal, EditAnnexeModal, CreateAnnexeModal },
   data: () => ({
     fields: [
       'ordre',
@@ -146,15 +132,14 @@ export default {
     this.totalRows = this.annexes.length
   },
   computed: {
-    ...mapGetters({ marches: 'architecture/marche/marches', annexes: 'architecture/annexe/annexes' }),
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, annexes: MODULES.ANNEXE.GETTERS.ANNEXES }),
   },
   methods: {
     ...mapActions({
-      getOne: 'architecture/annexe/getOne',
-      getMarches: 'architecture/marche/getAll',
-      getServicesAnnexes: 'architecture/annexe/getAll',
+      getOne: MODULES.ANNEXE.ACTIONS.ONE,
+      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getServicesAnnexes: MODULES.ANNEXE.ACTIONS.ALL,
     }),
-    imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

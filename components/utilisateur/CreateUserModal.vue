@@ -7,7 +7,7 @@
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <form ref="form" enctype="multipart/form-data">
           <div class="form-group required">
             <ImagePreview v-model="utilisateur.avatar" :error-state="errors.avatar.exist" />

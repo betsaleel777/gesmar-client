@@ -7,7 +7,7 @@
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <b-form-group label-for="prix_unitaire">
           <template #label>
             <span class="form-label">Prix Unitaire <span class="text-danger">*</span></span>

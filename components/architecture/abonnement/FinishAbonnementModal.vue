@@ -9,7 +9,7 @@
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-text-field
             v-model="abonnement.index_fin"

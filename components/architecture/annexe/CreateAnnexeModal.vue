@@ -94,6 +94,7 @@
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { ANNEXE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
     marches: {
@@ -120,7 +121,7 @@ export default {
     },
   }),
   methods: {
-    ...mapActions('architecture/annexe', ['ajouter']),
+    ...mapActions({ ajouter: MODULES.ANNEXE.ACTIONS.ADD }),
     save() {
       this.submiting = true
       this.ajouter(this.annexe)

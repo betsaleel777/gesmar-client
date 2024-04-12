@@ -1,6 +1,6 @@
 <template>
   <div id="panePermissions" class="tab-pane">
-    <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+    <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
       <v-app>
         <v-autocomplete
           v-model="role"
@@ -34,9 +34,7 @@ import PermissionTable from './PermissionTable.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { SUPERROLE } from '~/helper/constantes'
 export default {
-  components: {
-    PermissionTable,
-  },
+  components: { PermissionTable },
   props: {
     id: {
       type: Number,

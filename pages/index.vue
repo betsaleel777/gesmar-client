@@ -1,10 +1,8 @@
 <template>
-  <!-- content-header -->
   <div>
     <PartialBreadcrumb :liens="liens" />
     <div class="content-body"></div>
   </div>
-  <!-- content-body -->
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
     <div class="col-md-12 col-sm-12">
       <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
@@ -24,7 +24,6 @@
         </b-tab>
       </b-tabs>
     </div>
-    <!-- content-right -->
   </div>
 </template>
 <script>
@@ -32,29 +31,19 @@ import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import TableauBordereau from '~/components/finance/TableauBordereau.vue'
 import ListeCommercial from '~/components/finance/commerciaux/ListeCommercial.vue'
 import ListeBordereaux from '~/components/finance/bordereau/ListeBordereaux.vue'
-import { finance } from '~/helper/permissions'
-const permissions = finance.bordereaux
+import { bordereau, commercial } from '~/helper/permissions'
 export default {
-  components: {
-    PartialBreadcrumb,
-    TableauBordereau,
-    ListeCommercial,
-    ListeBordereaux,
-  },
+  components: { PartialBreadcrumb, TableauBordereau, ListeCommercial, ListeBordereaux },
   data: () => ({
     liens: [{ path: '#', text: 'Bordereaux' }],
     tabIndex: 0,
-    permissions,
   }),
   computed: {
     disableBordereau() {
-      return !this.$gates.hasPermission(permissions.bordereau.acceder)
-    },
-    disableCollecte() {
-      return !this.$gates.hasPermission(permissions.collecte.acceder)
+      return !this.$gates.hasAnyPermission(`${bordereau.global}|${bordereau.own}`)
     },
     disableCommerciaux() {
-      return !this.$gates.hasPermission(permissions.commerciaux.acceder)
+      return !this.$gates.hasAnyPermission(`${commercial.global}|${commercial.own}`)
     },
   },
   methods: {

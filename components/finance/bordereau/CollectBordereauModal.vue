@@ -10,7 +10,7 @@
     </template>
     <template #default>
       <v-app>
-        <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
           <h5 v-if="bordereauExist" class="text-center">Commercial {{ bordereau.commercial.user.name }}</h5>
           <ValidationObserver ref="form" v-slot="{ handleSubmit }">
             <ValidationProvider v-slot="{ errors }" name="emplacement">

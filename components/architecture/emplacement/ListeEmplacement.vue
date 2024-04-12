@@ -14,15 +14,6 @@
           />
           <feather
             v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-          <feather
-            v-b-tooltip.hover.top
             title="archives"
             class="btn btn-sm btn-primary btn-icon"
             stroke-width="2"
@@ -92,7 +83,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -128,7 +118,7 @@ import CreateEmplacementModal from './CreateEmplacementModal.vue'
 import EditEmplacementModal from './EditEmplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { EMPLACEMENT } from '~/helper/constantes'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: {
     ConfirmationModal,
@@ -167,43 +157,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      marches: 'architecture/marche/marches',
-      types: 'architecture/typEmplacement/types',
-      emplacements: 'architecture/emplacement/emplacements',
+      marches: MODULES.SITE.GETTERS.SITES,
+      types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES,
+      emplacements: MODULES.EMPLACEMENT.GETTERS.EMPLACEMENTS,
     }),
-    records() {
-      return this.emplacements.map((emplacement) => {
-        return {
-          code: emplacement.code,
-          niveau: emplacement.niveau,
-          pavillon: emplacement.pavillon,
-          zone: emplacement.zone,
-          site: emplacement.site,
-          date: emplacement.created_at,
-        }
-      })
-    },
   },
   methods: {
     ...mapActions({
-      getOne: 'architecture/emplacement/getOne',
-      getMarches: 'architecture/marche/getAll',
-      getEmplacements: 'architecture/emplacement/getAll',
-      getTypesEmplacement: 'architecture/typEmplacement/getAll',
+      getOne: MODULES.EMPLACEMENT.ACTIONS.ONE,
+      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getEmplacements: MODULES.EMPLACEMENT.ACTIONS.ALL,
+      getTypesEmplacement: MODULES.TYPE.EMPLACEMENT.ACTIONS.ALL,
     }),
-    imprimer() {
-      const columns = ['code', 'niveau', 'pavillon', 'zone', 'site', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des emplacements')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

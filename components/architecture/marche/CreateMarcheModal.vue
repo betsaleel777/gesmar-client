@@ -7,7 +7,7 @@
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <form ref="form">
           <div class="form-group required">
             <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>

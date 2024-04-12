@@ -10,7 +10,7 @@
     </template>
     <template #default>
       <v-app>
-        <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
+        <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
           <h5 v-if="bordereauExist" class="text-center">
             Bordereau du commercial {{ bordereau.commercial.user.name }}
           </h5>

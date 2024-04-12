@@ -4,7 +4,7 @@
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
           v-b-tooltip.hover.top
-          v-can="permissions.closable"
+          v-can="permissions.fermeture.create"
           title="fermer"
           class="btn btn-sm btn-danger btn-icon"
           stroke-width="2"
@@ -14,7 +14,7 @@
         />
         <feather
           v-b-tooltip.hover.top
-          v-can="permissions.create"
+          v-can="permissions.encaissement.create"
           title="créer"
           class="btn btn-sm btn-primary btn-icon mr-1"
           stroke-width="2"
@@ -90,9 +90,8 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateEncaissement from './CreateEncaissement.vue'
 import ShowEncaissementModal from './ShowEncaissementModal.vue'
 import CloseEncaissementModal from './CloseEncaissementModal.vue'
-import { finance } from '~/helper/permissions'
+import { fermeture, encaissement } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
-const permissions = finance.caisse.ouverture
 export default {
   components: {
     CreateEncaissement,
@@ -149,7 +148,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
-    permissions,
+    permissions: { fermeture, encaissement },
   }),
   async fetch() {
     await this.getEncaissements()

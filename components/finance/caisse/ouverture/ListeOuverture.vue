@@ -4,7 +4,7 @@
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
           v-b-tooltip.hover.top
-          v-can="permissions.created_at"
+          v-can="permissions.create"
           title="créer"
           class="btn btn-sm btn-primary btn-icon mx-1"
           stroke-width="2"
@@ -71,12 +71,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateOuvertureModal from './CreateOuvertureModal.vue'
 import { OUVERTURE } from '~/helper/constantes'
-import { finance } from '~/helper/permissions'
-const permissions = finance.caisse.ouverture
+import { ouverture } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreateOuvertureModal,
-  },
+  components: { CreateOuvertureModal },
   data: () => ({
     fields: [
       'ordre',
@@ -93,14 +91,14 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
-    permissions,
+    permissions: ouverture,
   }),
   async fetch() {
     await this.getPaginate()
     this.pageInit()
   },
   computed: {
-    ...mapGetters({ ouvertures: 'caisse/ouverture/ouvertures' }),
+    ...mapGetters({ ouvertures: MODULES.OUVERTURE.GETTERS.OUVERTURES }),
   },
   watch: {
     search(recent) {
@@ -112,7 +110,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ getPaginate: 'caisse/ouverture/getPaginate', getSearch: 'caisse/ouverture/getSearch' }),
+    ...mapActions({
+      getPaginate: MODULES.OUVERTURE.ACTIONS.PAGINATE,
+      getSearch: MODULES.OUVERTURE.ACTIONS.SEARCH,
+    }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

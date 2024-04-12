@@ -2,25 +2,15 @@
   <b-card aria-hidden="true" header="Liste des factures d'équipement">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="générer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="cpu"
-            @click="$bvModal.show('genererGear')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="générer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="cpu"
+          @click="$bvModal.show('genererGear')"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input

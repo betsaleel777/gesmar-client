@@ -12,15 +12,6 @@
             type="plus"
             @click="create = true"
           />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
         </div>
       </div>
       <hr class="mg-t-4" />
@@ -72,7 +63,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -89,12 +79,9 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreateNiveauModal from './CreateNiveauModal.vue'
 import EditNiveauModal from './EditNiveauModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreateNiveauModal,
-    EditNiveauModal,
-  },
+  components: { CreateNiveauModal, EditNiveauModal },
   data: () => ({
     fields: [
       'index',
@@ -123,33 +110,10 @@ export default {
     this.totalRows = this.niveaux.length
   },
   computed: {
-    ...mapGetters({ niveaux: 'architecture/niveau/niveaux' }),
-    records() {
-      return this.niveaux.map((niveau) => {
-        return {
-          nom: niveau.nom,
-          pavillon: niveau.pavillon,
-          site: niveau.site,
-          date: niveau.created_at,
-        }
-      })
-    },
+    ...mapGetters({ niveaux: MODULES.NIVEAU.GETTERS.NIVEAUX }),
   },
   methods: {
-    ...mapActions({ getNiveaux: 'architecture/niveau/getAll' }),
-    imprimer() {
-      const columns = ['nom', 'pavillon', 'site', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des zones')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
+    ...mapActions({ getNiveaux: MODULES.NIVEAU.ACTIONS.ALL }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

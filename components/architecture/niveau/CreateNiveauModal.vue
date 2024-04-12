@@ -69,9 +69,10 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
-    value: Boolean
+    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -83,13 +84,13 @@ export default {
       nom: '',
       pavillon_id: '',
       nombre: null,
-      automatiq: false
+      automatiq: false,
     },
     errors: {
       nom: { exist: false, message: null },
       pavillon_id: { exist: false, message: null },
-      nombre: { exist: false, message: null }
-    }
+      nombre: { exist: false, message: null },
+    },
   }),
   computed: {
     dialog: {
@@ -98,18 +99,18 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      }
-    }
+      },
+    },
   },
   watch: {
     search(val) {
       val && val !== this.niveau.pavillon_id && this.querySelections(val)
-    }
+    },
   },
   methods: {
     ...mapActions({
-      ajouter: 'architecture/niveau/ajouter',
-      getSearch: 'architecture/pavillon/getSearch'
+      ajouter: MODULES.NIVEAU.ACTIONS.ADD,
+      getSearch: MODULES.PAVILLON.ACTIONS.SEARCH,
     }),
     save() {
       this.submiting = true
@@ -118,7 +119,7 @@ export default {
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
-            solid: true
+            solid: true,
           })
           this.dialog = false
         })
@@ -143,8 +144,8 @@ export default {
           .then((pavillons) => (this.pavillons = pavillons))
           .finally(() => (this.loading = false))
       }, 1150)
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped></style>

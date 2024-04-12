@@ -124,6 +124,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 let datesNonPermises = []
 export default {
   props: {
@@ -158,7 +159,7 @@ export default {
   computed: {
     ...mapGetters({
       guichets: 'caisse/guichet/guichets',
-      caissiers: 'caisse/caissier/caissiers',
+      caissiers: MODULES.CAISSIER.GETTERS.CAISSIERS,
     }),
     guichetCaissier() {
       return `${this.ouverture.guichet_id}|${this.ouverture.caissier_id}`
@@ -195,11 +196,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      ajouter: 'caisse/ouverture/ajouter',
+      ajouter: MODULES.OUVERTURE.ACTIONS.ADD,
       getGuichets: 'caisse/guichet/getAll',
-      getCaissiers: 'caisse/caissier/getAll',
-      getOne: 'caisse/caissier/getOne',
-      checkUsing: 'caisse/ouverture/ouvertureUsingExists',
+      getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
+      getOne: MODULES.CAISSIER.ACTIONS.ONE,
+      checkUsing: MODULES.OUVERTURE.ACTIONS.USING_EXISTS,
     }),
     save() {
       this.submiting = true

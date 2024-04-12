@@ -14,15 +14,15 @@
             <label class="content-label">Parametres</label>
           </li> -->
           <li
-            v-can="permissions.exploitation.acceder"
+            v-can="accesExploitation"
             class="nav-item"
-            :class="{ show: active.exploitation }"
+            :class="{ show: active.exploitation || $route.name.match(/^exploitation/) }"
             @click="activer('exploitation')"
           >
             <a class="nav-link with-sub" :class="{ active: $route.name.match(/^exploitation/) }"
               ><feather type="activity" />Exploitation</a
             >
-            <nav v-can="permissions.exploitation.reception.acceder" class="nav nav-sub">
+            <nav v-can="accesReception" class="nav nav-sub">
               <nuxt-link
                 to="/exploitation/reception"
                 class="nav-sub-link"
@@ -30,7 +30,7 @@
                 >Reception</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.exploitation.ordonnancements.acceder" class="nav nav-sub">
+            <nav v-can="accesOrdonnancement" class="nav nav-sub">
               <nuxt-link
                 to="/exploitation/ordonnancement"
                 class="nav-sub-link"
@@ -38,25 +38,25 @@
                 >Ordonnancement</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.exploitation.maintenance.acceder" class="nav nav-sub">
+            <!-- <nav class="nav nav-sub">
               <nuxt-link
                 to="/exploitation/maintenance"
                 class="nav-sub-link"
                 :class="{ active: $route.name === 'exploitation-maintenance' }"
                 >Maintenance d'infracstructure</nuxt-link
               >
-            </nav>
+            </nav> -->
           </li>
           <li
-            v-can="permissions.finance.acceder"
+            v-can="accesFinance"
             class="nav-item"
-            :class="{ show: active.finance }"
+            :class="{ show: active.finance || $route.name.match(/^finance/) }"
             @click="activer('finance')"
           >
             <a class="nav-link with-sub" :class="{ active: $route.name.match(/^finance/) }">
               <feather type="dollar-sign" />Finances & quittancement</a
             >
-            <nav v-can="permissions.finance.facturation.acceder" class="nav nav-sub">
+            <nav v-can="accesFactureFinance" class="nav nav-sub">
               <nuxt-link
                 to="/finance/facture"
                 class="nav-sub-link"
@@ -64,7 +64,7 @@
                 >Facturation</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.finance.bordereaux.acceder" class="nav nav-sub">
+            <nav v-can="accesBordereauFinance" class="nav nav-sub">
               <nuxt-link
                 to="/finance/bordereau"
                 class="nav-sub-link"
@@ -72,7 +72,7 @@
                 >Bordereaux</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.finance.caisse.acceder" class="nav nav-sub">
+            <nav v-can="accesCaisseFinance" class="nav nav-sub">
               <nuxt-link
                 to="/finance/caisse"
                 class="nav-sub-link"
@@ -82,15 +82,15 @@
             </nav>
           </li>
           <li
-            v-can="permissions.parametre.acceder"
+            v-can="accesParametre"
             class="nav-item"
-            :class="{ show: active.setting }"
+            :class="{ show: active.setting || $route.name.match(/^parametre/) }"
             @click="activer('setting')"
           >
             <a class="nav-link with-sub" :class="{ active: $route.name.match(/^parametre/) }"
               ><feather type="settings" />Paramètres</a
             >
-            <nav v-can="permissions.parametre.utilisateur.acceder" class="nav nav-sub">
+            <nav v-can="accesUtilisateur" class="nav nav-sub">
               <nuxt-link
                 to="/parametre/utilisateur"
                 class="nav-sub-link"
@@ -98,7 +98,7 @@
                 >Utilisateur & fonctions</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.parametre.configuration.acceder" class="nav nav-sub">
+            <nav v-can="accesConfigurationParametre" class="nav nav-sub">
               <nuxt-link
                 to="/parametre/architecture"
                 class="nav-sub-link"
@@ -106,7 +106,7 @@
                 >Configuration de Marché</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.parametre.gabaris.acceder" class="nav nav-sub">
+            <nav v-can="accesGabarisParametre" class="nav nav-sub">
               <nuxt-link
                 to="/parametre/template"
                 class="nav-sub-link"
@@ -114,7 +114,7 @@
                 >Gabaris de documents</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.parametre.caisse.acceder" class="nav nav-sub">
+            <nav v-can="accesCaisseParametre" class="nav nav-sub">
               <nuxt-link
                 to="/parametre/caisse"
                 class="nav-sub-link"
@@ -122,7 +122,7 @@
                 >Caisse</nuxt-link
               >
             </nav>
-            <nav v-can="permissions.parametre.application.acceder" class="nav nav-sub">
+            <nav v-can="accesApplicationParametre" class="nav nav-sub">
               <nuxt-link
                 to="/parametre/application"
                 class="nav-sub-link"
@@ -134,13 +134,12 @@
         </ul>
       </div>
     </perfect-scrollbar>
-    <!-- sidebar-body -->
   </div>
-  <!-- sidebar -->
 </template>
 <script>
-import { parametre, exploitation, finance } from '~/helper/permissions'
+import menu from '~/mixins/permissions/menu.js'
 export default {
+  mixins: [menu],
   data() {
     return {
       active: {
@@ -149,11 +148,6 @@ export default {
         paiement: false,
         outils: false,
         setting: false,
-      },
-      permissions: {
-        parametre,
-        exploitation,
-        finance,
       },
     }
   },

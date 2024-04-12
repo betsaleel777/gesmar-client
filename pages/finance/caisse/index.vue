@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
     <div class="col-md-12 col-sm-12">
       <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
@@ -26,30 +26,22 @@ import TableauCaisse from '~/components/finance/caisse/TableauCaisse.vue'
 import ListeOuverture from '~/components/finance/caisse/ouverture/ListeOuverture.vue'
 import ListeFermeture from '~/components/finance/caisse/fermeture/ListeFermeture.vue'
 import ListeEncaissement from '~/components/finance/caisse/encaissement/ListeEncaissement.vue'
-import { finance } from '~/helper/permissions'
-const permissions = finance.caisse
+import { ouverture, fermeture, encaissement } from '~/helper/permissions'
 export default {
-  components: {
-    PartialBreadcrumb,
-    TableauCaisse,
-    ListeOuverture,
-    ListeFermeture,
-    ListeEncaissement,
-  },
+  components: { PartialBreadcrumb, TableauCaisse, ListeOuverture, ListeFermeture, ListeEncaissement },
   data: () => ({
     liens: [{ path: '#', text: 'Caisse' }],
     tabIndex: 0,
-    permissions,
   }),
   computed: {
     disableOuverture() {
-      return !this.$gates.hasPermission(permissions.ouverture.acceder)
+      return !this.$gates.hasAnyPermission(`${ouverture.global}|${ouverture.own}`)
     },
     disablePoint() {
-      return !this.$gates.hasPermission(permissions.point.acceder)
+      return !this.$gates.hasAnyPermission(`${fermeture.global}|${fermeture.own}`)
     },
     disableEncaissement() {
-      return !this.$gates.hasPermission(permissions.encaissement.acceder)
+      return !this.$gates.hasAnyPermission(`${encaissement.global}|${encaissement.own}`)
     },
   },
   methods: {

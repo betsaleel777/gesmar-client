@@ -55,10 +55,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <nuxt-link
-            v-permission:all="permissions.edit + '|' + accesParametre"
-            :to="`/parametre/utilisateur/${data.item.user.id}/settings`"
-          >
+          <nuxt-link v-can="permissions.edit" :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </nuxt-link>
           <a type="button" @click="attribuer(data.item)">
@@ -88,10 +85,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateBorderauModal from '../bordereau/CreateBorderauModal.vue'
 import CreateCommecialModal from './CreateCommecialModal.vue'
-import { finance, parametre } from '~/helper/permissions'
+import { commercial } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
-const permissions = finance.bordereaux.commerciaux
-const accesParametre = parametre.acceder
 export default {
   components: { CreateCommecialModal, CreateBorderauModal },
   data: () => ({
@@ -114,8 +109,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
-    permissions,
-    accesParametre,
+    permissions: commercial,
     createModal: false,
   }),
   async fetch() {

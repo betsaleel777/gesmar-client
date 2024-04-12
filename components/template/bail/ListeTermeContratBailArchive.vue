@@ -95,9 +95,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       'index',

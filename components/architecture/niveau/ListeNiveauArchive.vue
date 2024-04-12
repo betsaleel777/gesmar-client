@@ -3,27 +3,16 @@
     <b-card aria-hidden="true" header="Niveaux Archivées">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="retour"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="arrow-left"
-              @click="$emit('back')"
-            />
-          </div>
+          <feather
+            v-b-tooltip.hover.top
+            title="retour"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="arrow-left"
+            @click="$emit('back')"
+          />
         </div>
-        <!-- btn-toolbar -->
         <hr class="mg-t-4" />
         <b-form-input
           v-if="totalRows > 0"
@@ -74,7 +63,6 @@
           </template>
         </b-table>
         <b-pagination
-          v-if="totalRows > 0"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
@@ -100,6 +88,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: {
     ConfirmationModal,
@@ -129,10 +118,10 @@ export default {
     })
   },
   computed: {
-    ...mapGetters('architecture/niveau', ['niveaux']),
+    ...mapGetters({ niveaux: MODULES.NIVEAU.GETTERS.NIVEAUX }),
   },
   methods: {
-    ...mapActions('architecture/niveau', ['getTrashAll']),
+    ...mapActions({ getTrashAll: MODULES.NIVEAU.ACTIONS.TRASHED }),
     imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom

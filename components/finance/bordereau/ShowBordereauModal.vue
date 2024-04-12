@@ -19,7 +19,6 @@
           </div>
           <ListeShowEmplacement :emplacements="bordereau.emplacements" />
         </div>
-        <!-- <pre>{{ bordereau }}</pre> -->
       </b-overlay>
     </template>
   </b-modal>

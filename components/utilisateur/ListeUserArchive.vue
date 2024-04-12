@@ -4,25 +4,15 @@
       <b-card aria-hidden="true" header="Utilisateurs Archivées">
         <b-card-text>
           <div class="btn-toolbar d-flex flex-row-reverse">
-            <div class="">
-              <feather
-                v-b-tooltip.hover.top
-                title="imprimer liste"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="printer"
-              />
-              <feather
-                v-b-tooltip.hover.top
-                title="retour"
-                class="btn btn-sm btn-primary btn-icon"
-                stroke-width="2"
-                size="18"
-                type="arrow-left"
-                @click="$emit('back')"
-              />
-            </div>
+            <feather
+              v-b-tooltip.hover.top
+              title="retour"
+              class="btn btn-sm btn-primary btn-icon"
+              stroke-width="2"
+              size="18"
+              type="arrow-left"
+              @click="$emit('back')"
+            />
           </div>
           <!-- btn-toolbar -->
           <hr class="mg-t-4" />
@@ -72,7 +62,6 @@
             </template>
           </b-table>
           <b-pagination
-            v-if="totalRows > 0"
             v-model="currentPage"
             :total-rows="totalRows"
             :per-page="perPage"
@@ -99,9 +88,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '../tools/ConfirmationModal.vue'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       { key: 'name', label: 'Nom', tdClass: 'wd-30p', sortable: true },

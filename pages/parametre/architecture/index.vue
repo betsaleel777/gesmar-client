@@ -1,42 +1,41 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-components">
       <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
         <b-tab title="Acceuil" lazy :title-link-class="linkClass(0)">
           <AcceuilArchitecture />
         </b-tab>
-        <b-tab v-role="superole" title="Marchés" lazy :title-link-class="linkClass(1)">
+        <b-tab :disabled="disableSite" title="Marchés" lazy :title-link-class="linkClass(1)">
           <ListeMarche v-if="!archive.marche" @archivage="archive.marche = true" />
           <ListeMarcheArchive v-else @back="onBack(1)" />
         </b-tab>
-        <b-tab title="Pavillons" lazy :title-link-class="linkClass(2)">
+        <b-tab :disabled="disablePavillon" title="Pavillons" lazy :title-link-class="linkClass(2)">
           <ListePavillon v-if="!archive.pavillon" @archivage="archive.pavillon = true" />
           <ListePavillonArchive v-else @back="onBack(2)" />
         </b-tab>
-        <b-tab title="Niveaux" lazy :title-link-class="linkClass(3)">
+        <b-tab :disabled="disableNiveau" title="Niveaux" lazy :title-link-class="linkClass(3)">
           <ListeNiveau v-if="!archive.niveau" @archivage="archive.niveau = true" />
           <ListeNiveauArchive v-else @back="onBack(3)" />
         </b-tab>
-        <b-tab title="Zones" lazy :title-link-class="linkClass(4)">
+        <b-tab :disabled="disableZone" title="Zones" lazy :title-link-class="linkClass(4)">
           <ListeZone v-if="!archive.zone" @archivage="archive.zone = true" />
           <ListeZoneArchive v-else @back="onBack(4)" />
         </b-tab>
-        <b-tab title="Emplacements" lazy :title-link-class="linkClass(5)">
+        <b-tab :disabled="disableEmplacement" title="Emplacements" lazy :title-link-class="linkClass(5)">
           <ListeEmplacement v-if="!archive.emplacement" @archivage="archive.emplacement = true" />
           <ListeEmplacementArchive v-else @back="onBack(5)" />
         </b-tab>
-        <b-tab title="Equipements" lazy :title-link-class="linkClass(6)">
+        <b-tab :disabled="disableEquipement" title="Equipements" lazy :title-link-class="linkClass(6)">
           <ListeEquipement v-if="!archive.equipement" @archivage="archive.equipement = true" />
           <ListeEquipementArchive v-else @back="onBack(6)" />
         </b-tab>
-        <b-tab title="Abonnements" lazy :title-link-class="linkClass(7)">
+        <b-tab :disabled="disableAbonnement" title="Abonnements" lazy :title-link-class="linkClass(7)">
           <ListeAbonnement />
         </b-tab>
       </b-tabs>
     </div>
-    <SettingsEmplacementMenu />
-    <!-- content-right -->
+    <SettingsEmplacementMenu v-can="disableSettingMenu" />
   </div>
 </template>
 <script>
@@ -56,7 +55,7 @@ import ListeEquipement from '~/components/architecture/equipement/ListeEquipemen
 import ListeEquipementArchive from '~/components/architecture/equipement/ListeEquipementArchive.vue'
 import SettingsEmplacementMenu from '~/components/architecture/emplacement/SettingsEmplacementMenu.vue'
 import ListeAbonnement from '~/components/architecture/abonnement/ListeAbonnement.vue'
-import { SUPERROLE } from '~/helper/constantes'
+import architecture from '~/mixins/permissions/architecture.js'
 export default {
   components: {
     PartialBreadcrumb,
@@ -76,8 +75,8 @@ export default {
     SettingsEmplacementMenu,
     ListeAbonnement,
   },
+  mixins: [architecture],
   data: () => ({
-    superole: SUPERROLE,
     liens: [{ path: '#', text: 'Configuration de marché' }],
     archive: {
       marche: false,
