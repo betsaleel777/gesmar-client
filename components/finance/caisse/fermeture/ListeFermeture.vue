@@ -36,7 +36,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="detail(data.item)">
+          <a v-can="permissions.show" type="button" @click="detail(data.item)">
             <feather title="eye" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
@@ -61,6 +61,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ShowFermeture from './ShowFermeture.vue'
+import { fermeture } from '~/helper/permissions'
 export default {
   components: { ShowFermeture },
   data: () => ({
@@ -84,6 +85,7 @@ export default {
     pages: 1,
     currentPage: 1,
     loading: false,
+    permissions: fermeture,
   }),
   async fetch() {
     await this.getPaginate()
