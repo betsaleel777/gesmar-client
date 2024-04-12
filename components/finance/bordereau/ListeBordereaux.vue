@@ -1,16 +1,7 @@
 <template>
   <b-card aria-hidden="true" header="Liste des bordereaux">
     <b-card-text>
-      <div class="btn-toolbar d-flex flex-row-reverse">
-        <feather
-          v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="printer"
-        />
-      </div>
+      <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
       <b-form-input
         id="filter-input"
@@ -51,14 +42,14 @@
         </template>
         <template #cell(option)="data">
           <span v-if="data.item.status === status.uncashed">
-            <a type="button" @click="editDialog(data.item)">
+            <a v-can="permissions.edit" type="button" @click="editDialog(data.item)">
               <feather title="modifier" type="edit" size="20" stroke="blue" />
             </a>
-            <a type="button" @click="collecter(data.item)">
+            <a v-can="permissions.collect" type="button" @click="collecter(data.item)">
               <feather title="collecter" type="calendar" size="20" stroke="orange" />
             </a>
           </span>
-          <a type="button" @click="visualiser(data.item)">
+          <a v-can="permissions.show" type="button" @click="visualiser(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
@@ -89,6 +80,7 @@ import CollectBordereauModal from './CollectBordereauModal.vue'
 import ShowBordereauModal from './ShowBordereauModal.vue'
 import { BORDEREAU } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { bordereau } from '~/helper/permissions'
 export default {
   components: { EditBordereauModal, CollectBordereauModal, ShowBordereauModal },
   data: () => ({
@@ -116,6 +108,7 @@ export default {
     currentPage: 1,
     loading: false,
     createModal: false,
+    permissions: bordereau,
   }),
   async fetch() {
     await this.getPaginate()

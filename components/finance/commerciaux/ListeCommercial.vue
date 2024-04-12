@@ -12,14 +12,6 @@
           type="plus"
           @click="createModal = true"
         />
-        <feather
-          v-b-tooltip.hover.top
-          title="imprimer liste"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="printer"
-        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -58,7 +50,7 @@
           <nuxt-link v-can="permissions.edit" :to="`/parametre/utilisateur/${data.item.user.id}/settings`">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </nuxt-link>
-          <a type="button" @click="attribuer(data.item)">
+          <a v-can="permissions.attribuate" type="button" @click="attribuer(data.item)">
             <feather title="attribuer" type="calendar" size="20" stroke="green" />
           </a>
         </template>

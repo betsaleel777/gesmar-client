@@ -252,6 +252,7 @@ const commercial = {
   global: 'global-commercial',
   own: 'own-commercial',
   trash: 'trash-commercial',
+  create: 'create-commercial',
   restore: 'restore-commercial',
   edit: 'edit-commercial',
   show: 'show-commercial',
