@@ -5,7 +5,7 @@
         <div class="col-sm-9">
           <h6 class="mg-b-0">{{ options.title }}</h6>
         </div>
-        <div class="col-sm-3">
+        <div v-can="permissions.filter" class="col-sm-3">
           <v-app>
             <div class="d-flex flex-row-reverse">
               <v-menu
@@ -95,6 +95,7 @@
 import { mapGetters } from 'vuex'
 import { VueEllipseProgress } from 'vue-ellipse-progress'
 import { MODULES } from '~/helper/modules-types'
+import { receptionDashboard } from '~/helper/permissions'
 export default {
   components: { VueProgress: VueEllipseProgress },
   props: {
@@ -106,6 +107,7 @@ export default {
   data: () => ({
     menu: false,
     dates: [],
+    permissions: receptionDashboard,
   }),
   computed: {
     ...mapGetters({ loading: MODULES.DASHBOARD.RECEPTION.GETTERS.LOADING }),
@@ -132,20 +134,6 @@ export default {
       else if (this.options.key === 'linked') return MODULES.DASHBOARD.RECEPTION.ACTIONS.LINKED_RATE
       else return MODULES.DASHBOARD.RECEPTION.ACTIONS.SUBSCRIBED_RATE
     },
-    // pieOptions() {
-    //   return {
-    //     chartOptions: {
-    //       chart: {
-    //         type: 'pie',
-    //         width: '100%',
-    //       },
-    //       labels: [this.options.firstPercentName, this.options.secondPercentName],
-    //       legend: { show: false },
-    //       colors: ['#FEB019', '#008FFB'],
-    //     },
-    //     series: [this.options.firstCount, this.options.secondCount],
-    //   }
-    // },
   },
   methods: {
     closeMenu() {
