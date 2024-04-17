@@ -1,23 +1,11 @@
 <template>
-  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
-    <StructureTreemap :structure="structure" />
-  </b-overlay>
+  <StructureTreemap />
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
 import StructureTreemap from './StructureTreemap.vue'
 export default {
   components: { StructureTreemap },
-  async fetch() {
-    await this.getStructure()
-  },
-  computed: {
-    ...mapGetters({ structure: 'architecture/marche/structure' }),
-  },
-  methods: {
-    ...mapActions({ getStructure: 'architecture/marche/getGeneralStructure' }),
-  },
 }
 </script>
 

@@ -29,6 +29,7 @@ const site = {
   own: 'own-site',
   create: 'create-site',
   trash: 'trash-site',
+  restore: 'restore-site',
   delete: 'delete-site',
   edit: 'edit-site',
   show: 'show-site',
@@ -82,7 +83,7 @@ const equipement = {
 }
 const abonnement = {
   global: 'global-abonnement',
-  ow: 'own-abonnement',
+  own: 'own-abonnement',
   create: 'create-abonnement',
   trash: 'trash-abonnement',
   delete: 'delete-abonnement',

@@ -3,6 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -49,7 +50,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -77,6 +78,7 @@ import { mapGetters, mapActions } from 'vuex'
 import CreatePavillonModal from './CreatePavillonModal.vue'
 import EditPavillonModal from './EditPavillonModal.vue'
 import { MODULES } from '~/helper/modules-types'
+import { pavillon } from '~/helper/permissions'
 export default {
   components: { CreatePavillonModal, EditPavillonModal },
   data: () => ({
@@ -100,6 +102,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: pavillon,
   }),
   async fetch() {
     await this.getPavillons()

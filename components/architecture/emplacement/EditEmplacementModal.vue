@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditEmplacement" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier l'emplacement {{ emplacement.nom }}</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="row">
           <div class="col-md-6 col-sm-6">
             <div class="form-group">
@@ -122,7 +122,7 @@
                 dense
                 :error="errors.type_emplacement_id.exist"
                 :error-messages="errors.type_emplacement_id.message"
-                append-outer-icon="mdi-plus-thick"
+                :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
                 @click:append-outer="$bvModal.show('modalCreateTypempl')"
               >
                 <template #label>
@@ -133,11 +133,13 @@
             </v-app>
           </div>
         </div>
-        <CreateTypemplacementModal :marches="marches" @pushed="onPushed" />
-      </form>
+        <CreateTypemplacementModal @pushed="onPushed" />
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -145,22 +147,16 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTypemplacementModal from '../typEmplacement/CreateTypemplacementModal.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
+import { typeEmplacement } from '~/helper/permissions'
 export default {
   components: { CreateTypemplacementModal },
   props: {
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -187,8 +183,23 @@ export default {
       zone_id: { exist: false, message: null },
       type_emplacement_id: { exist: false, message: null },
     },
+    permissions: typeEmplacement,
   }),
+  async fetch() {
+    const { emplacement } = await this.getOne(this.id)
+    this.emplacement = emplacement
+    const { zone } = await this.getZone(this.emplacement.zone_id)
+    this.zones.push({
+      texte: zone.nom + ' ' + zone.pavillon.nom + ' ' + zone.niveau.nom + ' ' + zone.site.nom,
+      id: zone.id,
+    })
+    await this.getTypes()
+  },
   computed: {
+    ...mapGetters({ types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES }),
+    hasCreateTypePermission() {
+      return this.$gates.hasPermission(this.permissions.create)
+    },
     dialog: {
       get() {
         return this.value
@@ -203,27 +214,13 @@ export default {
       newVal && newVal !== this.emplacement.zone_id && this.querySelections(newVal)
     },
   },
-  mounted() {
-    this.emplacement.id = this.current.id
-    this.emplacement.nom = this.current.nom
-    this.emplacement.superficie = this.current.superficie
-    this.emplacement.loyer = this.current.loyer
-    this.emplacement.pas_porte = this.current.pas_porte
-    this.getOne(this.current.zone_id).then(({ zone }) =>
-      this.zones.push({
-        texte: zone.nom + ' ' + zone.pavillon.nom + ' ' + zone.niveau.nom + ' ' + zone.site.nom,
-        id: zone.id,
-      })
-    )
-    this.emplacement.zone_id = this.current.zone_id
-    this.emplacement.type_emplacement_id = this.current.type_emplacement_id
-    this.emplacement.caution = this.current.caution
-  },
   methods: {
     ...mapActions({
-      modifier: 'architecture/emplacement/modifier',
-      getSearch: 'architecture/zone/getSearch',
-      getOne: 'architecture/zone/getOne',
+      getOne: MODULES.EMPLACEMENT.ACTIONS.ONE,
+      modifier: MODULES.EMPLACEMENT.ACTIONS.EDIT,
+      getSearch: MODULES.ZONE.ACTIONS.SEARCH,
+      getZone: MODULES.ZONE.ACTIONS.ONE,
+      getTypes: MODULES.TYPE.EMPLACEMENT.ACTIONS.ALL,
     }),
     save() {
       this.submiting = true
@@ -235,7 +232,7 @@ export default {
             solid: true,
             autoHideDelay: 3000,
           })
-          this.$bvModal.hide('modalEditEmplacement')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -245,20 +242,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.emplacement = {
-        id: null,
-        nom: '',
-        superficie: '',
-        loyer: '',
-        pas_porte: '',
-        zone_id: null,
-        type_emplacement_id: null,
-        caution: null,
-      }
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
     onPushed(id) {
       this.emplacement.type_emplacement_id = id

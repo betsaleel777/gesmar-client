@@ -2,26 +2,15 @@
   <b-card aria-hidden="true" header="Liste des zones">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="create = true"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -71,7 +60,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -80,9 +68,7 @@
         aria-controls="table"
       ></b-pagination>
       <CreateZoneModal v-if="create" v-model="create" />
-      <div>
-        <EditZoneModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
-      </div>
+      <EditZoneModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -90,12 +76,9 @@
 import { mapGetters, mapActions } from 'vuex'
 import CreateZoneModal from './CreateZoneModal.vue'
 import EditZoneModal from './EditZoneModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { zone } from '~/helper/permissions'
 export default {
-  components: {
-    CreateZoneModal,
-    EditZoneModal,
-  },
+  components: { CreateZoneModal, EditZoneModal },
   data: () => ({
     fields: [
       'index',
@@ -119,6 +102,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: zone,
   }),
   async fetch() {
     await this.getZones()
@@ -126,33 +110,9 @@ export default {
   },
   computed: {
     ...mapGetters({ zones: 'architecture/zone/zones' }),
-    records() {
-      return this.zones.map((zone) => {
-        return {
-          code: zone.code,
-          niveau: zone.niveau,
-          pavillon: zone.pavillon,
-          site: zone.site,
-          date: zone.created_at,
-        }
-      })
-    },
   },
   methods: {
     ...mapActions({ getZones: 'architecture/zone/getAll' }),
-    imprimer() {
-      const columns = ['code', 'niveau', 'pavillon', 'site', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des zones')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

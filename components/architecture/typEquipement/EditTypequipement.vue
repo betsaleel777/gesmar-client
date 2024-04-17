@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditTypequip" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le type d'équipement {{ type.nom }}</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group">
           <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
           <input
@@ -64,7 +64,7 @@
         <v-app>
           <v-autocomplete
             v-model="type.site_id"
-            :items="marches"
+            :items="sites"
             item-text="nom"
             item-value="id"
             outlined
@@ -78,10 +78,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -89,16 +91,13 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
-    current: {
-      type: Object,
-      required: true,
-    },
-    marches: {
-      type: Array,
+    id: {
+      type: Number,
       required: true,
     },
     value: Boolean,
@@ -119,7 +118,13 @@ export default {
       caution_abonnement: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    const { type } = await this.getOne(this.id)
+    this.type = type
+    await this.getSites()
+  },
   computed: {
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
     dialog: {
       get() {
         return this.value
@@ -129,12 +134,11 @@ export default {
       },
     },
   },
-  mounted() {
-    this.type = Object.assign({}, this.current)
-  },
   methods: {
     ...mapActions({
-      modifier: 'architecture/typEquipement/modifier',
+      modifier: MODULES.TYPE.EQUIPEMENT.ACTIONS.EDIT,
+      getOne: MODULES.TYPE.EQUIPEMENT.ACTIONS.ONE,
+      getSites: MODULES.SITE.ACTIONS.ALL,
     }),
     save() {
       this.submiting = true
@@ -146,7 +150,7 @@ export default {
             solid: true,
             autoHideDelay: 3000,
           })
-          this.$bvModal.hide('modalEditTypequip')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -156,17 +160,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.type = {
-        id: null,
-        nom: '',
-        frais_penalite: '',
-        site_id: null,
-        caution_abonnement: null,
-      }
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

@@ -3,6 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -42,10 +43,20 @@
           </div>
         </template>
         <template #cell(option)="data">
-          <a v-if="data.item.status === STATUS.progressing" type="button" @click="resilier(data.item)">
+          <a
+            v-if="data.item.status === STATUS.progressing"
+            v-can="permissions.abort"
+            type="button"
+            @click="resilier(data.item)"
+          >
             <feather title="résilier" type="x-octagon" size="20" stroke="red" />
           </a>
-          <a v-if="data.item.status === STATUS.error" type="button" @click="confirmer(data.item)">
+          <a
+            v-if="data.item.status === STATUS.error"
+            v-can="permissions.edit"
+            type="button"
+            @click="confirmer(data.item)"
+          >
             <feather title="confimer" type="check-circle" size="20" stroke="blue" />
           </a>
         </template>
@@ -85,12 +96,9 @@ import CreateAbonnementModal from './CreateAbonnementModal.vue'
 import ValidateAbonnementModal from './ValidateAbonnementModal.vue'
 import { ABONNEMENT } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { abonnement } from '~/helper/permissions'
 export default {
-  components: {
-    CreateAbonnementModal,
-    FinishAbonnementModal,
-    ValidateAbonnementModal,
-  },
+  components: { CreateAbonnementModal, FinishAbonnementModal, ValidateAbonnementModal },
   data: () => ({
     STATUS: ABONNEMENT,
     fields: [
@@ -122,6 +130,7 @@ export default {
     currentPage: 1,
     loading: false,
     create: false,
+    permissions: abonnement,
   }),
   async fetch() {
     await this.getPaginate()

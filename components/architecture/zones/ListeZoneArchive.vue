@@ -3,27 +3,16 @@
     <b-card aria-hidden="true" header="Zones Archivées">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="retour"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="arrow-left"
-              @click="$emit('back')"
-            />
-          </div>
+          <feather
+            v-b-tooltip.hover.top
+            title="retour"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="arrow-left"
+            @click="$emit('back')"
+          />
         </div>
-        <!-- btn-toolbar -->
         <hr class="mg-t-4" />
         <b-form-input
           v-if="totalRows > 0"
@@ -59,6 +48,7 @@
           </template>
           <template #cell(option)="data">
             <feather
+              v-can="permissions.restore"
               title="restaurer"
               type="rotate-cw"
               size="20"
@@ -74,7 +64,6 @@
           </template>
         </b-table>
         <b-pagination
-          v-if="totalRows > 0"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
@@ -100,10 +89,9 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { zone } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
@@ -122,18 +110,17 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: zone,
   }),
-  fetch() {
-    this.getTrashAll().then(() => {
-      this.totalRows = this.zones.length
-    })
+  async fetch() {
+    await this.getTrashAll()
+    this.totalRows = this.zones.length
   },
   computed: {
     ...mapGetters('architecture/zone', ['zones']),
   },
   methods: {
     ...mapActions('architecture/zone', ['getTrashAll']),
-    imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

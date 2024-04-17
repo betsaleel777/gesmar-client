@@ -2,26 +2,25 @@
   <b-card aria-hidden="true" header="Liste des emplacements">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateEmplacement')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="archives"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="archive"
-            @click="$emit('archivage')"
-          />
-        </div>
+        <feather
+          v-b-tooltip.hover.top
+          title="archives"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="archive"
+          @click="$emit('archivage')"
+        />
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon mr-1"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -69,10 +68,10 @@
           </span>
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
-          <a type="button" @click="dialoger(data.item)">
+          <a v-can="permissions.trash" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -90,25 +89,17 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <div>
-        <ConfirmationModal
-          :id="dialogData.id"
-          :key="dialogData.modal"
-          v-model="dialogData.modal"
-          :nom="dialogData.nom"
-          modal-id="emplacementConfirmationListe"
-          action="architecture/emplacement/supprimer"
-          :message="`Voulez vous réelement archiver l'emplacement ${dialogData.nom}`"
-        />
-      </div>
-      <CreateEmplacementModal :types="types" :marches="marches" />
-      <EditEmplacementModal
-        v-if="edit.modal"
-        v-model="edit.modal"
-        :current="edit.emplacement"
-        :types="types"
-        :marches="marches"
+      <ConfirmationModal
+        :id="dialogData.id"
+        :key="dialogData.modal"
+        v-model="dialogData.modal"
+        :nom="dialogData.nom"
+        modal-id="emplacementConfirmationListe"
+        :action="actionDelete"
+        :message="`Voulez vous réelement archiver l'emplacement ${dialogData.nom}`"
       />
+      <CreateEmplacementModal v-if="create" v-model="create" />
+      <EditEmplacementModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -119,12 +110,9 @@ import EditEmplacementModal from './EditEmplacementModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { EMPLACEMENT } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { emplacement } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-    EditEmplacementModal,
-    CreateEmplacementModal,
-  },
+  components: { ConfirmationModal, EditEmplacementModal, CreateEmplacementModal },
   data: () => ({
     fields: [
       'ordre',
@@ -143,31 +131,27 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, emplacement: {} },
+    edit: { modal: false, id: 0 },
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    create: false,
+    permissions: emplacement,
+    actionDelete: MODULES.EMPLACEMENT.ACTIONS.TRASH,
   }),
   async fetch() {
-    await this.getMarches()
-    await this.getTypesEmplacement()
     await this.getEmplacements()
     this.totalRows = this.emplacements.length
   },
+
   computed: {
-    ...mapGetters({
-      marches: MODULES.SITE.GETTERS.SITES,
-      types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES,
-      emplacements: MODULES.EMPLACEMENT.GETTERS.EMPLACEMENTS,
-    }),
+    ...mapGetters({ emplacements: MODULES.EMPLACEMENT.GETTERS.EMPLACEMENTS }),
   },
   methods: {
     ...mapActions({
       getOne: MODULES.EMPLACEMENT.ACTIONS.ONE,
-      getMarches: MODULES.SITE.ACTIONS.ALL,
       getEmplacements: MODULES.EMPLACEMENT.ACTIONS.ALL,
-      getTypesEmplacement: MODULES.TYPE.EMPLACEMENT.ACTIONS.ALL,
     }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
@@ -176,11 +160,8 @@ export default {
       this.$bvModal.show('emplacementConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ emplacement }) => {
-        this.edit.emplacement = emplacement
-        this.edit.modal = true
-        this.$bvModal.show('modalEditEmplacement')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

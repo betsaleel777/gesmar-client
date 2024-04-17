@@ -48,6 +48,7 @@
           </template>
           <template #cell(option)="data">
             <feather
+              v-can="permissions.restore"
               title="restaurer"
               type="rotate-cw"
               size="20"
@@ -89,10 +90,9 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { MODULES } from '~/helper/modules-types'
+import { niveau } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
@@ -111,6 +111,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: niveau,
   }),
   fetch() {
     this.getTrashAll().then(() => {

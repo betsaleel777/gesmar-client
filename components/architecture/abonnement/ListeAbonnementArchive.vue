@@ -1,109 +1,98 @@
 <template>
-  <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
-    <b-card aria-hidden="true" header="Abonnements Archivés">
-      <b-card-text>
-        <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="retour"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="arrow-left"
-              @click="$emit('back')"
-            />
-          </div>
-        </div>
-        <hr class="mg-t-4" />
-        <b-form-input
-          v-if="totalRows > 0"
-          id="filter-input"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-          class="mg-y-10"
-          :debounce="500"
-        ></b-form-input>
-        <b-table
-          id="table"
-          class="table"
-          hover
-          small
-          bordered
-          primary-key="id"
-          :current-page="currentPage"
-          :per-page="perPage"
-          :items="abonnements"
-          :fields="fields"
-          responsive
-          empty-text="Aucun abonnements archivés"
-          show-empty
-          :filter="filter"
-          @filtered="onFiltered"
-        >
-          <template #cell(option)="data">
-            <feather
-              title="restaurer"
-              type="rotate-cw"
-              size="20"
-              stroke="green"
-              stroke-width="3"
-              @click="dialoger(data.item)"
-            />
-          </template>
-          <template #cell(status)="data">
-            <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
-          </template>
-          <template #cell(created_at)="data">
-            {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
-          </template>
-          <template #empty="scope">
-            <h6 class="text-center text-muted pd-y-10">
-              {{ scope.emptyText }}
-            </h6>
-          </template>
-        </b-table>
-        <b-pagination
-          v-if="totalRows > 0"
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          align="fill"
-          size="sm"
-          class="mg-y-1"
-          aria-controls="table"
-        ></b-pagination>
-        <ConfirmationModal
-          :id="dialogData.id"
-          :key="dialogData.modal"
-          v-model="dialogData.modal"
-          :nom="dialogData.code"
-          modal-id="abonnementConfirmationArchive"
-          action="architecture/abonnement/restaurer"
-          :message="`Voulez vous réelement restaurer l'abonnement ${dialogData.code}`"
-          @confirmed="$emit('back')"
+  <b-card aria-hidden="true" header="Abonnements Archivés">
+    <b-card-text>
+      <div class="btn-toolbar d-flex flex-row-reverse">
+        <feather
+          v-b-tooltip.hover.top
+          title="retour"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="arrow-left"
+          @click="$emit('back')"
         />
-      </b-card-text>
-    </b-card>
-  </b-overlay>
+      </div>
+      <hr class="mg-t-4" />
+      <b-form-input
+        v-if="totalRows > 0"
+        id="filter-input"
+        v-model="filter"
+        type="search"
+        placeholder="Type to Search"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :items="abonnements"
+        :fields="fields"
+        responsive
+        :busy="$fetchState.pending"
+        empty-text="Aucun abonnements archivés"
+        show-empty
+        :filter="filter"
+        @filtered="onFiltered"
+      >
+        <template #cell(option)="data">
+          <feather
+            v-can="permissions.restore"
+            title="restaurer"
+            type="rotate-cw"
+            size="20"
+            stroke="green"
+            stroke-width="3"
+            @click="dialoger(data.item)"
+          />
+        </template>
+        <template #cell(status)="data">
+          <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
+        </template>
+        <template #cell(created_at)="data">
+          {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
+        </template>
+        <template #empty="scope">
+          <h6 class="text-center text-muted pd-y-10">
+            {{ scope.emptyText }}
+          </h6>
+        </template>
+      </b-table>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="fill"
+        size="sm"
+        class="mg-y-1"
+        aria-controls="table"
+      ></b-pagination>
+      <ConfirmationModal
+        :id="dialogData.id"
+        :key="dialogData.modal"
+        v-model="dialogData.modal"
+        :nom="dialogData.code"
+        modal-id="abonnementConfirmationArchive"
+        :action="actionRestore"
+        :message="`Voulez vous réelement restaurer l'abonnement ${dialogData.code}`"
+        @confirmed="$emit('back')"
+      />
+    </b-card-text>
+  </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { ABONNEMENT } from '~/helper/constantes'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { MODULES } from '~/helper/modules-types'
+import { abonnement } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       { key: 'code', label: 'Code', sortable: true },
@@ -140,18 +129,18 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: abonnement,
+    actionRestore: MODULES.ABONNEMENT.ACTIONS.RESTORE,
   }),
-  fetch() {
-    this.getTrashAll().then(() => {
-      this.totalRows = this.abonnements.length
-    })
+  async fetch() {
+    await this.getTrashAll()
+    this.totalRows = this.abonnements.length
   },
   computed: {
-    ...mapGetters('architecture/abonnement', ['abonnements']),
+    ...mapGetters({ abonnements: MODULES.ABONNEMENT.GETTERS.ABONNEMENTS }),
   },
   methods: {
-    ...mapActions('architecture/abonnement', ['getTrashAll']),
-    imprimer() {},
+    ...mapActions({ getTrashAll: MODULES.ABONNEMENT.ACTIONS.TRASHED }),
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id

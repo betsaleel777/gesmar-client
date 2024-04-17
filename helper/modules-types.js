@@ -133,6 +133,7 @@ export const MODULES = Object.freeze({
     ACTIONS: Object.freeze({
       ALL: zoneRoot + '/getAll',
       FOR_ATTRIBUTION: zoneRoot + '/getZoneForAttribution',
+      SEARCH: zoneRoot + '/getSearch',
       TRASHED: zoneRoot + '/getTrashAll',
       BY_MARCHE: zoneRoot + '/getByMarche',
       EDIT: zoneRoot + '/modifier',

@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateTypequip" scrollable @show="reset">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouveau type d'équipement</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group">
           <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
           <input
@@ -64,7 +64,7 @@
         <v-app>
           <v-autocomplete
             v-model="type.site_id"
-            :items="marches"
+            :items="sites"
             item-text="nom"
             item-value="id"
             outlined
@@ -78,10 +78,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -89,15 +91,11 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-  },
+  props: { value: Boolean },
   emits: ['pushed'],
   data: () => ({
     submiting: false,
@@ -114,14 +112,28 @@ export default {
       caution_abonnement: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getSites()
+  },
+  computed: {
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
-    ...mapActions('architecture/typEquipement', ['ajouter']),
+    ...mapActions({ ajouter: MODULES.TYPE.EQUIPEMENT.ACTIONS.ADD, getSites: MODULES.SITE.ACTIONS.ALL }),
     save() {
       this.submiting = true
       this.ajouter(this.type)
         .then(({ message, id }) => {
           this.$emit('pushed', id)
-          this.$bvModal.hide('modalCreateTypequip')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -137,18 +149,8 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    reset() {
-      this.type = {
-        nom: '',
-        frais_penalite: '',
-        site_id: '',
-        caution_abonnement: null,
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateTypequip')
-    },
   },
 }
 </script>
 <style></style>
-<style scoped></style>
+<style></style>

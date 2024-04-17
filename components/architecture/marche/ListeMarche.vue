@@ -3,6 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -50,7 +51,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -72,9 +73,7 @@
         aria-controls="table"
       ></b-pagination>
       <CreateMarcheModal v-if="create" v-model="create" />
-      <div>
-        <EditMarcheModal v-if="edit.modal" :id="edit.marche" v-model="edit.modal" />
-      </div>
+      <EditMarcheModal v-if="edit.modal" :id="edit.marche" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -83,11 +82,9 @@ import { mapGetters, mapActions } from 'vuex'
 import CreateMarcheModal from './CreateMarcheModal.vue'
 import EditMarcheModal from './EditMarcheModal.vue'
 import { MODULES } from '~/helper/modules-types'
+import { site } from '~/helper/permissions'
 export default {
-  components: {
-    CreateMarcheModal,
-    EditMarcheModal,
-  },
+  components: { CreateMarcheModal, EditMarcheModal },
   data: () => ({
     fields: [
       'index',
@@ -110,6 +107,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: site,
   }),
   async fetch() {
     await this.getMarches()
@@ -117,17 +115,6 @@ export default {
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
-    records() {
-      return this.marches.map((marche) => {
-        return {
-          nom: marche.nom,
-          commune: marche.commune,
-          ville: marche.ville,
-          pays: marche.pays,
-          date: marche.created_at,
-        }
-      })
-    },
   },
   methods: {
     ...mapActions({ getMarches: MODULES.SITE.ACTIONS.ALL }),

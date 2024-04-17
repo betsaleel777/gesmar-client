@@ -2,25 +2,16 @@
   <b-card aria-hidden="true" header="Liste des types d'équipements">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateTypequip')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -60,10 +51,10 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
-          <a type="button" @click="dialoger(data.item)">
+          <a v-can="permissions.trash" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -74,7 +65,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -82,21 +72,17 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <div>
-        <ConfirmationModal
-          :id="dialogData.id"
-          :key="dialogData.modal"
-          v-model="dialogData.modal"
-          :nom="dialogData.nom"
-          modal-id="typequipConfirmationListe"
-          action="architecture/typEquipement/supprimer"
-          :message="`Voulez vous réelement archiver le type d'équipement ${dialogData.nom}`"
-        />
-      </div>
-      <CreateTypequipement :marches="marches" />
-      <div>
-        <EditTypequipement :key="edit.modal" v-model="edit.modal" :current="edit.type" :marches="marches" />
-      </div>
+      <ConfirmationModal
+        :id="dialogData.id"
+        :key="dialogData.modal"
+        v-model="dialogData.modal"
+        :nom="dialogData.nom"
+        modal-id="typequipConfirmationListe"
+        :action="actionDelete"
+        :message="`Voulez vous réelement archiver le type d'équipement ${dialogData.nom}`"
+      />
+      <CreateTypequipement v-if="create" v-model="create" />
+      <EditTypequipement v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -105,12 +91,10 @@ import { mapGetters, mapActions } from 'vuex'
 import CreateTypequipement from './CreateTypequipement.vue'
 import EditTypequipement from './EditTypequipement.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { MODULES } from '~/helper/modules-types'
+import { typeEquipement } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-    CreateTypequipement,
-    EditTypequipement,
-  },
+  components: { ConfirmationModal, CreateTypequipement, EditTypequipement },
   data: () => ({
     fields: [
       'ordre',
@@ -127,27 +111,24 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, type: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: typeEquipement,
+    actionDelete: MODULES.TYPE.EQUIPEMENT.ACTIONS.TRASH,
   }),
   async fetch() {
-    await this.getMarches()
     await this.getTypesEquipement()
     this.totalRows = this.types.length
   },
   computed: {
-    ...mapGetters({ types: 'architecture/typEquipement/types', marches: 'architecture/marche/marches' }),
+    ...mapGetters({ types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'architecture/typEquipement/getOne',
-      getTypesEquipement: 'architecture/typEquipement/getAll',
-      getMarches: 'architecture/marche/getAll',
-    }),
-    imprimer() {},
+    ...mapActions({ getTypesEquipement: MODULES.TYPE.EQUIPEMENT.ACTIONS.ALL }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
@@ -155,11 +136,8 @@ export default {
       this.$bvModal.show('typequipConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ type }) => {
-        this.edit.type = type
-        this.edit.modal = true
-        this.$bvModal.show('modalEditTypequip')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

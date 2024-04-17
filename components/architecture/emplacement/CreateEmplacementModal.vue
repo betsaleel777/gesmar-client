@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateEmplacement" size="lg" scrollable @show="reset">
+  <b-modal v-model="dialog" size="lg" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Nouvel Emplacement</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <h5 id="archiver" class="modal-title text-primary">Nouveau Emplacement</h5>
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-switch
             v-model="automatiq"
@@ -141,7 +141,7 @@
                 dense
                 :error="errors.type_emplacement_id.exist"
                 :error-messages="errors.type_emplacement_id.message"
-                append-outer-icon="mdi-plus-thick"
+                :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
                 @click:append-outer="$bvModal.show('modalCreateTypempl')"
               >
                 <template #label>
@@ -152,11 +152,13 @@
             </v-app>
           </div>
         </div>
-        <CreateTypemplacementModal :marches="marches" @pushed="onPushed" />
-      </form>
+        <CreateTypemplacementModal @pushed="onPushed" />
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -164,21 +166,14 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CreateTypemplacementModal from '../typEmplacement/CreateTypemplacementModal.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
+import { typeEmplacement } from '~/helper/permissions'
 export default {
   components: { CreateTypemplacementModal },
-  props: {
-    types: {
-      type: Array,
-      required: true,
-    },
-    marches: {
-      type: Array,
-      required: true,
-    },
-  },
+  props: { value: Boolean },
   data: () => ({
     submiting: false,
     zones: [],
@@ -203,21 +198,43 @@ export default {
       zone_id: { exist: false, message: null },
       type_emplacement_id: { exist: false, message: null },
     },
+    permissions: typeEmplacement,
   }),
+  async fetch() {
+    await this.getTypes()
+  },
+  computed: {
+    ...mapGetters({ types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES }),
+    hasCreateTypePermission() {
+      return this.$gates.hasPermission(this.permissions.create)
+    },
+    dialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   watch: {
     search(val) {
       val && val !== this.emplacement.zone_id && this.querySelections(val)
     },
   },
   methods: {
-    ...mapActions('architecture/emplacement', ['ajouter', 'push']),
-    ...mapActions({ getSearch: 'architecture/zone/getSearch' }),
+    ...mapActions({
+      ajouter: MODULES.EMPLACEMENT.ACTIONS.ADD,
+      push: MODULES.EMPLACEMENT.ACTIONS.PUSH,
+      getTypes: MODULES.TYPE.EMPLACEMENT.ACTIONS.ALL,
+    }),
+    ...mapActions({ getSearch: MODULES.ZONE.ACTIONS.SEARCH }),
     save() {
       if (!this.automatiq) {
         this.submiting = true
         this.ajouter(this.emplacement)
           .then(({ message }) => {
-            this.$bvModal.hide('modalCreateEmplacement')
+            this.dialog = false
             this.$bvToast.toast(message, {
               title: 'succès de la création'.toLocaleUpperCase(),
               variant: 'success',
@@ -235,7 +252,7 @@ export default {
       } else {
         this.push(this.emplacement)
           .then(({ message }) => {
-            this.$bvModal.hide('modalCreateEmplacement')
+            this.dialog = false
             this.$bvToast.toast(message, {
               title: 'succès de la création'.toLocaleUpperCase(),
               variant: 'success',
@@ -250,21 +267,6 @@ export default {
             }
           })
       }
-    },
-    reset() {
-      this.emplacement = {
-        nom: '',
-        nombre: '',
-        superficie: '',
-        loyer: '',
-        pas_porte: '',
-        zone_id: null,
-        type_emplacement_id: null,
-        caution: null,
-      }
-      this.automatiq = false
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateEmplacement')
     },
     onPushed(id) {
       this.emplacement.type_emplacement_id = id

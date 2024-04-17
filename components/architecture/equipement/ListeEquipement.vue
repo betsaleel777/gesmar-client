@@ -12,6 +12,7 @@
           @click="$emit('archivage')"
         />
         <feather
+          v-can="permissions.create"
           v-b-tooltip.hover.top
           title="créer"
           class="btn btn-sm btn-primary btn-icon"
@@ -54,20 +55,16 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
-          <a type="button" @click="dialoger(data.item)">
+          <a v-can="permissions.trash" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
         <template #cell(status)="data">
-          <span :class="statusClass(data.item.abonnement)">
-            {{ data.item.abonnement }}
-          </span>
-          <span :class="statusClass(data.item.liaison)">
-            {{ data.item.liaison }}
-          </span>
+          <span :class="statusClass(data.item.abonnement)">{{ data.item.abonnement }}</span>
+          <span :class="statusClass(data.item.liaison)">{{ data.item.liaison }}</span>
         </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
@@ -83,17 +80,15 @@
         size="sm"
         @change="getPage"
       ></b-pagination-nav>
-      <div>
-        <ConfirmationModal
-          :id="dialogData.id"
-          :key="dialogData.modal"
-          v-model="dialogData.modal"
-          :nom="dialogData.nom"
-          modal-id="equipementConfirmationListe"
-          :action="actionDelete"
-          :message="`Voulez vous réelement archiver l'équipement ${dialogData.nom}`"
-        />
-      </div>
+      <ConfirmationModal
+        :id="dialogData.id"
+        :key="dialogData.modal"
+        v-model="dialogData.modal"
+        :nom="dialogData.nom"
+        modal-id="equipementConfirmationListe"
+        :action="actionDelete"
+        :message="`Voulez vous réelement archiver l'équipement ${dialogData.nom}`"
+      />
       <CreateEquipementModal v-if="create" v-model="create" />
       <EditEquipementModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
@@ -105,13 +100,10 @@ import CreateEquipementModal from './CreateEquipementModal.vue'
 import EditEquipementModal from './EditEquipementModal.vue'
 import { EQUIPEMENT } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { equipement } from '~/helper/permissions'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 export default {
-  components: {
-    ConfirmationModal,
-    EditEquipementModal,
-    CreateEquipementModal,
-  },
+  components: { ConfirmationModal, EditEquipementModal, CreateEquipementModal },
   data: () => ({
     fields: [
       'ordre',
@@ -136,6 +128,7 @@ export default {
     currentPage: 1,
     loading: false,
     create: false,
+    permissions: equipement,
     actionDelete: MODULES.EQUIPEMENT.ACTIONS.TRASH,
   }),
   async fetch() {

@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateAnnexe" @show="reset">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouveau Service Annexe</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group">
           <label class="form-label">Nom</label>
           <input
@@ -80,10 +80,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -91,17 +93,13 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { ANNEXE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: {
-    marches: {
-      type: Array,
-      required: true,
-    },
-  },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     suffix: '',
@@ -120,13 +118,19 @@ export default {
       mode: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    await this.getSites()
+  },
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
+  },
   methods: {
-    ...mapActions({ ajouter: MODULES.ANNEXE.ACTIONS.ADD }),
+    ...mapActions({ ajouter: MODULES.ANNEXE.ACTIONS.ADD, getSites: MODULES.SITE.ACTIONS.ALL }),
     save() {
       this.submiting = true
       this.ajouter(this.annexe)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateAnnexe')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -141,17 +145,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.annexe = {
-        nom: '',
-        prix: '',
-        description: '',
-        site_id: null,
-        mode: '',
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateAnnexe')
     },
     suffixeSet() {
       if (this.annexe.mode === ANNEXE.quotidien) {

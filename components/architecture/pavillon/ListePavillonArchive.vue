@@ -48,6 +48,7 @@
           </template>
           <template #cell(option)="data">
             <feather
+              v-can="permissions.restore"
               title="restaurer"
               type="rotate-cw"
               size="20"
@@ -63,7 +64,6 @@
           </template>
         </b-table>
         <b-pagination
-          v-if="totalRows > 0"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
@@ -90,6 +90,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { MODULES } from '~/helper/modules-types'
+import { pavillon } from '~/helper/permissions'
 export default {
   components: { ConfirmationModal },
   data: () => ({
@@ -111,6 +112,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: pavillon,
   }),
   fetch() {
     this.getTrashAll().then(() => {

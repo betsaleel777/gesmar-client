@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Nouvel Equipement</h5>
+      <h5 id="archiver" class="modal-title text-primary">Nouveau Equipement</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -91,8 +91,8 @@
             dense
             :error="errors.type_equipement_id.exist"
             :error-messages="errors.type_equipement_id.message"
-            append-outer-icon="mdi-plus-thick"
-            @click:append-outer="$bvModal.show('modalCreateTypequip')"
+            :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
+            @click:append-outer="createType = true"
           >
             <template #label>
               Type d'équipement
@@ -130,7 +130,7 @@
             </template>
           </v-autocomplete>
         </v-app>
-        <CreateTypequipement :marches="marches" @pushed="onPushed" />
+        <CreateTypequipement v-model="createType" @pushed="onPushed" />
       </b-overlay>
     </template>
     <template #modal-footer>
@@ -148,6 +148,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
+import { typeEquipement } from '~/helper/permissions'
 export default {
   components: { CreateTypequipement },
   props: { value: Boolean },
@@ -164,6 +165,7 @@ export default {
     },
     emplacements: [],
     loading: false,
+    createType: false,
     errors: {
       prix_unitaire: { exist: false, message: null },
       prix_fixe: { exist: false, message: null },
@@ -172,6 +174,7 @@ export default {
       type_equipement_id: { exist: false, message: null },
       site_id: { exist: false, message: null },
     },
+    permissions: typeEquipement,
   }),
   async fetch() {
     await this.getMarches()
@@ -179,6 +182,9 @@ export default {
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
+    hasCreateTypePermission() {
+      return this.$gates.hasPermission(this.permissions.create)
+    },
     dialog: {
       get() {
         return this.value

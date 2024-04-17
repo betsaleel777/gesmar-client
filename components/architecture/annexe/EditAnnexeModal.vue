@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditAnnexe" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le service {{ annexe.nom }}</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group">
           <label class="form-label">Nom</label>
           <input
@@ -80,10 +80,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -91,21 +93,18 @@
   </b-modal>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { ANNEXE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
-    marches: {
-      type: Array,
+    id: {
+      type: Number,
       required: true,
     },
-    current: {
-      type: Object,
-      required: true,
-    },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -125,27 +124,22 @@ export default {
       mode: { exist: false, message: null },
     },
   }),
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
-  mounted() {
-    this.annexe.id = this.current.id
-    this.annexe.nom = this.current.nom
-    this.annexe.prix = this.current.prix
-    this.annexe.site_id = this.current.site_id
-    this.annexe.mode = String(this.current.mode)
-    this.annexe.description = this.current.description
+  async fetch() {
+    const { annexe } = await this.getOne(this.id)
+    this.annexe = annexe
+    this.annexe.mode = String(annexe.mode)
+    await this.getSites()
     this.suffixeSet()
   },
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
+  },
   methods: {
-    ...mapActions({ modifier: MODULES.ANNEXE.ACTIONS.EDIT }),
+    ...mapActions({
+      modifier: MODULES.ANNEXE.ACTIONS.EDIT,
+      getOne: MODULES.ANNEXE.ACTIONS.ONE,
+      getSites: MODULES.SITE.ACTIONS.ALL,
+    }),
     save() {
       this.submiting = true
       this.modifier(this.annexe)
@@ -156,7 +150,7 @@ export default {
             solid: true,
             autoHideDelay: 3000,
           })
-          this.$bvModal.hide('modalEditAnnexe')
+          this.dialog = false
         })
         .catch((err) => {
           const { data } = err.response
@@ -166,18 +160,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.annexe = {
-        id: null,
-        nom: '',
-        prix: '',
-        description: '',
-        site_id: null,
-        mode: '',
-      }
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
     suffixeSet() {
       if (this.annexe.mode === ANNEXE.quotidien) {

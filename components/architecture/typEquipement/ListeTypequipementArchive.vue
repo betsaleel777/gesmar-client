@@ -3,25 +3,15 @@
     <b-card aria-hidden="true" header="Type d'équipements Archivées">
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
-          <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-            />
-            <feather
-              v-b-tooltip.hover.top
-              title="retour"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="arrow-left"
-              @click="$emit('back')"
-            />
-          </div>
+          <feather
+            v-b-tooltip.hover.top
+            title="retour"
+            class="btn btn-sm btn-primary btn-icon"
+            stroke-width="2"
+            size="18"
+            type="arrow-left"
+            @click="$emit('back')"
+          />
         </div>
         <hr class="mg-t-4" />
         <b-form-input
@@ -55,6 +45,7 @@
           </template>
           <template #cell(option)="data">
             <feather
+              v-can="permissions.restore"
               title="restaurer"
               type="rotate-cw"
               size="20"
@@ -73,7 +64,6 @@
           </template>
         </b-table>
         <b-pagination
-          v-if="totalRows > 0"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
@@ -88,7 +78,7 @@
           v-model="dialogData.modal"
           :nom="dialogData.nom"
           modal-id="typequiplConfirmationArchive"
-          action="architecture/typEquipement/restaurer"
+          :action="actionRestore"
           :message="`Voulez vous réelement restaurer le type d'équipement ${dialogData.nom}`"
           @confirmed="$emit('back')"
         />
@@ -99,10 +89,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
+import { MODULES } from '~/helper/modules-types'
+import { typeEquipement } from '~/helper/permissions'
 export default {
-  components: {
-    ConfirmationModal,
-  },
+  components: { ConfirmationModal },
   data: () => ({
     fields: [
       'ordre',
@@ -123,18 +113,18 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    actionRestore: MODULES.TYPE.EQUIPEMENT.ACTIONS.RESTORE,
+    permissions: typeEquipement,
   }),
-  fetch() {
-    this.getTrashAll().then(() => {
-      this.totalRows = this.types.length
-    })
+  async fetch() {
+    await this.getTrashAll()
+    this.totalRows = this.types.length
   },
   computed: {
-    ...mapGetters('architecture/typEquipement', ['types']),
+    ...mapGetters({ types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
   },
   methods: {
-    ...mapActions('architecture/typEquipement', ['getTrashAll']),
-    imprimer() {},
+    ...mapActions({ getTrashAll: MODULES.TYPE.EQUIPEMENT.ACTIONS.TRASHED }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

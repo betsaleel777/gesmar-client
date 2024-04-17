@@ -2,17 +2,16 @@
   <b-card aria-hidden="true" header="Liste des niveaux">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="create = true"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -52,7 +51,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -80,6 +79,7 @@ import { mapGetters, mapActions } from 'vuex'
 import CreateNiveauModal from './CreateNiveauModal.vue'
 import EditNiveauModal from './EditNiveauModal.vue'
 import { MODULES } from '~/helper/modules-types'
+import { niveau } from '~/helper/permissions'
 export default {
   components: { CreateNiveauModal, EditNiveauModal },
   data: () => ({
@@ -104,6 +104,7 @@ export default {
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: niveau,
   }),
   async fetch() {
     await this.getNiveaux()

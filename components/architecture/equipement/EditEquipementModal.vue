@@ -84,6 +84,7 @@
         <v-app>
           <v-autocomplete
             v-model="equipement.type_equipement_id"
+            v-permission:unless.disabled="permissions.create"
             :items="types"
             item-text="nom"
             item-value="id"
@@ -91,8 +92,8 @@
             dense
             :error="errors.type_equipement_id.exist"
             :error-messages="errors.type_equipement_id.message"
-            append-outer-icon="mdi-plus-thick"
-            @click:append-outer="$bvModal.show('modalCreateTypequip')"
+            :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
+            @click:append-outer="createType = true"
           >
             <template #label>
               Type d'équipement
@@ -132,7 +133,7 @@
             </template>
           </v-autocomplete>
         </v-app>
-        <CreateTypequipement :marches="marches" @pushed="onPushed" />
+        <CreateTypequipement @pushed="onPushed" />
       </b-overlay>
     </template>
     <template #modal-footer>
@@ -150,6 +151,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
+import { typeEquipement } from '~/helper/permissions'
 export default {
   components: { CreateTypequipement },
   props: {
@@ -173,6 +175,7 @@ export default {
     },
     emplacements: [],
     loading: false,
+    createType: false,
     errors: {
       prix_unitaire: { exist: false, message: null },
       prix_fixe: { exist: false, message: null },
@@ -181,6 +184,7 @@ export default {
       type_equipement_id: { exist: false, message: null },
       site_id: { exist: false, message: null },
     },
+    permissions: typeEquipement,
   }),
   async fetch() {
     const { equipement } = await this.getOne(this.id)
@@ -188,9 +192,13 @@ export default {
     const { emplacements } = await this.getEmplacement(this.equipement.site_id)
     this.emplacements = emplacements
     await this.getMarches()
+    await this.getTypes()
   },
   computed: {
-    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
+    hasCreateTypePermission() {
+      return this.$gates.hasPermission(this.permissions.create)
+    },
     dialog: {
       get() {
         return this.value
@@ -206,6 +214,7 @@ export default {
       getOne: MODULES.EQUIPEMENT.ACTIONS.ONE,
       modifier: MODULES.EQUIPEMENT.ACTIONS.EDIT,
       getEmplacement: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_UNLINKED,
+      getTypes: MODULES.TYPE.EQUIPEMENT.ACTIONS.ALL,
     }),
     save() {
       this.submiting = true
