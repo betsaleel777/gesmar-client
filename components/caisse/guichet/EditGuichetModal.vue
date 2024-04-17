@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditGuichet" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Modifier guichet</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group required">
           <label class="form-label mg-t-10">Nom du guichet<span class="text-danger">*</span></label>
           <input
@@ -38,10 +38,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -51,13 +53,15 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -70,28 +74,25 @@ export default {
       site_id: { exist: false, message: null },
     },
   }),
-  computed: {
-    ...mapGetters('architecture/marche', ['marches']),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
+  async fetch() {
+    const { guichet } = await this.getOne(this.id)
+    this.guichet = guichet
+    await this.getSites()
   },
-  mounted() {
-    this.getSites()
-    this.guichet = Object.assign({}, this.current)
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
   },
   methods: {
-    ...mapActions({ modifier: 'caisse/guichet/modifier', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({
+      modifier: MODULES.GUICHET.ACTIONS.EDIT,
+      getSites: MODULES.SITE.ACTIONS.ALL,
+      getOne: MODULES.GUICHET.ACTIONS.ONE,
+    }),
     save() {
       this.submiting = true
       this.modifier(this.guichet)
         .then(({ message }) => {
-          this.$bvModal.hide('modalEditGuichet')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -106,14 +107,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.guichet = {
-        nom: '',
-        site_id: null,
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalEditGuichet')
     },
   },
 }

@@ -29,6 +29,9 @@ const typePersonneRoot = 'exploitation/typePersonne/'
 const typeEmplacementRoot = 'architecture/typEmplacement/'
 const roleRoot = 'user-role/role/'
 const permissionRoot = 'user-role/permission/'
+const guichetRoot = 'caisse/guichet/'
+const compteRoot = 'caisse/compte/'
+const banqueRoot = 'caisse/banque/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -544,6 +547,39 @@ export const MODULES = Object.freeze({
     ACTIONS: Object.freeze({
       ALL: permissionRoot + 'getAll',
       BY_ROLE: permissionRoot + 'getByRole',
+    }),
+  }),
+  GUICHET: Object.freeze({
+    GETTERS: Object.freeze({
+      GUICHETS: guichetRoot + 'guichets',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: guichetRoot + 'getAll',
+      ADD: guichetRoot + 'ajouter',
+      ONE: guichetRoot + 'getOne',
+      EDIT: guichetRoot + 'modifier',
+    }),
+  }),
+  COMPTE: Object.freeze({
+    GETTERS: Object.freeze({
+      COMPTES: compteRoot + 'comptes',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: compteRoot + 'getAll',
+      ADD: compteRoot + 'ajouter',
+      ONE: compteRoot + 'getOne',
+      EDIT: compteRoot + 'modifier',
+    }),
+  }),
+  BANQUE: Object.freeze({
+    GETTERS: Object.freeze({
+      BANQUES: banqueRoot + 'banques',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: banqueRoot + 'getAll',
+      ADD: banqueRoot + 'ajouter',
+      ONE: banqueRoot + 'getOne',
+      EDIT: banqueRoot + 'modifier',
     }),
   }),
 })

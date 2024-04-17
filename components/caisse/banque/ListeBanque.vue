@@ -2,26 +2,16 @@
   <b-card aria-hidden="true" header="Liste des Banques">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateBanque')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-            @click="imprimer"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -60,7 +50,7 @@
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -71,7 +61,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -79,10 +68,8 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateBanqueModal />
-      <div>
-        <EditBanqueModal v-if="edit.modal" v-model="edit.modal" :current="edit.banque" />
-      </div>
+      <CreateBanqueModal v-if="create" v-model="create" />
+      <EditBanqueModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -90,12 +77,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateBanqueModal from './CreateBanqueModal.vue'
 import EditBanqueModal from './EditBanqueModal.vue'
-import { capitalize, arrayPdf } from '~/helper/helpers'
+import { banque } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreateBanqueModal,
-    EditBanqueModal,
-  },
+  components: { CreateBanqueModal, EditBanqueModal },
   data: () => ({
     fields: [
       'ordre',
@@ -111,52 +96,26 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, banque: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: banque,
   }),
   async fetch() {
     await this.getBanques()
     this.totalRows = this.banques.length
   },
   computed: {
-    ...mapGetters({ banques: 'caisse/banque/banques' }),
-    records() {
-      return this.banques.map((banque) => {
-        return {
-          nom: banque.nom,
-          sigle: banque.sigle,
-          date: this.$moment(banque.created_at).format('llll'),
-        }
-      })
-    },
+    ...mapGetters({ banques: MODULES.BANQUE.GETTERS.BANQUES }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'caisse/banque/getOne',
-      getBanques: 'caisse/banque/getAll',
-    }),
-    imprimer() {
-      const columns = ['nom', 'sigle', 'date']
-      const cols = columns.map((elt) => {
-        return { header: capitalize(elt), dataKey: elt }
-      })
-      if (this.records.length > 0) arrayPdf(cols, this.records, 'liste des banques')
-      else
-        this.$bvToast.toast('Cette action est impossible car la liste est vide', {
-          title: 'attention'.toLocaleUpperCase(),
-          variant: 'warning',
-          solid: true,
-        })
-    },
+    ...mapActions({ getBanques: MODULES.BANQUE.ACTIONS.ALL }),
     editer({ id }) {
-      this.getOne(id).then(({ banque }) => {
-        this.edit.modal = true
-        this.edit.banque = banque
-        this.$bvModal.show('modalEditBanque')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

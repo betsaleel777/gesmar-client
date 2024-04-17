@@ -7,8 +7,8 @@
       </button>
     </template>
     <template #default>
-      <v-app>
-        <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="lg">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="lg">
+        <v-app>
           <v-expansion-panels v-model="panel" popout focusable tile>
             <v-expansion-panel>
               <v-expansion-panel-header
@@ -70,21 +70,23 @@
               </v-card>
             </v-dialog>
           </v-row>
-        </b-overlay>
-      </v-app>
+        </v-app>
+      </b-overlay>
     </template>
   </b-modal>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     caissierId: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     focus: '',
@@ -105,14 +107,6 @@ export default {
     this.caissier = caissier
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     events() {
       return this.caissier.attributions.map(({ guichet_id: guichet, code, id, date }) => {
         return { id, guichet, start: date, end: date, name: code, timed: true }
@@ -121,8 +115,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      desattribuer: 'caisse/caissier/desattribuer',
-      getOne: 'caisse/caissier/getOne',
+      desattribuer: MODULES.CAISSIER.ACTIONS.REMOVE,
+      getOne: MODULES.CAISSIER.ACTIONS.ONE,
     }),
     deleteItem({ event }) {
       this.editedItem = Object.assign({}, event)

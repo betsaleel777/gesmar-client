@@ -2,25 +2,16 @@
   <b-card aria-hidden="true" header="Liste des Comptes">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateCompte')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -55,11 +46,9 @@
             <strong>Chargement...</strong>
           </div>
         </template>
-        <template #cell(ordre)="data">
-          {{ data.index + 1 }}
-        </template>
+        <template #cell(ordre)="data">{{ data.index + 1 }}</template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -77,10 +66,8 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateCompteModal />
-      <div>
-        <EditCompteModal v-if="edit.modal" v-model="edit.modal" :current="edit.compte" />
-      </div>
+      <CreateCompteModal v-if="create" v-model="create" />
+      <EditCompteModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -88,11 +75,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateCompteModal from './CreateCompteModal.vue'
 import EditCompteModal from './EditCompteModal.vue'
+import { compte } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreateCompteModal,
-    EditCompteModal,
-  },
+  components: { CreateCompteModal, EditCompteModal },
   data: () => ({
     fields: [
       'ordre',
@@ -108,31 +94,26 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, compte: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: compte,
   }),
   async fetch() {
     await this.getComptes()
     this.totalRows = this.comptes.length
   },
   computed: {
-    ...mapGetters({ comptes: 'caisse/compte/comptes' }),
+    ...mapGetters({ comptes: MODULES.COMPTE.GETTERS.COMPTES }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'caisse/compte/getOne',
-      getComptes: 'caisse/compte/getAll',
-    }),
-    imprimer() {},
+    ...mapActions({ getComptes: MODULES.COMPTE.ACTIONS.ALL }),
     editer({ id }) {
-      this.getOne(id).then(({ compte }) => {
-        this.edit.modal = true
-        this.edit.compte = compte
-        this.$bvModal.show('modalEditCompte')
-      })
+      this.edit.modal = true
+      this.edit.id = id
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

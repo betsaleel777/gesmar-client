@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalEditBanque" v-model="dialog" scrollable>
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Modifier Banque</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <h5 class="modal-title text-primary">Modifier Banque</h5>
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group required">
           <label class="form-label mg-t-10">Nom de Banque<span class="text-danger">*</span></label>
           <input
@@ -47,14 +47,16 @@
           >
             <template #label>
               Choix du marché
-              <span class="red--text"><strong>* </strong></span>
+              <span class="red--text"><strong>*</strong></span>
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -64,49 +66,44 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
-    current: {
-      type: Object,
+    id: {
+      type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
-    compte: {
-      nom: '',
-      sigle: '',
-      site_id: null,
-    },
+    banque: { nom: '', sigle: '', site_id: null },
     errors: {
       nom: { exist: false, message: null },
       sigle: { exist: false, message: null },
       site_id: { exist: false, message: null },
     },
   }),
-  computed: {
-    ...mapGetters('architecture/marche', ['marches']),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
+  async fetch() {
+    const { banque } = await this.getOne(this.id)
+    this.banque = banque
+    await this.getSites()
   },
-  mounted() {
-    this.getSites()
-    this.banque = Object.assign({}, this.current)
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
   },
   methods: {
-    ...mapActions({ modifier: 'caisse/banque/modifier', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({
+      modifier: MODULES.BANQUE.ACTIONS.EDIT,
+      getOne: MODULES.BANQUE.ACTIONS.ONE,
+      getSites: MODULES.SITE.ACTIONS.ALL,
+    }),
     save() {
       this.submiting = true
       this.modifier(this.banque)
         .then(({ message }) => {
-          this.$bvModal.hide('modalEditBanque')
+          this.dialog = false
           this.$root.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -121,15 +118,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.banque = {
-        nom: '',
-        sigle: '',
-        site_id: null,
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalEditBanque')
     },
   },
 }

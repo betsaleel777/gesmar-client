@@ -2,25 +2,16 @@
   <b-card aria-hidden="true" header="Liste des Guichets">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateGuichet')"
-          />
-          <feather
-            v-b-tooltip.hover.top
-            title="imprimer liste"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="printer"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -56,11 +47,9 @@
             <strong>Chargement...</strong>
           </div>
         </template>
-        <template #cell(index)="data">
-          {{ data.index + 1 }}
-        </template>
+        <template #cell(index)="data">{{ data.index + 1 }}</template>
         <template #cell(option)="data">
-          <a type="button" @click="editer(data.item)">
+          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -71,7 +60,6 @@
         </template>
       </b-table>
       <b-pagination
-        v-if="totalRows > 0"
         v-model="currentPage"
         :total-rows="totalRows"
         :per-page="perPage"
@@ -79,8 +67,8 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <CreateGuichetModal />
-      <EditGuichetModal v-if="edit.modal" v-model="edit.modal" :current="edit.guichet" />
+      <CreateGuichetModal v-if="create" v-model="create" />
+      <EditGuichetModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
     </b-card-text>
   </b-card>
 </template>
@@ -88,11 +76,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import CreateGuichetModal from './CreateGuichetModal.vue'
 import EditGuichetModal from './EditGuichetModal.vue'
+import { MODULES } from '~/helper/modules-types'
+import { guichet } from '~/helper/permissions'
 export default {
-  components: {
-    CreateGuichetModal,
-    EditGuichetModal,
-  },
+  components: { CreateGuichetModal, EditGuichetModal },
   data: () => ({
     fields: [
       'index',
@@ -107,25 +94,23 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, guichet: {} },
+    edit: { modal: false, id: 0 },
+    create: false,
     filter: null,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: guichet,
   }),
   async fetch() {
     await this.getGuichets()
     this.totalRows = this.guichets.length
   },
   computed: {
-    ...mapGetters({ guichets: 'caisse/guichet/guichets' }),
+    ...mapGetters({ guichets: MODULES.GUICHET.GETTERS.GUICHETS }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'caisse/guichet/getOne',
-      getGuichets: 'caisse/guichet/getAll',
-    }),
-    imprimer() {},
+    ...mapActions({ getGuichets: MODULES.GUICHET.ACTIONS.ALL }),
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id
@@ -133,11 +118,8 @@ export default {
       this.$bvModal.show('guichetConfirmationListe')
     },
     editer({ id }) {
-      this.getOne(id).then(({ guichet }) => {
-        this.edit.modal = true
-        this.edit.guichet = guichet
-        this.$bvModal.show('modalEditGuichet')
-      })
+      this.edit.id = id
+      this.edit.modal = true
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

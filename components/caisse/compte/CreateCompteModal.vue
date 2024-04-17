@@ -1,13 +1,13 @@
 <template>
-  <b-modal id="modalCreateCompte" scrollable @show="reset">
+  <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création de compte</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
-      <form ref="form">
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <div class="form-group required">
           <label class="form-label mg-t-10">Nom de Banque<span class="text-danger">*</span></label>
           <input
@@ -51,10 +51,12 @@
             </template>
           </v-autocomplete>
         </v-app>
-      </form>
+      </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -64,33 +66,32 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   data: () => ({
     submiting: false,
-    compte: {
-      nom: '',
-      code: '',
-      site_id: null,
-    },
+    compte: { nom: '', code: '', site_id: null },
     errors: {
       nom: { exist: false, message: null },
       code: { exist: false, message: null },
       site_id: { exist: false, message: null },
     },
   }),
-  computed: {
-    ...mapGetters('architecture/marche', ['marches']),
+  async fetch() {
+    await this.getSites()
   },
-  mounted() {
-    this.getSites()
+  computed: {
+    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
   },
   methods: {
-    ...mapActions({ ajouter: 'caisse/compte/ajouter', getSites: 'architecture/marche/getAll' }),
+    ...mapActions({ ajouter: MODULES.COMPTE.ACTIONS.ADD, getSites: MODULES.SITE.ACTIONS.ALL }),
     save() {
       this.submiting = true
       this.ajouter(this.compte)
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateCompte')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -105,15 +106,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.compte = {
-        nom: '',
-        code: '',
-        site_id: null,
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateCompte')
     },
   },
 }
