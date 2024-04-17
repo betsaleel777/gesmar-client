@@ -182,11 +182,9 @@ import ImagePreview from '~/components/tools/ImagePreview.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    PartialBreadcrumb,
-    ImagePreview,
-  },
+  components: { PartialBreadcrumb, ImagePreview },
   data: () => ({
     liens: [{ path: '#', text: 'Application' }],
     processing: false,
@@ -217,13 +215,13 @@ export default {
     this.societe = Object.assign({}, this.enterprise)
   },
   computed: {
-    ...mapGetters({ enterprise: 'architecture/application/societe' }),
+    ...mapGetters({ enterprise: MODULES.APPLICATION.GETTERS.SOCIETE }),
   },
   methods: {
     ...mapActions({
-      getOne: 'architecture/application/getOne',
-      ajouter: 'architecture/application/ajouter',
-      modifier: 'architecture/application/modifier',
+      getOne: MODULES.APPLICATION.ACTIONS.ONE,
+      ajouter: MODULES.APPLICATION.ACTIONS.ADD,
+      modifier: MODULES.APPLICATION.ACTIONS.EDIT,
     }),
     save() {
       this.processing = true
