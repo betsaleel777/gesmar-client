@@ -17,7 +17,6 @@
         /></b-tab>
       </b-tabs>
     </div>
-    <!-- content-right -->
   </div>
 </template>
 <script>

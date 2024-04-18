@@ -32,6 +32,7 @@ const permissionRoot = 'user-role/permission/'
 const guichetRoot = 'caisse/guichet/'
 const compteRoot = 'caisse/compte/'
 const banqueRoot = 'caisse/banque/'
+const gabariBailRoot = 'template/terme-bail/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -580,6 +581,21 @@ export const MODULES = Object.freeze({
       ADD: banqueRoot + 'ajouter',
       ONE: banqueRoot + 'getOne',
       EDIT: banqueRoot + 'modifier',
+    }),
+  }),
+  GABARI: Object.freeze({
+    GETTERS: Object.freeze({
+      GABARIS: gabariBailRoot + 'termes',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: gabariBailRoot + 'getAll',
+      ADD: gabariBailRoot + 'ajouter',
+      ONE: gabariBailRoot + 'getOne',
+      EDIT: gabariBailRoot + 'modifier',
+      PDF: gabariBailRoot + 'getPdf',
+      RESTORE: gabariBailRoot + 'restaurer',
+      TRASH: gabariBailRoot + 'supprimer',
+      TRASHED: gabariBailRoot + 'getTrashAll',
     }),
   }),
 })

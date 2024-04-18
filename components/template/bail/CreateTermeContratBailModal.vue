@@ -1,8 +1,8 @@
 <template>
-  <b-modal id="modalCreateTermeContratBail" scrollable size="xl" @show="reset">
+  <b-modal v-model="dialog" static lazy scrollable size="xl">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création de Terme de contrats pour emplacements</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -72,7 +72,9 @@
       </form>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -85,10 +87,11 @@ import { quillEditor } from 'vue-quill-editor'
 import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
+import modal from '~/mixins/modal'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    quillEditor,
-  },
+  components: { quillEditor },
+  mixins: [modal],
   props: {
     marches: {
       type: Array,
@@ -128,14 +131,12 @@ export default {
     },
   }),
   methods: {
-    ...mapActions({
-      ajouter: 'template/terme-bail/ajouter',
-    }),
+    ...mapActions({ ajouter: MODULES.GABARI.ACTIONS.ADD }),
     save() {
       this.submiting = true
       this.ajouter({ ...this.terme, user_id: this.user.id })
         .then(({ message }) => {
-          this.$bvModal.hide('modalCreateTermeContratBail')
+          this.dialog = false
           this.$bvToast.toast(message, {
             title: 'succès de la création'.toLocaleUpperCase(),
             variant: 'success',
@@ -150,14 +151,6 @@ export default {
           }
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.terme = {
-        contenu: null,
-        site_id: null,
-      }
-      errorsInitialise(this.errors)
-      this.$bvModal.hide('modalCreateTermeContratBail')
     },
   },
 }

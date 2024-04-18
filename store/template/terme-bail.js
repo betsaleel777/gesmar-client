@@ -1,10 +1,6 @@
-export const state = () => ({
-  termes: [],
-})
+export const state = () => ({ termes: [] })
 export const getters = {
-  termes: (state) => {
-    return state.termes
-  },
+  termes: (state) => state.termes,
 }
 export const actions = {
   async getAll({ commit }) {
@@ -27,12 +23,6 @@ export const actions = {
   async getPdf({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/termes/emplacements/pdf/' + id)
     return { path: requete.data.path }
-  },
-
-  async modifier({ dispatch }, payload) {
-    const requete = await this.$axios.put('api/parametres/termes/emplacements/' + payload.id, payload)
-    dispatch('getAll')
-    return { message: requete.data.message }
   },
 
   async supprimer({ dispatch }, id) {

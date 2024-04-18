@@ -2,17 +2,16 @@
   <b-card aria-hidden="true" header="Termes de contrats pour emplacements (bails)">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <div class="">
-          <feather
-            v-b-tooltip.hover.top
-            title="créer"
-            class="btn btn-sm btn-primary btn-icon"
-            stroke-width="2"
-            size="18"
-            type="plus"
-            @click="$bvModal.show('modalCreateTermeContratBail')"
-          />
-        </div>
+        <feather
+          v-can="permissions.create"
+          v-b-tooltip.hover.top
+          title="créer"
+          class="btn btn-sm btn-primary btn-icon"
+          stroke-width="2"
+          size="18"
+          type="plus"
+          @click="create = true"
+        />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -57,7 +56,12 @@
           <a type="button" @click="pdf(data.item)">
             <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
-          <a v-if="data.item.status === STATUS.unuse" type="button" @click="dialoger(data.item)">
+          <a
+            v-if="data.item.status === STATUS.unuse"
+            v-can="permissions.trash"
+            type="button"
+            @click="dialoger(data.item)"
+          >
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -65,9 +69,7 @@
           {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
         </template>
         <template #empty="scope">
-          <h6 class="text-center text-muted pd-y-10">
-            {{ scope.emptyText }}
-          </h6>
+          <h6 class="text-center text-muted pd-y-10">{{ scope.emptyText }}</h6>
         </template>
       </b-table>
       <b-pagination
@@ -78,18 +80,16 @@
         size="sm"
         aria-controls="table"
       ></b-pagination>
-      <div>
-        <ConfirmationModal
-          :id="dialogData.id"
-          :key="dialogData.modal"
-          v-model="dialogData.modal"
-          :nom="dialogData.code"
-          modal-id="termeContratBailConfirmationListe"
-          action="template/terme-bail/supprimer"
-          :message="`Voulez-vous réelement archiver les termes: '${dialogData.code}'`"
-        />
-      </div>
-      <CreateTermeContratBailModal :marches="marches" />
+      <ConfirmationModal
+        :id="dialogData.id"
+        :key="dialogData.modal"
+        v-model="dialogData.modal"
+        :nom="dialogData.code"
+        modal-id="termeContratBailConfirmationListe"
+        action="template/terme-bail/supprimer"
+        :message="`Voulez-vous réelement archiver les termes: '${dialogData.code}'`"
+      />
+      <CreateTermeContratBailModal v-model="create" :marches="marches" />
     </b-card-text>
   </b-card>
 </template>
@@ -99,11 +99,10 @@ import { mapActions, mapGetters } from 'vuex'
 import CreateTermeContratBailModal from './CreateTermeContratBailModal.vue'
 import ConfirmationModal from '~/components/tools/ConfirmationModal.vue'
 import { GABARI } from '~/helper/constantes'
+import { gabariContrat } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    ConfirmationModal,
-    CreateTermeContratBailModal,
-  },
+  components: { ConfirmationModal, CreateTermeContratBailModal },
   props: {
     marches: {
       type: Array,
@@ -129,23 +128,21 @@ export default {
     ],
     dialogData: { modal: false, id: 0, code: '' },
     filter: null,
+    create: false,
     totalRows: 0,
     currentPage: 1,
     perPage: 10,
+    permissions: gabariContrat,
   }),
   async fetch() {
     await this.getAll()
     this.totalRows = this.termes.length
   },
   computed: {
-    ...mapGetters({ termes: 'template/terme-bail/termes' }),
+    ...mapGetters({ termes: MODULES.GABARI.GETTERS.GABARIS }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'template/terme-bail/getOne',
-      getPdf: 'template/terme-bail/getPdf',
-      getAll: 'template/terme-bail/getAll',
-    }),
+    ...mapActions({ getPdf: MODULES.GABARI.ACTIONS.PDF, getAll: MODULES.GABARI.ACTIONS.ALL }),
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id
@@ -157,9 +154,7 @@ export default {
       this.currentPage = 1
     },
     pdf({ id }) {
-      this.getPdf(id).then(({ path }) => {
-        window.open(path)
-      })
+      this.getPdf(id).then(({ path }) => window.open(path))
     },
     statusClass(value) {
       const classes = {

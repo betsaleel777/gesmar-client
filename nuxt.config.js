@@ -90,7 +90,7 @@ export default {
   },
 
   router: {
-    middleware: ['auth'],
+    middleware: ['auth', 'permission-filter'],
   },
 
   auth: {
@@ -104,7 +104,7 @@ export default {
         },
       },
     },
-    plugins: ['~/plugins/axios.js'],
+    // plugins: ['~/plugins/axios.js'],
   },
 
   build: {},
