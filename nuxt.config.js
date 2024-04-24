@@ -44,6 +44,7 @@ export default {
     '~/plugins/user.js',
     '~/plugins/vue-gates',
     '~/plugins/currency.js',
+    '~/plugins/notifications.js',
   ],
 
   buildModules: ['@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image'],
@@ -104,7 +105,7 @@ export default {
         },
       },
     },
-    // plugins: ['~/plugins/axios.js'],
+    plugins: ['~/plugins/axios.js'],
   },
 
   build: {},

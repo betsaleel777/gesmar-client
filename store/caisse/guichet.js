@@ -1,5 +1,6 @@
 export const state = () => ({
   guichets: [],
+  errors: [],
 })
 export const getters = {
   guichets: (state) => {

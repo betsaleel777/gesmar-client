@@ -94,10 +94,10 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { ANNEXE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
+import { errorHandling } from '~/helper/helpers'
 export default {
   mixins: [modal],
   props: {
@@ -128,7 +128,11 @@ export default {
     const { annexe } = await this.getOne(this.id)
     this.annexe = annexe
     this.annexe.mode = String(annexe.mode)
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
     this.suffixeSet()
   },
   computed: {
@@ -144,20 +148,11 @@ export default {
       this.submiting = true
       this.modifier(this.annexe)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-            autoHideDelay: 3000,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

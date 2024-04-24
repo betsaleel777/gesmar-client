@@ -2,6 +2,7 @@ import jsPDFInvoiceTemplate from 'jspdf-invoice-template'
 import { jsPDF as JsPDF } from 'jspdf'
 import { ENCAISSEMENT } from './constantes'
 import 'jspdf-autotable'
+import { errorsInitialise, errorsWriting } from './handleErrors'
 const remove = (item, selected, targetArray = []) => {
   let indexFound = targetArray.findIndex((elt) => elt.id === item.id)
   targetArray.splice(indexFound, 1)
@@ -239,5 +240,16 @@ const caissePointPrinter = (societe, infos) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save()
 }
+const errorHandling = (response, errorsComponentData) => {
+  const { data, status } = response
+  errorsInitialise(errorsComponentData)
+  if (status === 401) {
+    window.$nuxt.$notify({ text: data.message, title: "Echec d'Authentification", type: 'error' })
+  } else if (status === 403) {
+    window.$nuxt.$notify({ text: data.message, title: "Echec d'autorisation", type: 'error' })
+  } else {
+    errorsWriting(data.errors, errorsComponentData)
+  }
+}
 
-export { remove, add, capitalize, arrayPdf, invoicePrinter, caissePointPrinter }
+export { remove, add, capitalize, arrayPdf, invoicePrinter, caissePointPrinter, errorHandling }

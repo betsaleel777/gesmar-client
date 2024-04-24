@@ -149,17 +149,18 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateTypemplacementModal from '../typEmplacement/CreateTypemplacementModal.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
 import { typeEmplacement } from '~/helper/permissions'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 export default {
   components: { CreateTypemplacementModal },
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     zones: [],
@@ -193,20 +194,16 @@ export default {
       texte: zone.nom + ' ' + zone.pavillon.nom + ' ' + zone.niveau.nom + ' ' + zone.site.nom,
       id: zone.id,
     })
-    await this.getTypes()
+    try {
+      await this.getTypes()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES }),
     hasCreateTypePermission() {
       return this.$gates.hasPermission(this.permissions.create)
-    },
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
     },
   },
   watch: {
@@ -226,20 +223,11 @@ export default {
       this.submiting = true
       this.modifier(this.emplacement)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-            autoHideDelay: 3000,
-          })
+          this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

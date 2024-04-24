@@ -52,7 +52,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -80,19 +80,11 @@ export default {
       this.submiting = true
       this.ajouter(this.guichet)
         .then(({ message }) => {
-          this.dialog = true
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
+          this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

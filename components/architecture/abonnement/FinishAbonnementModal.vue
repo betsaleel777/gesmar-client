@@ -4,7 +4,7 @@
       <h5 id="archiver" class="modal-title text-primary">
         Résiliation abonnement: <strong>{{ abonnement.code }}</strong>
       </h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -27,7 +27,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -36,15 +38,16 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -60,16 +63,6 @@ export default {
     const { abonnement } = await this.getOne(this.id)
     this.abonnement = abonnement
   },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
     ...mapActions({
       resiler: MODULES.ABONNEMENT.ACTIONS.ABORT,
@@ -79,19 +72,11 @@ export default {
       this.submiting = true
       this.resilier(this.abonnement)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'résilié avec succès'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
-          this.close()
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
+          this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

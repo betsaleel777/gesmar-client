@@ -149,17 +149,18 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
 import { typeEquipement } from '~/helper/permissions'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 export default {
   components: { CreateTypequipement },
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -191,21 +192,21 @@ export default {
     this.equipement = equipement
     const { emplacements } = await this.getEmplacement(this.equipement.site_id)
     this.emplacements = emplacements
-    await this.getMarches()
-    await this.getTypes()
+    try {
+      await this.getMarches()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      await this.getTypes()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
     hasCreateTypePermission() {
       return this.$gates.hasPermission(this.permissions.create)
-    },
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
     },
   },
   methods: {
@@ -220,20 +221,11 @@ export default {
       this.submiting = true
       this.modifier(this.equipement)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-            autoHideDelay: 3000,
-          })
+          this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex justify-content-center wrapper-login bg-transparent">
-    <!-- <nuxt-img src="/images/bermuda-circle.svg" loading="lazy" class-name="svg-bg" /> -->
     <div class="card my-auto card-login shadow-lg">
       <div class="card-header text-center bg-primary">
         <h4 class="card-title text-white text-uppercase">Bienvenue dans Gesmar</h4>
@@ -37,13 +36,11 @@
                   <strong>{{ errors.password.message }}</strong>
                 </span>
               </div>
-              <b-overlay :show="processing" rounded opacity="0.6" spinner-small spinner-variant="primary">
-                <div class="form-group d-flex mg-b-0">
-                  <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill text-white rounded-5">
-                    Se connecter
-                  </button>
-                </div>
-              </b-overlay>
+              <div class="form-group d-flex mg-b-0">
+                <button type="submit" class="btn btn-brand-01 btn-uppercase flex-fill text-white rounded-5">
+                  Se connecter
+                </button>
+              </div>
             </div>
           </form>
         </b-overlay>
@@ -52,15 +49,12 @@
   </div>
 </template>
 <script>
-import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 export default {
   layout: 'empty',
   data() {
     return {
-      utilisateur: {
-        email: '',
-        password: '',
-      },
+      utilisateur: { email: '', password: '' },
       errors: {
         email: { exist: false, message: null },
         password: { exist: false, message: null },
@@ -70,12 +64,7 @@ export default {
   },
   head() {
     return {
-      link: [
-        {
-          rel: 'stylesheet',
-          href: '/lib/@fortawesome/fontawesome-free/css/all.min.css',
-        },
-      ],
+      link: [{ rel: 'stylesheet', href: '/lib/@fortawesome/fontawesome-free/css/all.min.css' }],
     }
   },
   methods: {
@@ -88,17 +77,7 @@ export default {
           this.$gates.setPermissions(this.user.permissions)
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data && data.credentials) {
-            this.$root.$bvToast.toast(data.message, {
-              title: "echec de l'opération".toLocaleUpperCase(),
-              variant: 'danger',
-              solid: true,
-            })
-          } else {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.processing = false))
     },

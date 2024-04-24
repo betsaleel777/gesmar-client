@@ -43,14 +43,15 @@
 <script>
 import { mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import modal from '~/mixins/modal'
+import { errorHandling } from '~/helper/helpers'
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -68,16 +69,6 @@ export default {
     const { validation } = await this.getOne(this.id)
     this.validation = validation
   },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
     ...mapActions({
       ajouter: MODULES.ABONNEMENT.VALIDATION.ACTIONS.ADD,
@@ -87,19 +78,11 @@ export default {
       this.submiting = true
       this.ajouter(this.validation)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: "Succès de l'opération".toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
-          this.close()
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
+          this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

@@ -146,12 +146,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateTypequipement from '../typEquipement/CreateTypequipement.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
 import { typeEquipement } from '~/helper/permissions'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 export default {
   components: { CreateTypequipement },
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     equipement: {
@@ -177,21 +178,21 @@ export default {
     permissions: typeEquipement,
   }),
   async fetch() {
-    await this.getMarches()
-    await this.getTypesEquipement()
+    try {
+      await this.getMarches()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      await this.getTypesEquipement()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES, types: MODULES.TYPE.EQUIPEMENT.GETTERS.TYPES }),
     hasCreateTypePermission() {
       return this.$gates.hasPermission(this.permissions.create)
-    },
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
     },
   },
   methods: {
@@ -205,19 +206,11 @@ export default {
       this.submiting = true
       this.ajouter(this.equipement)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

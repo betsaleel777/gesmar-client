@@ -109,8 +109,16 @@ export default {
     permissions: role,
   }),
   async fetch() {
-    await this.getAll()
-    this.totalRows = this.roles.length
+    try {
+      await this.getAll()
+      this.totalRows = this.roles.length
+    } catch (error) {
+      this.$bvToast.toast(error.response.data.message, {
+        title: 'opération compromise'.toLocaleUpperCase(),
+        variant: 'danger',
+        solid: true,
+      })
+    }
   },
   computed: {
     ...mapGetters({ roles: MODULES.ROLE.GETTERS.ROLES }),

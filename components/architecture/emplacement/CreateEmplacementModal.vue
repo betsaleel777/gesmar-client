@@ -168,12 +168,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CreateTypemplacementModal from '../typEmplacement/CreateTypemplacementModal.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
 import { typeEmplacement } from '~/helper/permissions'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
+import { errorsInitialise } from '~/helper/handleErrors'
 export default {
   components: { CreateTypemplacementModal },
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     zones: [],
@@ -201,20 +203,16 @@ export default {
     permissions: typeEmplacement,
   }),
   async fetch() {
-    await this.getTypes()
+    try {
+      await this.getTypes()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES }),
     hasCreateTypePermission() {
       return this.$gates.hasPermission(this.permissions.create)
-    },
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
     },
   },
   watch: {
@@ -235,36 +233,20 @@ export default {
         this.ajouter(this.emplacement)
           .then(({ message }) => {
             this.dialog = false
-            this.$bvToast.toast(message, {
-              title: 'succès de la création'.toLocaleUpperCase(),
-              variant: 'success',
-              solid: true,
-            })
+            this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           })
           .catch((err) => {
-            const { data } = err.response
-            if (data) {
-              errorsInitialise(this.errors)
-              errorsWriting(data.errors, this.errors)
-            }
+            errorHandling(err.response, this.errors)
           })
           .finally(() => (this.submiting = false))
       } else {
         this.push(this.emplacement)
           .then(({ message }) => {
             this.dialog = false
-            this.$bvToast.toast(message, {
-              title: 'succès de la création'.toLocaleUpperCase(),
-              variant: 'success',
-              solid: true,
-            })
+            this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           })
           .catch((err) => {
-            const { data } = err.response
-            if (data) {
-              errorsInitialise(this.errors)
-              errorsWriting(data.errors, this.errors)
-            }
+            errorHandling(err.response, this.errors)
           })
       }
     },

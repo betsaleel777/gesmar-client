@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouveau marché</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -75,7 +75,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -84,11 +86,11 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: {
-    value: Boolean,
-  },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     marche: {
@@ -116,42 +118,19 @@ export default {
     response = await this.$axios.get('/json/countries.json', { baseURL: 'http://localhost:3000' })
     this.pays = response.data
   },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
-    ...mapActions('architecture/marche', ['ajouter']),
+    ...mapActions({ ajouter: MODULES.SITE.ACTIONS.ADD }),
     save() {
       this.submiting = true
       this.ajouter(this.marche)
         .then(({ message }) => {
           this.dialog = false
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.marche = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

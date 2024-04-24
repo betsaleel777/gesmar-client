@@ -147,11 +147,11 @@ import { isNull } from 'url/util'
 import { mapActions, mapGetters } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 import { EQUIPEMENT } from '~/helper/constantes'
-import { remove } from '~/helper/helpers'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling, remove } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 let message = ''
 export default {
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     equipements: [],
@@ -176,14 +176,6 @@ export default {
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   methods: {
     ...mapActions({
@@ -198,27 +190,15 @@ export default {
       if (this.validable())
         this.ajouter(this.abonnement)
           .then(({ message }) => {
-            this.$bvToast.toast(message, {
-              title: 'succès de la création'.toLocaleUpperCase(),
-              variant: 'success',
-              solid: true,
-            })
-            this.$bvModal.hide('modalCreateAbonnement')
+            this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
+            this.dialog = false
           })
           .catch((err) => {
-            const { data } = err.response
-            if (data) {
-              errorsInitialise(this.errors)
-              errorsWriting(data.errors, this.errors)
-            }
+            errorHandling(err.response, this.errors)
           })
           .finally(() => (this.submiting = false))
       else {
-        this.$bvToast.toast(message, {
-          title: "echèc de l'opération".toLocaleUpperCase(),
-          variant: 'danger',
-          solid: true,
-        })
+        this.$notify({ text: message, title: "echec de l'opération", type: 'error' })
         message = ''
       }
     },

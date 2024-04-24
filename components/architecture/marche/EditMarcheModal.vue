@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 class="modal-title text-primary">Modifier le marché</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -69,21 +69,25 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -105,46 +109,22 @@ export default {
     const { marche } = await this.getOne(this.id)
     this.marche = marche
   },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
     ...mapActions({
-      modifier: 'architecture/marche/modifier',
-      getOne: 'architecture/marche/getOne',
+      modifier: MODULES.SITE.ACTIONS.EIDT,
+      getOne: MODULES.SITE.ACTIONS.ONE,
     }),
     save() {
       this.submiting = true
       this.modifier(this.marche)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-            autoHideDelay: 3000,
-          })
+          this.$notify({ text: message, type: 'success', title: "succès de l'opération" })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.marche = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

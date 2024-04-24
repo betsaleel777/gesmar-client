@@ -92,7 +92,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 export default {
   props: {
@@ -144,20 +144,11 @@ export default {
       this.submiting = true
       this.modifier(this.type)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-            autoHideDelay: 3000,
-          })
           this.dialog = false
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

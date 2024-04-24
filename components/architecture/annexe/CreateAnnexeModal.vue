@@ -94,10 +94,10 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { ANNEXE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
+import { errorHandling } from '~/helper/helpers'
 export default {
   mixins: [modal],
   data: () => ({
@@ -119,7 +119,11 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
@@ -131,18 +135,10 @@ export default {
       this.ajouter(this.annexe)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },
