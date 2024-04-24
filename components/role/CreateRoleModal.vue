@@ -34,11 +34,12 @@
 <script>
 import { mapActions } from 'vuex'
 import SelectPermissionTable from '../permission/SelectPermissionTable.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { MODULES } from '~/helper/modules-types'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 export default {
   components: { SelectPermissionTable },
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     role: {
       name: '',
@@ -49,16 +50,6 @@ export default {
       permissions: { exist: false, message: null },
     },
   }),
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
     ...mapActions({ ajouter: MODULES.ROLE.ACTIONS.ADD }),
     save() {
@@ -66,18 +57,10 @@ export default {
       this.ajouter(this.role)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
     },
   },

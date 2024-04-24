@@ -180,9 +180,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
+import { errorHandling } from '~/helper/helpers'
 export default {
   components: { PartialBreadcrumb, ImagePreview },
   data: () => ({
@@ -233,18 +234,10 @@ export default {
       errorsInitialise(this.errors)
       traiter(data)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.processing = false))
     },

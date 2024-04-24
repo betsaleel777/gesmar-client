@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="dialog" hide-footer size="lg" scrollable>
     <template #modal-header>
-      <h5 v-if="commercial.user" id="archiver" class="modal-title text-primary">
+      <h5 v-if="commercial.user" class="modal-title text-primary">
         Attribuer les emplacements au commercial {{ commercial.user.name }}
       </h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
@@ -104,9 +104,11 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapGetters, mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 import TableauAttributionEmplacement from '~/components/finance/bordereau/TableauAttributionEmplacement.vue'
+import modal from '~/mixins/modal'
 export default {
   components: { TableauAttributionEmplacement, ValidationObserver, ValidationProvider },
-  props: { id: { type: Number, required: true }, value: Boolean },
+  mixins: [modal],
+  props: { id: { type: Number, required: true } },
   data: () => ({
     attribution: {
       jour: null,
@@ -123,14 +125,6 @@ export default {
     this.zones = await this.getZones(this.commercial.site_id)
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     zoneKey() {
       return this.zonesSelected.toString()
     },
@@ -157,11 +151,7 @@ export default {
       this.attribution.commercial_id = this.id
       this.attribuer(this.attribution)
         .then((message) => {
-          this.$root.$bvToast.toast(message, {
-            title: "SUCCES DE L'OPERATION",
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {

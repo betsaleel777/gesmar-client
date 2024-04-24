@@ -88,14 +88,15 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -116,35 +117,17 @@ export default {
     const { facture } = await this.getOne(this.id)
     this.facture = facture
   },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   methods: {
     ...mapActions({ getOne: 'facture/initiale/getOne', modifier: 'facture/initiale/modifier' }),
     save() {
       this.submiting = true
       this.modifier(this.facture)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

@@ -33,6 +33,8 @@ const guichetRoot = 'caisse/guichet/'
 const compteRoot = 'caisse/compte/'
 const banqueRoot = 'caisse/banque/'
 const gabariBailRoot = 'template/terme-bail/'
+const userRoot = 'user-role/user/'
+const fermetureRoot = 'caisse/fermeture'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -559,6 +561,33 @@ export const MODULES = Object.freeze({
       ADD: guichetRoot + 'ajouter',
       ONE: guichetRoot + 'getOne',
       EDIT: guichetRoot + 'modifier',
+    }),
+  }),
+  FERMETURE: Object.freeze({
+    GETTERS: Object.freeze({
+      FERMETURES: fermetureRoot + 'fermetures',
+      FERMETURE: fermetureRoot + 'fermeture',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: fermetureRoot + 'getAll',
+      ADD: fermetureRoot + 'ajouter',
+      ONE: fermetureRoot + 'getOne',
+      EDIT: fermetureRoot + 'modifier',
+      PAGINATE: fermetureRoot + 'getPaginate',
+      SEARCH: fermetureRoot + 'getSearch',
+    }),
+  }),
+  USER: Object.freeze({
+    GETTERS: Object.freeze({
+      USERS: userRoot + 'users',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: userRoot + 'getAll',
+      ADD: userRoot + 'ajouter',
+      ONE: userRoot + 'getOne',
+      EDIT: userRoot + 'modifier',
+      UNCASHIER: userRoot + 'getUncashiers',
+      UNCOMMERCIAL: userRoot + 'getUncommercials',
     }),
   }),
   COMPTE: Object.freeze({

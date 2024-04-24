@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouveaux commercial</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -43,7 +43,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -52,11 +54,11 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: {
-    value: Boolean,
-  },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     commercial: {
@@ -69,53 +71,40 @@ export default {
     },
   }),
   async fetch() {
-    await this.getUncommercials()
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      await this.getUncommercials()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({
-      users: 'user-role/user/users',
-      marches: 'architecture/marche/marches',
+      users: MODULES.USER.GETTERS.USERS,
+      marches: MODULES.SITE.GETTERS.SITES,
     }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   methods: {
     ...mapActions({
-      ajouter: 'finance/commercial/ajouter',
-      getUncommercials: 'user-role/user/getUncommercials',
-      getSites: 'architecture/marche/getAll',
+      ajouter: MODULES.COMMERCIAL.ACTIONS.ADD,
+      getUncommercials: MODULES.USER.ACTIONS.UNCOMMERCIAL,
+      getSites: MODULES.SITE.ACTIONS.ALL,
     }),
     save() {
       this.submiting = true
       this.ajouter(this.commercial)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.commercial = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
   },
 }

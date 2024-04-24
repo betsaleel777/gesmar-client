@@ -39,7 +39,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -53,28 +53,19 @@ export default {
     await this.getUncashiers()
   },
   computed: {
-    ...mapGetters('user-role/user', ['users']),
+    ...mapGetters({ users: MODULES.USER.GETTERS.USERS }),
   },
   methods: {
-    ...mapActions({ ajouter: MODULES.CAISSIER.ACTIONS.ADD }),
-    ...mapActions('user-role/user', ['getUncashiers']),
+    ...mapActions({ ajouter: MODULES.CAISSIER.ACTIONS.ADD, getUncashiers: MODULES.USER.ACTIONS.UNCASHIER }),
     save() {
       this.submiting = true
       this.ajouter(this.caissier)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

@@ -104,14 +104,16 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     caissierId: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -133,52 +135,40 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
     const { caissier } = await this.getOne(this.caissierId)
     this.caissier = caissier
   },
   computed: {
     ...mapGetters({
-      marches: 'architecture/marche/marches',
-      guichets: 'caisse/guichet/guichets',
+      marches: MODULES.SITE.GETTERS.SITES,
+      guichets: MODULES.GUICHET.GETTERS.GUICHETS,
     }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     enableDate() {
       return Boolean(this.attribution.guichet_id)
     },
   },
   methods: {
     ...mapActions({
-      getSites: 'architecture/marche/getAll',
-      allGuichets: 'caisse/guichet/getAll',
-      attribuer: 'caisse/caissier/attribuer',
-      getOne: 'caisse/caissier/getOne',
+      getSites: MODULES.SITE.ACTIONS.ALL,
+      allGuichets: MODULES.GUICHET.ACTIONS.ALL,
+      attribuer: MODULES.CAISSIER.ACTIONS.ATTRIBUTE,
+      getOne: MODULES.CAISSIER.ACTIONS.ONE,
     }),
     save() {
       this.submiting = true
       this.attribution.caissier_id = this.caissier.id
       this.attribuer(this.attribution)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

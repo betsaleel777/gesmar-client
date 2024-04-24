@@ -93,9 +93,11 @@
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapGetters, mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
   components: { ValidationObserver, ValidationProvider },
-  props: { id: { type: Number, required: true }, value: Boolean },
+  mixins: [modal],
+  props: { id: { type: Number, required: true } },
   data() {
     return {
       collecte: {
@@ -113,14 +115,6 @@ export default {
     this.emplacements = this.bordereau.emplacements
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     ...mapGetters({
       bordereau: MODULES.BORDEREAU.GETTERS.BORDEREAU,
       daysCollected: MODULES.COLLECTE.GETTERS.DAYS_COLLECTED,
@@ -145,11 +139,7 @@ export default {
       this.submiting = true
       this.ajouter(this.collecte)
         .then((message) => {
-          this.$root.$bvToast.toast(message, {
-            title: "SUCCES DE L'OPERATION",
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {

@@ -38,9 +38,11 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapGetters, mapActions } from 'vuex'
 import TableauEditBordereau from './TableauEditBordereau.vue'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
   components: { TableauEditBordereau, ValidationObserver, ValidationProvider },
-  props: { id: { type: Number, required: true }, value: Boolean },
+  mixins: [modal],
+  props: { id: { type: Number, required: true } },
   data() {
     return {
       assignation: {
@@ -55,14 +57,6 @@ export default {
     this.assignation.emplacements = this.bordereau.emplacements.map(({ id }) => id)
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     ...mapGetters({ bordereau: MODULES.BORDEREAU.GETTERS.BORDEREAU }),
     bordereauExist() {
       return Object.keys(this.bordereau).length > 0
@@ -77,11 +71,7 @@ export default {
       this.submiting = true
       this.modifier(this.assignation)
         .then((message) => {
-          this.$root.$bvToast.toast(message, {
-            title: "SUCCES DE L'OPERATION",
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {

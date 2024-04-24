@@ -84,11 +84,11 @@
 <script>
 import { mapActions } from 'vuex'
 import { quillEditor } from 'vue-quill-editor'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import modal from '~/mixins/modal'
 import { MODULES } from '~/helper/modules-types'
+import { errorHandling } from '~/helper/helpers'
 export default {
   components: { quillEditor },
   mixins: [modal],
@@ -137,18 +137,10 @@ export default {
       this.ajouter({ ...this.terme, user_id: this.user.id })
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

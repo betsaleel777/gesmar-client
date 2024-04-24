@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="dialog" @show="reset">
+  <b-modal v-model="dialog">
     <template #modal-header>
       <h5 class="modal-title text-primary">Fermeture de caisse</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
@@ -58,13 +58,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
-import { caissePointPrinter } from '~/helper/helpers'
+import { caissePointPrinter, errorHandling } from '~/helper/helpers'
 import { ENCAISSEMENT } from '~/helper/constantes'
+import modal from '~/mixins/modal'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  props: {
-    value: Boolean,
-  },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     guichet: null,
@@ -80,58 +79,29 @@ export default {
     },
   }),
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     ...mapGetters({
-      societe: 'architecture/application/societe',
-      caissiers: 'caisse/caissier/caissiers',
+      societe: MODULES.APPLICATION.GETTERS.SOCIETE,
+      caissiers: MODULES.CAISSIER.GETTERS.CAISSIERS,
     }),
   },
   methods: {
     ...mapActions({
-      getOne: 'caisse/ouverture/getByCaissier',
-      getCaissiers: 'caisse/caissier/getAll',
-      ajouter: 'caisse/fermeture/ajouter',
-      getSociete: 'architecture/application/getOne',
+      getOne: MODULES.OUVERTURE.ACTIONS.BY_CAISSIER,
+      getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
+      ajouter: MODULES.FERMETURE.ACTIONS.ADD,
+      getSociete: MODULES.APPLICATION.ACTIONS.ONE,
     }),
-    reset() {
-      this.fermeture = {
-        caissier_id: null,
-        ouverture_id: null,
-        total_normal: null,
-        total: null,
-      }
-      this.guichet = null
-      this.errors = {
-        caissier_id: { exist: false, message: null },
-        total: { exist: false, message: null },
-      }
-    },
     save() {
       this.ajouter(this.fermeture)
         .then(({ message, fermeture }) => {
           this.getSociete().then(() => {
             this.printer(fermeture)
-            this.$bvToast.toast(message, {
-              title: 'succès de la création'.toLocaleUpperCase(),
-              variant: 'success',
-              solid: true,
-            })
+            this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
             this.dialog = false
           })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },
@@ -144,11 +114,7 @@ export default {
             this.fermeture.ouverture_id = ouverture.id
             this.fermeture.total_normal = ouverture.total
           } else if (message) {
-            this.$bvToast.toast(message, {
-              title: 'ATTENTION',
-              variant: 'warning',
-              solid: true,
-            })
+            this.$notify({ text: message, title: 'attention!!', type: 'warning' })
           }
         })
       }

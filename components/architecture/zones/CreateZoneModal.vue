@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Nouvelle Zone</h5>
-      <button type="button" class="close" aria-label="Close" @click="close">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -52,7 +52,9 @@
       </form>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="close">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Valider
       </button>
@@ -61,9 +63,11 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     niveaux: [],
@@ -73,66 +77,40 @@ export default {
       nom: '',
       niveau_id: '',
       nombre: null,
-      automatiq: false
+      automatiq: false,
     },
     errors: {
       nom: { exist: false, message: null },
       niveau_id: { exist: false, message: null },
-      nombre: { exist: false, message: null }
-    }
+      nombre: { exist: false, message: null },
+    },
   }),
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      }
-    }
-  },
   watch: {
     search(val) {
       val && val !== this.zone.niveau_id && this.querySelections(val)
-    }
+    },
   },
   methods: {
-    ...mapActions({
-      ajouter: 'architecture/zone/ajouter',
-      getSearch: 'architecture/niveau/getSearch'
-    }),
+    ...mapActions({ ajouter: MODULES.ZONE.ACTIONS.ADD, getSearch: MODULES.ZONE.ACTIONS.SEARCH }),
     save() {
       this.submiting = true
       this.ajouter(this.zone)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
-    },
-    close() {
-      this.zone = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
     querySelections(search) {
       this.loading = true
       this.getSearch(search)
         .then((niveaux) => (this.niveaux = niveaux))
         .finally(() => (this.loading = false))
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped></style>

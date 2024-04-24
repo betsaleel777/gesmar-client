@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 id="archiver" class="modal-title text-primary">Nouveau type d'emplacement</h5>
+      <h5 class="modal-title text-primary">Nouveau type d'emplacement</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -81,7 +81,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -103,7 +103,11 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
@@ -115,19 +119,11 @@ export default {
       this.ajouter(this.type)
         .then(({ message, id }) => {
           this.$emit('pushed', id)
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

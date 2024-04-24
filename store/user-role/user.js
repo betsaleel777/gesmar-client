@@ -2,9 +2,7 @@ export const state = () => ({
   users: [],
 })
 export const getters = {
-  users: (state) => {
-    return state.users
-  },
+  users: (state) => state.users,
 }
 export const actions = {
   async getAll({ commit }) {
@@ -73,12 +71,6 @@ export const actions = {
 
   async autoriser({ dispatch }, payload) {
     const requete = await this.$axios.post('api/parametres/users/autoriser', payload)
-    dispatch('getAll')
-    return { message: requete.data.message }
-  },
-
-  async notifications({ dispatch }, payload) {
-    const requete = await this.$axios.post('api/parametres/users/notifications', payload)
     dispatch('getAll')
     return { message: requete.data.message }
   },

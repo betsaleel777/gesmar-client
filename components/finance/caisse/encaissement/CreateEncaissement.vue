@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" size="xl">
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'un encaissement</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -85,7 +85,9 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button type="button" :disabled="!validable || submiting" class="btn btn-primary" @click="save">
         Valider
       </button>
@@ -99,9 +101,10 @@ import InfosBordereau from './InfosBordereau.vue'
 import BordereauForm from './BordereauForm.vue'
 import CashForm from './CashForm.vue'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
   components: { InfosContrat, InfosBordereau, CashForm, BordereauForm },
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     menu: null,
@@ -118,9 +121,21 @@ export default {
     errors: {},
   }),
   async fetch() {
-    await this.getCaissiers()
-    await this.getOrdonnancements()
-    await this.getBordereaux()
+    try {
+      await this.getCaissiers()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      await this.getOrdonnancements()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      await this.getBordereaux()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({
@@ -128,14 +143,6 @@ export default {
       bordereaux: MODULES.BORDEREAU.GETTERS.BORDEREAUX,
       caissiers: MODULES.CAISSIER.GETTERS.CAISSIERS,
     }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   methods: {
     ...mapActions({
@@ -151,11 +158,7 @@ export default {
       this.ajouter(this.encaissement)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
           const { data } = err.response
@@ -165,24 +168,15 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    reset() {
-      this.disabled = true
-      this.ordonnancement = {}
-      this.encaissement = {}
-      this.validable = false
-      this.errors = {}
-      this.key = !this.key
-      this.dialog = false
-    },
     exists() {
       if (this.encaissement.caissier_id) {
         this.ouvertureExists(this.encaissement.caissier_id).then((exists) => {
           exists
             ? (this.disabled = false)
-            : this.$bvToast.toast("le caissier sélectionné n'est pas programmé pour aujourd'hui", {
-                title: 'ATTENTION',
-                variant: 'warning',
-                solid: true,
+            : this.$notify({
+                text: "le caissier sélectionné n'est pas programmé pour aujourd'hui",
+                title: 'attention!',
+                type: 'warning',
               })
         })
       }

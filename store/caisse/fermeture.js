@@ -3,12 +3,8 @@ export const state = () => ({
   fermeture: null,
 })
 export const getters = {
-  fermetures: (state) => {
-    return state.fermetures
-  },
-  fermeture: (state) => {
-    return state.fermeture
-  },
+  fermetures: (state) => state.fermetures,
+  fermeture: (state) => state.fermeture,
 }
 export const actions = {
   async getAll({ commit }) {

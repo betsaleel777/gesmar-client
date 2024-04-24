@@ -111,14 +111,10 @@ export default {
   async fetch() {
     try {
       await this.getAll()
-      this.totalRows = this.roles.length
     } catch (error) {
-      this.$bvToast.toast(error.response.data.message, {
-        title: 'opération compromise'.toLocaleUpperCase(),
-        variant: 'danger',
-        solid: true,
-      })
+      this.$notify({ text: error.response.data.message, title: 'opération compromise', type: 'error' })
     }
+    this.totalRows = this.roles.length
   },
   computed: {
     ...mapGetters({ roles: MODULES.ROLE.GETTERS.ROLES }),
@@ -134,11 +130,7 @@ export default {
       this.dialog.activate = true
     },
     onEdited(message) {
-      this.$bvToast.toast(message, {
-        title: 'succès de la modification'.toLocaleUpperCase(),
-        variant: 'success',
-        solid: true,
-      })
+      this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
     },
   },
 }

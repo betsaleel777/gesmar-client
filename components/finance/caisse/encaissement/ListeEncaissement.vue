@@ -93,11 +93,7 @@ import CloseEncaissementModal from './CloseEncaissementModal.vue'
 import { fermeture, encaissement } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  components: {
-    CreateEncaissement,
-    ShowEncaissementModal,
-    CloseEncaissementModal,
-  },
+  components: { CreateEncaissement, ShowEncaissementModal, CloseEncaissementModal },
   data: () => ({
     fields: [
       'ordre',

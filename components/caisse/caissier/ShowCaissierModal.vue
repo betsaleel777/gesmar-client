@@ -124,11 +124,7 @@ export default {
     },
     remove() {
       this.desattribuer(this.editedItem.id).then(({ message }) => {
-        this.$root.$bvToast.toast(message, {
-          title: "succès de l'annulation".toLocaleUpperCase(),
-          variant: 'success',
-          solid: true,
-        })
+        this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         this.dialogDelete = false
         this.dialog = false
       })

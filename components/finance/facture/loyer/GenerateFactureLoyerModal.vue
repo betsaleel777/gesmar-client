@@ -126,18 +126,14 @@ export default {
         })
         this.ajouter(factures).then(({ message }) => {
           this.submiting = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
       } else {
-        this.$bvToast.toast("Aucun client n'a été sélectionné", {
-          title: 'echec opération'.toLocaleUpperCase(),
-          variant: 'danger',
-          solid: true,
+        this.$notify({
+          text: "Aucun client n'a été sélectionné",
+          title: "echec de l'opération",
+          type: 'error',
         })
       }
     },

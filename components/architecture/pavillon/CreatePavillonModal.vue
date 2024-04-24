@@ -71,10 +71,11 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     pavillon: {
@@ -90,18 +91,14 @@ export default {
     },
   }),
   async fetch() {
-    await this.getMarches()
+    try {
+      await this.getMarches()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   methods: {
     ...mapActions({ getMarches: MODULES.SITE.ACTIONS.ALL, ajouter: MODULES.PAVILLON.ACTIONS.ALL }),
@@ -109,19 +106,11 @@ export default {
       this.submiting = true
       this.ajouter(this.pavillon)
         .then(({ message }) => {
-          this.$root.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

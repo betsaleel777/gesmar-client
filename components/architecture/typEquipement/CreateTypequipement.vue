@@ -94,8 +94,9 @@
 import { mapActions, mapGetters } from 'vuex'
 import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: { value: Boolean },
+  mixins: [modal],
   emits: ['pushed'],
   data: () => ({
     submiting: false,
@@ -113,18 +114,14 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
   },
   methods: {
     ...mapActions({ ajouter: MODULES.TYPE.EQUIPEMENT.ACTIONS.ADD, getSites: MODULES.SITE.ACTIONS.ALL }),
@@ -144,5 +141,4 @@ export default {
   },
 }
 </script>
-<style></style>
 <style></style>

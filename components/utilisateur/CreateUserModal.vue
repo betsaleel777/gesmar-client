@@ -134,11 +134,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
   components: { ImagePreview },
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     utilisateur: {
@@ -161,22 +162,19 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
-    await this.getRoles()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, title: 'opération compromise', type: 'error' })
+    }
+    try {
+      await this.getRoles()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, title: 'opération compromise', type: 'error' })
+    }
   },
   computed: {
-    ...mapGetters({
-      sites: MODULES.SITE.GETTERS.SITES,
-      roles: MODULES.ROLE.GETTERS.ADMIN_WITHOUT,
-    }),
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
+    ...mapGetters({ sites: MODULES.SITE.GETTERS.SITES, roles: MODULES.ROLE.GETTERS.ADMIN_WITHOUT }),
   },
   methods: {
     ...mapActions({
@@ -193,18 +191,10 @@ export default {
       this.ajouter(data)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

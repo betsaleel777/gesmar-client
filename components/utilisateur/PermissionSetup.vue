@@ -31,8 +31,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import PermissionTable from './PermissionTable.vue'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
 import { SUPERROLE } from '~/helper/constantes'
+import { errorHandling } from '~/helper/helpers'
 export default {
   components: { PermissionTable },
   props: {
@@ -74,19 +74,11 @@ export default {
       this.submiting = true
       this.attribuer({ role: this.role, user: this.id })
         .then((message) => {
-          this.$bvToast.toast(message, {
-            title: "succès de l'opération".toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           location.reload()
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

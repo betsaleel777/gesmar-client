@@ -69,7 +69,11 @@ export default {
     },
   }),
   async fetch() {
-    await this.getSites()
+    try {
+      await this.getSites()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
     ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),

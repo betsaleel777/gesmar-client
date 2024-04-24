@@ -7,30 +7,28 @@
       </button>
     </template>
     <template #default>
-      <form>
-        <v-app>
-          <v-row>
-            <v-col cols="4">
-              <v-autocomplete
-                v-model="terme.site_id"
-                :items="marches"
-                item-text="nom"
-                item-value="id"
-                outlined
-                dense
-                :error="errors.site_id.exist"
-                :error-messages="errors.site_id.message"
-              >
-                <template #label>
-                  Choix du marché
-                  <span class="red--text"><strong>* </strong></span>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
-        </v-app>
-        <quill-editor v-model="terme.contenu" :options="editorOption" theme="snow"></quill-editor>
-      </form>
+      <v-app>
+        <v-row>
+          <v-col cols="4">
+            <v-autocomplete
+              v-model="terme.site_id"
+              :items="marches"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            >
+              <template #label>
+                Choix du marché
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+            </v-autocomplete>
+          </v-col>
+        </v-row>
+      </v-app>
+      <quill-editor v-model="terme.contenu" :options="editorOption" theme="snow"></quill-editor>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
@@ -43,13 +41,12 @@
 <script>
 import { mapActions } from 'vuex'
 import { quillEditor } from 'vue-quill-editor'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorsInitialise } from '~/helper/handleErrors'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
+import { errorHandling } from '~/helper/helpers'
 export default {
-  components: {
-    quillEditor,
-  },
+  components: { quillEditor },
   props: {
     marches: {
       type: Array,
@@ -88,9 +85,7 @@ export default {
     },
   }),
   methods: {
-    ...mapActions({
-      ajouter: 'template/terme-annexe/ajouter',
-    }),
+    ...mapActions({ ajouter: 'template/terme-annexe/ajouter' }),
     save() {
       this.submiting = true
       this.ajouter({ ...this.terme, user_id: this.user.id })
@@ -103,11 +98,7 @@ export default {
           })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

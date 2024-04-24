@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'une ouverture de caisse</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -109,7 +109,9 @@
       </form>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
+        Fermer
+      </button>
       <button
         type="button"
         :disabled="submiting || noSubmit"
@@ -123,16 +125,17 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { errorsWriting, errorsInitialise } from '~/helper/handleErrors'
+import { errorHandling } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 let datesNonPermises = []
 export default {
+  mixins: [modal],
   props: {
     ouvertures: {
       type: Array,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     submiting: false,
@@ -156,21 +159,29 @@ export default {
       date: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    try {
+      this.loading.guichet = true
+      await this.getGuichets()
+      this.loading.guichet = false
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+    try {
+      this.loading.caissier = true
+      this.getCaissiers()
+      this.loading.caissier = false
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+  },
   computed: {
     ...mapGetters({
-      guichets: 'caisse/guichet/guichets',
+      guichets: MODULES.GUICHET.GETTERS.GUICHETS,
       caissiers: MODULES.CAISSIER.GETTERS.CAISSIERS,
     }),
     guichetCaissier() {
       return `${this.ouverture.guichet_id}|${this.ouverture.caissier_id}`
-    },
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
     },
   },
   watch: {
@@ -184,20 +195,10 @@ export default {
       this.checkExistOuverture()
     },
   },
-  mounted() {
-    this.loading.guichet = true
-    this.loading.caissier = true
-    this.getGuichets().then(() => {
-      this.loading.guichet = false
-    })
-    this.getCaissiers().then(() => {
-      this.loading.caissier = false
-    })
-  },
   methods: {
     ...mapActions({
       ajouter: MODULES.OUVERTURE.ACTIONS.ADD,
-      getGuichets: 'caisse/guichet/getAll',
+      getGuichets: MODULES.GUICHET.ACTIONS.ALL,
       getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
       getOne: MODULES.CAISSIER.ACTIONS.ONE,
       checkUsing: MODULES.OUVERTURE.ACTIONS.USING_EXISTS,
@@ -207,26 +208,12 @@ export default {
       this.ajouter(this.ouverture)
         .then(({ message }) => {
           this.dialog = false
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
-    },
-    reset() {
-      this.disabled = true
-      this.ouverture = {}
-      errorsInitialise(this.errors)
-      this.dialog = false
     },
     getCaissier() {
       this.getOne(this.ouverture.caissier_id).then(({ caissier }) => {
@@ -258,15 +245,12 @@ export default {
           this.disabled = false
           if (exists) {
             this.noSubmit = true
-            this.$bvToast.toast(
-              `Ce caissier est toujours en cours d'utilisation de sa caisse, veuillez fermer la caisse
+            this.$notify({
+              text: `Ce caissier est toujours en cours d'utilisation de sa caisse, veuillez fermer la caisse
         précedement ouverte avant de créer une autre ouverture de caisse.`,
-              {
-                title: 'ATTENTION',
-                variant: 'warning',
-                solid: true,
-              }
-            )
+              title: 'attention',
+              type: 'warning',
+            })
           } else {
             this.noSubmit = false
           }

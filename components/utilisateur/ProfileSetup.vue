@@ -89,13 +89,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '../tools/ImagePreview.vue'
-import { errorsInitialise, errorsWriting } from '~/helper/handleErrors'
 import { SUPERROLE } from '~/helper/constantes'
 import { MODULES } from '~/helper/modules-types'
+import { errorHandling } from '~/helper/helpers'
 export default {
-  components: {
-    ImagePreview,
-  },
+  components: { ImagePreview },
   props: {
     profileData: {
       type: Object,
@@ -140,19 +138,11 @@ export default {
       }
       this.profile(data)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'succès de la modification'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
+          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           location.reload()
         })
         .catch((err) => {
-          const { data } = err.response
-          if (data) {
-            errorsInitialise(this.errors)
-            errorsWriting(data.errors, this.errors)
-          }
+          errorHandling(err.response, this.errors)
         })
         .finally(() => (this.submiting = false))
     },

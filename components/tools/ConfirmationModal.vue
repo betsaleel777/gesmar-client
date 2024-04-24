@@ -20,49 +20,36 @@
   </b-modal>
 </template>
 <script>
+import modal from '~/mixins/modal'
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
-      required: true
+      required: true,
     },
     modalId: {
       type: String,
-      required: true
+      required: true,
     },
     message: {
       type: String,
-      required: true
+      required: true,
     },
     action: {
       type: String,
-      required: true
+      required: true,
     },
-    value: Boolean
-  },
-  computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      }
-    }
   },
   methods: {
     save() {
       this.$store.dispatch(`${this.action}`, this.id).then(({ message }) => {
         this.dialog = false
-        this.$bvToast.toast(message, {
-          title: "succès de l'opération".toLocaleUpperCase(),
-          variant: 'success',
-          solid: true
-        })
+        this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         this.$emit('confirmed')
       })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang=""></style>
