@@ -71,8 +71,10 @@
 import { mapGetters, mapActions } from 'vuex'
 import { invoicePrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
 export default {
-  props: { id: { type: Number, required: true }, value: Boolean },
+  mixins: [modal],
+  props: { id: { type: Number, required: true } },
   data() {
     return {
       encaissement: { code: null },
@@ -80,18 +82,14 @@ export default {
   },
   async fetch() {
     const { encaissement } = await this.getEncaissement(this.id)
-    await this.getSociete()
     this.encaissement = encaissement
+    try {
+      await this.getSociete()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE }),
   },
   methods: {

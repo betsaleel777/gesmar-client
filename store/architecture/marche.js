@@ -1,14 +1,16 @@
+import { SUPERROLE } from '~/helper/constantes'
+
 export const state = () => ({
   marches: [],
-  structure: []
+  structure: [],
 })
 export const getters = {
   marches: (state) => {
-    return state.marches
+    const user = window.$nuxt.user
+    if (user.role.name === SUPERROLE) return state.marches
+    else return state.marches.filter(({ id }) => user.sites.includes(id))
   },
-  structure: (state) => {
-    return state.structure
-  }
+  structure: (state) => state.structure,
 }
 
 export const actions = {
@@ -64,7 +66,7 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/marches/push', payload)
     dispatch('getAll')
     return { message: requete.data.message, donnees: requete.data.marche }
-  }
+  },
 }
 
 export const mutations = {
@@ -73,5 +75,5 @@ export const mutations = {
   },
   SET_STRUCTURE(state, structure) {
     state.structure = structure
-  }
+  },
 }

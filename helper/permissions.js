@@ -211,6 +211,7 @@ const ordonnancementDashboard = {
 const ordonnancement = {
   global: 'global-ordonnancement',
   own: 'own-ordonnancement',
+  create: 'create-ordonnancement',
   show: 'show-ordonnancement',
 }
 const factureDashboard = {
