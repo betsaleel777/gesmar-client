@@ -90,9 +90,7 @@ export default {
     componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
   },
 
-  router: {
-    middleware: ['auth', 'permission-filter'],
-  },
+  router: { middleware: ['auth', 'permission-filter'] },
 
   auth: {
     strategies: {
