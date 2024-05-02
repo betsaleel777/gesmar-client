@@ -528,6 +528,7 @@ export const MODULES = Object.freeze({
       TRASH: annexeRoot + 'supprimer',
       RESTORE: annexeRoot + 'restaurer',
       ADD: annexeRoot + 'ajouter',
+      FREE: annexeRoot + 'getFree',
     }),
   }),
   ROLE: Object.freeze({

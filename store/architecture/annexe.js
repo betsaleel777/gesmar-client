@@ -1,14 +1,18 @@
 export const state = () => ({
-  annexes: []
+  annexes: [],
 })
 export const getters = {
   annexes: (state) => {
     return state.annexes
-  }
+  },
 }
 export const actions = {
   async getAll({ commit }) {
     const requete = await this.$axios.get('api/parametres/annexes')
+    commit('SET_ANNEXES', requete.data.annexes)
+  },
+  async getFree({ commit }) {
+    const requete = await this.$axios.get('api/parametres/annexes/free')
     commit('SET_ANNEXES', requete.data.annexes)
   },
   async getTrashAll({ commit }) {
@@ -42,11 +46,11 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/annexes/store', payload)
     dispatch('getAll')
     return { message: requete.data.message }
-  }
+  },
 }
 
 export const mutations = {
   SET_ANNEXES(state, annexes) {
     state.annexes = annexes
-  }
+  },
 }

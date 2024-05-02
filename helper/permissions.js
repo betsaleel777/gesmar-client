@@ -198,6 +198,7 @@ const contrat = {
 const personne = {
   global: 'global-personne',
   own: 'own-personne',
+  create: 'create-personne',
   trash: 'trash-personne',
   delete: 'delete-personne',
   restore: 'restore-personne',

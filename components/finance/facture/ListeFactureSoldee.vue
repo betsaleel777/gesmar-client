@@ -49,6 +49,11 @@
         <template #cell(created_at)="data">
           {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
         </template>
+        <template #cell(produit)="data">
+          <!-- {{ data.contrat }} -->
+          <span v-if="data.item.contrat.emplacement">{{ data.item.contrat.emplacement.code }}</span>
+          <span v-else>{{ data.item.contrat.annexe.nom }}</span>
+        </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
             {{ scope.emptyText }}
@@ -75,10 +80,10 @@ export default {
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'contrat.code', label: 'Contrat', sortable: true },
-      { key: 'contrat.personne.alias', label: 'Personne', sortable: true },
+      { key: 'contrat.personne.fullname', label: 'Personne', sortable: true },
       {
-        key: 'contrat.emplacement.code',
-        label: 'Emplacement',
+        key: 'produit',
+        label: 'Produit',
         tdClass: 'text-center',
         thClass: 'text-center',
         sortable: true,

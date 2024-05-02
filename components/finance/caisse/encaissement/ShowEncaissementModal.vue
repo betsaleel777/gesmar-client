@@ -49,7 +49,7 @@
                   <tr>
                     <td class="tx-nowrap">
                       <span v-if="encaissement.bordereau">{{ encaissement.bordereau.code }}</span>
-                      <span v-else>{{ encaissement.ordonnancement.emplacement.code }}</span>
+                      <span v-else>{{ produitName }}</span>
                     </td>
                     <td class="tx-nowrap">{{ encaissement.payable.montant | currency }}</td>
                     <td class="tx-nowrap">{{ encaissement.payable.versement | currency }}</td>
@@ -91,6 +91,11 @@ export default {
   },
   computed: {
     ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE }),
+    produitName() {
+      if (this.encaissement.ordonnancement.emplacement)
+        return this.encaissement.ordonnancement.emplacement.code
+      else return this.encaissement.ordonnancement.annexe.nom
+    },
   },
   methods: {
     ...mapActions({

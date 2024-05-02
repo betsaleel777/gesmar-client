@@ -50,7 +50,6 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
-        <template #cell(prix)="data"> {{ data.item.prix }} {{ data.item.mode }} </template>
         <template #cell(option)="data">
           <a v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
@@ -59,8 +58,8 @@
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
-        <template #empty="scope">
-          <h6 class="text-center text-muted pd-y-10">
+        <template #empty="scope"
+          ><h6 class="text-center text-muted pd-y-10">
             {{ scope.emptyText }}
           </h6>
         </template>
@@ -101,13 +100,6 @@ export default {
       'ordre',
       { key: 'code', label: 'Code', sortable: false },
       { key: 'nom', label: 'Nom', sortable: true },
-      {
-        key: 'prix',
-        label: 'Prix',
-        thClass: 'text-right',
-        tdClass: 'text-right',
-        sortable: true,
-      },
       { key: 'site.nom', label: 'Site' },
       {
         key: 'option',
@@ -128,7 +120,11 @@ export default {
     permissions: serviceAnnexe,
   }),
   async fetch() {
-    await this.getServicesAnnexes()
+    try {
+      await this.getServicesAnnexes()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
     this.totalRows = this.annexes.length
   },
   computed: {

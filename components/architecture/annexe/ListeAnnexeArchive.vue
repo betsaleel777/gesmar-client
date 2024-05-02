@@ -89,12 +89,6 @@ export default {
   data: () => ({
     fields: [
       { key: 'nom', label: 'Nom', sortable: true },
-      {
-        key: 'prix',
-        label: 'Prix/Heures',
-        tdClass: 'text-right',
-        sortable: true,
-      },
       { key: 'site.nom', label: 'Site' },
       {
         key: 'option',

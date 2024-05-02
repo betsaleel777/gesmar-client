@@ -68,17 +68,17 @@ export default {
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
-      { key: 'contrat_code', label: 'Contrat', sortable: true },
-      { key: 'personne', label: 'Personne', sortable: true },
+      { key: 'contrat.code', label: 'Contrat', sortable: true },
+      { key: 'personne.fullname', label: 'Personne', sortable: true },
       {
-        key: 'annexe',
+        key: 'annexe.nom',
         label: 'Service',
         tdClass: 'text-center',
         sortable: true,
       },
       {
-        key: 'prix',
-        label: 'Prix',
+        key: 'montant',
+        label: 'Montant',
         formatter: (value) => {
           return Number(value)
         },
@@ -100,7 +100,6 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, facture: {} },
     search: null,
     pages: 1,
     currentPage: 1,
@@ -125,7 +124,6 @@ export default {
   },
   methods: {
     ...mapActions({ getPaginate: 'facture/annexe/getPaginate', getSearch: 'facture/annexe/getSearch' }),
-    imprimer() {},
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',
