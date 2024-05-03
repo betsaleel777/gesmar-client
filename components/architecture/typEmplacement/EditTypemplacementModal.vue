@@ -1,72 +1,76 @@
 <template>
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
-      <h5 class="modal-title text-primary">Modifier le type d'emplacement {{ type.nom }}</h5>
+      <h5 v-if="!$fetchState.pending" class="modal-title text-primary">
+        Modifier le type d'emplacement {{ type.nom }}
+      </h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
     <template #default>
       <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
-        <v-app>
-          <v-switch
-            v-model="type.auto_valid"
-            :label="
-              type.auto_valid
-                ? 'validation directe du contrat sans paiement'
-                : 'paiement requis pour la validation du contrat'
-            "
-          ></v-switch>
-          <v-spacer></v-spacer>
-          <v-switch
-            v-model="type.equipable"
-            :label="type.equipable ? 'avec équipement' : 'sans équipement'"
-          ></v-switch>
-        </v-app>
-        <div class="form-group required">
-          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
-          <input
-            v-model="type.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
-          <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.nom.message }}</strong>
-          </span>
-        </div>
-        <div class="form-group required">
-          <label class="form-label mg-t-10"
-            >Code<span class="text-danger">*</span> Ex:(MAG pour magasin)</label
-          >
-          <input
-            v-model="type.prefix"
-            type="text"
-            :class="{ 'is-invalid': errors.prefix.exist }"
-            class="form-control"
-          />
-          <span v-if="errors.prefix.exist" class="invalid-feedback" role="alert">
-            <strong>{{ errors.prefix.message }}</strong>
-          </span>
-        </div>
-        <v-app>
-          <v-autocomplete
-            v-model="type.site_id"
-            :items="sites"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            :error="errors.site_id.exist"
-            :error-messages="errors.site_id.message"
-          >
-            <template #label>
-              Choix du marché
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-          </v-autocomplete>
-        </v-app>
+        <form v-if="!$fetchState.pending">
+          <v-app>
+            <v-switch
+              v-model="type.auto_valid"
+              :label="
+                type.auto_valid
+                  ? 'validation directe du contrat sans paiement'
+                  : 'paiement requis pour la validation du contrat'
+              "
+            ></v-switch>
+            <v-spacer></v-spacer>
+            <v-switch
+              v-model="type.equipable"
+              :label="type.equipable ? 'avec équipement' : 'sans équipement'"
+            ></v-switch>
+          </v-app>
+          <div class="form-group required">
+            <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
+            <input
+              v-model="type.nom"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors.nom.exist }"
+              placeholder="Entrer votre nom complet"
+            />
+            <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.nom.message }}</strong>
+            </span>
+          </div>
+          <div class="form-group required">
+            <label class="form-label mg-t-10"
+              >Code<span class="text-danger">*</span> Ex:(MAG pour magasin)</label
+            >
+            <input
+              v-model="type.prefix"
+              type="text"
+              :class="{ 'is-invalid': errors.prefix.exist }"
+              class="form-control"
+            />
+            <span v-if="errors.prefix.exist" class="invalid-feedback" role="alert">
+              <strong>{{ errors.prefix.message }}</strong>
+            </span>
+          </div>
+          <v-app>
+            <v-autocomplete
+              v-model="type.site.id"
+              :items="sites"
+              item-text="nom"
+              item-value="id"
+              outlined
+              dense
+              :error="errors.site_id.exist"
+              :error-messages="errors.site_id.message"
+            >
+              <template #label>
+                Choix du marché
+                <span class="red--text"><strong>* </strong></span>
+              </template>
+            </v-autocomplete>
+          </v-app>
+        </form>
       </b-overlay>
     </template>
     <template #modal-footer>
@@ -94,14 +98,7 @@ export default {
   },
   data: () => ({
     submiting: false,
-    type: {
-      id: null,
-      nom: '',
-      prefix: '',
-      site_id: null,
-      auto_valid: false,
-      equipable: false,
-    },
+    type: null,
     errors: {
       nom: { exist: false, message: null },
       site_id: { exist: false, message: null },
