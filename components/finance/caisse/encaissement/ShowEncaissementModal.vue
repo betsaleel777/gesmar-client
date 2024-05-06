@@ -76,9 +76,7 @@ export default {
   mixins: [modal],
   props: { id: { type: Number, required: true } },
   data() {
-    return {
-      encaissement: { code: null },
-    }
+    return { encaissement: { code: null } }
   },
   async fetch() {
     const { encaissement } = await this.getEncaissement(this.id)
@@ -90,7 +88,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE }),
+    ...mapGetters({
+      societe: MODULES.APPLICATION.GETTERS.SOCIETE,
+      url: MODULES.MEDIA.GETTERS.URL,
+    }),
     produitName() {
       if (this.encaissement.ordonnancement.emplacement)
         return this.encaissement.ordonnancement.emplacement.code
@@ -101,9 +102,11 @@ export default {
     ...mapActions({
       getSociete: MODULES.APPLICATION.ACTIONS.ONE,
       getEncaissement: MODULES.ENCAISSEMENT.ACTIONS.ONE,
+      getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
     }),
-    imprimer() {
-      invoicePrinter(this.societe, this.encaissement)
+    async imprimer() {
+      await this.getUrl(this.societe.logo)
+      invoicePrinter(this.societe, this.encaissement, this.url)
     },
   },
 }

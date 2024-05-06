@@ -628,4 +628,8 @@ export const MODULES = Object.freeze({
       TRASHED: gabariBailRoot + 'getTrashAll',
     }),
   }),
+  MEDIA: Object.freeze({
+    GETTERS: Object.freeze({ URL: 'media/url' }),
+    ACTIONS: Object.freeze({ DOWNLOAD: 'media/getUrl' }),
+  }),
 })

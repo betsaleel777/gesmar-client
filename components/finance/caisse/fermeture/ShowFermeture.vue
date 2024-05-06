@@ -125,13 +125,16 @@
 import { mapGetters, mapActions } from 'vuex'
 import { ENCAISSEMENT } from '~/helper/constantes'
 import { caissePointPrinter } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
+
 export default {
+  mixins: [modal],
   props: {
     id: {
       type: Number,
       required: true,
     },
-    value: Boolean,
   },
   data: () => ({
     confirmDialog: false,
@@ -170,14 +173,6 @@ export default {
     this.totalRows = this.fermeture.encaissements.length
   },
   computed: {
-    dialog: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
     totalEspece() {
       let total = 0
       this.fermeture.encaissements.forEach((encaissement) => {
@@ -192,11 +187,19 @@ export default {
       })
       return total
     },
-    ...mapGetters({ fermeture: 'caisse/fermeture/fermeture', societe: 'architecture/application/societe' }),
+    ...mapGetters({
+      fermeture: 'caisse/fermeture/fermeture',
+      societe: MODULES.APPLICATION.GETTERS.SOCIETE,
+      url: MODULES.MEDIA.GETTERS.URL,
+    }),
   },
   methods: {
-    ...mapActions({ getOne: 'caisse/fermeture/getOne', getSociete: 'architecture/application/getOne' }),
-    imprimer() {
+    ...mapActions({
+      getOne: 'caisse/fermeture/getOne',
+      getSociete: MODULES.APPLICATION.ACTIONS.ONE,
+      getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
+    }),
+    async imprimer() {
       const infos = {
         ...this.fermeture,
         totalCheque: this.totalCheque,
@@ -204,7 +207,9 @@ export default {
         totalTransaction: this.totalCheque + this.totalEspece,
         total: this.totalCheque + this.totalEspece + this.fermeture.initial,
       }
-      this.getSociete().then(() => caissePointPrinter(this.societe, infos))
+      await this.getSociete()
+      await this.getUrl(this.societe.logo)
+      caissePointPrinter(this.societe, infos, this.url)
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length

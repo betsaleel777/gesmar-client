@@ -9,11 +9,15 @@ const remove = (item, selected, targetArray = []) => {
   indexFound = selected.findIndex((elt) => elt.id === item.id)
   selected.splice(indexFound, 1)
 }
+
 const add = (item, targetArray = []) => {
   targetArray.push(item)
 }
 
-const invoicePrinter = (societe, encaissement) => {
+const invoicePrinter = (societe, encaissement, logoUrl) => {
+  const personne = encaissement.ordonnancement.personne
+  const paiement = encaissement.payable
+  const produit = encaissement.ordonnancement.emplacement ?? encaissement.ordonnancement.annexe
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
@@ -21,13 +25,10 @@ const invoicePrinter = (societe, encaissement) => {
     orientationLandscape: false,
     compress: true,
     logo: {
-      src: `${societe.logo}`,
+      src: logoUrl,
       width: 53.33,
       height: 26.66,
-      margin: {
-        top: 0,
-        left: 0,
-      },
+      margin: { top: 0, left: 0 },
     },
     business: {
       name: societe.sigle.toUpperCase(),
@@ -37,14 +38,14 @@ const invoicePrinter = (societe, encaissement) => {
     },
     contact: {
       label: 'facturé à:',
-      name: `${encaissement.personne.nom} ${encaissement.personne.prenom}`,
-      address: `${encaissement.personne.ville}, ${encaissement.personne.adresse}`,
-      phone: encaissement.personne.contact,
-      email: encaissement.personne.email,
-      otherInfo: encaissement.personne.code,
+      name: `${personne.nom} ${personne.prenom}`,
+      address: `${personne.ville}, ${personne.adresse}`,
+      phone: personne.contact,
+      email: personne.email,
+      otherInfo: personne.code,
     },
     invoice: {
-      label: 'Facture #: ',
+      label: 'Facture : ',
       num: encaissement.code,
       invDate: encaissement.created_at,
       invGenDate: '',
@@ -67,23 +68,19 @@ const invoicePrinter = (societe, encaissement) => {
           },
         },
       ],
-      table: Array.from(Array(1), () => [encaissement.emplacement, encaissement.payable.montant, 'FCFA']),
+      table: Array.from(Array(1), () => [produit.code ?? produit.nom, paiement.montant, 'FCFA']),
       additionalRows: [
         {
           col1: 'Montant versé',
-          col2: String(encaissement.payable.versement),
+          col2: String(paiement.versement),
           col3: 'FCFA',
-          style: {
-            fontSize: 14,
-          },
+          style: { fontSize: 14 },
         },
         {
           col1: 'Monnaie rendue:',
-          col2: String(encaissement.payable.versement - encaissement.payable.montant),
+          col2: String(paiement.versement - paiement.montant),
           col3: 'FCFA',
-          style: {
-            fontSize: 10,
-          },
+          style: { fontSize: 10 },
         },
       ],
       invDescLabel: '',
@@ -99,13 +96,19 @@ const invoicePrinter = (societe, encaissement) => {
   pdfObject.jsPDFDocObject.save()
 }
 
-const caissePointPrinter = (societe, infos) => {
+const caissePointPrinter = (societe, infos, logoUrl) => {
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
     fileName: 'point de caisse ' + infos.created_at,
     orientationLandscape: false,
     compress: true,
+    logo: {
+      src: logoUrl,
+      width: 53.33,
+      height: 26.66,
+      margin: { top: 0, left: 0 },
+    },
     business: {
       name: societe.nom,
       address: societe.siege,
@@ -121,36 +124,24 @@ const caissePointPrinter = (societe, infos) => {
       header: [
         {
           title: '#',
-          style: {
-            width: 10,
-          },
+          style: { width: 10 },
         },
-        {
-          title: 'Mode de paiement',
-        },
+        { title: 'Mode de paiement' },
         {
           title: 'Montant à payer',
-          style: {
-            width: 40,
-          },
+          style: { width: 40 },
         },
         {
           title: 'Montant versé',
-          style: {
-            width: 40,
-          },
+          style: { width: 40 },
         },
         {
           title: 'Monnaie',
-          style: {
-            width: 40,
-          },
+          style: { width: 40 },
         },
         {
           title: 'Date',
-          style: {
-            width: 30,
-          },
+          style: { width: 30 },
         },
       ],
       table: Array.from(Array(infos.encaissements.length), (item, index) => [
