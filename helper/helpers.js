@@ -18,16 +18,16 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
   const personne = encaissement.ordonnancement.personne
   const paiement = encaissement.payable
   const produit = encaissement.ordonnancement.emplacement ?? encaissement.ordonnancement.annexe
+  const subject = encaissement.ordonnancement ?? encaissement.bordereau
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
-    fileName: encaissement.code,
     orientationLandscape: false,
     compress: true,
     logo: {
       src: logoUrl,
-      width: 53.33,
-      height: 26.66,
+      width: 25,
+      height: 25,
       margin: { top: 0, left: 0 },
     },
     business: {
@@ -37,36 +37,23 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
       email: societe.email,
     },
     contact: {
-      label: 'facturé à:',
-      name: `${personne.nom} ${personne.prenom}`,
+      label: 'facturé à: ',
+      name: personne.fullname,
       address: `${personne.ville}, ${personne.adresse}`,
-      phone: personne.contact,
-      email: personne.email,
-      otherInfo: personne.code,
+      phone: personne.contact ?? '',
+      email: personne.email ?? '',
+      otherInfo: personne.code ?? '',
     },
     invoice: {
-      label: 'Facture : ',
-      num: encaissement.code,
+      label: '#: ',
+      num: subject.code,
       invDate: encaissement.created_at,
-      invGenDate: '',
       headerBorder: true,
       tableBodyBorder: true,
       header: [
-        {
-          title: 'Emplacement',
-        },
-        {
-          title: 'Prix',
-          style: {
-            width: 20,
-          },
-        },
-        {
-          title: 'Devise',
-          style: {
-            width: 20,
-          },
-        },
+        { title: 'Emplacement' },
+        { title: 'Prix', style: { width: 20 } },
+        { title: 'Devise', style: { width: 20 } },
       ],
       table: Array.from(Array(1), () => [produit.code ?? produit.nom, paiement.montant, 'FCFA']),
       additionalRows: [
@@ -89,28 +76,27 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
     },
-    pageEnable: true,
+    pageEnable: false,
     pageLabel: 'Page ',
   }
   const pdfObject = jsPDFInvoiceTemplate(property)
-  pdfObject.jsPDFDocObject.save()
+  pdfObject.jsPDFDocObject.save('recu-' + subject.code)
 }
 
 const caissePointPrinter = (societe, infos, logoUrl) => {
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
-    fileName: 'point de caisse ' + infos.created_at,
     orientationLandscape: false,
     compress: true,
     logo: {
       src: logoUrl,
-      width: 53.33,
-      height: 26.66,
+      width: 25,
+      height: 25,
       margin: { top: 0, left: 0 },
     },
     business: {
-      name: societe.nom,
+      name: societe.sigle.toUpperCase(),
       address: societe.siege,
       phone: societe.phone,
       email: societe.email,
@@ -163,41 +149,31 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
           col1: 'Total espèce:',
           col2: String(infos.totalEspece),
           col3: 'FCFA',
-          style: {
-            fontSize: 10,
-          },
+          style: { fontSize: 10 },
         },
         {
           col1: 'Total cheque:',
           col2: String(infos.totalCheque),
           col3: 'FCFA',
-          style: {
-            fontSize: 10,
-          },
+          style: { fontSize: 10 },
         },
         {
           col1: 'Total Espece et cheque:',
           col2: String(infos.totalTransaction),
           col3: 'FCFA',
-          style: {
-            fontSize: 11,
-          },
+          style: { fontSize: 11 },
         },
         {
           col1: 'Montant initial en caisse:',
           col2: String(infos.initial),
           col3: 'FCFA',
-          style: {
-            fontSize: 10,
-          },
+          style: { fontSize: 10 },
         },
         {
           col1: 'Total:',
           col2: String(infos.total),
           col3: 'FCFA',
-          style: {
-            fontSize: 12,
-          },
+          style: { fontSize: 12 },
         },
       ],
       invDescLabel: 'Notez bien',
@@ -210,7 +186,7 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
     pageLabel: 'Page ',
   }
   const pdfObject = jsPDFInvoiceTemplate(property)
-  pdfObject.jsPDFDocObject.save()
+  pdfObject.jsPDFDocObject.save('point-' + infos.created_at)
 }
 const errorHandling = (response, errorsComponentData) => {
   const { data, status } = response
