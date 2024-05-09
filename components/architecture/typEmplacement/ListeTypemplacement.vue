@@ -106,7 +106,9 @@ export default {
     fields: [
       'index',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'site', label: 'Marché', sortable: true },
+      { key: 'site.nom', label: 'Marché', sortable: true },
+      { key: 'frais_dossier', label: 'Frais de dossier' },
+      { key: 'frais_amenagement', label: "Frais d'amenagement" },
       {
         key: 'created_at',
         label: 'Crée le',
@@ -114,12 +116,7 @@ export default {
         thClass: 'wd-10p text-center',
         sortable: true,
       },
-      {
-        key: 'equipable',
-        label: 'Equipable',
-        tdClass: 'wd-10p text-center',
-        thClass: 'wd-10p text-center',
-      },
+      { key: 'equipable', label: 'Equipable', tdClass: 'wd-10p text-center', thClass: 'wd-10p text-center' },
       {
         key: 'option',
         label: 'Options',

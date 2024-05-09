@@ -1,18 +1,17 @@
-export const state = () => ({
-  types: [],
-})
+export const state = () => ({ types: [] })
 
-export const getters = {
-  types: (state) => {
-    return state.types
-  },
-}
+export const getters = { types: (state) => state.types }
 
 export const actions = {
   async getAll({ commit }) {
     commit('SET_TYPES', [])
     const requete = await this.$axios.get('api/parametres/equipement/types')
     commit('SET_TYPES', requete.data.types)
+  },
+
+  async getBySite({ commit }, id) {
+    const { data } = await this.$axios.get('api/parametres/equipement/types/site', { params: { id } })
+    commit('SET_TYPES', data)
   },
 
   async getTrashAll({ commit }) {

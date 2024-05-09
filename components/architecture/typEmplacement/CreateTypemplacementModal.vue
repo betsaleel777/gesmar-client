@@ -24,7 +24,7 @@
           ></v-switch>
         </v-app>
         <div class="form-group required">
-          <label class="form-label mg-t-10">Nom complet<span class="text-danger">*</span></label>
+          <label class="form-label mg-t-5">Nom complet<span class="text-danger">*</span></label>
           <input
             v-model="type.nom"
             type="text"
@@ -37,7 +37,7 @@
           </span>
         </div>
         <div class="form-group required">
-          <label class="form-label mg-t-10"
+          <label class="form-label mg-t-5"
             >Code<span class="text-danger">*</span> Ex:(MAG pour magasin)</label
           >
           <input
@@ -49,6 +49,52 @@
           <span v-if="errors.prefix.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.prefix.message }}</strong>
           </span>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <b-form-group label-for="frais_dossier">
+              <template #label>
+                <span class="form-label">Frais de dossier <span class="text-danger">*</span></span>
+              </template>
+              <b-input-group>
+                <b-form-input
+                  id="superficie"
+                  v-model="type.frais_dossier"
+                  type="text"
+                  :class="{ 'is-invalid': errors.frais_dossier.exist }"
+                  class="form-control"
+                />
+                <b-input-group-append>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
+                </b-input-group-append>
+                <span v-if="errors.frais_dossier.exist" class="invalid-feedback" role="alert">
+                  <strong>{{ errors.frais_dossier.message }}</strong>
+                </span>
+              </b-input-group>
+            </b-form-group>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <b-form-group label-for="frais_amenagement">
+              <template #label>
+                <span class="form-label">Frais d'aménagement <span class="text-danger">*</span></span>
+              </template>
+              <b-input-group>
+                <b-form-input
+                  id="superficie"
+                  v-model="type.frais_amenagement"
+                  type="text"
+                  :class="{ 'is-invalid': errors.frais_amenagement.exist }"
+                  class="form-control"
+                />
+                <b-input-group-append>
+                  <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
+                </b-input-group-append>
+                <span v-if="errors.frais_amenagement.exist" class="invalid-feedback" role="alert">
+                  <strong>{{ errors.frais_amenagement.message }}</strong>
+                </span>
+              </b-input-group>
+            </b-form-group>
+          </div>
         </div>
         <v-app>
           <v-autocomplete
@@ -90,15 +136,19 @@ export default {
   data: () => ({
     submiting: false,
     type: {
-      nom: '',
-      prefix: '',
-      site_id: '',
+      nom: null,
+      prefix: null,
+      site_id: null,
+      frais_dossier: null,
+      frais_amenagement: null,
       auto_valid: false,
       equipable: false,
     },
     errors: {
       nom: { exist: false, message: null },
       prefix: { exist: false, message: null },
+      frais_dossier: { exist: false, message: null },
+      frais_amenagement: { exist: false, message: null },
       site_id: { exist: false, message: null },
     },
   }),
@@ -118,7 +168,7 @@ export default {
       this.submiting = true
       this.ajouter(this.type)
         .then(({ message, id }) => {
-          this.$emit('pushed', id)
+          this.$emit('pushed', { id, dossier: this.frais_dossier, amenagement: this.frais_amenagement })
           this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
         })
@@ -130,8 +180,4 @@ export default {
   },
 }
 </script>
-<style>
-/* .v-application--wrap {
-  min-height: fit-content;
-} */
-</style>
+<style></style>

@@ -370,6 +370,7 @@ export const MODULES = Object.freeze({
         TRASH: typeEquipementRoot + 'supprimer',
         RESTORE: typeEquipementRoot + 'restaurer',
         ADD: typeEquipementRoot + 'ajouter',
+        BY_SITE: typeEquipementRoot + 'getBySite',
       }),
     }),
     PERSONNE: Object.freeze({

@@ -99,7 +99,7 @@ export default {
     fields: [
       'ordre',
       { key: 'nom', label: 'Nom', sortable: true },
-      { key: 'site', label: 'Marché', sortable: true },
+      { key: 'site.nom', label: 'Marché', sortable: true },
       { key: 'caution_abonnement', label: 'Caution' },
       { key: 'created_at', label: 'Crée le', sortable: true },
       {
