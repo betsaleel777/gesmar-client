@@ -42,7 +42,7 @@
           {{ data.item.pas_porte | currency }}
         </template>
         <template #cell(option)="data">
-          <a v-can="permissions.show" type="button">
+          <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
           <a v-can="permissions.edit" type="button" @click="editer(data.item)">
@@ -83,6 +83,7 @@ export default {
       {
         key: 'emplacement',
         label: 'Emplacement',
+        thClass: 'text-center',
         tdClass: 'text-center',
         sortable: true,
       },
@@ -90,8 +91,9 @@ export default {
         key: 'avance',
         label: 'Avance',
         formatter: (value) => {
-          return value + ' mois'
+          return new Intl.NumberFormat('pt-GW').format(Number(value)) + ' FCFA'
         },
+        thClass: 'text-right',
         tdClass: 'text-right',
         sortable: true,
       },
@@ -99,14 +101,16 @@ export default {
         key: 'caution',
         label: 'Caution',
         formatter: (value) => {
-          return value + ' mois'
+          return new Intl.NumberFormat('pt-GW').format(Number(value)) + ' FCFA'
         },
+        thClass: 'text-right',
         tdClass: 'text-right',
         sortable: true,
       },
       {
         key: 'pas_porte',
         label: 'Pas de porte',
+        thClass: 'text-right',
         tdClass: 'text-right',
         sortable: true,
       },
@@ -126,6 +130,7 @@ export default {
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, facture: 0 },
+    show: { modal: false, id: 0 },
     search: null,
     pages: 1,
     currentPage: 1,
@@ -186,6 +191,10 @@ export default {
       await this.getPaginate(page)
       this.pageInit()
       this.loading = false
+    },
+    details({ id }) {
+      this.show.id = id
+      this.show.modal = true
     },
   },
 }

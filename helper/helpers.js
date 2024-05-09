@@ -188,6 +188,65 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('point-' + infos.created_at)
 }
+
+const facturePrinter = (societe, facture, logoUrl) => {
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    orientationLandscape: false,
+    compress: true,
+    logo: {
+      src: logoUrl,
+      width: 25,
+      height: 25,
+      margin: { top: 0, left: 0 },
+    },
+    business: {
+      name: societe.sigle.toUpperCase(),
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    invoice: {
+      label: '#: ',
+      num: facture.code,
+      invDate: facture.created_at,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [
+        {
+          title: '#',
+          style: { width: 10 },
+        },
+        { title: 'Produit' },
+        {
+          title: 'Montant à payer',
+          style: { width: 40 },
+        },
+        {
+          title: 'Date',
+          style: { width: 30 },
+        },
+      ],
+      // table: Array.from(Array(1), () => [produit.code ?? produit.nom, paiement.montant, 'FCFA']),
+      // additionalRows: [
+      //   {
+      //     col1: 'Total:',
+      //     col2: String(infos.total),
+      //     col3: 'FCFA',
+      //     style: { fontSize: 12 },
+      //   },
+      // ],
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: true,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save('facture-' + facture.code)
+}
 const errorHandling = (response, errorsComponentData) => {
   const { data, status } = response
   errorsInitialise(errorsComponentData)
@@ -200,4 +259,4 @@ const errorHandling = (response, errorsComponentData) => {
   }
 }
 
-export { remove, add, invoicePrinter, caissePointPrinter, errorHandling }
+export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter }

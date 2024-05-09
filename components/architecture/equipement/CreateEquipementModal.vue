@@ -130,7 +130,7 @@
             </template>
           </v-autocomplete>
         </v-app>
-        <CreateTypequipement v-model="createType" @pushed="onPushed" />
+        <CreateTypequipement v-if="createType" v-model="createType" @pushed="onPushed" />
       </b-overlay>
     </template>
     <template #modal-footer>

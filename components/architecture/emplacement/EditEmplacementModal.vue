@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-v-model -->
 <template>
   <b-modal v-model="dialog" scrollable>
     <template #modal-header>
@@ -78,7 +79,9 @@
           <div class="col-md-6 col-sm-6">
             <b-form-group label-for="pas_porte">
               <template #label>
-                <span class="form-label">Pas de porte</span>
+                <span class="form-label"
+                  >Pas de porte<span class="error"><strong>* </strong></span></span
+                >
               </template>
               <b-input-group>
                 <b-form-input
@@ -123,8 +126,14 @@
                 :error="errors.type_emplacement_id.exist"
                 :error-messages="errors.type_emplacement_id.message"
                 :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
-                @click:append-outer="$bvModal.show('modalCreateTypempl')"
+                :hint="hintMessage"
+                :persistent-hint="true"
+                @click:append-outer="createType = true"
+                @change="onTypeSelectChange"
               >
+                <template #message="{ message }">
+                  <span v-html="message"></span>
+                </template>
                 <template #label>
                   Type d'emplacement
                   <span class="red--text"><strong>* </strong></span>
@@ -133,7 +142,7 @@
             </v-app>
           </div>
         </div>
-        <CreateTypemplacementModal @pushed="onPushed" />
+        <CreateTypemplacementModal v-if="createType" v-model="createType" @pushed="onPushed" />
       </b-overlay>
     </template>
     <template #modal-footer>
@@ -169,10 +178,10 @@ export default {
     search: null,
     emplacement: {
       id: null,
-      nom: '',
-      superficie: '',
-      loyer: '',
-      pas_porte: '',
+      nom: null,
+      superficie: null,
+      loyer: null,
+      pas_porte: null,
       zone_id: null,
       type_emplacement_id: null,
       caution: null,
@@ -185,6 +194,8 @@ export default {
       type_emplacement_id: { exist: false, message: null },
     },
     permissions: typeEmplacement,
+    createType: false,
+    hintMessage: null,
   }),
   async fetch() {
     const { emplacement } = await this.getOne(this.id)
@@ -199,6 +210,7 @@ export default {
     } catch (error) {
       this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
     }
+    this.onTypeSelectChange()
   },
   computed: {
     ...mapGetters({ types: MODULES.TYPE.EMPLACEMENT.GETTERS.TYPES }),
@@ -231,8 +243,11 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
-    onPushed(id) {
+    onPushed({ id, dossier, amenagement }) {
       this.emplacement.type_emplacement_id = id
+      this.hintMessage = `Frais de dossier: <b>${this.$options.filters.currency(
+        dossier
+      )}</b> <br> \n Frais d'aménagement: <b>${this.$options.filters.currency(amenagement)}</b>`
     },
     querySelections(search) {
       this.loading = true
@@ -240,7 +255,14 @@ export default {
         .then((zones) => (this.zones = zones))
         .finally(() => (this.loading = false))
     },
+    onTypeSelectChange() {
+      if (this.emplacement.type_emplacement_id) {
+        const type = this.types.find(({ id }) => id === this.emplacement.type_emplacement_id)
+        this.hintMessage = `Frais de dossier: <b>${this.$options.filters.currency(
+          type.frais_dossier
+        )}</b> <br> \n Frais d'aménagement: <b>${this.$options.filters.currency(type.frais_amenagement)}</b>`
+      }
+    },
   },
 }
 </script>
-<style scoped></style>

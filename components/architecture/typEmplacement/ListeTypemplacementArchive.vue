@@ -92,6 +92,8 @@ export default {
       { key: 'nom', label: 'Nom', sortable: true },
       { key: 'site.nom', label: 'Marché', sortable: true },
       { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'frais_dossier', label: 'Frais de dossier' },
+      { key: 'frais_amenagement', label: "Frais d'amenagement" },
       {
         key: 'option',
         label: 'Options',

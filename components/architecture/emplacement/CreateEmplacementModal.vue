@@ -142,8 +142,13 @@
                 :error="errors.type_emplacement_id.exist"
                 :error-messages="errors.type_emplacement_id.message"
                 :append-outer-icon="hasCreateTypePermission ? 'mdi-plus-thick' : false"
-                @click:append-outer="$bvModal.show('modalCreateTypempl')"
+                :hint="hintMessage"
+                @click:append-outer="createType = true"
+                @change="onTypeSelectChange"
               >
+                <template #message="{ message }">
+                  <span v-html="message"></span>
+                </template>
                 <template #label>
                   Type d'emplacement
                   <span class="red--text"><strong>* </strong></span>
@@ -152,7 +157,7 @@
             </v-app>
           </div>
         </div>
-        <CreateTypemplacementModal @pushed="onPushed" />
+        <CreateTypemplacementModal v-if="createType" v-model="createType" @pushed="onPushed" />
       </b-overlay>
     </template>
     <template #modal-footer>
@@ -182,11 +187,12 @@ export default {
     loading: false,
     search: null,
     automatiq: false,
+    hintMessage: null,
     emplacement: {
-      nom: '',
-      superficie: '',
-      loyer: '',
-      pas_porte: '',
+      nom: null,
+      superficie: null,
+      loyer: null,
+      pas_porte: null,
       zone_id: null,
       type_emplacement_id: null,
       nombre: null,
@@ -201,6 +207,7 @@ export default {
       type_emplacement_id: { exist: false, message: null },
     },
     permissions: typeEmplacement,
+    createType: false,
   }),
   async fetch() {
     try {
@@ -250,8 +257,11 @@ export default {
           })
       }
     },
-    onPushed(id) {
+    onPushed({ id, dossier, amenagement }) {
       this.emplacement.type_emplacement_id = id
+      this.hintMessage = `Frais de dossier: <b>${this.$options.filters.currency(
+        dossier
+      )}</b> <br> Frais d'aménagement: <b>${this.$options.filters.currency(amenagement)}</b>`
     },
     switcher() {
       errorsInitialise(this.errors)
@@ -262,7 +272,15 @@ export default {
         .then((zones) => (this.zones = zones))
         .finally(() => (this.loading = false))
     },
+    onTypeSelectChange() {
+      if (this.emplacement.type_emplacement_id) {
+        const type = this.types.find(({ id }) => id === this.emplacement.type_emplacement_id)
+        this.hintMessage = `Frais de dossier: <b>${this.$options.filters.currency(
+          type.frais_dossier
+        )}</b> <br>
+        Frais d'aménagement: <b>${this.$options.filters.currency(type.frais_amenagement)}</b>`
+      }
+    },
   },
 }
 </script>
-<style scoped></style>
