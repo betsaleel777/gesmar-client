@@ -35,6 +35,9 @@
         <template #cell(ordre)="data">
           {{ data.index + 1 }}
         </template>
+        <template #cell(status)="data">
+          <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
+        </template>
         <template #cell(option)="data">
           <a v-can="permissions.show" type="button" @click="detail(data.item)">
             <feather title="eye" type="eye" size="20" stroke="indigo" />
@@ -62,6 +65,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import ShowFermeture from './ShowFermeture.vue'
 import { fermeture } from '~/helper/permissions'
+import { FERMETURE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: { ShowFermeture },
   data: () => ({
@@ -70,7 +75,8 @@ export default {
       { key: 'caissier.user.name', label: 'Caissier' },
       { key: 'guichet.nom', label: 'Guichet' },
       { key: 'total', label: 'Total encaissé' },
-      { key: 'created_at', label: 'Crée le', sortable: true },
+      { key: 'created_at', label: 'Crée le' },
+      { key: 'status', label: 'Statut', tdClass: 'wd-10p text-center', thClass: 'wd-10p text-center' },
       {
         key: 'option',
         label: 'Options',
@@ -92,7 +98,7 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters({ fermetures: 'caisse/fermeture/fermetures' }),
+    ...mapGetters({ fermetures: MODULES.FERMETURE.GETTERS.FERMETURES }),
   },
   watch: {
     search(recent) {
@@ -104,7 +110,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ getPaginate: 'caisse/fermeture/getPaginate', getSearch: 'caisse/fermeture/getSearch' }),
+    ...mapActions({
+      getPaginate: MODULES.FERMETURE.ACTIONS.PAGINATE,
+      getSearch: MODULES.FERMETURE.ACTIONS.SEARCH,
+    }),
     detail({ id }) {
       this.show.modal = true
       this.show.id = Number(id)
@@ -132,6 +141,14 @@ export default {
       await this.getPaginate(page)
       this.pageInit()
       this.loading = false
+    },
+    statusClass(value) {
+      const classes = {
+        [FERMETURE.withLoss]: 'badge badge-danger-light',
+        [FERMETURE.withoutLoss]: 'badge badge-success-light',
+        [FERMETURE.pending]: 'badge badge-warning-light',
+      }
+      return classes[value]
     },
   },
 }

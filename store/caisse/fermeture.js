@@ -35,6 +35,12 @@ export const actions = {
     dispatch('caisse/encaissement/getAll', {}, { root: true })
     return requete.data
   },
+
+  async valider({ dispatch }, payload) {
+    const requete = await this.$axios.patch('api/finances/caisses/fermetures/valider', payload)
+    dispatch('caisse/encaissement/getAll', {}, { root: true })
+    return requete.data
+  },
 }
 
 export const mutations = {

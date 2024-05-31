@@ -1,6 +1,6 @@
 <template>
   <div>
-    <notifications classes="n-light" />
+    <notifications classes="n-light" :duration="6000" />
     <PartialSidebar />
     <div class="content">
       <PartialHeader />

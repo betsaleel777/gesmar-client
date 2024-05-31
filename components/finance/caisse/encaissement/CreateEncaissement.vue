@@ -122,7 +122,7 @@ export default {
   }),
   async fetch() {
     try {
-      await this.getCaissiers()
+      await this.getBusyCaissiers()
     } catch (error) {
       this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
     }
@@ -147,7 +147,7 @@ export default {
   methods: {
     ...mapActions({
       ajouter: MODULES.ENCAISSEMENT.ACTIONS.ADD,
-      getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
+      getBusyCaissiers: MODULES.CAISSIER.ACTIONS.BUSY,
       getOrdonnancements: MODULES.ORDONNANCEMENT.ACTIONS.UNPAIDS,
       getBordereaux: MODULES.BORDEREAU.ACTIONS.CASHOUT,
       getOne: MODULES.ORDONNANCEMENT.ACTIONS.ONE,

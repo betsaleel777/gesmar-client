@@ -83,7 +83,7 @@ export default {
       { key: 'caissier.user.name', label: 'Caissier' },
       { key: 'guichet.nom', label: 'Guichet' },
       { key: 'created_at', label: 'Crée le', sortable: true },
-      { key: 'status', label: 'Statut' },
+      { key: 'status', label: 'Statut', tdClass: 'text-center', thClass: 'wd-10p text-center' },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     create: false,
@@ -124,6 +124,7 @@ export default {
       const classes = {
         [OUVERTURE.confirmed]: 'badge badge-danger-light',
         [OUVERTURE.using]: 'badge badge-primary-light',
+        [OUVERTURE.checking]: 'badge badge-warning-light',
       }
       return classes[value]
     },

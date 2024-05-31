@@ -62,9 +62,7 @@
           </nuxt-link>
         </template>
         <template #empty="scope">
-          <h6 class="text-center text-muted pd-y-10">
-            {{ scope.emptyText }}
-          </h6>
+          <h6 class="text-center text-muted pd-y-10">{{ scope.emptyText }}</h6>
         </template>
       </b-table>
       <b-pagination

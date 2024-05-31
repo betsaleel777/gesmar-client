@@ -199,7 +199,7 @@ export default {
     ...mapActions({
       ajouter: MODULES.OUVERTURE.ACTIONS.ADD,
       getGuichets: MODULES.GUICHET.ACTIONS.ALL,
-      getCaissiers: MODULES.CAISSIER.ACTIONS.ALL,
+      getCaissiers: MODULES.CAISSIER.ACTIONS.FREE,
       getOne: MODULES.CAISSIER.ACTIONS.ONE,
       checkUsing: MODULES.OUVERTURE.ACTIONS.USING_EXISTS,
     }),
@@ -246,8 +246,7 @@ export default {
           if (exists) {
             this.noSubmit = true
             this.$notify({
-              text: `Ce caissier est toujours en cours d'utilisation de sa caisse, veuillez fermer la caisse
-        précedement ouverte avant de créer une autre ouverture de caisse.`,
+              text: `Ce caissier est toujours en cours d'utilisation de sa caisse, veuillez fermer la caisse précedement ouverte avant de créer une autre ouverture de caisse.`,
               title: 'attention',
               type: 'warning',
             })

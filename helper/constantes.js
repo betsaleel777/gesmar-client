@@ -64,16 +64,19 @@ const MATRIMONIALE = Object.freeze({
 const OUVERTURE = Object.freeze({
   confirmed: 'terminée',
   using: 'en cours',
+  checking: 'en examen',
+})
+const FERMETURE = Object.freeze({
+  pending: 'en attente',
+  withLoss: 'validé avec perte',
+  withoutLoss: 'validé sans perte',
 })
 const GABARI = Object.freeze({
   onuse: 'en utilisation',
   unuse: 'pas utilisé',
 })
 const ENCAISSEMENT = Object.freeze({
-  type: {
-    espece: 'Espece',
-    cheque: 'Cheque',
-  },
+  type: { espece: 'Espece', cheque: 'Cheque' },
   status: {},
 })
 const PERSONNE = Object.freeze({
@@ -103,4 +106,5 @@ module.exports = {
   COLLECTE,
   REPARATION,
   PERSONNE,
+  FERMETURE,
 }

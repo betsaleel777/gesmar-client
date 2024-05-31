@@ -176,8 +176,11 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
           style: { fontSize: 12 },
         },
       ],
-      invDescLabel: 'Notez bien',
-      invDesc: 'En cas de rélicat le montant du rélicat sera déduit du salaire.',
+      invDescLabel: 'Relicat',
+      invDesc:
+        infos.perte === 0
+          ? 'Point de caisse validé sans rélicat'
+          : 'Point de caisse validé avec un rélicat de ' + infos.perte + ' FCFA',
     },
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,

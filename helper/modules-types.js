@@ -34,7 +34,7 @@ const compteRoot = 'caisse/compte/'
 const banqueRoot = 'caisse/banque/'
 const gabariBailRoot = 'template/terme-bail/'
 const userRoot = 'user-role/user/'
-const fermetureRoot = 'caisse/fermeture'
+const fermetureRoot = 'caisse/fermeture/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -223,6 +223,10 @@ export const MODULES = Object.freeze({
     }),
     ACTIONS: Object.freeze({
       ALL: caissierRoot + '/getAll',
+      FREE: caissierRoot + '/getFree',
+      BUSY: caissierRoot + '/getBusy',
+      HALF_FREE: caissierRoot + '/getHalfFree',
+      CHECK_FREE: caissierRoot + '/checkFree',
       TRASHED: caissierRoot + '/getTrashAll',
       ONE: caissierRoot + '/getOne',
       EDIT: caissierRoot + '/modifier',
@@ -575,6 +579,7 @@ export const MODULES = Object.freeze({
       ADD: fermetureRoot + 'ajouter',
       ONE: fermetureRoot + 'getOne',
       EDIT: fermetureRoot + 'modifier',
+      VALIDER: fermetureRoot + 'valider',
       PAGINATE: fermetureRoot + 'getPaginate',
       SEARCH: fermetureRoot + 'getSearch',
     }),

@@ -24,6 +24,7 @@
                 @click="imprimer"
               />
               <feather
+                v-if="status.pending === fermeture.status"
                 class="btn btn-sm btn-light btn-icon"
                 type="check-circle"
                 size="20"
@@ -32,7 +33,6 @@
               />
             </div>
           </div>
-          <!-- card-header -->
           <div class="card-body">
             <div class="table-responsive">
               <b-form-input
@@ -78,13 +78,7 @@
               ></b-pagination>
             </div>
             <div class="row justify-content-between mg-t-25">
-              <div class="col-sm-6 col-lg-6 order-2 order-sm-0 mg-t-40 mg-sm-t-0">
-                <!-- si la fermeture est confirmé -->
-                <!-- <li class="d-flex justify-content-between">
-                    <strong>Relicat</strong>
-                    <strong>0</strong>
-                  </li> -->
-              </div>
+              <div class="col-sm-6 col-lg-6 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
               <div class="col-sm-6 col-lg-6 order-1 order-sm-0">
                 <ul class="list-unstyled lh-7 pd-r-10">
                   <li class="d-flex justify-content-between">
@@ -104,6 +98,10 @@
                     <span>Montant initial en caisse</span>
                     <span>{{ fermeture.initial | currency }}</span>
                   </li>
+                  <li v-if="fermeture.perte !== 0" class="d-flex justify-content-between">
+                    <span>Rélicat</span>
+                    <span>{{ fermeture.perte | currency }}</span>
+                  </li>
                   <hr class="my-0" />
                   <li class="d-flex justify-content-between">
                     <span><b>Total</b></span>
@@ -115,6 +113,7 @@
               </div>
             </div>
           </div>
+          <ValideFermetureModal v-if="confirmDialog" v-model="confirmDialog" :fermeture="fermeture" />
         </div>
       </b-overlay>
     </template>
@@ -123,12 +122,14 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { ENCAISSEMENT } from '~/helper/constantes'
+import ValideFermetureModal from './ValideFermetureModal.vue'
+import { ENCAISSEMENT, FERMETURE } from '~/helper/constantes'
 import { caissePointPrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 
 export default {
+  components: { ValideFermetureModal },
   mixins: [modal],
   props: {
     id: {
@@ -137,6 +138,7 @@ export default {
     },
   },
   data: () => ({
+    status: FERMETURE,
     confirmDialog: false,
     fields: [
       { key: 'type', label: 'Mode de paiement' },
@@ -188,14 +190,14 @@ export default {
       return total
     },
     ...mapGetters({
-      fermeture: 'caisse/fermeture/fermeture',
+      fermeture: MODULES.FERMETURE.GETTERS.FERMETURE,
       societe: MODULES.APPLICATION.GETTERS.SOCIETE,
       url: MODULES.MEDIA.GETTERS.URL,
     }),
   },
   methods: {
     ...mapActions({
-      getOne: 'caisse/fermeture/getOne',
+      getOne: MODULES.FERMETURE.ACTIONS.ONE,
       getSociete: MODULES.APPLICATION.ACTIONS.ONE,
       getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
     }),
@@ -218,5 +220,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

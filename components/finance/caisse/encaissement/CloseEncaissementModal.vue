@@ -7,43 +7,45 @@
       </button>
     </template>
     <template #default>
-      <v-app>
-        <v-autocomplete
-          v-model="fermeture.caissier_id"
-          :items="caissiers"
-          item-text="user"
-          item-value="id"
-          outlined
-          dense
-          :error="errors.caissier_id.exist"
-          :error-messages="errors.caissier_id.message"
-          @change="setOuverture"
-        >
-          <template #label>
-            Caissier
-            <span class="red--text"><strong>* </strong></span></template
+      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
+        <v-app>
+          <v-autocomplete
+            v-model="fermeture.caissier_id"
+            :items="caissiers"
+            item-text="user"
+            item-value="id"
+            outlined
+            dense
+            :error="errors.caissier_id.exist"
+            :error-messages="errors.caissier_id.message"
+            @change="setOuverture"
           >
-        </v-autocomplete>
-        <v-row>
-          <v-col>
-            <v-text-field v-model="guichet" readonly outlined dense label="guichet"></v-text-field>
-          </v-col>
-          <v-col
-            ><v-text-field
-              v-model="fermeture.total"
-              outlined
-              dense
-              :error="errors.total.exist"
-              :error-messages="errors.total.message"
+            <template #label>
+              Caissier
+              <span class="red--text"><strong>* </strong></span></template
             >
-              <template #label>
-                Montant total
-                <span class="red--text"><strong>* </strong></span></template
+          </v-autocomplete>
+          <v-row>
+            <v-col>
+              <v-text-field v-model="guichet" readonly outlined dense label="guichet"></v-text-field>
+            </v-col>
+            <v-col
+              ><v-text-field
+                v-model="fermeture.total"
+                outlined
+                dense
+                :error="errors.total.exist"
+                :error-messages="errors.total.message"
               >
-            </v-text-field>
-          </v-col>
-        </v-row>
-      </v-app>
+                <template #label>
+                  Montant total
+                  <span class="red--text"><strong>* </strong></span></template
+                >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-app>
+      </b-overlay>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning text-white" data-dismiss="modal" @click="dialog = false">
@@ -78,6 +80,13 @@ export default {
       total: { exist: false, message: null },
     },
   }),
+  async fetch() {
+    try {
+      await this.getCaissiers()
+    } catch (error) {
+      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
+    }
+  },
   computed: {
     ...mapGetters({
       societe: MODULES.APPLICATION.GETTERS.SOCIETE,
