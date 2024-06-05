@@ -35,6 +35,11 @@ const banqueRoot = 'caisse/banque/'
 const gabariBailRoot = 'template/terme-bail/'
 const userRoot = 'user-role/user/'
 const fermetureRoot = 'caisse/fermeture/'
+const factureInitialeRoot = 'facture/initiale/'
+const factureAnnexeRoot = 'facture/annexe/'
+const factureLoyerRoot = 'facture/loyer/'
+const factureRoot = 'facture/facture/'
+const factureEquipementRoot = 'facture/equipement/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -633,6 +638,89 @@ export const MODULES = Object.freeze({
       TRASH: gabariBailRoot + 'supprimer',
       TRASHED: gabariBailRoot + 'getTrashAll',
     }),
+  }),
+  FACTURE: Object.freeze({
+    GETTERS: Object.freeze({
+      FACTURES: factureRoot + 'factures',
+    }),
+    ACTIONS: Object.freeze({
+      ALL: factureRoot + 'getAll',
+      ONE: factureRoot + 'getOne',
+      PAGINATE: factureRoot + 'getPaginate',
+      SEARCH: factureRoot + 'getSearch',
+      EDIT: factureRoot + 'modifier',
+      TRASH: factureRoot + 'supprimer',
+      ADD: factureRoot + 'ajouter',
+      RESTORE: factureRoot + 'restaurer',
+      TRASHED: factureRoot + 'getTrashAll',
+      BY_CONTRAT: factureRoot + 'getByContrat',
+      BY_SITE: factureRoot + 'getByMarche',
+      FOR_SCHEDULE: factureRoot + 'getfacturesForScheduleView',
+    }),
+    INITIALE: {
+      GETTERS: Object.freeze({
+        FACTURES: factureInitialeRoot + 'factures',
+      }),
+      ACTIONS: Object.freeze({
+        ALL: factureInitialeRoot + 'getAll',
+        ONE: factureInitialeRoot + 'getOne',
+        PAGINATE: factureInitialeRoot + 'getPaginate',
+        SEARCH: factureInitialeRoot + 'getSearch',
+        EDIT: factureInitialeRoot + 'modifier',
+        TRASH: factureInitialeRoot + 'supprimer',
+        ADD: factureInitialeRoot + 'ajouter',
+        RESTORE: factureInitialeRoot + 'restaurer',
+        TRASHED: factureInitialeRoot + 'getTrashAll',
+      }),
+    },
+    LOYER: {
+      GETTERS: Object.freeze({
+        FACTURES: factureLoyerRoot + 'factures',
+      }),
+      ACTIONS: Object.freeze({
+        ALL: factureLoyerRoot + 'getAll',
+        ONE: factureLoyerRoot + 'getOne',
+        PAGINATE: factureLoyerRoot + 'getPaginate',
+        SEARCH: factureLoyerRoot + 'getSearch',
+        EDIT: factureLoyerRoot + 'modifier',
+        TRASH: factureLoyerRoot + 'supprimer',
+        ADD: factureLoyerRoot + 'ajouter',
+        RESTORE: factureLoyerRoot + 'restaurer',
+        TRASHED: factureLoyerRoot + 'getTrashAll',
+      }),
+    },
+    ANNEXE: {
+      GETTERS: Object.freeze({
+        FACTURES: factureAnnexeRoot + 'factures',
+      }),
+      ACTIONS: Object.freeze({
+        ALL: factureAnnexeRoot + 'getAll',
+        ONE: factureAnnexeRoot + 'getOne',
+        PAGINATE: factureAnnexeRoot + 'getPaginate',
+        SEARCH: factureAnnexeRoot + 'getSearch',
+        EDIT: factureAnnexeRoot + 'modifier',
+        TRASH: factureAnnexeRoot + 'supprimer',
+        ADD: factureAnnexeRoot + 'ajouter',
+        RESTORE: factureAnnexeRoot + 'restaurer',
+        TRASHED: factureAnnexeRoot + 'getTrashAll',
+      }),
+    },
+    EQUIPEMENT: {
+      GETTERS: Object.freeze({
+        FACTURES: factureEquipementRoot + 'factures',
+      }),
+      ACTIONS: Object.freeze({
+        ALL: factureEquipementRoot + 'getAll',
+        ONE: factureEquipementRoot + 'getOne',
+        PAGINATE: factureEquipementRoot + 'getPaginate',
+        SEARCH: factureEquipementRoot + 'getSearch',
+        EDIT: factureEquipementRoot + 'modifier',
+        TRASH: factureEquipementRoot + 'supprimer',
+        ADD: factureEquipementRoot + 'ajouter',
+        RESTORE: factureEquipementRoot + 'restaurer',
+        TRASHED: factureEquipementRoot + 'getTrashAll',
+      }),
+    },
   }),
   MEDIA: Object.freeze({
     GETTERS: Object.freeze({ URL: 'media/url' }),

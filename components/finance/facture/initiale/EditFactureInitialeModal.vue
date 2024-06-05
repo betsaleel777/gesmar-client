@@ -23,7 +23,7 @@
                 number
               />
               <b-input-group-append>
-                <b-input-group-text class="bg-transparent font-weight-bold"> MOIS </b-input-group-text>
+                <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
               </b-input-group-append>
               <span v-if="errors.avance.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.avance.message }}</strong>
@@ -44,7 +44,7 @@
                 number
               />
               <b-input-group-append>
-                <b-input-group-text class="bg-transparent font-weight-bold"> MOIS </b-input-group-text>
+                <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
               </b-input-group-append>
               <span v-if="errors.caution.exist" class="invalid-feedback" role="alert">
                 <strong>{{ errors.caution.message }}</strong>
@@ -89,6 +89,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types';
 import modal from '~/mixins/modal'
 export default {
   mixins: [modal],
@@ -118,7 +119,7 @@ export default {
     this.facture = facture
   },
   methods: {
-    ...mapActions({ getOne: 'facture/initiale/getOne', modifier: 'facture/initiale/modifier' }),
+    ...mapActions({ getOne: MODULES.FACTURE.INITIALE.ACTIONS.ONE, modifier: MODULES.FACTURE.INITIALE.ACTIONS.EDIT }),
     save() {
       this.submiting = true
       this.modifier(this.facture)

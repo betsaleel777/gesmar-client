@@ -50,11 +50,7 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
       invDate: encaissement.created_at,
       headerBorder: true,
       tableBodyBorder: true,
-      header: [
-        { title: 'Emplacement' },
-        { title: 'Prix', style: { width: 20 } },
-        { title: 'Devise', style: { width: 20 } },
-      ],
+      header: [{ title: 'Emplacement' }, { title: 'Prix', style: { width: 20 } }, { title: 'Devise', style: { width: 20 } }],
       table: Array.from(Array(1), () => [produit.code ?? produit.nom, paiement.montant, 'FCFA']),
       additionalRows: [
         {
@@ -177,10 +173,7 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
         },
       ],
       invDescLabel: 'Relicat',
-      invDesc:
-        infos.perte === 0
-          ? 'Point de caisse validé sans rélicat'
-          : 'Point de caisse validé avec un rélicat de ' + infos.perte + ' FCFA',
+      invDesc: infos.perte === 0 ? 'Point de caisse validé sans rélicat' : 'Point de caisse validé avec un rélicat de ' + infos.perte + ' FCFA',
     },
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
@@ -193,6 +186,7 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
 }
 
 const facturePrinter = (societe, facture, logoUrl) => {
+  const { personne } = facture
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
@@ -209,6 +203,14 @@ const facturePrinter = (societe, facture, logoUrl) => {
       address: societe.siege,
       phone: societe.phone,
       email: societe.email,
+    },
+    contact: {
+      label: 'facturé à: ',
+      name: personne.fullname,
+      address: `${personne.ville}, ${personne.adresse}`,
+      phone: personne.contact ?? '',
+      email: personne.email ?? '',
+      otherInfo: personne.code ?? '',
     },
     invoice: {
       label: '#: ',

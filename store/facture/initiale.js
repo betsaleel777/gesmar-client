@@ -3,9 +3,7 @@ export const state = () => ({
 })
 
 export const getters = {
-  factures: (state) => {
-    return state.factures
-  },
+  factures: (state) => state.factures,
 }
 
 export const actions = {
@@ -40,25 +38,25 @@ export const actions = {
 
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/factures/initiales/' + payload.id, payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async supprimer({ dispatch }, id) {
     const requete = await this.$axios.delete('api/finances/factures/initiales/' + id)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.patch('api/finances/factures/initiales/restore/' + id)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/factures/initiales/store', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 }

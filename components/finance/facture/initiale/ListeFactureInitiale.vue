@@ -3,29 +3,11 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="search"
-        type="search"
-        placeholder="Rechercher selon code, contrat, personne, emplacement"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
-      <b-table
-        id="table"
-        class="table"
-        hover
-        small
-        bordered
-        primary-key="id"
-        :items="factures.data"
-        :fields="fields"
-        responsive
-        empty-text="Aucune facture"
-        show-empty
-        :busy="$fetchState.pending || loading"
-        no-provider-filtering
-      >
+      <b-form-input id="filter-input" v-model="search" type="search"
+        placeholder="Rechercher selon code, contrat, personne, emplacement" class="mg-y-10"
+        :debounce="500"></b-form-input>
+      <b-table id="table" class="table" hover small bordered primary-key="id" :items="factures.data" :fields="fields"
+        responsive empty-text="Aucune facture" show-empty :busy="$fetchState.pending || loading" no-provider-filtering>
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -45,7 +27,7 @@
           <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
-          <a v-can="permissions.edit" type="button" @click="editer(data.item)">
+          <a v-if="!data.item.unmodifiable" v-can="permissions.edit" type="button" @click="editer(data.item)">
             <feather title="modifier" type="edit" size="20" stroke="blue" />
           </a>
         </template>
@@ -55,25 +37,22 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm"
+        @change="getPage"></b-pagination-nav>
     </b-card-text>
+    <ShowFactureInitialeModal v-if="show.modal" :id="show.id" v-model="show.modal" />
     <EditFactureInitialeModal v-if="edit.modal" :id="edit.facture" v-model="edit.modal" />
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ShowFactureInitialeModal from './ShowFactureInitialeModal.vue'
 import EditFactureInitialeModal from './EditFactureInitialeModal.vue'
 import { FACTURE } from '~/helper/constantes'
 import { factureInitiale } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { EditFactureInitialeModal },
+  components: { EditFactureInitialeModal, ShowFactureInitialeModal },
   data: () => ({
     fields: [
       'ordre',
@@ -142,7 +121,7 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters('facture/initiale', ['factures']),
+    ...mapGetters({ factures: MODULES.FACTURE.INITIALE.GETTERS.FACTURES }),
   },
   watch: {
     search(recent) {
@@ -154,7 +133,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ getPaginate: 'facture/initiale/getPaginate', getSearch: 'facture/initiale/getSearch' }),
+    ...mapActions({ getPaginate: MODULES.FACTURE.INITIALE.ACTIONS.PAGINATE, getSearch: MODULES.FACTURE.INITIALE.ACTIONS.SEARCH }),
     editer({ id }) {
       this.edit.facture = id
       this.edit.modal = true

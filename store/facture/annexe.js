@@ -1,10 +1,9 @@
+/* eslint-disable no-empty-pattern */
 export const state = () => ({
   factures: [],
 })
 export const getters = {
-  factures: (state) => {
-    return state.factures
-  },
+  factures: (state) => state.factures,
 }
 export const actions = {
   async getAll({ commit }) {
@@ -19,7 +18,7 @@ export const actions = {
     commit('SET_FACTURE', requete.data.factures)
   },
 
-  async getOne({ commit }, id) {
+  async getOne({}, id) {
     const requete = await this.$axios.get('api/finances/factures/annexes/' + id)
     return requete.data
   },
@@ -30,9 +29,7 @@ export const actions = {
   },
 
   async getSearch({ commit }, payload) {
-    const requete = await this.$axios.get(
-      `api/finances/factures/annexes/search/${payload.search}/paginate?page=${payload.page}`
-    )
+    const requete = await this.$axios.get(`api/finances/factures/annexes/search/${payload.search}/paginate?page=${payload.page}`)
     commit('SET_FACTURE', requete.data)
   },
 

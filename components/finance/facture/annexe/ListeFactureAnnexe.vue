@@ -3,28 +3,10 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="search"
-        type="search"
-        placeholder="Rechercher selon code, contrat, personne, annexe"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
-      <b-table
-        id="table"
-        class="table"
-        hover
-        small
-        bordered
-        primary-key="id"
-        :items="factures.data"
-        :fields="fields"
-        responsive
-        empty-text="Aucune facture"
-        :busy="$fetchState.pending || loading"
-        show-empty
-      >
+      <b-form-input id="filter-input" v-model="search" type="search"
+        placeholder="Rechercher selon code, contrat, personne, annexe" class="mg-y-10" :debounce="500"></b-form-input>
+      <b-table id="table" class="table" hover small bordered primary-key="id" :items="factures.data" :fields="fields"
+        responsive empty-text="Aucune facture" :busy="$fetchState.pending || loading" show-empty>
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -42,28 +24,26 @@
             {{ scope.emptyText }}
           </h6>
         </template>
-        <template #cell(option)>
-          <a v-can="permissions.show" type="button">
+        <template #cell(option)="data">
+          <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm"
+        @change="getPage"></b-pagination-nav>
     </b-card-text>
+    <ShowFactureAnnexeModal v-if="show.modal" :id="show.id" v-model="show.modal" />
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ShowFactureAnnexeModal from './ShowFactureAnnexeModal.vue';
 import { FACTURE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types';
 import { factureAnnexe } from '~/helper/permissions'
 export default {
+  components: { ShowFactureAnnexeModal },
   data: () => ({
     fields: [
       'ordre',
@@ -100,6 +80,7 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
+    show: { modal: false, id: 0 },
     search: null,
     pages: 1,
     currentPage: 1,
@@ -111,7 +92,7 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters({ factures: 'facture/annexe/factures' }),
+    ...mapGetters({ factures: MODULES.FACTURE.ANNEXE.GETTERS.FACTURES }),
   },
   watch: {
     search(recent) {
@@ -123,7 +104,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ getPaginate: 'facture/annexe/getPaginate', getSearch: 'facture/annexe/getSearch' }),
+    ...mapActions({ getPaginate: MODULES.FACTURE.ANNEXE.ACTIONS.PAGINATE, getSearch: MODULES.FACTURE.ANNEXE.ACTIONS.SEARCH }),
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',
@@ -157,6 +138,10 @@ export default {
       this.pageInit()
       this.loading = false
     },
+    details({ id }) {
+      this.show.id = id
+      this.show.modal = true
+    }
   },
 }
 </script>

@@ -1,18 +1,18 @@
 <template>
-  <b-modal v-model="dialog" hide-footer>
+  <b-modal v-model="dialog" hide-footer size="lg">
     <template #modal-header>
-      <h5 class="modal-title text-primary">Facture initiale {{ facture.code }}</h5>
+      <h5 class="modal-title text-primary">Facture initiale</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
-        <span aria-hidden="true"><feather type="x" /></span>
+        <span aria-hidden="true">
+          <feather type="x" />
+        </span>
       </button>
     </template>
     <template #default>
-      <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
+      <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <div v-if="!$fetchState.pending" class="card card-invoice">
           <div class="card-header">
-            <div>
-              <span class="tx-sm text-muted">fait le: {{ $moment(facture.created_at).format('ll') }}</span>
-            </div>
+            <span class="tx-sm text-muted">fait le: {{ $moment(facture.created_at).format('ll') }}</span>
             <div class="btn-group-invoice">
               <button class="btn btn-white btn-sm btn-uppercase" @click="imprimer">
                 <feather type="printer" size="20" stroke="blue" />
@@ -22,41 +22,56 @@
               </button>
             </div>
           </div>
-          <div ref="toprint" class="card-body">
+          <div class="card-body">
             <div class="row">
-              <div class="col-sm-7 col-lg-7">
-                <h6 class="tx-15 mg-b-10">Produit: {{ produit }}</h6>
-                <p class="mg-b-0">{{ ordonnancement.personne.fullname }}</p>
+              <div class="col-sm-8 col-lg-8">
+                <p class="mg-b-0"><b>Crée par: </b>{{ facture.audit.user.name }}</p>
+                <p class="mg-b-0"><b>Client: </b>{{ facture.personne.fullname.toUpperCase() }}</p>
+                <p class="mg-b-0"><b>Emplacement: </b>{{ facture.contrat.emplacement.code }}</p>
+                <p class="mg-b-0"><b>Type: </b>{{ facture.contrat.emplacement.type.nom }}</p>
               </div>
-              <div class="col-sm-5 col-lg-5">
-                <h6 class="tx-15 mg-b-10">A PAYER: {{ facture.total | currency }}</h6>
-                <p class="mg-b-0">{{ facture.code }}</p>
+              <div class="col-sm-4 col-lg-4 text-right">
+                <p class="mg-b-0">Code Facture: <b>{{ facture.code }}</b></p>
+                <p class="mg-b-0">Code du contrat: <b>{{ facture.contrat.code }}</b></p>
+                <p class="mg-b-0">
+                  {{ $moment(facture.contrat.debut).format('DD-MM-YYYY') }} -
+                  {{ $moment(facture.contrat.fin).format('DD-MM-YYYY') }}</p>
               </div>
             </div>
-            <h5 class="mg-t-25">Paiements</h5>
-            <div class="table-responsive">
-              <table class="table table-invoice bd-b">
+            <div class="table-responsive mt-3">
+              <table class="table bd-b">
                 <thead>
                   <tr>
-                    <th class="wd-30p">Code Facture</th>
-                    <th class="tx-right">Montant (FCFA)</th>
+                    <th class="tx-left">Pas de Porte</th>
+                    <th class="tx-left">Frais de dossier</th>
+                    <th class="tx-left">Frais d'amenagement</th>
+                    <th class="tx-left">Caution</th>
+                    <th class="tx-left">Avance</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(paiement, index) in ordonnancement.paiements" :key="index">
-                    <td class="tx-nowrap">{{ paiement.facture.code }}</td>
-                    <td class="tx-right">{{ paiement.montant | currency }}</td>
+                  <tr>
+                    <td class="tx-left">{{ facture.pas_porte | currency }}</td>
+                    <td class="tx-left">{{ facture.frais_dossier | currency }}</td>
+                    <td class="tx-left">{{ facture.frais_amenagement | currency }}</td>
+                    <td class="tx-left">{{ facture.caution | currency }}</td>
+                    <td class="tx-left">{{ facture.avance | currency }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="row justify-content-between mg-t-25">
-              <div class="col-sm-6 col-lg-6 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
-              <div class="col-sm-6 col-lg-6 order-1 order-sm-0">
-                <ul class="list-unstyled lh-7 pd-r-10">
+              <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0">
+              </div>
+              <div class="col-sm-6 col-lg-4 order-1 order-sm-0">
+                <ul class="list-unstyled lh-7">
                   <li class="d-flex justify-content-between">
-                    <span>Sub-Total</span>
-                    <span>{{ totalVerse | currency }}</span>
+                    <span>Montant versé:</span>
+                    <span>{{ facture.sommeVersee | currency }}</span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <span>Reste à payer:</span>
+                    <span><b>{{ reste | currency }}</b></span>
                   </li>
                 </ul>
               </div>
@@ -70,7 +85,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { errorHandling } from '~/helper/helpers'
+import { MODULES } from '~/helper/modules-types';
 import modal from '~/mixins/modal'
 export default {
   mixins: [modal],
@@ -81,37 +96,20 @@ export default {
     },
   },
   data: () => ({
-    submiting: false,
-    facture: {
-      id: null,
-      code: null,
-      pas_porte: null,
-      avance: null,
-      caution: null,
-    },
-    errors: {
-      pas_porte: { exist: false, message: null },
-      avance: { exist: false, message: null },
-      caution: { exist: false, message: null },
-    },
+    facture: null
   }),
   async fetch() {
     const { facture } = await this.getOne(this.id)
     this.facture = facture
   },
+  computed: {
+    reste() {
+      return this.facture.total - this.facture.sommeVersee
+    }
+  },
   methods: {
-    ...mapActions({ getOne: 'facture/initiale/getOne', modifier: 'facture/initiale/modifier' }),
-    save() {
-      this.submiting = true
-      this.modifier(this.facture)
-        .then(({ message }) => {
-          this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
-          this.dialog = false
-        })
-        .catch((err) => {
-          errorHandling(err.response, this.errors)
-        })
-        .finally(() => (this.submiting = false))
+    ...mapActions({ getOne: MODULES.FACTURE.INITIALE.ACTIONS.ONE, modifier: MODULES.FACTURE.INITIALE.ACTIONS.EDIT }),
+    imprimer() {
     },
   },
 }

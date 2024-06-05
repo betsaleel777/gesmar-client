@@ -3,12 +3,8 @@ export const state = () => ({
   factures: [],
 })
 export const getters = {
-  factures: (state) => {
-    return state.factures
-  },
-  soldees: (state) => {
-    return state.factures.filter((facture) => facture.status === FACTURE.status.paid)
-  },
+  factures: (state) => state.factures,
+  soldees: (state) => state.factures.filter((facture) => facture.status === FACTURE.status.paid),
 }
 export const actions = {
   async getAll({ commit }) {

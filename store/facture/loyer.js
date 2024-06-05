@@ -3,9 +3,7 @@ export const state = () => ({
 })
 
 export const getters = {
-  factures: (state) => {
-    return state.factures
-  },
+  factures: (state) => state.factures,
 }
 
 export const actions = {

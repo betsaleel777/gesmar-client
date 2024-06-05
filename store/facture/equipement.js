@@ -2,9 +2,7 @@ export const state = () => ({
   factures: [],
 })
 export const getters = {
-  factures: (state) => {
-    return state.factures
-  },
+  factures: (state) => state.factures,
 }
 export const actions = {
   async getAll({ commit }) {
