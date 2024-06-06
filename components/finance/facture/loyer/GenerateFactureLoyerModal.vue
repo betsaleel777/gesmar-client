@@ -3,7 +3,9 @@
     <template #modal-header>
       <h5 class="modal-title text-primary">Génerer les factures de loyer</h5>
       <button type="button" class="close" aria-label="Close" @click="reset">
-        <span aria-hidden="true"><feather type="x" /></span>
+        <span aria-hidden="true">
+          <feather type="x" />
+        </span>
       </button>
     </template>
     <template #default>
@@ -11,26 +13,11 @@
         <v-app>
           <v-container fluid>
             <v-form>
-              <v-menu
-                ref="menu"
-                v-model="menu"
-                :close-on-content-click="false"
-                :return-value.sync="mois"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="auto"
-                class="mb-5"
-              >
+              <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="mois"
+                transition="scale-transition" offset-y max-width="290px" min-width="auto" class="mb-5">
                 <template #activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="mois"
-                    label="Sélection du mois"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
+                  <v-text-field v-model="mois" label="Sélection du mois" prepend-icon="mdi-calendar" readonly
+                    v-bind="attrs" v-on="on"></v-text-field>
                 </template>
                 <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
                   <v-spacer></v-spacer>
@@ -38,25 +25,11 @@
                   <v-btn text color="primary" @click="getEmplacements(mois + '-01')"> OK </v-btn>
                 </v-date-picker>
               </v-menu>
-              <v-data-table
-                v-model="selected"
-                :headers="headers"
-                :items="emplacements"
-                item-key="code"
-                show-select
-                class="elevation-0"
-                :loading="loading"
-                loading-text="En chargement..."
-                :search="search"
-              >
+              <v-data-table v-model="selected" :headers="headers" :items="emplacements" item-key="code" show-select
+                class="elevation-0" :loading="loading" loading-text="En chargement..." :search="search">
                 <template #top>
-                  <v-text-field
-                    v-model="search"
-                    append-icon="mdi-magnify"
-                    label="Rechercher"
-                    single-line
-                    hide-details
-                  ></v-text-field>
+                  <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher" single-line
+                    hide-details></v-text-field>
                 </template>
               </v-data-table>
             </v-form>
@@ -74,6 +47,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { MODULES } from '~/helper/modules-types';
 export default {
   props: { value: Boolean },
   data: () => ({
@@ -106,10 +80,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getMonthRental: 'architecture/emplacement/getMonthRental',
-      ajouter: 'facture/loyer/ajouter',
-    }),
+    ...mapActions({ getMonthRental: MODULES.EMPLACEMENT.ACTIONS.MONTH_RENTAL, ajouter: MODULES.FACTURE.LOYER.ACTIONS.ADD }),
     reset() {
       this.emplacements = []
       this.selected = []
