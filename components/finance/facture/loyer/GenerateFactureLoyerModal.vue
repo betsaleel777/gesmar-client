@@ -9,33 +9,31 @@
       </button>
     </template>
     <template #default>
-      <div>
-        <v-app>
-          <v-container fluid>
-            <v-form>
-              <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="mois"
-                transition="scale-transition" offset-y max-width="290px" min-width="auto" class="mb-5">
-                <template #activator="{ on, attrs }">
-                  <v-text-field v-model="mois" label="Sélection du mois" prepend-icon="mdi-calendar" readonly
-                    v-bind="attrs" v-on="on"></v-text-field>
-                </template>
-                <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-                  <v-btn text color="primary" @click="getEmplacements(mois + '-01')"> OK </v-btn>
-                </v-date-picker>
-              </v-menu>
-              <v-data-table v-model="selected" :headers="headers" :items="emplacements" item-key="code" show-select
-                class="elevation-0" :loading="loading" loading-text="En chargement..." :search="search">
-                <template #top>
-                  <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher" single-line
-                    hide-details></v-text-field>
-                </template>
-              </v-data-table>
-            </v-form>
-          </v-container>
-        </v-app>
-      </div>
+      <v-app>
+        <v-container fluid>
+          <v-form>
+            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="mois"
+              transition="scale-transition" offset-y max-width="290px" min-width="auto" class="mb-5">
+              <template #activator="{ on, attrs }">
+                <v-text-field v-model="mois" label="Sélection du mois" prepend-icon="mdi-calendar" readonly
+                  v-bind="attrs" v-on="on"></v-text-field>
+              </template>
+              <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+                <v-btn text color="primary" @click="getEmplacements(mois + '-01')"> OK </v-btn>
+              </v-date-picker>
+            </v-menu>
+            <v-data-table v-model="selected" :headers="headers" :items="emplacements" item-key="code" show-select
+              class="elevation-0" :loading="loading" loading-text="En chargement..." :search="search">
+              <template #top>
+                <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher" single-line
+                  hide-details></v-text-field>
+              </template>
+            </v-data-table>
+          </v-form>
+        </v-container>
+      </v-app>
     </template>
     <template #modal-footer>
       <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>

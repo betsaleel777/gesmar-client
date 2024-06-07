@@ -1,6 +1,7 @@
+/* eslint-disable no-empty-pattern */
 export const state = () => ({
   emplacements: [],
-  equipables: []
+  equipables: [],
 })
 export const getters = {
   emplacements: (state) => {
@@ -12,7 +13,7 @@ export const getters = {
   emplacementsBySites: (state) => (sites) => {
     const ids = sites.map((site) => site.id)
     return state.emplacements.filter((emplacement) => ids.includes(emplacement.site_id))
-  }
+  },
 }
 export const actions = {
   async getAll({ commit }) {
@@ -32,9 +33,7 @@ export const actions = {
 
   async getByZones({ commit }, payload) {
     if (Array.isArray(payload.zones) && payload.zones.length > 0) {
-      const requete = await this.$axios.get('api/parametres/emplacements/zones', {
-        params: { ...payload }
-      })
+      const requete = await this.$axios.get('api/parametres/emplacements/zones', { params: { ...payload } })
       return requete.data.emplacements
     }
     return []
@@ -47,9 +46,7 @@ export const actions = {
   },
 
   async getAutoBySite({ commit }, payload) {
-    const requete = await this.$axios.get('api/parametres/emplacements/autos/site/', {
-      params: { ...payload }
-    })
+    const requete = await this.$axios.get('api/parametres/emplacements/autos/site/', { params: { ...payload } })
     commit('SET_EMPLACEMENT', requete.data)
   },
 
@@ -58,7 +55,7 @@ export const actions = {
     commit('SET_EQUIPABLE', requete.data.emplacements)
   },
 
-  async getMonthRental({ commit }, mois) {
+  async getMonthRental({}, mois) {
     const requete = await this.$axios.get('api/parametres/emplacements/rental/' + mois)
     return requete.data
   },
@@ -68,32 +65,32 @@ export const actions = {
     commit('SET_EMPLACEMENT', requete.data.emplacements)
   },
 
-  async getOne({ commit }, id) {
+  async getOne({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/' + id)
     return requete.data
   },
 
-  async getByMarche({ commit }, id) {
+  async getByMarche({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/' + id)
     return requete.data
   },
 
-  async getByMarcheForSelect({ commit }, id) {
+  async getByMarcheForSelect({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche-select/' + id)
     return requete.data
   },
 
-  async getByMarcheWithGearsLinked({ commit }, id) {
+  async getByMarcheWithGearsLinked({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/gears/' + id)
     return requete.data
   },
 
-  async getByMarcheUnlinked({ commit }, id) {
+  async getByMarcheUnlinked({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/unlinked/' + id)
     return requete.data
   },
 
-  async getFreeByMarche({ commit }, id) {
+  async getFreeByMarche({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/free/' + id)
     return requete.data
   },
@@ -131,7 +128,7 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/emplacements/push', payload)
     dispatch('getAll')
     return { message: requete.data.message }
-  }
+  },
 }
 
 export const mutations = {
@@ -140,5 +137,5 @@ export const mutations = {
   },
   SET_EQUIPABLE(state, emplacements) {
     state.equipables = emplacements
-  }
+  },
 }
