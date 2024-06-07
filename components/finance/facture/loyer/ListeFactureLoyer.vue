@@ -2,40 +2,14 @@
   <b-card aria-hidden="true" header="Liste des factures de loyer">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <feather
-          v-b-tooltip.hover.top
-          title="générer"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="cpu"
-          @click="create = true"
-        />
+        <feather v-b-tooltip.hover.top title="générer" class="btn btn-sm btn-primary btn-icon" stroke-width="2"
+          size="18" type="cpu" @click="create = true" />
       </div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="search"
-        type="search"
-        placeholder="Rechercher selon code, contrat, emplacement"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
-      <b-table
-        id="table"
-        class="table"
-        hover
-        small
-        bordered
-        primary-key="id"
-        :items="factures.data"
-        :fields="fields"
-        responsive
-        empty-text="Aucune facture"
-        :busy="$fetchState.pending || loading"
-        no-provider-filtering
-        show-empty
-      >
+      <b-form-input id="filter-input" v-model="search" type="search"
+        placeholder="Rechercher selon code, contrat, emplacement" class="mg-y-10" :debounce="500"></b-form-input>
+      <b-table id="table" class="table" hover small bordered primary-key="id" :items="factures.data" :fields="fields"
+        responsive empty-text="Aucune facture" :busy="$fetchState.pending || loading" no-provider-filtering show-empty>
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -59,15 +33,9 @@
           </a>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
-      <GenerateFactureLoyerModal v-model="create" />
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm"
+        @change="getPage"></b-pagination-nav>
+      <GenerateFactureLoyerModal v-if="create" v-model="create" />
     </b-card-text>
   </b-card>
 </template>
@@ -137,7 +105,7 @@ export default {
   },
   methods: {
     ...mapActions({ getPaginate: 'facture/loyer/getPaginate', getSearch: 'facture/loyer/getSearch' }),
-    imprimer() {},
+    imprimer() { },
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',

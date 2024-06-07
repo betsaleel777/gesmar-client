@@ -2,7 +2,7 @@
   <b-modal v-model="dialog" no-close-on-backdrop size="lg">
     <template #modal-header>
       <h5 class="modal-title text-primary">Génerer les factures de loyer</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true">
           <feather type="x" />
         </span>
@@ -36,7 +36,7 @@
       </v-app>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">Fermer</button>
       <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
         Générer
       </button>
@@ -46,8 +46,9 @@
 <script>
 import { mapActions } from 'vuex'
 import { MODULES } from '~/helper/modules-types';
+import modal from '~/mixins/modal';
 export default {
-  props: { value: Boolean },
+  mixins: [modal],
   data: () => ({
     submiting: false,
     menu: false,
@@ -79,13 +80,6 @@ export default {
   },
   methods: {
     ...mapActions({ getMonthRental: MODULES.EMPLACEMENT.ACTIONS.MONTH_RENTAL, ajouter: MODULES.FACTURE.LOYER.ACTIONS.ADD }),
-    reset() {
-      this.emplacements = []
-      this.selected = []
-      this.mois = ''
-      this.loading = false
-      this.dialog = false
-    },
     save() {
       if (this.selected.length > 0) {
         this.submiting = true
@@ -97,7 +91,7 @@ export default {
           this.submiting = false
           this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
           this.dialog = false
-        })
+        }).finally(() => (this.submiting = false))
       } else {
         this.$notify({
           text: "Aucun client n'a été sélectionné",
