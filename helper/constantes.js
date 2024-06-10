@@ -37,6 +37,10 @@ const CONTRAT = Object.freeze({
     attente: 'en attente',
     resilied: 'résilié',
   },
+  uptodate: {
+    yes: 'à jour',
+    not: 'non à jour',
+  },
   type: { annexe: 'annexe', bail: 'bail' },
 })
 const TYPEQUIPEMENT = Object.freeze({

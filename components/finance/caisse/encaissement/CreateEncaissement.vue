@@ -3,7 +3,9 @@
     <template #modal-header>
       <h5 id="archiver" class="modal-title text-primary">Création d'un encaissement</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
-        <span aria-hidden="true"><feather type="x" /></span>
+        <span aria-hidden="true">
+          <feather type="x" />
+        </span>
       </button>
     </template>
     <template #default>
@@ -13,44 +15,23 @@
             <v-row class="p-2">
               <v-col cols="3">
                 <v-container>
-                  <v-autocomplete
-                    v-model="encaissement.caissier_id"
-                    :items="caissiers"
-                    item-text="user"
-                    item-value="id"
-                    outlined
-                    dense
-                    @change="exists"
-                  >
+                  <v-autocomplete v-model="encaissement.caissier_id" :items="caissiers" item-text="user" item-value="id"
+                    outlined dense @change="exists">
                     <template #label>
                       Choix du caissier
                       <span class="red--text"><strong>* </strong></span>
                     </template>
                   </v-autocomplete>
-                  <v-autocomplete
-                    v-model="encaissement.ordonnancement_id"
-                    :items="ordonnancements"
-                    item-text="code"
-                    item-value="id"
-                    outlined
-                    dense
-                    :disabled="disabled"
-                    @change="infos"
-                  >
+                  <v-autocomplete v-model="encaissement.ordonnancement_id" :items="ordonnancements" item-text="code"
+                    item-value="id" outlined dense :disabled="disabled.ordonnancement" @change="infos">
                     <template #label>
                       Code d'ordonnancement
                       <span class="red--text"><strong>* </strong></span>
                     </template>
                   </v-autocomplete>
-                  <v-autocomplete
-                    v-model="encaissement.bordereau_id"
-                    :items="bordereaux"
-                    item-text="code"
-                    item-value="id"
-                    outlined
-                    dense
-                    :disabled="disabled"
-                  >
+                  <v-autocomplete v-model="encaissement.bordereau_id" :items="bordereaux" item-text="code"
+                    item-value="id" outlined dense :disabled="disabled.bordereau"
+                    @change="disabled.ordonnancement = true">
                     <template #label>
                       Code du bordereau
                       <span class="red--text"><strong>* </strong></span>
@@ -60,23 +41,14 @@
               </v-col>
               <v-divider vertical></v-divider>
               <v-col cols="4">
-                <InfosContrat
-                  v-if="Object.keys(ordonnancement).length !== 0"
-                  :ordonnancement="ordonnancement"
-                />
+                <InfosContrat v-if="Object.keys(ordonnancement).length !== 0" :ordonnancement="ordonnancement" />
                 <InfosBordereau v-if="encaissement.bordereau_id" :id="encaissement.bordereau_id" />
               </v-col>
               <v-divider vertical></v-divider>
               <v-col cols="5">
-                <CashForm
-                  v-if="Object.keys(ordonnancement).length !== 0"
-                  :key="key"
-                  v-model="encaissement"
-                  :ordonnancement="ordonnancement"
-                  :messages="errors"
-                  :mode="mode"
-                  @statusButton="(value) => (validable = value)"
-                />
+                <CashForm v-if="Object.keys(ordonnancement).length !== 0" :key="key" v-model="encaissement"
+                  :ordonnancement="ordonnancement" :messages="errors" :mode="mode"
+                  @statusButton="(value) => (validable = value)" />
                 <BordereauForm v-if="encaissement.bordereau_id" v-model="encaissement" @setForm="onSetForm" />
               </v-col>
             </v-row>
@@ -108,7 +80,7 @@ export default {
   data: () => ({
     submiting: false,
     menu: null,
-    disabled: true,
+    disabled: { bordereau: true, ordonnancement: true },
     ordonnancement: {},
     encaissement: {
       caissier_id: null,
@@ -171,18 +143,22 @@ export default {
     exists() {
       if (this.encaissement.caissier_id) {
         this.ouvertureExists(this.encaissement.caissier_id).then((exists) => {
-          exists
-            ? (this.disabled = false)
-            : this.$notify({
-                text: "le caissier sélectionné n'est pas programmé pour aujourd'hui",
-                title: 'attention!',
-                type: 'warning',
-              })
+          if (exists) {
+            this.disabled.ordonnancement = false
+            this.disabled.bordereau = false
+          } else {
+            this.$notify({
+              text: "le caissier sélectionné n'est pas programmé pour aujourd'hui",
+              title: 'attention!',
+              type: 'warning',
+            })
+          }
         })
       }
     },
     infos() {
       if (this.encaissement.ordonnancement_id) {
+        this.disabled.bordereau = true
         this.getOne(this.encaissement.ordonnancement_id).then(({ ordonnancement }) => {
           this.ordonnancement = ordonnancement
           this.validable = true

@@ -44,6 +44,7 @@ import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureLoyerModal from './GenerateFactureLoyerModal.vue'
 import { FACTURE } from '~/helper/constantes'
 import { factureLoyer } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types';
 export default {
   components: { GenerateFactureLoyerModal },
   data: () => ({
@@ -92,7 +93,7 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters({ factures: 'facture/loyer/factures' }),
+    ...mapGetters({ factures: MODULES.FACTURE.LOYER.GETTERS.FACTURES }),
   },
   watch: {
     search(recent) {
@@ -104,7 +105,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ getPaginate: 'facture/loyer/getPaginate', getSearch: 'facture/loyer/getSearch' }),
+    ...mapActions({ getPaginate: MODULES.FACTURE.LOYER.ACTIONS.PAGINATE, getSearch: MODULES.FACTURE.LOYER.ACTIONS.SEARCH }),
     imprimer() { },
     statusClass(value) {
       const classes = {
