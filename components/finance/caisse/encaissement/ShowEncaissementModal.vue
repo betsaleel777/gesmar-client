@@ -3,7 +3,9 @@
     <template #modal-header>
       <h5 class="modal-title text-primary">Encaissement {{ encaissement.code }}</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
-        <span aria-hidden="true"><feather type="x" /></span>
+        <span aria-hidden="true">
+          <feather type="x" />
+        </span>
       </button>
     </template>
     <template #default>
@@ -81,17 +83,9 @@ export default {
   async fetch() {
     const { encaissement } = await this.getEncaissement(this.id)
     this.encaissement = encaissement
-    try {
-      await this.getSociete()
-    } catch (error) {
-      this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
-    }
   },
   computed: {
-    ...mapGetters({
-      societe: MODULES.APPLICATION.GETTERS.SOCIETE,
-      url: MODULES.MEDIA.GETTERS.URL,
-    }),
+    ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
     produitName() {
       if (this.encaissement.ordonnancement.emplacement)
         return this.encaissement.ordonnancement.emplacement.code
@@ -105,6 +99,7 @@ export default {
       getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
     }),
     async imprimer() {
+      await this.getSociete()
       await this.getUrl(this.societe.logo)
       invoicePrinter(this.societe, this.encaissement, this.url)
     },

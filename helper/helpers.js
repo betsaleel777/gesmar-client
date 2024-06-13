@@ -13,6 +13,73 @@ const remove = (item, selected, targetArray = []) => {
 const add = (item, targetArray = []) => {
   targetArray.push(item)
 }
+const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
+  const personne = ordonnancement.personne
+  const responsable = ordonnancement.audit.user.name
+  const labelProduct = ordonnancement.annexe ? 'Annexe' : 'Emplacement'
+  const produit = ordonnancement.annexe ?? ordonnancement.emplacement
+  const factures = ordonnancement.paiements.map(({ facture }) => facture)
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    orientationLandscape: false,
+    compress: true,
+    logo: {
+      src: logoUrl,
+      width: 25,
+      height: 25,
+      margin: { top: 0, left: 0 },
+    },
+    business: {
+      name: societe.sigle.toUpperCase(),
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    contact: {
+      label: 'ordre de recette du client: ',
+      name: personne.alias,
+      address: `${personne.ville}, ${personne.adresse}`,
+      phone: personne.contact ?? '',
+      email: personne.email ?? '',
+    },
+    invoice: {
+      label: '#: ',
+      num: `${ordonnancement.code}/${ordonnancement.contrat.code}`,
+      invDate: window.$nuxt.$moment(ordonnancement.created_at).format('ll'),
+      invGenDate: `fait le ${window.$nuxt.$moment().format('ll')} \n ${labelProduct}: ${produit.code}`,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [{ title: '#', style: { width: 10 } }, { title: 'Code' }, { title: 'Mois' }, { title: 'Statut' }, { title: 'Montant', style: { width: 20 } }],
+      table: Array.from(Array(factures.length), (item, index) => [
+        index + 1,
+        factures[index].code,
+        window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') ? window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') : 'Aucun',
+        factures[index].status,
+        window.$nuxt.$options.filters.currency(factures[index].loyer) ??
+          window.$nuxt.$options.filters.currency(factures[index].montant) ??
+          window.$nuxt.$options.filters.currency(factures[index].equipement) ??
+          window.$nuxt.$options.filters.currency(factures[index].total),
+      ]),
+      additionalRows: [
+        {
+          col1: 'Total',
+          col2: String(window.$nuxt.$options.filters.currency(ordonnancement.total)),
+          col3: 'FCFA',
+          style: { fontSize: 14 },
+        },
+      ],
+      invDescLabel: '',
+      invDesc: `Fait par ${responsable}`,
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: false,
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save('recu-' + ordonnancement.code)
+}
 
 const invoicePrinter = (societe, encaissement, logoUrl) => {
   const personne = encaissement.ordonnancement.personne
@@ -129,12 +196,8 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
       table: Array.from(Array(infos.encaissements.length), (item, index) => [
         index + 1,
         infos.encaissements[index].type,
-        infos.encaissements[index].type === ENCAISSEMENT.type.espece
-          ? infos.encaissements[index].payable.montant
-          : infos.encaissements[index].payable.valeur,
-        infos.encaissements[index].type === ENCAISSEMENT.type.espece
-          ? infos.encaissements[index].payable.versement
-          : infos.encaissements[index].payable.valeur,
+        infos.encaissements[index].type === ENCAISSEMENT.type.espece ? infos.encaissements[index].payable.montant : infos.encaissements[index].payable.valeur,
+        infos.encaissements[index].type === ENCAISSEMENT.type.espece ? infos.encaissements[index].payable.versement : infos.encaissements[index].payable.valeur,
         infos.encaissements[index].type === ENCAISSEMENT.type.espece
           ? infos.encaissements[index].payable.versement - infos.encaissements[index].payable.montant
           : 0,
@@ -264,4 +327,4 @@ const errorHandling = (response, errorsComponentData) => {
   }
 }
 
-export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter }
+export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter, ordonnancementPrinter }
