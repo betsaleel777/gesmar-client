@@ -214,6 +214,7 @@ const ordonnancement = {
   own: 'own-ordonnancement',
   create: 'create-ordonnancement',
   show: 'show-ordonnancement',
+  edit: 'edit-ordonnancement',
 }
 const factureDashboard = {
   list: 'list-facture-dashboard',

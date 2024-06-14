@@ -49,14 +49,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
       <ShowFermeture v-if="show.modal" :id="show.id" v-model="show.modal" />
     </b-card-text>
   </b-card>
@@ -110,10 +103,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getPaginate: MODULES.FERMETURE.ACTIONS.PAGINATE,
-      getSearch: MODULES.FERMETURE.ACTIONS.SEARCH,
-    }),
+    ...mapActions({ getPaginate: MODULES.FERMETURE.ACTIONS.PAGINATE, getSearch: MODULES.FERMETURE.ACTIONS.SEARCH }),
     detail({ id }) {
       this.show.modal = true
       this.show.id = Number(id)

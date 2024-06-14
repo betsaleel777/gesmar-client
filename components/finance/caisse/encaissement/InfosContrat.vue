@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { FACTURE } from '~/helper/constantes';
+import { FACTURE } from '~/helper/constantes'
 
 export default {
   props: {
@@ -22,11 +22,14 @@ export default {
   },
   computed: {
     mois() {
-      return this.ordonnancement.paiements.map(({ facture }) => {
-        return facture.type === FACTURE.type.loyer ? this.$moment(facture.periode).format('MMMM') : null
-      }).join(', ')
-    }
-  }
+      return this.ordonnancement.paiements
+        .map(({ facture }) => {
+          return facture.type === FACTURE.type.loyer ? this.$moment(facture.periode).format('MMMM') : null
+        })
+        .filter((value) => value)
+        .join(', ')
+    },
+  },
 }
 </script>
 
