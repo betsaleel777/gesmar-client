@@ -82,10 +82,13 @@ const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
 }
 
 const invoicePrinter = (societe, encaissement, logoUrl) => {
-  const personne = encaissement.ordonnancement.personne
-  const paiement = encaissement.payable
-  const produit = encaissement.ordonnancement.emplacement ?? encaissement.ordonnancement.annexe
-  const subject = encaissement.ordonnancement ?? encaissement.bordereau
+  const responsable = encaissement.caissier.user.name
+  const { ordonnancement } = encaissement
+  const personne = ordonnancement.personne
+  const labelProduct = ordonnancement.annexe ? 'Annexe' : 'Emplacement'
+  const produit = ordonnancement.annexe ?? ordonnancement.emplacement
+  const subject = ordonnancement ?? encaissement.bordereau
+  const factures = ordonnancement.paiements.map(({ facture }) => facture)
   const property = {
     outputType: 'save',
     returnJsPDFDocObject: true,
@@ -104,37 +107,47 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
       email: societe.email,
     },
     contact: {
-      label: 'facturé à: ',
-      name: personne.fullname,
+      label: 'reçu de caisse du client: ',
+      name: personne.alias,
       address: `${personne.ville}, ${personne.adresse}`,
       phone: personne.contact ?? '',
       email: personne.email ?? '',
-      otherInfo: personne.code ?? '',
+      otherInfo: `payé par ${encaissement.type}`,
     },
     invoice: {
       label: '#: ',
-      num: subject.code,
-      invDate: encaissement.created_at,
+      num: `${ordonnancement.code}/${ordonnancement.contrat.code}`,
+      invDate: `Encaissé le ${encaissement.created_at}`,
+      invGenDate: `${labelProduct}: ${produit.code}`,
       headerBorder: true,
       tableBodyBorder: true,
-      header: [{ title: 'Emplacement' }, { title: 'Prix', style: { width: 20 } }, { title: 'Devise', style: { width: 20 } }],
-      table: Array.from(Array(1), () => [produit.code ?? produit.nom, paiement.montant, 'FCFA']),
+      header: [{ title: '#', style: { width: 10 } }, { title: 'Code' }, { title: 'Mois' }, { title: 'Statut' }, { title: 'Montant', style: { width: 20 } }],
+      table: Array.from(Array(factures.length), (item, index) => [
+        index + 1,
+        factures[index].code,
+        window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') ? window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') : 'Aucun',
+        factures[index].status,
+        window.$nuxt.$options.filters.currency(factures[index].loyer) ??
+          window.$nuxt.$options.filters.currency(factures[index].montant) ??
+          window.$nuxt.$options.filters.currency(factures[index].equipement) ??
+          window.$nuxt.$options.filters.currency(factures[index].total),
+      ]),
       additionalRows: [
         {
           col1: 'Montant versé',
-          col2: String(paiement.versement),
+          col2: String(encaissement.payable.versement),
           col3: 'FCFA',
           style: { fontSize: 14 },
         },
         {
           col1: 'Monnaie rendue:',
-          col2: String(paiement.versement - paiement.montant),
+          col2: String(encaissement.payable.versement - encaissement.payable.montant),
           col3: 'FCFA',
           style: { fontSize: 10 },
         },
       ],
       invDescLabel: '',
-      invDesc: '',
+      invDesc: `Fait par ${responsable}, imprimé le ${window.$nuxt.$moment().format('ll')}`,
     },
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
