@@ -12,7 +12,9 @@
       <b-overlay :show="$fetchState.pending" spinner-variant="primary" rounded="sm">
         <div v-if="!$fetchState.pending" class="card card-invoice">
           <div class="card-header">
-            <span class="tx-sm text-muted">fait le: {{ $moment(facture.created_at).format('ll') }}</span>
+            <span class="tx-sm text-muted"
+              >fait le: {{ $moment(facture.created_at).format('ll') }} par <b>{{ facture.audit.user.name }}</b></span
+            >
             <div class="btn-group-invoice">
               <button class="btn btn-white btn-sm btn-uppercase" @click="imprimer">
                 <feather type="printer" size="20" stroke="blue" />
@@ -25,17 +27,18 @@
           <div class="card-body">
             <div class="row">
               <div class="col-sm-8 col-lg-8">
-                <p class="mg-b-0"><b>Crée par: </b>{{ facture.audit.user.name }}</p>
                 <p class="mg-b-0"><b>Client: </b>{{ facture.personne.fullname.toUpperCase() }}</p>
                 <p class="mg-b-0"><b>Emplacement: </b>{{ facture.contrat.emplacement.code }}</p>
                 <p class="mg-b-0"><b>Type: </b>{{ facture.contrat.emplacement.type.nom }}</p>
               </div>
               <div class="col-sm-4 col-lg-4 text-right">
-                <p class="mg-b-0">Code Facture: <b>{{ facture.code }}</b></p>
-                <p class="mg-b-0">Code du contrat: <b>{{ facture.contrat.code }}</b></p>
                 <p class="mg-b-0">
-                  {{ $moment(facture.contrat.debut).format('DD-MM-YYYY') }} -
-                  {{ $moment(facture.contrat.fin).format('DD-MM-YYYY') }}</p>
+                  Code Facture: <b>{{ facture.code }}</b>
+                </p>
+                <p class="mg-b-0">
+                  Code du contrat: <b>{{ facture.contrat.code }}</b>
+                </p>
+                <p class="mg-b-0">{{ $moment(facture.contrat.debut).format('DD-MM-YYYY') }} - {{ $moment(facture.contrat.fin).format('DD-MM-YYYY') }}</p>
               </div>
             </div>
             <div class="table-responsive mt-3">
@@ -61,8 +64,7 @@
               </table>
             </div>
             <div class="row justify-content-between mg-t-25">
-              <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0">
-              </div>
+              <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
               <div class="col-sm-6 col-lg-4 order-1 order-sm-0">
                 <ul class="list-unstyled lh-7">
                   <li class="d-flex justify-content-between">
@@ -71,7 +73,9 @@
                   </li>
                   <li class="d-flex justify-content-between">
                     <span>Reste à payer:</span>
-                    <span><b>{{ reste | currency }}</b></span>
+                    <span
+                      ><b>{{ reste | currency }}</b></span
+                    >
                   </li>
                 </ul>
               </div>
@@ -85,7 +89,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { MODULES } from '~/helper/modules-types';
+import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
   mixins: [modal],
@@ -96,7 +100,7 @@ export default {
     },
   },
   data: () => ({
-    facture: null
+    facture: null,
   }),
   async fetch() {
     const { facture } = await this.getOne(this.id)
@@ -105,12 +109,11 @@ export default {
   computed: {
     reste() {
       return this.facture.total - this.facture.sommeVersee
-    }
+    },
   },
   methods: {
     ...mapActions({ getOne: MODULES.FACTURE.INITIALE.ACTIONS.ONE, modifier: MODULES.FACTURE.INITIALE.ACTIONS.EDIT }),
-    imprimer() {
-    },
+    imprimer() {},
   },
 }
 </script>

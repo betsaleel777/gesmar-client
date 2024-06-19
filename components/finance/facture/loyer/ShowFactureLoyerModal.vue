@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="dialog" size="lg" hide-footer>
     <template #modal-header>
-      <h5 class="modal-title text-primary">Détails de facture annexe</h5>
+      <h5 class="modal-title text-primary">Détails de facture de loyer</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true">
           <feather type="x" />
@@ -43,23 +43,21 @@
                 <thead>
                   <tr>
                     <th class="wd-25p">Code</th>
-                    <th class="tx-left">Nom</th>
+                    <th class="tx-left">Mois</th>
                     <th class="tx-right">Montant</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="tx-left">{{ facture.annexe.code }}</td>
-                    <td class="tx-left">{{ facture.annexe.nom }}</td>
-                    <td class="tx-right">{{ facture.montant | currency }}</td>
+                    <td class="tx-left">{{ facture.contrat.emplacement.code }}</td>
+                    <td class="tx-left">{{ $moment(facture.periode).format('MMMM YYYY') }}</td>
+                    <td class="tx-right">{{ facture.loyer | currency }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="row justify-content-between mg-t-25">
-              <div v-if="facture.annexe.description" class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0">
-                {{ facture.annexe.description }}
-              </div>
+              <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
               <div class="col-sm-6 col-lg-4 order-1 order-sm-0">
                 <ul class="list-unstyled lh-7"></ul>
               </div>
@@ -91,7 +89,7 @@ export default {
     this.facture = facture
   },
   methods: {
-    ...mapActions({ getOne: MODULES.FACTURE.ANNEXE.ACTIONS.ONE }),
+    ...mapActions({ getOne: MODULES.FACTURE.LOYER.ACTIONS.ONE }),
     imprimer() {},
   },
 }

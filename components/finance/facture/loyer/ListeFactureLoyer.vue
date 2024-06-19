@@ -2,14 +2,32 @@
   <b-card aria-hidden="true" header="Liste des factures de loyer">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <feather v-b-tooltip.hover.top title="générer" class="btn btn-sm btn-primary btn-icon" stroke-width="2"
-          size="18" type="cpu" @click="create = true" />
+        <feather v-b-tooltip.hover.top title="générer" class="btn btn-sm btn-primary btn-icon" stroke-width="2" size="18" type="cpu" @click="create = true" />
       </div>
       <hr class="mg-t-4" />
-      <b-form-input id="filter-input" v-model="search" type="search"
-        placeholder="Rechercher selon code, contrat, emplacement" class="mg-y-10" :debounce="500"></b-form-input>
-      <b-table id="table" class="table" hover small bordered primary-key="id" :items="factures.data" :fields="fields"
-        responsive empty-text="Aucune facture" :busy="$fetchState.pending || loading" no-provider-filtering show-empty>
+      <b-form-input
+        id="filter-input"
+        v-model="search"
+        type="search"
+        placeholder="Rechercher selon code, contrat, emplacement"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="factures.data"
+        :fields="fields"
+        responsive
+        empty-text="Aucune facture"
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
+        show-empty
+      >
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -27,26 +45,27 @@
             {{ scope.emptyText }}
           </h6>
         </template>
-        <template #cell(option)>
-          <a v-can="permissions.show" type="button">
+        <template #cell(option)="data">
+          <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
       </b-table>
-      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm"
-        @change="getPage"></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
       <GenerateFactureLoyerModal v-if="create" v-model="create" />
+      <ShowFactureLoyerModal v-if="show.modal" :id="show.id" v-model="show.modal" />
     </b-card-text>
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureLoyerModal from './GenerateFactureLoyerModal.vue'
+import ShowFactureLoyerModal from './ShowFactureLoyerModal.vue'
 import { FACTURE } from '~/helper/constantes'
 import { factureLoyer } from '~/helper/permissions'
-import { MODULES } from '~/helper/modules-types';
+import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { GenerateFactureLoyerModal },
+  components: { GenerateFactureLoyerModal, ShowFactureLoyerModal },
   data: () => ({
     fields: [
       'ordre',
@@ -81,6 +100,7 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
+    show: { modal: false, id: 0 },
     create: false,
     search: null,
     pages: 1,
@@ -106,7 +126,6 @@ export default {
   },
   methods: {
     ...mapActions({ getPaginate: MODULES.FACTURE.LOYER.ACTIONS.PAGINATE, getSearch: MODULES.FACTURE.LOYER.ACTIONS.SEARCH }),
-    imprimer() { },
     statusClass(value) {
       const classes = {
         [FACTURE.status.facture]: 'badge badge-warning-light',
@@ -139,6 +158,10 @@ export default {
       await this.getPaginate(page)
       this.pageInit()
       this.loading = false
+    },
+    details({ id }) {
+      this.show.id = id
+      this.show.modal = true
     },
   },
 }
