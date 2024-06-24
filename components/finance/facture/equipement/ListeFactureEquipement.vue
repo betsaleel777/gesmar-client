@@ -45,25 +45,27 @@
             {{ scope.emptyText }}
           </h6>
         </template>
-        <template #cell(option)>
-          <a v-can="permissions.show" type="button">
+        <template #cell(option)="data">
+          <a v-can="permissions.show" type="button" @click="details(data.item)">
             <feather title="visualiser" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
       </b-table>
       <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
       <GenerateFactureGearModal v-if="create" v-model="create" />
+      <ShowFactureGearModal v-if="show.modal" :id="show.id" v-model="show.modal" />
     </b-card-text>
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureGearModal from './GenerateFactureGearModal.vue'
+import ShowFactureGearModal from './ShowFactureGearModal.vue'
 import { FACTURE } from '~/helper/constantes'
 import { factureEquipement } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { GenerateFactureGearModal },
+  components: { GenerateFactureGearModal, ShowFactureGearModal },
   data: () => ({
     fields: [
       'ordre',
@@ -111,6 +113,7 @@ export default {
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
+    show: { modal: false, id: 0 },
     create: false,
     search: null,
     pages: 1,
@@ -171,6 +174,10 @@ export default {
       await this.getPaginate(page)
       this.pageInit()
       this.loading = false
+    },
+    details({ id }) {
+      this.show.id = id
+      this.show.modal = true
     },
   },
 }
