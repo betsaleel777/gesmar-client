@@ -1,8 +1,8 @@
 <template>
-  <b-modal id="genererGear" scrollable size="xl">
+  <b-modal v-model="dialog" scrollable size="xl">
     <template #modal-header>
       <h5 class="modal-title text-primary">Générer les factures des équipements</h5>
-      <button type="button" class="close" aria-label="Close" @click="reset">
+      <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
     </template>
@@ -34,7 +34,7 @@
             </template>
             <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+              <v-btn text color="primary" @click="menu = false"> Annuler </v-btn>
               <v-btn text color="primary" @click="getAbonnements(mois + '-01')"> OK </v-btn>
             </v-date-picker>
           </v-menu>
@@ -63,9 +63,7 @@
                   <td>{{ facture.code }}</td>
                   <td>{{ facture.compteur }}</td>
                   <td>
-                    <span v-if="facture.contrat.factures_equipements.length > 0">{{
-                      facture.contrat.factures_equipements[0].index_fin
-                    }}</span>
+                    <span v-if="facture.contrat.facturesEquipements.length > 0">{{ facture.contrat.facturesEquipements[0].index_fin }}</span>
                     <span v-else>{{ facture.index_depart }}</span>
                   </td>
                   <td>
@@ -82,20 +80,23 @@
               </tbody>
             </template>
           </v-simple-table>
+          <!-- <pre>{{ factures }}</pre> -->
         </v-form>
       </v-container>
     </v-app>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="reset">Fermer</button>
-      <button :disabled="errorFind || submiting" type="button" class="btn btn-primary" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">Fermer</button>
+      <button :disabled="errorFind || submiting" type="button" class="btn btn-primary" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { MODULES } from '~/helper/modules-types'
+import modal from '~/mixins/modal'
+
 export default {
+  mixins: [modal],
   data: () => ({
     submiting: false,
     menu: false,
@@ -112,44 +113,32 @@ export default {
   },
   methods: {
     ...mapActions({
-      getMonthRental: 'architecture/abonnement/getMonthRentalGear',
-      ajouter: 'facture/equipement/ajouter',
+      getMonthRental: MODULES.ABONNEMENT.ACTIONS.MOUNTH_RENTAL_GEAR,
+      ajouter: MODULES.FACTURE.EQUIPEMENT.ACTIONS.ADD,
     }),
-    reset() {
-      this.factures = []
-      this.selected = []
-      this.mois = ''
-      this.loading = false
-      this.$bvModal.hide('genererGear')
-    },
     getAbonnements(date) {
       if (date) {
         this.$refs.menu.save(this.mois)
         this.loading = true
         this.getMonthRental(date).then(({ abonnements }) => {
-          this.factures = abonnements.map(
-            ({ emplacement, equipement: { id, alias, prix_fixe: prix }, index_depart: depart }) => {
-              const { contrat_actuel: contrat, code } = emplacement
-              return {
-                contrat_id: contrat.id,
-                equipement_id: id,
-                compteur: alias,
-                client: contrat.personne.alias,
-                index_depart:
-                  contrat.factures_equipements.length > 0
-                    ? contrat.factures_equipements[0].index_fin
-                    : depart,
-                index_fin: null,
-                code,
-                periode: this.mois + '-01',
-                prix,
-                montant: 0,
-                exist: false,
-                message: null,
-                contrat,
-              }
+          this.factures = abonnements.map(({ emplacement, equipement: { id, nom, prix_fixe: prix }, index_depart: depart }) => {
+            const { contrat, code } = emplacement
+            return {
+              contrat_id: contrat.id,
+              equipement_id: id,
+              compteur: nom,
+              client: contrat.personne.alias,
+              index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
+              index_fin: null,
+              code,
+              periode: this.mois + '-01',
+              prix,
+              montant: 0,
+              exist: false,
+              message: null,
+              contrat,
             }
-          )
+          })
           this.loading = false
         })
       }
@@ -159,7 +148,7 @@ export default {
       facture.exist = false
       facture.message = null
       const { index_depart: depart, prix, contrat } = facture
-      const factures = contrat.factures_equipements
+      const factures = contrat.facturesEquipements
       const indexCourant = factures.length > 0 ? factures[0].index_fin : depart
       if (facture.index_fin > indexCourant) {
         facture.montant = prix * Math.abs(facture.index_fin - indexCourant)
@@ -172,12 +161,8 @@ export default {
       this.submiting = true
       this.ajouter(this.factures)
         .then(({ message }) => {
-          this.$bvToast.toast(message, {
-            title: 'succès de la création'.toLocaleUpperCase(),
-            variant: 'success',
-            solid: true,
-          })
-          this.$bvModal.hide('genererGear')
+          this.$notify({ text: message, title: 'succès de la création'.toLocaleUpperCase(), type: 'success' })
+          this.dialog = false
         })
         .finally(() => (this.submiting = false))
     },

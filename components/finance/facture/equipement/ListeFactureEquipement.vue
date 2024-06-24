@@ -2,15 +2,7 @@
   <b-card aria-hidden="true" header="Liste des factures d'équipement">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse">
-        <feather
-          v-b-tooltip.hover.top
-          title="générer"
-          class="btn btn-sm btn-primary btn-icon"
-          stroke-width="2"
-          size="18"
-          type="cpu"
-          @click="$bvModal.show('genererGear')"
-        />
+        <feather v-b-tooltip.hover.top title="générer" class="btn btn-sm btn-primary btn-icon" stroke-width="2" size="18" type="cpu" @click="create = true" />
       </div>
       <hr class="mg-t-4" />
       <b-form-input
@@ -59,15 +51,8 @@
           </a>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
-      <GenerateFactureGearModal />
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
+      <GenerateFactureGearModal v-if="create" v-model="create" />
     </b-card-text>
   </b-card>
 </template>
@@ -76,38 +61,39 @@ import { mapActions, mapGetters } from 'vuex'
 import GenerateFactureGearModal from './GenerateFactureGearModal.vue'
 import { FACTURE } from '~/helper/constantes'
 import { factureEquipement } from '~/helper/permissions'
+import { MODULES } from '~/helper/modules-types'
 export default {
   components: { GenerateFactureGearModal },
   data: () => ({
     fields: [
       'ordre',
-      { key: 'code', label: 'Code', sortable: true },
-      { key: 'contrat_code', label: 'Contrat', sortable: true },
-      { key: 'personne', label: 'Personne', sortable: true },
+      { key: 'code', label: 'Code' },
+      { key: 'contrat.code', label: 'Contrat' },
+      { key: 'contrat.personne.fullname', label: 'Personne' },
       {
-        key: 'emplacement',
+        key: 'contrat.emplacement.code',
         label: 'Emplacement',
         tdClass: 'text-center',
-        sortable: true,
+        thClass: 'text-center',
       },
       {
-        key: 'loyer',
-        label: 'Loyer',
+        key: 'equipement.abonnementActuel.prix_unitaire',
+        label: 'Prix unitaire',
         formatter: (value) => {
           return value + ' FCFA'
         },
         tdClass: 'text-right',
-        sortable: true,
+        thClass: 'text-right',
       },
       {
         key: 'index_depart',
-        label: 'Index D',
+        label: 'Départ',
         tdClass: 'text-center',
         thClass: 'text-center',
       },
       {
         key: 'index_fin',
-        label: 'Index F',
+        label: 'Fin',
         tdClass: 'text-center',
         thClass: 'text-center',
       },
@@ -122,11 +108,10 @@ export default {
         label: 'Options',
         tdClass: 'text-center',
         thClass: 'wd-5p text-center',
-        sortable: false,
       },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, facture: {} },
+    create: false,
     search: null,
     pages: 1,
     currentPage: 1,
@@ -138,7 +123,7 @@ export default {
     this.pageInit()
   },
   computed: {
-    ...mapGetters({ factures: 'facture/equipement/factures' }),
+    ...mapGetters({ factures: MODULES.FACTURE.EQUIPEMENT.GETTERS.FACTURES }),
   },
   watch: {
     search(recent) {
@@ -151,8 +136,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getPaginate: 'facture/equipement/getPaginate',
-      getSearch: 'facture/equipement/getSearch',
+      getPaginate: MODULES.FACTURE.EQUIPEMENT.ACTIONS.PAGINATE,
+      getSearch: MODULES.FACTURE.EQUIPEMENT.ACTIONS.SEARCH,
     }),
     statusClass(value) {
       const classes = {

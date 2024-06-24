@@ -1,10 +1,9 @@
+/* eslint-disable no-empty-pattern */
 export const state = () => ({
-  abonnements: []
+  abonnements: [],
 })
 export const getters = {
-  abonnements: (state) => {
-    return state.abonnements
-  }
+  abonnements: (state) => state.abonnements,
 }
 export const actions = {
   async getAll({ commit }) {
@@ -18,9 +17,7 @@ export const actions = {
   },
 
   async getSearch({ commit }, payload) {
-    const requete = await this.$axios.get(
-      `api/parametres/abonnements/search/${payload.search}/paginate?page=${payload.page}`
-    )
+    const requete = await this.$axios.get(`api/parametres/abonnements/search/${payload.search}/paginate?page=${payload.page}`)
     commit('SET_ABONNEMENT', requete.data)
   },
 
@@ -29,12 +26,12 @@ export const actions = {
     commit('SET_ABONNEMENT', requete.data.abonnements)
   },
 
-  async getMonthRentalGear({ commit }, mois) {
+  async getMonthRentalGear({}, mois) {
     const requete = await this.$axios.get('api/parametres/abonnements/rental-gear/' + mois)
     return requete.data
   },
 
-  async getOne({ commit }, id) {
+  async getOne({}, id) {
     const requete = await this.$axios.get('api/parametres/abonnements/' + id)
     return requete.data
   },
@@ -73,19 +70,19 @@ export const actions = {
     return { message: requete.data.message }
   },
 
-  async abonner({ dispatch }, payload) {
+  async abonner({}, payload) {
     const requete = await this.$axios.post('api/parametres/abonnements/abonner', payload)
     return { message: requete.data.message, abonnement: requete.data.abonnement }
   },
 
-  async getLastIndex({ commit }, id) {
+  async getLastIndex({}, id) {
     const requete = await this.$axios.get('api/parametres/abonnements/indexing/' + id)
     return { index: requete.data.index }
-  }
+  },
 }
 
 export const mutations = {
   SET_ABONNEMENT(state, abonnements) {
     state.abonnements = abonnements
-  }
+  },
 }

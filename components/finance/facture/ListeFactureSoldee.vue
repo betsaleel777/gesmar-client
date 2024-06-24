@@ -3,14 +3,7 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="filter"
-        type="search"
-        placeholder="Rechercher"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
+      <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Rechercher" class="mg-y-10" :debounce="500"></b-form-input>
       <b-table
         id="table"
         class="table"
@@ -50,7 +43,6 @@
           {{ $moment(data.item.created_at).format('DD-MM-YYYY') }}
         </template>
         <template #cell(produit)="data">
-          <!-- {{ data.contrat }} -->
           <span v-if="data.item.contrat.emplacement">{{ data.item.contrat.emplacement.code }}</span>
           <span v-else>{{ data.item.contrat.annexe.nom }}</span>
         </template>
@@ -60,14 +52,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
     </b-card-text>
   </b-card>
 </template>
