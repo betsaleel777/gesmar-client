@@ -47,15 +47,7 @@
           </div>
         </template>
         <template #cell(option)="data">
-          <feather
-            v-can="permissions.restore"
-            title="restaurer"
-            type="rotate-cw"
-            size="20"
-            stroke="green"
-            stroke-width="3"
-            @click="dialoger(data.item)"
-          />
+          <feather v-can="permissions.restore" title="restaurer" type="rotate-cw" size="20" stroke="green" stroke-width="3" @click="dialoger(data.item)" />
         </template>
         <template #empty="scope">
           <h6 class="text-center text-muted pd-y-10">
@@ -124,7 +116,6 @@ export default {
   },
   methods: {
     ...mapActions({ getTrashAll: MODULES.SITE.ACTIONS.TRASHED }),
-    imprimer() {},
     dialoger({ id, nom }) {
       this.dialogData.nom = nom
       this.dialogData.id = id

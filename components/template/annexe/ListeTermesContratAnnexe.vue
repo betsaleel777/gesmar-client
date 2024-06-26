@@ -15,14 +15,7 @@
         </div>
       </div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="filter"
-        type="search"
-        placeholder="Rechercher"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
+      <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Rechercher" class="mg-y-10" :debounce="500"></b-form-input>
       <b-table
         id="table"
         class="table"
@@ -67,14 +60,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
       <div>
         <ConfirmationModal
           :id="dialogData.id"
@@ -140,7 +126,6 @@ export default {
       getPdf: 'template/terme-annexe/getPdf',
       getAll: 'template/terme-annexe/getAll',
     }),
-    imprimer() {},
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id

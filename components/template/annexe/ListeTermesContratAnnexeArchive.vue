@@ -4,14 +4,7 @@
       <b-card-text>
         <div class="btn-toolbar d-flex flex-row-reverse">
           <div class="">
-            <feather
-              v-b-tooltip.hover.top
-              title="imprimer liste"
-              class="btn btn-sm btn-primary btn-icon"
-              stroke-width="2"
-              size="18"
-              type="printer"
-            />
+            <feather v-b-tooltip.hover.top title="imprimer liste" class="btn btn-sm btn-primary btn-icon" stroke-width="2" size="18" type="printer" />
             <feather
               v-b-tooltip.hover.top
               title="retour"
@@ -52,14 +45,7 @@
           @filtered="onFiltered"
         >
           <template #cell(option)="data">
-            <feather
-              title="restaurer"
-              type="rotate-cw"
-              size="20"
-              stroke="green"
-              stroke-width="3"
-              @click="dialoger(data.item)"
-            />
+            <feather title="restaurer" type="rotate-cw" size="20" stroke="green" stroke-width="3" @click="dialoger(data.item)" />
           </template>
           <template #empty="scope">
             <h6 class="text-center text-muted pd-y-10">
@@ -126,7 +112,6 @@ export default {
   },
   methods: {
     ...mapActions('template/terme-annexe', ['getTrashAll']),
-    imprimer() {},
     dialoger({ id, code }) {
       this.dialogData.code = code
       this.dialogData.id = id

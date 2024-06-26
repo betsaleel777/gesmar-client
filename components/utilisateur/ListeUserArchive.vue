@@ -16,14 +16,7 @@
           </div>
           <!-- btn-toolbar -->
           <hr class="mg-t-4" />
-          <b-form-input
-            v-if="totalRows > 0"
-            id="filter-input"
-            v-model="filter"
-            type="search"
-            placeholder="Type to Search"
-            class="mg-y-10"
-          ></b-form-input>
+          <b-form-input v-if="totalRows > 0" id="filter-input" v-model="filter" type="search" placeholder="Type to Search" class="mg-y-10"></b-form-input>
           <b-table
             id="table"
             class="table"
@@ -46,14 +39,7 @@
               <nuxt-link :to="`/parametre/utilisateur/${data.item.id}/settings`">
                 <feather title="parametres" type="settings" class="mr-auto" size="20" />
               </nuxt-link>
-              <feather
-                title="restaurer"
-                type="rotate-cw"
-                size="20"
-                stroke="green"
-                stroke-width="3"
-                @click="dialoger(data.item)"
-              />
+              <feather title="restaurer" type="rotate-cw" size="20" stroke="green" stroke-width="3" @click="dialoger(data.item)" />
             </template>
             <template #empty="scope">
               <h6 class="text-center text-muted pd-y-10">
@@ -123,7 +109,6 @@ export default {
   },
   methods: {
     ...mapActions('user-role/user', ['getTrashAll']),
-    imprimer() {},
     dialoger({ id, name }) {
       this.dialogData.nom = name
       this.dialogData.id = id

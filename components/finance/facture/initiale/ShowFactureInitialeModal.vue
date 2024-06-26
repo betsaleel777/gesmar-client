@@ -88,7 +88,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import { initialeInvoicePrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -107,13 +108,22 @@ export default {
     this.facture = facture
   },
   computed: {
+    ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
     reste() {
       return this.facture.total - this.facture.sommeVersee
     },
   },
   methods: {
-    ...mapActions({ getOne: MODULES.FACTURE.INITIALE.ACTIONS.ONE, modifier: MODULES.FACTURE.INITIALE.ACTIONS.EDIT }),
-    imprimer() {},
+    ...mapActions({
+      getOne: MODULES.FACTURE.INITIALE.ACTIONS.ONE,
+      getSociete: MODULES.APPLICATION.ACTIONS.ONE,
+      getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
+    }),
+    async imprimer() {
+      await this.getSociete()
+      await this.getUrl(this.societe.logo)
+      initialeInvoicePrinter(this.societe, this.facture, this.url)
+    },
   },
 }
 </script>

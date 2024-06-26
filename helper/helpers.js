@@ -13,6 +13,7 @@ const remove = (item, selected, targetArray = []) => {
 const add = (item, targetArray = []) => {
   targetArray.push(item)
 }
+const initialeInvoicePrinter = (societe, facture, logoUrl) => {}
 const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
   const personne = ordonnancement.personne
   const responsable = ordonnancement.audit.user.name
@@ -340,4 +341,4 @@ const errorHandling = (response, errorsComponentData) => {
   }
 }
 
-export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter, ordonnancementPrinter }
+export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter, ordonnancementPrinter, initialeInvoicePrinter }

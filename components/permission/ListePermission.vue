@@ -45,14 +45,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
     </b-card-text>
   </b-card>
 </template>
@@ -85,7 +78,6 @@ export default {
   },
   methods: {
     ...mapActions('user-role/permission', ['getAll']),
-    imprimer() {},
     dialoger({ id, name }) {
       this.dialogData.nom = name
       this.dialogData.id = id
