@@ -28,14 +28,12 @@
             <strong>Chargement...</strong>
           </div>
         </template>
-        <template #cell(ordre)="data">
-          {{ data.index + 1 }}
-        </template>
+        <template #cell(ordre)="data">{{ data.index + 1 }}</template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
-        <template #cell(option)>
-          <a type="button">
+        <template #cell(option)="data">
+          <a type="button" @click="details(data.item)">
             <feather title="détails" type="eye" size="20" stroke="indigo" />
           </a>
         </template>
@@ -47,54 +45,45 @@
           <span v-else>{{ data.item.contrat.annexe.nom }}</span>
         </template>
         <template #empty="scope">
-          <h6 class="text-center text-muted pd-y-10">
-            {{ scope.emptyText }}
-          </h6>
+          <h6 class="text-center text-muted pd-y-10">{{ scope.emptyText }}</h6>
         </template>
       </b-table>
       <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
     </b-card-text>
+    <ShowFactureAnnexeModal v-if="show.annexe.modal" :id="show.annexe.id" v-model="show.annexe.modal" />
+    <ShowFactureGearModal v-if="show.equipement.modal" :id="show.equipement.id" v-model="show.equipement.modal" />
+    <ShowFactureInitialeModal v-if="show.initiale.modal" :id="show.initiale.id" v-model="show.initiale.modal" />
+    <ShowFactureLoyerModal v-if="show.loyer.modal" :id="show.loyer.id" v-model="show.loyer.modal" />
   </b-card>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ShowFactureAnnexeModal from './annexe/ShowFactureAnnexeModal.vue'
+import ShowFactureInitialeModal from './initiale/ShowFactureInitialeModal.vue'
+import ShowFactureGearModal from './equipement/ShowFactureGearModal.vue'
+import ShowFactureLoyerModal from './loyer/ShowFactureLoyerModal.vue'
 import { FACTURE } from '~/helper/constantes'
+import { MODULES } from '~/helper/modules-types'
 export default {
+  components: { ShowFactureAnnexeModal, ShowFactureGearModal, ShowFactureInitialeModal, ShowFactureLoyerModal },
   data: () => ({
     fields: [
       'ordre',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'contrat.code', label: 'Contrat', sortable: true },
       { key: 'contrat.personne.fullname', label: 'Personne', sortable: true },
-      {
-        key: 'produit',
-        label: 'Produit',
-        tdClass: 'text-center',
-        thClass: 'text-center',
-        sortable: true,
-      },
-      {
-        key: 'created_at',
-        label: 'Date',
-        tdClass: 'text-center',
-        thClass: 'text-center',
-      },
-      {
-        key: 'status',
-        label: 'Statut',
-        tdClass: 'text-center',
-        thClass: 'text-center',
-      },
-      {
-        key: 'option',
-        label: 'Options',
-        tdClass: 'text-center',
-        thClass: 'wd-5p text-center',
-        sortable: false,
-      },
+      { key: 'produit', label: 'Produit', tdClass: 'text-center', thClass: 'text-center', sortable: true },
+      { key: 'created_at', label: 'Date', tdClass: 'text-center', thClass: 'text-center' },
+      { key: 'status', label: 'Statut', tdClass: 'text-center', thClass: 'text-center' },
+      { key: 'option', label: 'Options', tdClass: 'text-center', thClass: 'wd-5p text-center', sortable: false },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
-    edit: { modal: false, facture: {} },
+    show: {
+      loyer: { modal: false, id: 0 },
+      initiale: { modal: false, id: 0 },
+      annexe: { modal: false, id: 0 },
+      equipement: { modal: false, id: 0 },
+    },
     filter: null,
     totalRows: 0,
     currentPage: 1,
@@ -108,10 +97,7 @@ export default {
     ...mapGetters({ factures: 'facture/facture/soldees' }),
   },
   methods: {
-    ...mapActions({
-      getOne: 'facture/facture/getOne',
-      getFactures: 'facture/facture/getAll',
-    }),
+    ...mapActions({ getOne: MODULES.FACTURE.ACTIONS.ONE, getFactures: MODULES.FACTURE.ACTIONS.ALL }),
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
@@ -124,6 +110,10 @@ export default {
         [FACTURE.status.proforma]: 'badge badge-primary-light',
       }
       return classes[value]
+    },
+    details({ type, id }) {
+      this.show[type].id = id
+      this.show[type].modal = true
     },
   },
 }
