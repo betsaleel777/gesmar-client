@@ -70,7 +70,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import { loyerInvoicePrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -88,9 +89,20 @@ export default {
     const { facture } = await this.getOne(this.id)
     this.facture = facture
   },
+  computed: {
+    ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
+  },
   methods: {
-    ...mapActions({ getOne: MODULES.FACTURE.LOYER.ACTIONS.ONE }),
-    imprimer() {},
+    ...mapActions({
+      getOne: MODULES.FACTURE.LOYER.ACTIONS.ONE,
+      getSociete: MODULES.APPLICATION.ACTIONS.ONE,
+      getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD,
+    }),
+    async imprimer() {
+      await this.getSociete()
+      await this.getUrl(this.societe.logo)
+      loyerInvoicePrinter(this.societe, this.facture, this.url)
+    },
   },
 }
 </script>

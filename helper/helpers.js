@@ -88,7 +88,59 @@ const initialeInvoicePrinter = (societe, facture, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('facture-' + facture.code)
 }
-const loyerInvoicePrinter = (societe, facture, logoUrl) => {}
+const loyerInvoicePrinter = (societe, facture, logoUrl) => {
+  const { personne } = facture
+  const responsable = facture.audit.user.name
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    orientationLandscape: false,
+    compress: true,
+    logo: {
+      src: logoUrl,
+      width: 25,
+      height: 25,
+      margin: { top: 0, left: 0 },
+    },
+    business: {
+      name: societe.sigle.toUpperCase(),
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    contact: {
+      label: 'facturé à: ',
+      name: personne.alias,
+      address: `${personne.ville}, ${personne.adresse}`,
+      phone: personne.contact ?? '',
+      email: personne.email ?? '',
+    },
+    invoice: {
+      label: '#: ',
+      num: facture.code + '/' + facture.contrat.code,
+      invDate: `facture datant du ${window.$nuxt.$moment(facture.created_at).format('ll')}`,
+      // invGenDate: `${facture.contrat.emplacement.code}-${facture.contrat.emplacement.type.nom}`,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [{ title: 'Emplacement' }, { title: 'Type' }, { title: 'Période' }, { title: 'Montant' }],
+      table: Array.from(Array(1), () => [
+        facture.contrat.emplacement.code,
+        facture.contrat.emplacement.type.nom,
+        window.$nuxt.$moment(facture.periode).format('MMMM YYYY'),
+        window.$nuxt.$options.filters.currency(facture.loyer),
+      ]),
+      invDescLabel: '',
+      invDesc: `Fait par ${responsable}, imprimée le ${window.$nuxt.$moment().format('ll')}`,
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: true,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save('facture-' + facture.code)
+}
 const annexeInvoicePrinter = (societe, facture, logoUrl) => {}
 const equipementInvoicePrinter = (societe, facture, logoUrl) => {}
 
