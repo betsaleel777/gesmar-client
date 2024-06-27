@@ -77,7 +77,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import { equipementInvoicePrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -96,13 +97,18 @@ export default {
     this.facture = facture
   },
   computed: {
+    ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
     montant() {
       return (this.facture.index_fin - this.facture.index_depart) * this.facture.equipement.abonnementActuel.prix_unitaire
     },
   },
   methods: {
-    ...mapActions({ getOne: MODULES.FACTURE.EQUIPEMENT.ACTIONS.ONE }),
-    imprimer() {},
+    ...mapActions({ getOne: MODULES.FACTURE.EQUIPEMENT.ACTIONS.ONE, getSociete: MODULES.APPLICATION.ACTIONS.ONE, getUrl: MODULES.MEDIA.ACTIONS.DOWNLOAD }),
+    async imprimer() {
+      await this.getSociete()
+      await this.getUrl(this.societe.logo)
+      equipementInvoicePrinter(this.societe, this.facture, this.url)
+    },
   },
 }
 </script>
