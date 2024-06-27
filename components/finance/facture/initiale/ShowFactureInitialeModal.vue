@@ -27,13 +27,16 @@
           <div class="card-body">
             <div class="row">
               <div class="col-sm-8 col-lg-8">
-                <p class="mg-b-0"><b>Client: </b>{{ facture.personne.fullname.toUpperCase() }}</p>
+                <p class="mg-b-0"><b>Client: </b>{{ facture.personne.alias.toUpperCase() }}</p>
                 <p class="mg-b-0"><b>Emplacement: </b>{{ facture.contrat.emplacement.code }}</p>
                 <p class="mg-b-0"><b>Type: </b>{{ facture.contrat.emplacement.type.nom }}</p>
               </div>
               <div class="col-sm-4 col-lg-4 text-right">
                 <p class="mg-b-0">
                   Code Facture: <b>{{ facture.code }}</b>
+                </p>
+                <p class="mg-b-0">
+                  Montant: <b>{{ facture.total | currency }}</b>
                 </p>
                 <p class="mg-b-0">
                   Code du contrat: <b>{{ facture.contrat.code }}</b>

@@ -13,7 +13,85 @@ const remove = (item, selected, targetArray = []) => {
 const add = (item, targetArray = []) => {
   targetArray.push(item)
 }
-const initialeInvoicePrinter = (societe, facture, logoUrl) => {}
+
+const initialeInvoicePrinter = (societe, facture, logoUrl) => {
+  const { personne } = facture
+  const responsable = facture.audit.user.name
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    orientationLandscape: false,
+    compress: true,
+    logo: {
+      src: logoUrl,
+      width: 25,
+      height: 25,
+      margin: { top: 0, left: 0 },
+    },
+    business: {
+      name: societe.sigle.toUpperCase(),
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    contact: {
+      label: 'facturé à: ',
+      name: personne.alias,
+      address: `${personne.ville}, ${personne.adresse}`,
+      phone: personne.contact ?? '',
+      email: personne.email ?? '',
+    },
+    invoice: {
+      label: '#: ',
+      num: facture.code + '/' + facture.contrat.code,
+      invDate: `facture datant du ${window.$nuxt.$moment(facture.created_at).format('ll')}`,
+      invGenDate: `${facture.contrat.emplacement.code}-${facture.contrat.emplacement.type.nom}`,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [{ title: 'Pas de porte' }, { title: 'Frais de dossier' }, { title: "Frais d'amenagement" }, { title: 'Caution' }, { title: 'Avance' }],
+      table: Array.from(Array(1), () => [
+        window.$nuxt.$options.filters.currency(facture.pas_porte),
+        window.$nuxt.$options.filters.currency(facture.frais_dossier),
+        window.$nuxt.$options.filters.currency(facture.frais_amenagement),
+        window.$nuxt.$options.filters.currency(facture.caution),
+        window.$nuxt.$options.filters.currency(facture.avance),
+      ]),
+      additionalRows: [
+        {
+          col1: 'Montant dû:',
+          col2: '',
+          col3: String(window.$nuxt.$options.filters.currency(facture.total)),
+          style: { fontSize: 11 },
+        },
+        {
+          col1: 'Montant versé:',
+          col2: '',
+          col3: String(window.$nuxt.$options.filters.currency(facture.sommeVersee)),
+          style: { fontSize: 11 },
+        },
+        {
+          col1: 'Reste à payer:',
+          col2: '',
+          col3: String(window.$nuxt.$options.filters.currency(facture.total - facture.sommeVersee)),
+          style: { fontSize: 11 },
+        },
+      ],
+      invDescLabel: '',
+      invDesc: `Fait par ${responsable}, imprimée le ${window.$nuxt.$moment().format('ll')}`,
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: true,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save('facture-' + facture.code)
+}
+const loyerInvoicePrinter = (societe, facture, logoUrl) => {}
+const annexeInvoicePrinter = (societe, facture, logoUrl) => {}
+const equipementInvoicePrinter = (societe, facture, logoUrl) => {}
+
 const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
   const personne = ordonnancement.personne
   const responsable = ordonnancement.audit.user.name
@@ -71,7 +149,7 @@ const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
         },
       ],
       invDescLabel: '',
-      invDesc: `Fait par ${responsable}`,
+      invDesc: `Fait par ${responsable}, imprimé le ${window.$nuxt.$moment().format('ll')}`,
     },
     footer: {
       text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
@@ -81,7 +159,6 @@ const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('recu-' + ordonnancement.code)
 }
-
 const invoicePrinter = (societe, encaissement, logoUrl) => {
   const responsable = encaissement.caissier.user.name
   const { ordonnancement } = encaissement
@@ -159,7 +236,6 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('recu-' + subject.code)
 }
-
 const caissePointPrinter = (societe, infos, logoUrl) => {
   const property = {
     outputType: 'save',
@@ -182,6 +258,7 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
       label: 'Fait par: ',
       num: infos.caissier,
       invDate: infos.created_at,
+      invGenDate: `imprimé le ${window.$nuxt.$moment().format('ll')}`,
       headerBorder: true,
       tableBodyBorder: true,
       header: [
@@ -261,7 +338,6 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('point-' + infos.created_at)
 }
-
 const facturePrinter = (societe, facture, logoUrl) => {
   const { personne } = facture
   const property = {
@@ -341,4 +417,16 @@ const errorHandling = (response, errorsComponentData) => {
   }
 }
 
-export { remove, add, invoicePrinter, caissePointPrinter, errorHandling, facturePrinter, ordonnancementPrinter, initialeInvoicePrinter }
+export {
+  remove,
+  add,
+  invoicePrinter,
+  caissePointPrinter,
+  errorHandling,
+  facturePrinter,
+  ordonnancementPrinter,
+  initialeInvoicePrinter,
+  loyerInvoicePrinter,
+  annexeInvoicePrinter,
+  equipementInvoicePrinter,
+}
