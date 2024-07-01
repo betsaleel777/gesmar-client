@@ -646,6 +646,8 @@ export const MODULES = Object.freeze({
     ACTIONS: Object.freeze({
       ALL: factureRoot + 'getAll',
       ONE: factureRoot + 'getOne',
+      PAID_PAGINATE: factureRoot + 'getSoldeesPaginate',
+      PAID_SEARCH: factureRoot + 'getSoldeesSearch',
       PAGINATE: factureRoot + 'getPaginate',
       SEARCH: factureRoot + 'getSearch',
       EDIT: factureRoot + 'modifier',

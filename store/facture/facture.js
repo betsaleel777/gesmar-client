@@ -8,11 +8,21 @@ export const getters = {
 }
 export const actions = {
   async getAll({ commit }) {
-    commit('SET_FACTURE', [])
     const requete = await this.$axios.get('api/finances/factures')
     commit('SET_FACTURE', requete.data.factures)
   },
-  async getfacturesForScheduleView({ commit }, id) {
+
+  async getSoldeesPaginate({ commit }, page = 1) {
+    const requete = await this.$axios.get(`api/finances/factures/soldees/paginate?page=${page}`)
+    commit('SET_FACTURE', requete.data)
+  },
+
+  async getSoldeesSearch({ commit }, payload) {
+    const requete = await this.$axios.get(`api/finances/factures/soldees/search/${payload.search}/paginate?page=${payload.page}`)
+    commit('SET_FACTURE', requete.data)
+  },
+
+  async getfacturesForScheduleView({ commit }) {
     commit('SET_FACTURE', [])
     const requete = await this.$axios.get(`api/finances/factures/scheduling`)
     commit('SET_FACTURE', requete.data.factures)
