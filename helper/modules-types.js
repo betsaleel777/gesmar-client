@@ -109,6 +109,7 @@ export const MODULES = Object.freeze({
       BY_MARCHE_WITH_GEARS: emplacementRoot + '/getByMarcheWithGearsLinked',
       BY_MARCHE_UNLINKED: emplacementRoot + '/getByMarcheUnlinked',
       FREE_BY_MARCHE: emplacementRoot + '/getFreeByMarche',
+      FREE_BY_MARCHE_PERSONNE: emplacementRoot + '/getFreeByMarchePersonne',
       BUSY_BY_MARCHE: emplacementRoot + '/getBusyByMarche',
       BY_ZONE: emplacementRoot + '/getByZones',
       EDIT: emplacementRoot + '/modifier',

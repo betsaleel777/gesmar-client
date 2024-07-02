@@ -31,13 +31,7 @@
         </v-app>
         <div v-if="!zone.automatiq" class="form-group">
           <label class="form-label">Nom<span class="text-danger">*</span></label>
-          <input
-            v-model="zone.nom"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.nom.exist }"
-            placeholder="Entrer votre nom complet"
-          />
+          <input v-model="zone.nom" type="text" class="form-control" :class="{ 'is-invalid': errors.nom.exist }" placeholder="Entrer votre nom complet" />
           <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.nom.message }}</strong>
           </span>
@@ -52,12 +46,8 @@
       </form>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
-        Fermer
-      </button>
-      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">Fermer</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -91,7 +81,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({ ajouter: MODULES.ZONE.ACTIONS.ADD, getSearch: MODULES.ZONE.ACTIONS.SEARCH }),
+    ...mapActions({ ajouter: MODULES.ZONE.ACTIONS.ADD, getSearch: MODULES.NIVEAU.ACTIONS.SEARCH }),
     save() {
       this.submiting = true
       this.ajouter(this.zone)

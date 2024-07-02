@@ -95,6 +95,11 @@ export const actions = {
     return requete.data
   },
 
+  async getFreeByMarchePersonne({}, payload) {
+    const requete = await this.$axios.get(`api/parametres/emplacements/marche/${payload.marche}/personne/${payload.personne}/free`)
+    return requete.data
+  },
+
   async getBusyByMarche({ commit }, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/busy' + id)
     return requete.data
