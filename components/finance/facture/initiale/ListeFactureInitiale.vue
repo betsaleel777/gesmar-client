@@ -3,11 +3,29 @@
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />
-      <b-form-input id="filter-input" v-model="search" type="search"
-        placeholder="Rechercher selon code, contrat, personne, emplacement" class="mg-y-10"
-        :debounce="500"></b-form-input>
-      <b-table id="table" class="table" hover small bordered primary-key="id" :items="factures.data" :fields="fields"
-        responsive empty-text="Aucune facture" show-empty :busy="$fetchState.pending || loading" no-provider-filtering>
+      <b-form-input
+        id="filter-input"
+        v-model="search"
+        type="search"
+        placeholder="Rechercher selon code, contrat, personne, emplacement"
+        class="mg-y-10"
+        :debounce="500"
+      ></b-form-input>
+      <b-table
+        id="table"
+        class="table"
+        hover
+        small
+        bordered
+        primary-key="id"
+        :items="factures.data"
+        :fields="fields"
+        responsive
+        empty-text="Aucune facture"
+        show-empty
+        :busy="$fetchState.pending || loading"
+        no-provider-filtering
+      >
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -37,8 +55,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm"
-        @change="getPage"></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
     </b-card-text>
     <ShowFactureInitialeModal v-if="show.modal" :id="show.id" v-model="show.modal" />
     <EditFactureInitialeModal v-if="edit.modal" :id="edit.facture" v-model="edit.modal" />
@@ -59,13 +76,7 @@ export default {
       { key: 'code', label: 'Code', sortable: true },
       { key: 'contrat', label: 'Contrat', sortable: true },
       { key: 'personne', label: 'Personne', sortable: true },
-      {
-        key: 'emplacement',
-        label: 'Emplacement',
-        thClass: 'text-center',
-        tdClass: 'text-center',
-        sortable: true,
-      },
+      { key: 'emplacement', label: 'Emplacement', thClass: 'text-center', tdClass: 'text-center', sortable: true },
       {
         key: 'avance',
         label: 'Avance',
@@ -86,26 +97,9 @@ export default {
         tdClass: 'text-right',
         sortable: true,
       },
-      {
-        key: 'pas_porte',
-        label: 'Pas de porte',
-        thClass: 'text-right',
-        tdClass: 'text-right',
-        sortable: true,
-      },
-      {
-        key: 'status',
-        label: 'Statut',
-        tdClass: 'text-center',
-        thClass: 'text-center',
-      },
-      {
-        key: 'option',
-        label: 'Options',
-        tdClass: 'text-center',
-        thClass: 'wd-5p text-center',
-        sortable: false,
-      },
+      { key: 'pas_porte', label: 'Pas de porte', thClass: 'text-right', tdClass: 'text-right', sortable: true },
+      { key: 'status', label: 'Statut', tdClass: 'text-center', thClass: 'text-center' },
+      { key: 'option', label: 'Options', tdClass: 'text-center', thClass: 'wd-5p text-center', sortable: false },
     ],
     dialogData: { modal: false, id: 0, nom: '' },
     edit: { modal: false, facture: 0 },

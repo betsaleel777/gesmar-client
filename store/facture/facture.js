@@ -17,8 +17,18 @@ export const actions = {
     commit('SET_FACTURE', requete.data)
   },
 
+  async getPersonnePaginate({ commit }, payload) {
+    const requete = await this.$axios.get(`api/finances/factures/personne/${payload.id}/paginate?page=${payload.page}`)
+    commit('SET_FACTURE', requete.data)
+  },
+
   async getSoldeesSearch({ commit }, payload) {
     const requete = await this.$axios.get(`api/finances/factures/soldees/search/${payload.search}/paginate?page=${payload.page}`)
+    commit('SET_FACTURE', requete.data)
+  },
+
+  async getPersonneSearch({ commit }, payload) {
+    const requete = await this.$axios.get(`api/finances/factures/personne/${payload.id}/search/${payload.search}/paginate?page=${payload.page}`)
     commit('SET_FACTURE', requete.data)
   },
 
