@@ -10,59 +10,42 @@
       <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
         <v-app>
           <v-autocomplete
-            v-model="abonnement.site_id"
-            :items="marches"
-            item-text="nom"
-            item-value="id"
-            outlined
-            dense
-            :error="errors.site_id.exist"
-            :error-messages="errors.site_id.message"
-            @change="getEmplacements"
-          >
-            <template #label>
-              Choix du marché
-              <span class="red--text"><strong>* </strong></span>
-            </template>
-          </v-autocomplete>
-          <v-autocomplete
-            v-model="abonnement.emplacement_id"
-            :items="emplacements"
+            v-model.number="abonnement.contrat_id"
+            :items="contrats"
             item-text="code"
             item-value="id"
             outlined
             dense
-            :error="errors.emplacement_id.exist"
-            :error-messages="errors.emplacement_id.message"
-            @change="setEquipements"
+            :error="errors.contrat_id.exist"
+            :error-messages="errors.contrat_id.message"
+            @change="displayDetails"
           >
             <template #label>
-              Emplacement
+              Contrats
               <span class="red--text"><strong>* </strong></span>
             </template>
           </v-autocomplete>
-          <v-container v-if="liaisons.length > 0">
-            <center><h6>Equipements déjà installés</h6></center>
-            <v-simple-table class="mb-4" dense>
+          <v-container v-if="emplacement.equipements.length > 0">
+            <center>
+              <h6>Equipements déjà installés sur l'emplacement {{ emplacement.code }}</h6>
+            </center>
+            <v-simple-table dense>
               <template #default>
                 <thead>
                   <tr>
                     <th class="text-left">Code</th>
+                    <th class="text-left">Equipement</th>
                     <th class="text-left">Type</th>
-                    <th class="text-left">Status</th>
+                    <th class="text-left">Statut</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="equipement in liaisons" :key="equipement.id">
-                    <td>{{ equipement.code }}</td>
-                    <td>{{ equipement.type.nom }}</td>
+                  <tr v-for="row in emplacement.equipements" :key="row.id">
+                    <td>{{ row.code }}</td>
+                    <td>{{ row.nom }}</td>
+                    <td>{{ row.type.nom.toUpperCase() }}</td>
                     <td>
-                      <v-chip v-if="equipement.abonnement === STATUS.subscribed" label color="error" small>{{
-                        equipement.abonnement
-                      }}</v-chip>
-                      <v-chip v-else label color="success" small>
-                        {{ equipement.abonnement }}
-                      </v-chip>
+                      <v-chip label :color="statusClass(row)" small>{{ row.abonnement }}</v-chip>
                     </td>
                   </tr>
                 </tbody>
@@ -101,12 +84,10 @@
               >
                 <span>{{ data.item.code }}</span>
               </v-chip>
-              <span v-if="data.index === 2" class="grey--text text-caption">
-                (+{{ selected.length - 2 }} autres)
-              </span>
+              <span v-if="data.index === 2" class="grey--text text-caption"> (+{{ selected.length - 2 }} autres) </span>
             </template>
           </v-autocomplete>
-          <v-row v-for="(equipement, index) in abonnement.equipements" :key="index">
+          <!-- <v-row v-for="(equipement, index) in abonnement.equipements" :key="index">
             <v-col cols="6">
               <v-text-field v-model="equipement.nom" single-line dense readonly> </v-text-field>
             </v-col>
@@ -116,29 +97,20 @@
               </v-text-field>
             </v-col>
             <v-col cols="3">
-              <v-text-field
-                v-model="equipement.index_autre"
-                dense
-                :error="errors.index_autre.exist"
-                :error-messages="errors.index_autre.message"
-              >
+              <v-text-field v-model="equipement.index_autre" dense :error="errors.index_autre.exist" :error-messages="errors.index_autre.message">
                 <template #label>
                   Index actuel
                   <span class="red--text"><strong>* </strong></span></template
                 >
               </v-text-field>
             </v-col>
-          </v-row>
+          </v-row> -->
         </v-app>
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
-        Fermer
-      </button>
-      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">Fermer</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -155,39 +127,34 @@ export default {
   data: () => ({
     submiting: false,
     equipements: [],
-    emplacements: [],
+    emplacement: { equipements: [] },
     liaisons: [],
     selected: [],
-    STATUS: EQUIPEMENT,
     abonnement: {
-      site_id: null,
-      emplacement_id: null,
+      contrat_id: null,
       equipements: [],
     },
     errors: {
-      site_id: { exist: false, message: null },
-      emplacement_id: { exist: false, message: null },
-      equipement_id: { exist: false, message: null },
+      contrat_id: { exist: false, message: null },
       index_autre: { exist: false, message: null },
     },
   }),
   async fetch() {
     try {
-      await this.getMarches()
+      await this.getContrats()
     } catch (error) {
       this.$notify({ text: error.response.data.message, type: 'error', title: 'Echec Autorisation' })
     }
   },
   computed: {
-    ...mapGetters({ marches: MODULES.SITE.GETTERS.SITES }),
+    ...mapGetters({ contrats: MODULES.CONTRAT.BAIL.GETTERS.CONTRATS }),
   },
   methods: {
     ...mapActions({
       ajouter: MODULES.ABONNEMENT.ACTIONS.ADD,
-      getMarches: MODULES.SITE.ACTIONS.ALL,
+      getOne: MODULES.EMPLACEMENT.ACTIONS.ONE_FOR_GEAR,
+      getContrats: MODULES.CONTRAT.BAIL.ACTIONS.WITH_GEAR,
       getLastIndex: MODULES.ABONNEMENT.ACTIONS.LAST_INDEX,
-      getGearsUnlinkedsubscribed: MODULES.EQUIPEMENT.ACTIONS.GEARS_UNLINKEDSUBCRIBED,
-      getByMarcheWithGearsLinked: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_WITH_GEARS,
     }),
     save() {
       this.submiting = true
@@ -197,28 +164,17 @@ export default {
             this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
             this.dialog = false
           })
-          .catch((err) => {
-            errorHandling(err.response, this.errors)
-          })
+          .catch((err) => errorHandling(err.response, this.errors))
           .finally(() => (this.submiting = false))
       else {
         this.$notify({ text: message, title: "echec de l'opération", type: 'error' })
         message = ''
       }
     },
-    getEmplacements() {
-      if (this.abonnement.site_id) {
-        this.getByMarcheWithGearsLinked(this.abonnement.site_id).then(({ emplacements }) => {
-          this.emplacements = emplacements
-        })
-      }
-    },
     setEquipements() {
-      const selected = this.emplacements.find(
-        (emplacement) => emplacement.id === this.abonnement.emplacement_id
-      )
+      const selected = this.emplacements.find((emplacement) => emplacement.id === this.abonnement.emplacement_id)
       this.liaisons = selected?.equipements
-      const equipement = this.liaisons.find((equipement) => equipement.abonnement !== this.STATUS.subscribed)
+      const equipement = this.liaisons.find((equipement) => equipement.abonnement !== EQUIPEMENT.subscribed)
       this.equipements.push(equipement)
       this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
         if (equipements.length > 0) this.equipements.push(...equipements)
@@ -252,7 +208,16 @@ export default {
       if (missing) message += "valeur manquante de l'index actuel"
       return missing
     },
+    statusClass(row) {
+      return row.abonnement === EQUIPEMENT.subscribed ? 'error' : 'success'
+    },
+    async displayDetails() {
+      if (this.abonnement.contrat_id) {
+        const { emplacement_id: id } = this.contrats.find(({ id }) => id === this.abonnement.contrat_id)
+        this.emplacement = await this.getOne(id)
+      }
+    },
   },
 }
 </script>
-<style scoped></style>
+<style></style>

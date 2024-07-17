@@ -70,6 +70,11 @@ export const actions = {
     return requete.data
   },
 
+  async getOneForGear({}, id) {
+    const requete = await this.$axios.get('api/parametres/emplacements/for-subscribe/' + id)
+    return requete.data
+  },
+
   async getByMarche({}, id) {
     const requete = await this.$axios.get('api/parametres/emplacements/marche/' + id)
     return requete.data

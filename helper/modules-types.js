@@ -104,6 +104,7 @@ export const MODULES = Object.freeze({
       MONTH_RENTAL: emplacementRoot + '/getMonthRental',
       TRASHED: emplacementRoot + '/getTrashAll',
       ONE: emplacementRoot + '/getOne',
+      ONE_FOR_GEAR: emplacementRoot + '/getOneForGear',
       BY_MARCHE: emplacementRoot + '/getByMarche',
       BY_MARCHE_SELECT: emplacementRoot + '/getByMarcheForSelect',
       BY_MARCHE_WITH_GEARS: emplacementRoot + '/getByMarcheWithGearsLinked',
@@ -458,7 +459,8 @@ export const MODULES = Object.freeze({
         VALIDES: contratBailRoot + 'valides',
       }),
       ACTIONS: Object.freeze({
-        ALL: contratAnnexeRoot + 'getAll',
+        ALL: contratBailRoot + 'getAll',
+        WITH_GEAR: contratBailRoot + 'getWithGear',
         SEARCH: contratBailRoot + 'getSearch',
         PAGINATE: contratBailRoot + 'getPaginate',
         VALIDES_SEARCH: contratBailRoot + 'getValidesSearch',
