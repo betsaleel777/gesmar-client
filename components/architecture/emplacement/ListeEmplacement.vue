@@ -81,14 +81,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
       <ConfirmationModal
         :id="dialogData.id"
         :key="dialogData.modal"
@@ -119,8 +112,8 @@ export default {
       { key: 'code', label: 'Code', sortable: true },
       { key: 'superficie', label: 'Superficie', sortable: true },
       { key: 'type.nom', label: 'Type' },
-      { key: 'loyer', label: 'Loyer', tdClass: 'text-right', sortable: true },
-      { key: 'pas_porte', label: 'Pas de porte', tdClass: 'text-right', sortable: true },
+      { key: 'loyer', label: 'Loyer', tdClass: 'text-right', thClass: 'text-right', sortable: true },
+      { key: 'pas_porte', label: 'Pas de porte', tdClass: 'text-right', thClass: 'text-right', sortable: true },
       { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center' },
       {
         key: 'option',

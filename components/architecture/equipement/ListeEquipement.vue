@@ -23,14 +23,7 @@
         />
       </div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="search"
-        type="search"
-        placeholder="Rechercher selon"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
+      <b-form-input id="filter-input" v-model="search" type="search" placeholder="Rechercher selon" class="mg-y-10" :debounce="500"></b-form-input>
       <b-table
         id="table"
         class="table"
@@ -72,14 +65,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
       <ConfirmationModal
         :id="dialogData.id"
         :key="dialogData.modal"
@@ -110,9 +96,9 @@ export default {
       { key: 'code', label: 'Code', sortable: true },
       { key: 'nom', label: 'Nom', sortable: true },
       { key: 'type.nom', label: 'Type' },
-      { key: 'prix_unitaire', label: 'Prix Unitaire', tdClass: 'text-right', sortable: true },
+      { key: 'prix_unitaire', label: 'Prix Unitaire', tdClass: 'text-right', thClass: 'text-right', sortable: true },
       { key: 'site.nom', label: 'Site' },
-      { key: 'status', label: 'Statuts' },
+      { key: 'status', label: 'Statuts', tdClass: 'text-center', thClass: 'text-center', sortable: true },
       {
         key: 'option',
         label: 'Options',

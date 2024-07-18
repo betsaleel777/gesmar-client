@@ -55,7 +55,7 @@
           <v-autocomplete
             v-model="selected"
             :items="equipements"
-            item-text="alias"
+            item-text="code"
             item-value="id"
             return-object
             outlined
@@ -116,7 +116,7 @@
 </template>
 <script>
 import { isNull } from 'url/util'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { MODULES } from '~/helper/modules-types'
 import { EQUIPEMENT } from '~/helper/constantes'
 import { errorHandling, remove } from '~/helper/helpers'
@@ -126,7 +126,6 @@ export default {
   mixins: [modal],
   data: () => ({
     submiting: false,
-    equipements: [],
     emplacement: { equipements: [] },
     liaisons: [],
     selected: [],
@@ -140,6 +139,7 @@ export default {
     },
   }),
   async fetch() {
+    this.setEquipement([])
     try {
       await this.getContrats()
     } catch (error) {
@@ -147,15 +147,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ contrats: MODULES.CONTRAT.BAIL.GETTERS.CONTRATS }),
+    ...mapGetters({
+      contrats: MODULES.CONTRAT.BAIL.GETTERS.CONTRATS,
+      equipements: MODULES.EQUIPEMENT.GETTERS.EQUIPEMENTS,
+    }),
   },
   methods: {
     ...mapActions({
       ajouter: MODULES.ABONNEMENT.ACTIONS.ADD,
       getOne: MODULES.EMPLACEMENT.ACTIONS.ONE_FOR_GEAR,
       getContrats: MODULES.CONTRAT.BAIL.ACTIONS.WITH_GEAR,
+      getEquipements: MODULES.EQUIPEMENT.ACTIONS.GEARS_UNLINKEDSUBCRIBED,
       getLastIndex: MODULES.ABONNEMENT.ACTIONS.LAST_INDEX,
     }),
+    ...mapMutations({ setEquipement: MODULES.EQUIPEMENT.MUTATIONS.SET, addEquipement: MODULES.EQUIPEMENT.MUTATIONS.ADD }),
     save() {
       this.submiting = true
       if (this.validable())
@@ -172,13 +177,13 @@ export default {
       }
     },
     setEquipements() {
-      const selected = this.emplacements.find((emplacement) => emplacement.id === this.abonnement.emplacement_id)
-      this.liaisons = selected?.equipements
-      const equipement = this.liaisons.find((equipement) => equipement.abonnement !== EQUIPEMENT.subscribed)
-      this.equipements.push(equipement)
-      this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
-        if (equipements.length > 0) this.equipements.push(...equipements)
-      })
+      // const selected = this.emplacements.find((emplacement) => emplacement.id === this.abonnement.emplacement_id)
+      // this.liaisons = selected?.equipements
+      // const equipement = this.liaisons.find((equipement) => equipement.abonnement !== EQUIPEMENT.subscribed)
+      // this.equipements.push(equipement)
+      // this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
+      //   if (equipements.length > 0) this.equipements.push(...equipements)
+      // })
     },
     getIndex() {
       const gear = {}
@@ -215,6 +220,10 @@ export default {
       if (this.abonnement.contrat_id) {
         const { emplacement_id: id } = this.contrats.find(({ id }) => id === this.abonnement.contrat_id)
         this.emplacement = await this.getOne(id)
+        await this.getEquipements(id)
+        const unsubscribed = this.emplacement.equipements.filter(({ abonnement }) => abonnement === EQUIPEMENT.unsubscribed)
+        this.addEquipement(unsubscribed)
+        console.log(this.equipements)
       }
     },
   },

@@ -315,6 +315,10 @@ export const MODULES = Object.freeze({
       RESTORE: equipementRoot + 'restaurer',
       ADD: equipementRoot + 'ajouter',
     }),
+    MUTATIONS: Object.freeze({
+      SET: equipementRoot + 'SET_EQUIPEMENT',
+      ADD: equipementRoot + 'ADD_EQUIPEMENT',
+    }),
   }),
   DASHBOARD: Object.freeze({
     RECEPTION: Object.freeze({

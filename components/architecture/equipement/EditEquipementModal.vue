@@ -33,13 +33,7 @@
             <span class="form-label">Prix Fixe <span class="text-danger">*</span></span>
           </template>
           <b-input-group label-for="prix_fixe">
-            <b-form-input
-              id="prix_fixe"
-              v-model="equipement.prix_fixe"
-              type="text"
-              :class="{ 'is-invalid': errors.prix_fixe.exist }"
-              class="form-control"
-            />
+            <b-form-input id="prix_fixe" v-model="equipement.prix_fixe" type="text" :class="{ 'is-invalid': errors.prix_fixe.exist }" class="form-control" />
             <b-input-group-append>
               <b-input-group-text class="bg-transparent font-weight-bold"> FCFA </b-input-group-text>
             </b-input-group-append>
@@ -70,13 +64,7 @@
         </b-form-group>
         <div class="form-group">
           <label class="form-label">Index</label>
-          <input
-            v-model="equipement.index"
-            type="text"
-            class="form-control"
-            :class="{ 'is-invalid': errors.index.exist }"
-            placeholder="Entrer l'index"
-          />
+          <input v-model="equipement.index" type="text" class="form-control" :class="{ 'is-invalid': errors.index.exist }" placeholder="Entrer l'index" />
           <span v-if="errors.index.exist" class="invalid-feedback" role="alert">
             <strong>{{ errors.index.message }}</strong>
           </span>
@@ -115,18 +103,8 @@
               <span class="red--text"><strong>* </strong></span>
             </template>
           </v-autocomplete>
-          <h6 v-if="equipement.emplacement">
-            Lié actuellement à l'emplacement {{ equipement.emplacement.code }}
-          </h6>
-          <v-autocomplete
-            v-model="equipement.emplacement_id"
-            :items="emplacements"
-            item-text="code"
-            item-value="id"
-            outlined
-            dense
-            :loading="loading"
-          >
+          <h6 v-if="equipement.emplacement">Lié actuellement à l'emplacement {{ equipement.emplacement.code }}</h6>
+          <v-autocomplete v-model="equipement.emplacement_id" :items="emplacements" item-text="code" item-value="id" outlined dense :loading="loading">
             <template #label> Choix d'un nouvel emplacement </template>
             <template #progress>
               <v-progress-linear v-if="loading" indeterminate color="primary" absolute></v-progress-linear>
@@ -137,12 +115,8 @@
       </b-overlay>
     </template>
     <template #modal-footer>
-      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">
-        Fermer
-      </button>
-      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">
-        Valider
-      </button>
+      <button type="button" class="btn btn-warning" data-dismiss="modal" @click="dialog = false">Fermer</button>
+      <button type="button" :disabled="submiting" class="btn btn-primary text-white" @click="save">Valider</button>
     </template>
   </b-modal>
 </template>
@@ -214,7 +188,7 @@ export default {
       getMarches: MODULES.SITE.ACTIONS.ALL,
       getOne: MODULES.EQUIPEMENT.ACTIONS.ONE,
       modifier: MODULES.EQUIPEMENT.ACTIONS.EDIT,
-      getEmplacement: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE_UNLINKED,
+      getEmplacement: MODULES.EMPLACEMENT.ACTIONS.BY_MARCHE,
       getTypes: MODULES.TYPE.EQUIPEMENT.ACTIONS.ALL,
     }),
     save() {

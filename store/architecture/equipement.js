@@ -1,15 +1,13 @@
 export const state = () => ({
-  equipements: []
+  equipements: [],
 })
 
 export const getters = {
-  equipements: (state) => {
-    return state.equipements
-  },
+  equipements: (state) => state.equipements,
   equipementsBySites: (state) => (sites) => {
     const ids = sites.map((site) => site.id)
     return state.equipements.filter((equipement) => ids.includes(equipement.site_id))
-  }
+  },
 }
 
 export const actions = {
@@ -25,9 +23,7 @@ export const actions = {
   },
 
   async getSearch({ commit }, payload) {
-    const requete = await this.$axios.get(
-      `api/parametres/equipements/search/${payload.search}/paginate?page=${payload.page}`
-    )
+    const requete = await this.$axios.get(`api/parametres/equipements/search/${payload.search}/paginate?page=${payload.page}`)
     commit('SET_EQUIPEMENT', requete.data)
   },
 
@@ -44,16 +40,14 @@ export const actions = {
 
   // récupération des equipememnts selon le type
   async getByType({ commit }, payload) {
-    const requete = await this.$axios.get(
-      `api/parametres/equipements/type/${payload.typeId}/emplacement/${payload.emplacement_id}/site/${payload.site_id}`
-    )
+    const requete = await this.$axios.get(`api/parametres/equipements/type/${payload.typeId}/emplacement/${payload.emplacement_id}/site/${payload.site_id}`)
     return requete.data
   },
 
   // récupération des equipememnts non liés et non abonnés
   async getGearsUnlinkedsubscribed({ commit }) {
     const requete = await this.$axios.get('api/parametres/equipements/unlinkedsubscribed')
-    return requete.data
+    commit('SET_EQUIPEMENT', requete.data)
   },
 
   async modifier({ dispatch }, payload) {
@@ -78,11 +72,16 @@ export const actions = {
     const requete = await this.$axios.post('api/parametres/equipements/store', payload)
     dispatch('getPaginate')
     return { message: requete.data.message }
-  }
+  },
 }
 
 export const mutations = {
   SET_EQUIPEMENT(state, equipements) {
     state.equipements = equipements
-  }
+  },
+  ADD_EQUIPEMENT(state, equipements) {
+    equipements.forEach((equipement) => {
+      state.equipements.push(equipement)
+    })
+  },
 }
