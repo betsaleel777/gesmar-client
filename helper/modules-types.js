@@ -318,6 +318,7 @@ export const MODULES = Object.freeze({
     MUTATIONS: Object.freeze({
       SET: equipementRoot + 'SET_EQUIPEMENT',
       ADD: equipementRoot + 'ADD_EQUIPEMENT',
+      SET_SUBSCRIBED: equipementRoot + 'SET_SUBSCRIBED',
     }),
   }),
   DASHBOARD: Object.freeze({

@@ -87,9 +87,9 @@
               <span v-if="data.index === 2" class="grey--text text-caption"> (+{{ selected.length - 2 }} autres) </span>
             </template>
           </v-autocomplete>
-          <!-- <v-row v-for="(equipement, index) in abonnement.equipements" :key="index">
+          <v-row v-for="(equipement, index) in abonnement.equipements" :key="index">
             <v-col cols="6">
-              <v-text-field v-model="equipement.nom" single-line dense readonly> </v-text-field>
+              <v-text-field v-model="equipement.nom" single-line dense readonly></v-text-field>
             </v-col>
             <v-col cols="3">
               <v-text-field v-model="equipement.index_depart" dense readonly>
@@ -100,11 +100,11 @@
               <v-text-field v-model="equipement.index_autre" dense :error="errors.index_autre.exist" :error-messages="errors.index_autre.message">
                 <template #label>
                   Index actuel
-                  <span class="red--text"><strong>* </strong></span></template
-                >
+                  <span class="red--text"><strong>* </strong></span>
+                </template>
               </v-text-field>
             </v-col>
-          </v-row> -->
+          </v-row>
         </v-app>
       </b-overlay>
     </template>
@@ -127,10 +127,10 @@ export default {
   data: () => ({
     submiting: false,
     emplacement: { equipements: [] },
-    liaisons: [],
     selected: [],
     abonnement: {
       contrat_id: null,
+      emplacement_id: null,
       equipements: [],
     },
     errors: {
@@ -160,10 +160,14 @@ export default {
       getEquipements: MODULES.EQUIPEMENT.ACTIONS.GEARS_UNLINKEDSUBCRIBED,
       getLastIndex: MODULES.ABONNEMENT.ACTIONS.LAST_INDEX,
     }),
-    ...mapMutations({ setEquipement: MODULES.EQUIPEMENT.MUTATIONS.SET, addEquipement: MODULES.EQUIPEMENT.MUTATIONS.ADD }),
+    ...mapMutations({
+      setEquipement: MODULES.EQUIPEMENT.MUTATIONS.SET,
+      addEquipement: MODULES.EQUIPEMENT.MUTATIONS.ADD,
+      setSubscribed: MODULES.EQUIPEMENT.MUTATIONS.SET_SUBSCRIBED,
+    }),
     save() {
-      this.submiting = true
-      if (this.validable())
+      if (this.validable()) {
+        this.submiting = true
         this.ajouter(this.abonnement)
           .then(({ message }) => {
             this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
@@ -171,19 +175,10 @@ export default {
           })
           .catch((err) => errorHandling(err.response, this.errors))
           .finally(() => (this.submiting = false))
-      else {
+      } else {
         this.$notify({ text: message, title: "echec de l'opération", type: 'error' })
         message = ''
       }
-    },
-    setEquipements() {
-      // const selected = this.emplacements.find((emplacement) => emplacement.id === this.abonnement.emplacement_id)
-      // this.liaisons = selected?.equipements
-      // const equipement = this.liaisons.find((equipement) => equipement.abonnement !== EQUIPEMENT.subscribed)
-      // this.equipements.push(equipement)
-      // this.getGearsUnlinkedsubscribed().then(({ equipements }) => {
-      //   if (equipements.length > 0) this.equipements.push(...equipements)
-      // })
     },
     getIndex() {
       const gear = {}
@@ -191,6 +186,7 @@ export default {
         const lastGear = this.selected.at(-1)
         gear.id = lastGear.id
         gear.nom = lastGear.code
+        gear.site_id = lastGear.site_id
         this.getLastIndex(gear.id).then(({ index }) => {
           gear.index_depart = index
           gear.index_autre = null
@@ -220,10 +216,10 @@ export default {
       if (this.abonnement.contrat_id) {
         const { emplacement_id: id } = this.contrats.find(({ id }) => id === this.abonnement.contrat_id)
         this.emplacement = await this.getOne(id)
+        this.abonnement.emplacement_id = this.emplacement.id
         await this.getEquipements(id)
         const unsubscribed = this.emplacement.equipements.filter(({ abonnement }) => abonnement === EQUIPEMENT.unsubscribed)
         this.addEquipement(unsubscribed)
-        console.log(this.equipements)
       }
     },
   },
