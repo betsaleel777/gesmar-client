@@ -38,7 +38,7 @@
               </div>
               <div class="col-sm-5 col-lg-5 text-right">
                 <h6 class="tx-15 mg-b-10">A PAYER: {{ encaissement.ordonnancement.total | currency }}</h6>
-                <p class="mg-b-0"><b>Code: </b>{{ encaissement.ordonnancement.code }}</p>
+                <p class="mg-b-0"><b>Code: </b>{{ encaissement.code }}</p>
                 <p class="mg-b-0"><b>Contrat: </b>{{ encaissement.ordonnancement.contrat.code }}</p>
               </div>
             </div>
@@ -76,6 +76,7 @@
                   <tr>
                     <th class="wd-20p">Code Facture</th>
                     <th class="tx-left">Mois</th>
+                    <th class="tx-left">Type</th>
                     <th class="tx-center">Statut</th>
                     <th class="tx-right">Montant (FCFA)</th>
                   </tr>
@@ -87,6 +88,7 @@
                       {{ $moment(paiement.facture.periode).format('MMMM YYYY') }}
                     </td>
                     <td v-else class="tx-left">Aucun</td>
+                    <td class="tx-left">{{ paiement.facture.type }}</td>
                     <td class="tx-center">
                       <span :class="statusClass(paiement.facture.status)">{{ paiement.facture.status }}</span>
                     </td>

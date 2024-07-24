@@ -16,13 +16,7 @@
               </span>
             </div>
             <div class="btn-group-invoice">
-              <feather
-                class="btn btn-sm btn-light btn-icon"
-                type="printer"
-                size="20"
-                stroke="blue"
-                @click="imprimer"
-              />
+              <feather class="btn btn-sm btn-light btn-icon" type="printer" size="20" stroke="blue" @click="imprimer" />
               <feather
                 v-if="status.pending === fermeture.status"
                 class="btn btn-sm btn-light btn-icon"
@@ -35,14 +29,7 @@
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <b-form-input
-                id="filter-input"
-                v-model="filter"
-                type="search"
-                placeholder="Rechercher"
-                class="mg-y-10"
-                :debounce="500"
-              ></b-form-input>
+              <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Rechercher" class="mg-y-10" :debounce="500"></b-form-input>
               <b-table
                 id="table"
                 class="table"
@@ -141,6 +128,7 @@ export default {
     status: FERMETURE,
     confirmDialog: false,
     fields: [
+      { key: 'code', label: 'Code' },
       { key: 'type', label: 'Mode de paiement' },
       {
         key: 'montant',

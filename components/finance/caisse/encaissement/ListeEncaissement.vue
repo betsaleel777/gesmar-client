@@ -24,14 +24,7 @@
         />
       </div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="filter"
-        type="search"
-        placeholder="Rechercher"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
+      <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Rechercher" class="mg-y-10" :debounce="500"></b-form-input>
       <b-table
         id="table"
         class="table"
@@ -70,14 +63,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
       <CreateEncaissement v-if="dialog" v-model="dialog" />
       <ShowEncaissementModal v-if="show.modal" :id="show.id" v-model="show.modal" />
       <CloseEncaissementModal v-if="close" v-model="close" />
@@ -96,13 +82,7 @@ export default {
   data: () => ({
     fields: [
       'ordre',
-      {
-        key: 'code',
-        label: 'Code',
-        formatter: (value, key, item) => {
-          return item.ordonnancement ? item.ordonnancement.code : item.bordereau.code
-        },
-      },
+      { key: 'code', label: 'Code' },
       { key: 'caissier.user.name', label: 'Caissier' },
       { key: 'type', label: 'Payement' },
       {
