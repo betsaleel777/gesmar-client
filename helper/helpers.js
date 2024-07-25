@@ -322,7 +322,6 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
   const personne = ordonnancement.personne
   const labelProduct = ordonnancement.annexe ? 'Annexe' : 'Emplacement'
   const produit = ordonnancement.annexe ?? ordonnancement.emplacement
-  const subject = ordonnancement ?? encaissement.bordereau
   const factures = ordonnancement.paiements.map(({ facture }) => facture)
   const property = {
     outputType: 'save',
@@ -351,12 +350,18 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
     },
     invoice: {
       label: '#: ',
-      num: `${ordonnancement.code}/${ordonnancement.contrat.code}`,
+      num: `${encaissement.code}/${ordonnancement.contrat.code}`,
       invDate: `Encaissé le ${encaissement.created_at}`,
       invGenDate: `${labelProduct}: ${produit.code}`,
       headerBorder: true,
       tableBodyBorder: true,
-      header: [{ title: '#', style: { width: 10 } }, { title: 'Code' }, { title: 'Mois' }, { title: 'Statut' }, { title: 'Montant', style: { width: 20 } }],
+      header: [
+        { title: '#', style: { width: 10 } },
+        { title: 'Code de facture' },
+        { title: 'Mois' },
+        { title: 'Statut' },
+        { title: 'Montant', style: { width: 20 } },
+      ],
       table: Array.from(Array(factures.length), (item, index) => [
         index + 1,
         factures[index].code,
@@ -391,7 +396,7 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
     pageLabel: 'Page ',
   }
   const pdfObject = jsPDFInvoiceTemplate(property)
-  pdfObject.jsPDFDocObject.save('recu-' + subject.code)
+  pdfObject.jsPDFDocObject.save('recu-' + encaissement.code)
 }
 const caissePointPrinter = (societe, infos, logoUrl) => {
   const property = {
@@ -419,30 +424,25 @@ const caissePointPrinter = (societe, infos, logoUrl) => {
       headerBorder: true,
       tableBodyBorder: true,
       header: [
-        {
-          title: '#',
-          style: { width: 10 },
-        },
-        { title: 'Mode de paiement' },
+        { title: 'code', style: { width: 30 } },
+        { title: 'Nature', style: { width: 20 } },
         {
           title: 'Montant à payer',
-          style: { width: 40 },
         },
         {
           title: 'Montant versé',
-          style: { width: 40 },
         },
         {
           title: 'Monnaie',
-          style: { width: 40 },
+          style: { width: 15 },
         },
         {
           title: 'Date',
-          style: { width: 30 },
+          style: { width: 20 },
         },
       ],
       table: Array.from(Array(infos.encaissements.length), (item, index) => [
-        index + 1,
+        infos.encaissements[index].code,
         infos.encaissements[index].type,
         infos.encaissements[index].type === ENCAISSEMENT.type.espece ? infos.encaissements[index].payable.montant : infos.encaissements[index].payable.valeur,
         infos.encaissements[index].type === ENCAISSEMENT.type.espece ? infos.encaissements[index].payable.versement : infos.encaissements[index].payable.valeur,

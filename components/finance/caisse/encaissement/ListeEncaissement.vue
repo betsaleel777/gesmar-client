@@ -49,7 +49,7 @@
             <strong>Chargement...</strong>
           </div>
         </template>
-        <template #cell(ordre)="data">
+        <template #cell(N)="data">
           {{ data.index + 1 }}
         </template>
         <template #cell(option)="data">
@@ -81,7 +81,7 @@ export default {
   components: { CreateEncaissement, ShowEncaissementModal, CloseEncaissementModal },
   data: () => ({
     fields: [
-      'ordre',
+      'N',
       { key: 'code', label: 'Code' },
       { key: 'caissier.user.name', label: 'Caissier' },
       { key: 'type', label: 'Payement' },

@@ -27,7 +27,20 @@
             </div>
           </div>
           <div v-if="encaissement" class="card-body">
-            <div class="row">
+            <div v-if="encaissement.bordereau" class="row">
+              <div v-if="encaissement.ouverture" class="col-sm-7 col-lg-7">
+                <h6 class="tx-15 mg-b-10">Encaissement: {{ encaissement.code }}</h6>
+                <p class="mg-b-0"><b>Commercial:</b>{{ encaissement.bordereau.commercial.user.name }}</p>
+                <p class="mg-b-0"><b>Guichet:</b> {{ encaissement.ouverture.guichet.nom }}</p>
+                <p class="mg-b-0"><b>Nature d'opération:</b>Espèce</p>
+              </div>
+              <!-- <div class="col-sm-5 col-lg-5 text-right">
+                <h6 class="tx-15 mg-b-10">A PAYER: {{ encaissement.ordonnancement.total | currency }}</h6>
+                <p class="mg-b-0"><b>Code: </b>{{ encaissement.code }}</p>
+                <p class="mg-b-0"><b>Contrat: </b>{{ encaissement.ordonnancement.contrat.code }}</p>
+              </div> -->
+            </div>
+            <div v-else class="row">
               <div v-if="encaissement.ouverture" class="col-sm-7 col-lg-7">
                 <h6 class="tx-15 mg-b-10">
                   Emplacement: {{ encaissement.ordonnancement.emplacement.type.nom }}-{{ encaissement.ordonnancement.emplacement.code }}
@@ -46,26 +59,17 @@
               <table class="table bd-b">
                 <thead>
                   <tr>
-                    <th class="wd-30p">
-                      <span v-if="encaissement.bordereau">Bordereau</span>
-                      <span v-else>Emplacement</span>
-                    </th>
-                    <th class="wd-20p">Montant</th>
-                    <th class="wd-20p">Versement</th>
-                    <th class="tx-right">Monnaie</th>
+                    <th class="wd-30p">Code Bordereau</th>
+                    <th class="wd-20p">A collecter</th>
+                    <th class="wd-20p">Réèlement collecté</th>
                   </tr>
                 </thead>
                 <tbody>
+                  <pre>{{ encaissement }}</pre>
                   <tr>
-                    <td class="tx-nowrap">
-                      <span v-if="encaissement.bordereau">{{ encaissement.bordereau.code }}</span>
-                      <span v-else>{{ produitName }}</span>
-                    </td>
-                    <td class="tx-nowrap">{{ encaissement.payable.montant | currency }}</td>
-                    <td class="tx-nowrap">{{ encaissement.payable.versement | currency }}</td>
-                    <td class="tx-right">
-                      {{ (encaissement.payable.versement - encaissement.payable.montant) | currency }}
-                    </td>
+                    <td class="tx-nowrap">{{ encaissement.bordereau.code }}</td>
+                    <td class="tx-nowrap">{{ 0 | currency }}</td>
+                    <td class="tx-nowrap">{{ 0 | currency }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -138,8 +142,12 @@ export default {
   computed: {
     ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
     produitName() {
-      if (this.encaissement.ordonnancement.emplacement) return this.encaissement.ordonnancement.emplacement.code
-      else return this.encaissement.ordonnancement.annexe.nom
+      if (this.encaissement.ordonnancement) {
+        if (this.encaissement.ordonnancement.emplacement) return this.encaissement.ordonnancement.emplacement.code
+        else return this.encaissement.ordonnancement.annexe.nom
+      } else {
+        return null
+      }
     },
   },
   methods: {
