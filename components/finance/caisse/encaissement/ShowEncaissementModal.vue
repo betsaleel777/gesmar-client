@@ -30,9 +30,9 @@
             <div v-if="encaissement.bordereau" class="row">
               <div v-if="encaissement.ouverture" class="col-sm-7 col-lg-7">
                 <h6 class="tx-15 mg-b-10">Encaissement: {{ encaissement.code }}</h6>
-                <p class="mg-b-0"><b>Commercial:</b>{{ encaissement.bordereau.commercial.user.name }}</p>
-                <p class="mg-b-0"><b>Guichet:</b> {{ encaissement.ouverture.guichet.nom }}</p>
-                <p class="mg-b-0"><b>Nature d'opération:</b>Espèce</p>
+                <p class="mg-b-0"><b>Commercial: </b>{{ encaissement.bordereau.commercial.user.name }}</p>
+                <p class="mg-b-0"><b>Guichet: </b> {{ encaissement.ouverture.guichet.nom }}</p>
+                <p class="mg-b-0"><b>Nature d'opération: </b>Espèce</p>
               </div>
               <!-- <div class="col-sm-5 col-lg-5 text-right">
                 <h6 class="tx-15 mg-b-10">A PAYER: {{ encaissement.ordonnancement.total | currency }}</h6>
@@ -60,16 +60,17 @@
                 <thead>
                   <tr>
                     <th class="wd-30p">Code Bordereau</th>
-                    <th class="wd-20p">A collecter</th>
-                    <th class="wd-20p">Réèlement collecté</th>
+                    <th>Nbre d'emplacements</th>
+                    <th>Montant à collecter</th>
+                    <th>Montant collecté</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <pre>{{ encaissement }}</pre>
                   <tr>
                     <td class="tx-nowrap">{{ encaissement.bordereau.code }}</td>
-                    <td class="tx-nowrap">{{ 0 | currency }}</td>
-                    <td class="tx-nowrap">{{ 0 | currency }}</td>
+                    <td class="tx-nowrap">{{ encaissement.bordereau.nombre }}</td>
+                    <td class="tx-nowrap">{{ encaissement.bordereau.exacteCollecte | currency }}</td>
+                    <td class="tx-nowrap">{{ encaissement.bordereau.total | currency }}</td>
                   </tr>
                 </tbody>
               </table>
