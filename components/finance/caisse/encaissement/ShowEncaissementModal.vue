@@ -127,7 +127,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { FACTURE } from '~/helper/constantes'
-import { invoicePrinter } from '~/helper/helpers'
+import { invoicePrinter, invoiceBordereauPrinter } from '~/helper/helpers'
 import { MODULES } from '~/helper/modules-types'
 import modal from '~/mixins/modal'
 export default {
@@ -160,7 +160,8 @@ export default {
     async imprimer() {
       await this.getSociete()
       await this.getUrl(this.societe.logo)
-      invoicePrinter(this.societe, this.encaissement, this.url)
+      if (this.encaissement.bordereau) invoiceBordereauPrinter(this.societe, this.encaissement, this.url)
+      else invoicePrinter(this.societe, this.encaissement, this.url)
     },
     statusClass(value) {
       const classes = {

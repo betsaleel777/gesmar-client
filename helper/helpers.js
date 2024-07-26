@@ -398,6 +398,70 @@ const invoicePrinter = (societe, encaissement, logoUrl) => {
   const pdfObject = jsPDFInvoiceTemplate(property)
   pdfObject.jsPDFDocObject.save('recu-' + encaissement.code)
 }
+const invoiceBordereauPrinter = (societe, encaissement, logoUrl) => {
+  const { bordereau } = encaissement
+  const responsable = encaissement.audit.user.name
+  const { commercial } = bordereau
+  const property = {
+    outputType: 'save',
+    returnJsPDFDocObject: true,
+    orientationLandscape: false,
+    compress: true,
+    logo: {
+      src: logoUrl,
+      width: 25,
+      height: 25,
+      margin: { top: 0, left: 0 },
+    },
+    business: {
+      name: societe.sigle.toUpperCase(),
+      address: societe.siege,
+      phone: societe.phone,
+      email: societe.email,
+    },
+    contact: {
+      name: commercial.user.name,
+      address: 'payé par Espèce',
+    },
+    invoice: {
+      label: '#: ',
+      num: `${encaissement.code}/${bordereau.code}`,
+      invDate: `Encaissé le ${encaissement.created_at}`,
+      headerBorder: true,
+      tableBodyBorder: true,
+      header: [{ title: 'Code de bordereau' }, { title: "Nbre d'emplacement" }, { title: 'Montant à collecter' }, { title: 'Montant collecté' }],
+      table: Array.from(Array(1), () => [
+        bordereau.code,
+        bordereau.nombre,
+        window.$nuxt.$options.filters.currency(bordereau.exacteCollecte),
+        window.$nuxt.$options.filters.currency(bordereau.total),
+      ]),
+      additionalRows: [
+        {
+          col1: 'Montant versé',
+          col2: String(encaissement.payable.versement),
+          col3: 'FCFA',
+          style: { fontSize: 14 },
+        },
+        {
+          col1: 'Monnaie rendue:',
+          col2: String(encaissement.payable.versement - encaissement.payable.montant),
+          col3: 'FCFA',
+          style: { fontSize: 10 },
+        },
+      ],
+      invDescLabel: '',
+      invDesc: `Fait par ${responsable}, imprimé le ${window.$nuxt.$moment().format('ll')}`,
+    },
+    footer: {
+      text: `${societe.sigle} situé à ${societe.siege}, contact:${societe.smartphone} SARL au capital de ${societe.capital}`,
+    },
+    pageEnable: false,
+    pageLabel: 'Page ',
+  }
+  const pdfObject = jsPDFInvoiceTemplate(property)
+  pdfObject.jsPDFDocObject.save('recu-' + encaissement.code)
+}
 const caissePointPrinter = (societe, infos, logoUrl) => {
   const property = {
     outputType: 'save',
@@ -578,6 +642,7 @@ export {
   remove,
   add,
   invoicePrinter,
+  invoiceBordereauPrinter,
   caissePointPrinter,
   errorHandling,
   facturePrinter,
