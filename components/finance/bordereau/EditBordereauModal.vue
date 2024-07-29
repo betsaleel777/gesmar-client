@@ -1,9 +1,7 @@
 <template>
   <b-modal v-model="dialog" hide-footer size="lg" scrollable>
     <template #modal-header>
-      <h5 v-if="bordereau.code" id="archiver" class="modal-title text-primary">
-        modifier le bordereau {{ bordereau.code }}
-      </h5>
+      <h5 v-if="bordereau.code" id="archiver" class="modal-title text-primary">modifier le bordereau {{ bordereau.code }}</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -11,21 +9,13 @@
     <template #default>
       <v-app>
         <b-overlay :show="$fetchState.pending || submiting" spinner-variant="primary" rounded="sm">
-          <h5 v-if="bordereauExist" class="text-center">
-            Bordereau du commercial {{ bordereau.commercial.user.name }}
-          </h5>
+          <h5 v-if="bordereauExist" class="text-center">Bordereau du commercial {{ bordereau.commercial.user.name }}</h5>
           <ValidationObserver ref="form" v-slot="{ handleSubmit }">
             <ValidationProvider v-slot="{ errors }" name="emplacements">
               <v-alert v-if="errors.length > 0" type="error" outlined>{{ errors }}</v-alert>
-              <TableauEditBordereau
-                v-if="bordereauExist"
-                :key="bordereau.toString()"
-                @selected="onSelected"
-              />
+              <TableauEditBordereau v-if="bordereauExist" :key="bordereau.toString()" @selected="onSelected" />
             </ValidationProvider>
-            <v-btn color="primary" :loading="submiting" block @click="handleSubmit(save)"
-              >confirmer les modifications</v-btn
-            >
+            <v-btn color="primary" :loading="submiting" block @click="handleSubmit(save)">confirmer les modifications</v-btn>
           </ValidationObserver>
         </b-overlay>
       </v-app>
@@ -54,7 +44,9 @@ export default {
   },
   async fetch() {
     await this.getOne(this.id)
-    this.assignation.emplacements = this.bordereau.emplacements.map(({ id }) => id)
+    this.assignation.emplacements = this.bordereau.emplacements.map(({ id, loyer }) => {
+      return { id, loyer }
+    })
   },
   computed: {
     ...mapGetters({ bordereau: MODULES.BORDEREAU.GETTERS.BORDEREAU }),
@@ -83,7 +75,9 @@ export default {
         .finally(() => (this.submiting = false))
     },
     onSelected(selected) {
-      this.assignation.emplacements = selected.map(({ id }) => id)
+      this.assignation.emplacements = selected.map(({ id, loyer }) => {
+        return { id, loyer }
+      })
     },
   },
 }

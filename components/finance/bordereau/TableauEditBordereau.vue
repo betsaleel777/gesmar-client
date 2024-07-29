@@ -1,13 +1,6 @@
 <template>
   <v-container>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Rechercher"
-      single-line
-      hide-details
-      dense
-    ></v-text-field>
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher" single-line hide-details dense></v-text-field>
     <v-data-table
       v-model="selected"
       dense
@@ -64,5 +57,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped></style>

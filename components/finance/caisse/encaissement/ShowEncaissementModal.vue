@@ -34,11 +34,6 @@
                 <p class="mg-b-0"><b>Guichet: </b> {{ encaissement.ouverture.guichet.nom }}</p>
                 <p class="mg-b-0"><b>Nature d'opération: </b>Espèce</p>
               </div>
-              <!-- <div class="col-sm-5 col-lg-5 text-right">
-                <h6 class="tx-15 mg-b-10">A PAYER: {{ encaissement.ordonnancement.total | currency }}</h6>
-                <p class="mg-b-0"><b>Code: </b>{{ encaissement.code }}</p>
-                <p class="mg-b-0"><b>Contrat: </b>{{ encaissement.ordonnancement.contrat.code }}</p>
-              </div> -->
             </div>
             <div v-else class="row">
               <div v-if="encaissement.ouverture" class="col-sm-7 col-lg-7">

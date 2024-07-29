@@ -1,9 +1,7 @@
 <template>
   <b-modal v-model="dialog" hide-footer size="lg" scrollable>
     <template #modal-header>
-      <h5 v-if="commercial.user" class="modal-title text-primary">
-        Attribuer les emplacements au commercial {{ commercial.user.name }}
-      </h5>
+      <h5 v-if="commercial.user" class="modal-title text-primary">Attribuer les emplacements au commercial {{ commercial.user.name }}</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
         <span aria-hidden="true"><feather type="x" /></span>
       </button>
@@ -83,15 +81,8 @@
                 </ValidationProvider>
               </v-col>
             </v-row>
-            <TableauAttributionEmplacement
-              :key="zoneKey"
-              :infos="infos"
-              :zones="zonesSelected"
-              @selected="onSelected"
-            />
-            <v-btn color="primary" :loading="submiting" block @click="handleSubmit(save)"
-              >assigner les emplacements</v-btn
-            >
+            <TableauAttributionEmplacement :key="zoneKey" :infos="infos" :zones="zonesSelected" @selected="onSelected" />
+            <v-btn color="primary" :loading="submiting" block @click="handleSubmit(save)">assigner les emplacements</v-btn>
           </ValidationObserver>
         </b-overlay>
       </v-app>
@@ -163,7 +154,9 @@ export default {
         .finally(() => (this.submiting = false))
     },
     onSelected(selected) {
-      this.attribution.emplacements = selected.map(({ id }) => id)
+      this.attribution.emplacements = selected.map(({ id, loyer }) => {
+        return { id, loyer }
+      })
     },
     allowedDates(date) {
       return !this.excludedDates.includes(this.$moment(date).format('DD-MM-YYYY'))
@@ -175,5 +168,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped></style>
