@@ -11,10 +11,6 @@ export const actions = {
     const requete = await this.$axios.get('api/parametres/annexes')
     commit('SET_ANNEXES', requete.data.annexes)
   },
-  async getFree({ commit }) {
-    const requete = await this.$axios.get('api/parametres/annexes/free')
-    commit('SET_ANNEXES', requete.data.annexes)
-  },
   async getTrashAll({ commit }) {
     const requete = await this.$axios.get('api/parametres/annexes/trashed')
     commit('SET_ANNEXES', requete.data.annexes)
