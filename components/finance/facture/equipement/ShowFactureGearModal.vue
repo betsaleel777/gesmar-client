@@ -31,7 +31,7 @@
               <div class="col-sm-8 col-lg-8">
                 <p class="mg-b-0"><b>Client: </b>{{ facture.personne.alias }}</p>
                 <p v-if="facture.personne.contact" class="mg-b-0"><b>Contact: </b>{{ facture.personne.contact }}</p>
-                <p class="mg-b-0"><b>Type d'équipement: </b>{{ facture.equipement.type.nom.toUpperCase() }}</p>
+                <p class="mg-b-0"><b>Equipement: </b>{{ facture.equipement.code }}-{{ facture.equipement.type.nom.toUpperCase() }}</p>
               </div>
               <div class="col-sm-4 col-lg-4 text-right">
                 <p class="mg-b-0"><b>Code:</b> {{ facture.code }}</p>
@@ -43,10 +43,11 @@
               <table class="table table-invoice bd-b">
                 <thead>
                   <tr>
-                    <th class="wd-25p">Code</th>
+                    <th class="wd-25p">Emplacement</th>
                     <th class="tx-left">Mois</th>
                     <th class="tx-center">Départ</th>
                     <th class="tx-center">Fin</th>
+                    <th class="tx-center">Conso Energie</th>
                     <th class="tx-right">Prix unitaire</th>
                     <th class="tx-right">Montant</th>
                   </tr>
@@ -57,6 +58,7 @@
                     <td class="tx-left">{{ $moment(facture.periode).format('MMMM YYYY') }}</td>
                     <td class="tx-center">{{ facture.index_depart }}</td>
                     <td class="tx-center">{{ facture.index_fin }}</td>
+                    <td class="tx-center">{{ Number(facture.index_fin) - Number(facture.index_depart) }}</td>
                     <td class="tx-right">{{ facture.equipement.abonnementActuel.prix_unitaire | currency }}</td>
                     <td class="tx-right">{{ montant | currency }}</td>
                   </tr>

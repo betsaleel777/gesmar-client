@@ -9,35 +9,70 @@
     <v-app>
       <v-container fluid>
         <v-form>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="mois"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-            class="mb-5"
-          >
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                v-model="mois"
-                label="Sélection du mois"
-                prepend-inner-icon="mdi-calendar"
-                readonly
-                outlined
-                dense
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false"> Annuler </v-btn>
-              <v-btn text color="primary" @click="getAbonnements(mois + '-01')"> OK </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-row>
+            <v-col col="6">
+              <v-menu
+                ref="menu"
+                v-model="menuMonth"
+                :close-on-content-click="false"
+                :return-value.sync="mois"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+                class="mb-5"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="mois"
+                    label="Sélection du mois"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    dense
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="mois" locale="fr" type="month" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menuMonth = false"> Annuler </v-btn>
+                  <v-btn text color="primary" @click="getAbonnements(mois + '-01')"> OK </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col col="6">
+              <v-menu
+                ref="menu"
+                v-model="menuDateLimite"
+                :close-on-content-click="false"
+                :return-value.sync="date_limte"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+                class="mb-5"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date_limite"
+                    label="Sélection de la date limite"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    dense
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date_limite" locale="fr" type="date" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menuDateLimite = false"> Annuler </v-btn>
+                  <v-btn text color="primary"> OK </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
           <div v-if="loading" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </div>
@@ -80,7 +115,6 @@
               </tbody>
             </template>
           </v-simple-table>
-          <!-- <pre>{{ factures }}</pre> -->
         </v-form>
       </v-container>
     </v-app>
@@ -99,11 +133,13 @@ export default {
   mixins: [modal],
   data: () => ({
     submiting: false,
-    menu: false,
+    menuMonth: false,
+    menuDateLimite: false,
     search: null,
     factures: [],
     loading: false,
     mois: '',
+    date_limite: '',
     errors: [],
   }),
   computed: {
@@ -121,12 +157,12 @@ export default {
         this.$refs.menu.save(this.mois)
         this.loading = true
         this.getMonthRental(date).then(({ abonnements }) => {
-          this.factures = abonnements.map(({ emplacement, equipement: { id, nom, prix_fixe: prix }, index_depart: depart }) => {
+          this.factures = abonnements.map(({ emplacement, equipement: { id, code: compteur, prix_fixe: prix }, index_depart: depart }) => {
             const { contrat, code } = emplacement
             return {
               contrat_id: contrat.id,
               equipement_id: id,
-              compteur: nom,
+              compteur,
               client: contrat.personne.alias,
               index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
               index_fin: null,

@@ -58,21 +58,9 @@ const initialeInvoicePrinter = (societe, facture, logoUrl) => {
       ]),
       additionalRows: [
         {
-          col1: 'Montant dû:',
+          col1: 'Montant total:',
           col2: '',
           col3: String(window.$nuxt.$options.filters.currency(facture.total)),
-          style: { fontSize: 11 },
-        },
-        {
-          col1: 'Montant versé:',
-          col2: '',
-          col3: String(window.$nuxt.$options.filters.currency(facture.sommeVersee)),
-          style: { fontSize: 11 },
-        },
-        {
-          col1: 'Reste à payer:',
-          col2: '',
-          col3: String(window.$nuxt.$options.filters.currency(facture.total - facture.sommeVersee)),
           style: { fontSize: 11 },
         },
       ],
