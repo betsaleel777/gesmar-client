@@ -3,7 +3,9 @@
     <template #modal-header>
       <h5 class="modal-title text-primary">Générer les factures des équipements</h5>
       <button type="button" class="close" aria-label="Close" @click="dialog = false">
-        <span aria-hidden="true"><feather type="x" /></span>
+        <span aria-hidden="true">
+          <feather type="x" />
+        </span>
       </button>
     </template>
     <v-app>
@@ -12,7 +14,7 @@
           <v-row>
             <v-col col="6">
               <v-menu
-                ref="menu"
+                ref="menuMonth"
                 v-model="menuMonth"
                 :close-on-content-click="false"
                 :return-value.sync="mois"
@@ -43,10 +45,10 @@
             </v-col>
             <v-col col="6">
               <v-menu
-                ref="menu"
+                ref="menuDateLimite"
                 v-model="menuDateLimite"
                 :close-on-content-click="false"
-                :return-value.sync="date_limte"
+                :return-value.sync="date_limite"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
@@ -65,10 +67,20 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="date_limite" locale="fr" type="date" no-title scrollable>
+                <v-date-picker
+                  v-model="date_limite"
+                  locale="fr"
+                  :min="min"
+                  :max="max"
+                  type="date"
+                  :show-current="currentDate"
+                  :show-adjacent-months="false"
+                  no-title
+                  scrollable
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menuDateLimite = false"> Annuler </v-btn>
-                  <v-btn text color="primary"> OK </v-btn>
+                  <v-btn text color="primary" @click="$refs.menuDateLimite.save(date_limite)"> OK </v-btn>
                 </v-date-picker>
               </v-menu>
             </v-col>
@@ -76,45 +88,26 @@
           <div v-if="loading" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </div>
-          <v-simple-table v-else dense>
-            <template #default>
-              <thead>
-                <tr>
-                  <th class="text-left" style="width: 1%">N</th>
-                  <th class="text-left">Client</th>
-                  <th class="text-left">Emplacement</th>
-                  <th class="text-left">Equipement</th>
-                  <th class="text-left">Index Départ</th>
-                  <th class="text-left" style="width: 20%">Index Fin</th>
-                  <th class="text-right">Montant</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(facture, index) in factures" :key="index">
-                  <td>
-                    <b>{{ index + 1 }}</b>
-                  </td>
-                  <td>{{ facture.client }}</td>
-                  <td>{{ facture.code }}</td>
-                  <td>{{ facture.compteur }}</td>
-                  <td>
-                    <span v-if="facture.contrat.facturesEquipements.length > 0">{{ facture.contrat.facturesEquipements[0].index_fin }}</span>
-                    <span v-else>{{ facture.index_depart }}</span>
-                  </td>
-                  <td>
-                    <v-text-field
-                      v-model.number="facture.index_fin"
-                      dense
-                      :error="facture.exist"
-                      :error-messages="facture.message"
-                      @keyup="calculMontant(index)"
-                    ></v-text-field>
-                  </td>
-                  <td class="text-right">{{ facture.montant | currency }}</td>
-                </tr>
-              </tbody>
+          <v-data-table :headers="headers" :search="search" :items="factures" dense>
+            <template #top>
+              <v-text-field v-model="search" label="Rechercher ..." class="my-0"></v-text-field>
             </template>
-          </v-simple-table>
+            <template #montant="{ item }"> {{ item.montant | currency }} </template>
+            <template #[`item.index_fin`]="props">
+              <v-edit-dialog
+                :return-value.sync="props.item.index_fin"
+                @save="saveDialog(props.item)"
+                @cancel="cancelDialog(props.item)"
+                @close="closeDialog(props.item)"
+                @open="openDialog(props.item)"
+              >
+                {{ props.item.index_fin }}
+                <template #input>
+                  <v-text-field v-model="props.item.index_fin" label="Index relévé" single-line counter autofocus></v-text-field>
+                </template>
+              </v-edit-dialog>
+            </template>
+          </v-data-table>
         </v-form>
       </v-container>
     </v-app>
@@ -141,10 +134,30 @@ export default {
     mois: '',
     date_limite: '',
     errors: [],
+    dialogRule: (item) => item.index_fin >= item.index_depart || 'index incorrect',
+    headers: [
+      { text: 'Emplacement', align: 'start', value: 'code', sortable: false },
+      { text: 'Client', align: 'start', value: 'client' },
+      { text: 'Equipement', align: 'start', value: 'compteur', sortable: false },
+      { text: 'Départ', align: 'start', value: 'index_depart' },
+      { text: 'Fin', align: 'start', value: 'index_fin', sortable: false },
+      { text: 'Montant', align: 'start', value: 'montant' },
+    ],
   }),
   computed: {
     errorFind() {
-      return this.factures.some(({ exist }) => exist) || this.factures.length === 0
+      return true
+    },
+    currentDate() {
+      return this.$moment(this.mois + '-01')
+        .add(1, 'M')
+        .format('YYYY-MM-DD')
+    },
+    min() {
+      return this.mois ? this.$moment(this.currentDate).startOf('month').format('YYYY-MM-DD') : undefined
+    },
+    max() {
+      return this.mois ? this.$moment(this.currentDate).endOf('month').format('YYYY-MM-DD') : undefined
     },
   },
   methods: {
@@ -154,45 +167,46 @@ export default {
     }),
     getAbonnements(date) {
       if (date) {
-        this.$refs.menu.save(this.mois)
         this.loading = true
+        this.$refs.menuMonth.save(this.mois)
         this.getMonthRental(date).then(({ abonnements }) => {
-          this.factures = abonnements.map(({ emplacement, equipement: { id, code: compteur, prix_fixe: prix }, index_depart: depart }) => {
-            const { contrat, code } = emplacement
-            return {
-              contrat_id: contrat.id,
-              equipement_id: id,
-              compteur,
-              client: contrat.personne.alias,
-              index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
-              index_fin: null,
-              code,
-              periode: this.mois + '-01',
-              prix,
-              montant: 0,
-              exist: false,
-              message: null,
-              contrat,
+          this.factures = abonnements.map(
+            ({ id, emplacement, equipement: { id: equipement_id, code: compteur, prix_unitaire, prix_fixe, frais_facture }, index_depart: depart }) => {
+              const { contrat, code } = emplacement
+              return {
+                id,
+                contrat_id: contrat.id,
+                equipement_id,
+                compteur,
+                client: contrat.personne.alias,
+                index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
+                index_fin: 0,
+                code,
+                periode: this.mois + '-01',
+                prix_unitaire,
+                prix_fixe,
+                frais_facture,
+                montant: 0,
+                contrat,
+              }
             }
-          })
+          )
           this.loading = false
         })
       }
     },
-    calculMontant(index) {
-      const facture = this.factures[index]
-      facture.exist = false
-      facture.message = null
-      const { index_depart: depart, prix, contrat } = facture
-      const factures = contrat.facturesEquipements
-      const indexCourant = factures.length > 0 ? factures[0].index_fin : depart
-      if (facture.index_fin > indexCourant) {
-        facture.montant = prix * Math.abs(facture.index_fin - indexCourant)
-      } else {
-        facture.exist = true
-        facture.message = "Valeur incorrecte de l'index"
-      }
-    },
+    // calculMontant(index) {
+    //   const facture = this.factures[index]
+    //   const { index_depart: depart, prix, contrat } = facture
+    //   const factures = contrat.facturesEquipements
+    //   const indexCourant = factures.length > 0 ? factures[0].index_fin : depart
+    //   if (facture.index_fin >= indexCourant) {
+    //     facture.montant = prix * Math.abs(facture.index_fin - indexCourant)
+    //   } else {
+    //     facture.exist = true
+    //     facture.message = "Valeur incorrecte de l'index"
+    //   }
+    // },
     save() {
       this.submiting = true
       this.ajouter(this.factures)
@@ -202,6 +216,10 @@ export default {
         })
         .finally(() => (this.submiting = false))
     },
+    cancelDialog(props) {},
+    closeDialog(props) {},
+    saveDialog(props) {},
+    openDialog(props) {},
   },
 }
 </script>
