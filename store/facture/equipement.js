@@ -28,33 +28,31 @@ export const actions = {
   },
 
   async getSearch({ commit }, payload) {
-    const requete = await this.$axios.get(
-      `api/finances/factures/equipements/search/${payload.search}/paginate?page=${payload.page}`
-    )
+    const requete = await this.$axios.get(`api/finances/factures/equipements/search/${payload.search}/paginate?page=${payload.page}`)
     commit('SET_FACTURE', requete.data)
   },
 
   async modifier({ dispatch }, payload) {
     const requete = await this.$axios.put('api/finances/factures/equipements/' + payload.id, payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async supprimer({ dispatch }, id) {
     const requete = await this.$axios.delete('api/finances/factures/equipements/' + id)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async restaurer({ dispatch }, id) {
     const requete = await this.$axios.patch('api/finances/factures/equipements/restore/' + id)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 
   async ajouter({ dispatch }, payload) {
     const requete = await this.$axios.post('api/finances/factures/equipements/store', payload)
-    dispatch('getAll')
+    dispatch('getPaginate')
     return { message: requete.data.message }
   },
 }

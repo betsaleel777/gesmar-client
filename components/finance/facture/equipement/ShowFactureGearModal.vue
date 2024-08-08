@@ -59,16 +59,35 @@
                     <td class="tx-center">{{ facture.index_depart }}</td>
                     <td class="tx-center">{{ facture.index_fin }}</td>
                     <td class="tx-center">{{ Number(facture.index_fin) - Number(facture.index_depart) }}</td>
-                    <td class="tx-right">{{ facture.equipement.abonnementActuel.prix_unitaire | currency }}</td>
+                    <td class="tx-right">{{ facture.montant_equipement | currency }}</td>
                     <td class="tx-right">{{ montant | currency }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="row justify-content-between mg-t-25">
-              <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
-              <div class="col-sm-6 col-lg-4 order-1 order-sm-0">
-                <ul class="list-unstyled lh-7"></ul>
+              <div class="col-sm-6 col-lg-7 order-2 order-sm-0 mg-t-40 mg-sm-t-0">Date limite de paiement<b></b></div>
+              <div class="col-sm-6 col-lg-5 order-1 order-sm-0">
+                <ul class="list-unstyled lh-7">
+                  <li class="d-flex justify-content-between">
+                    <span>Primes fixes mensuelles:</span>
+                    <span>{{ facture.prix_fixe | currency }}</span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <span>Frais de facturation interne:</span>
+                    <span>{{ facture.frais_facture | currency }}</span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <span>Impayées:</span>
+                    <span>{{ 0 | currency }}</span>
+                  </li>
+                  <li class="d-flex justify-content-between">
+                    <span>Total:</span>
+                    <span
+                      ><b>{{ facture.total | currency }}</b></span
+                    >
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -101,7 +120,7 @@ export default {
   computed: {
     ...mapGetters({ societe: MODULES.APPLICATION.GETTERS.SOCIETE, url: MODULES.MEDIA.GETTERS.URL }),
     montant() {
-      return (this.facture.index_fin - this.facture.index_depart) * this.facture.equipement.abonnementActuel.prix_unitaire
+      return (this.facture.index_fin - this.facture.index_depart) * this.facture.montant_equipement
     },
   },
   methods: {

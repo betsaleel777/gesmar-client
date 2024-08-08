@@ -12,7 +12,7 @@
       <v-container fluid>
         <v-form>
           <v-row>
-            <v-col col="6">
+            <v-col cols="12" md="6" sm="6">
               <v-menu
                 ref="menuMonth"
                 v-model="menuMonth"
@@ -43,7 +43,7 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
-            <v-col col="6">
+            <v-col cols="12" md="6" sm="6">
               <v-menu
                 ref="menuDateLimite"
                 v-model="menuDateLimite"
@@ -88,26 +88,44 @@
           <div v-if="loading" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
           </div>
-          <v-data-table :headers="headers" :search="search" :items="factures" dense>
-            <template #top>
-              <v-text-field v-model="search" label="Rechercher ..." class="my-0"></v-text-field>
-            </template>
-            <template #montant="{ item }"> {{ item.montant | currency }} </template>
-            <template #[`item.index_fin`]="props">
-              <v-edit-dialog
-                :return-value.sync="props.item.index_fin"
-                @save="saveDialog(props.item)"
-                @cancel="cancelDialog(props.item)"
-                @close="closeDialog(props.item)"
-                @open="openDialog(props.item)"
-              >
-                {{ props.item.index_fin }}
-                <template #input>
-                  <v-text-field v-model="props.item.index_fin" label="Index relévé" single-line counter autofocus></v-text-field>
+          <v-row class="mt-0">
+            <v-col cols="12" md="9">
+              <v-data-table :headers="headers" :search="search" :items="factures" :items-per-page="3" dense locale="fr">
+                <template #top>
+                  <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher ..." class="my-0"></v-text-field>
                 </template>
-              </v-edit-dialog>
-            </template>
-          </v-data-table>
+                <template #[`item.montant`]="{ item }"> {{ item.montant | currency }} </template>
+                <template #[`item.index_fin`]="{ item, index }">
+                  <v-text-field v-model.number="item.index_fin" dense @change="draft(index)"></v-text-field>
+                </template>
+                <div class="text-center pt-2"></div>
+              </v-data-table>
+            </v-col>
+            <v-divider vertical class="my-5"></v-divider>
+            <v-col cols="12" md="3">
+              <v-container>
+                <v-list two-line subheader>
+                  <v-subheader inset>Aperçu</v-subheader>
+                  <v-list-item v-for="(apercu, index) in apercus" :key="index">
+                    <v-list-item-content>
+                      <v-list-item-title
+                        ><b>{{ apercu.compteur }}</b></v-list-item-title
+                      >
+                      <v-list-item-subtitle
+                        >l'index relevé est <b>{{ apercu.index_fin }}</b></v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn icon>
+                        <v-icon v-if="apercu.error" color="error">mdi-cancel</v-icon>
+                        <v-icon v-else color="success">mdi-check</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-container>
+            </v-col>
+          </v-row>
         </v-form>
       </v-container>
     </v-app>
@@ -130,23 +148,22 @@ export default {
     menuDateLimite: false,
     search: null,
     factures: [],
+    apercus: [],
     loading: false,
     mois: '',
     date_limite: '',
-    errors: [],
-    dialogRule: (item) => item.index_fin >= item.index_depart || 'index incorrect',
     headers: [
       { text: 'Emplacement', align: 'start', value: 'code', sortable: false },
       { text: 'Client', align: 'start', value: 'client' },
       { text: 'Equipement', align: 'start', value: 'compteur', sortable: false },
       { text: 'Départ', align: 'start', value: 'index_depart' },
-      { text: 'Fin', align: 'start', value: 'index_fin', sortable: false },
+      { text: 'Fin', align: 'start', value: 'index_fin', width: '10%', sortable: false },
       { text: 'Montant', align: 'start', value: 'montant' },
     ],
   }),
   computed: {
     errorFind() {
-      return true
+      return this.apercus.length > 0 ? this.apercus.some((elt) => elt.montant < 0) : true
     },
     currentDate() {
       return this.$moment(this.mois + '-01')
@@ -180,7 +197,7 @@ export default {
                 compteur,
                 client: contrat.personne.alias,
                 index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
-                index_fin: 0,
+                index_fin: null,
                 code,
                 periode: this.mois + '-01',
                 prix_unitaire,
@@ -188,6 +205,7 @@ export default {
                 frais_facture,
                 montant: 0,
                 contrat,
+                error: false,
               }
             }
           )
@@ -195,32 +213,26 @@ export default {
         })
       }
     },
-    // calculMontant(index) {
-    //   const facture = this.factures[index]
-    //   const { index_depart: depart, prix, contrat } = facture
-    //   const factures = contrat.facturesEquipements
-    //   const indexCourant = factures.length > 0 ? factures[0].index_fin : depart
-    //   if (facture.index_fin >= indexCourant) {
-    //     facture.montant = prix * Math.abs(facture.index_fin - indexCourant)
-    //   } else {
-    //     facture.exist = true
-    //     facture.message = "Valeur incorrecte de l'index"
-    //   }
-    // },
     save() {
       this.submiting = true
-      this.ajouter(this.factures)
+      this.ajouter({ date_limite: this.date_limite, factures: this.apercus })
         .then(({ message }) => {
           this.$notify({ text: message, title: 'succès de la création'.toLocaleUpperCase(), type: 'success' })
           this.dialog = false
         })
         .finally(() => (this.submiting = false))
     },
-    cancelDialog(props) {},
-    closeDialog(props) {},
-    saveDialog(props) {},
-    openDialog(props) {},
+    draft(index) {
+      const facture = this.factures[index]
+      const exists = this.apercus.some((elt) => elt.id === facture.id)
+      facture.montant = facture.prix_unitaire * (facture.index_fin - facture.index_depart)
+      facture.error = facture.montant < 0
+      if (!isNaN(parseInt(facture.index_fin)) && !exists) {
+        this.apercus.push(facture)
+      } else if (exists) {
+        this.apercus.splice(index, 1, facture)
+      } else this.apercus.splice(index, 1)
+    },
   },
 }
 </script>
-<style></style>
