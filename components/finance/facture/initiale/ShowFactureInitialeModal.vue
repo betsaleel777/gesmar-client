@@ -66,7 +66,7 @@
                 </tbody>
               </table>
             </div>
-            <div class="row justify-content-between mg-t-25">
+            <!-- <div class="row justify-content-between mg-t-25">
               <div class="col-sm-6 col-lg-8 order-2 order-sm-0 mg-t-40 mg-sm-t-0"></div>
               <div class="col-sm-6 col-lg-4 order-1 order-sm-0">
                 <ul class="list-unstyled lh-7">
@@ -82,7 +82,7 @@
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </b-overlay>
