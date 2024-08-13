@@ -490,6 +490,7 @@ export const MODULES = Object.freeze({
     }),
     ACTIONS: Object.freeze({
       ALL: personneRoot + 'getAll',
+      FOR_SELECT: personneRoot + 'getForSelect',
       TRASHED: personneRoot + 'getTrashAll',
       BY_MARCHE: personneRoot + 'getByMarche',
       ONE: personneRoot + 'getOne',

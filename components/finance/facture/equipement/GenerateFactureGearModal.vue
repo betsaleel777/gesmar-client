@@ -85,12 +85,9 @@
               </v-menu>
             </v-col>
           </v-row>
-          <div v-if="loading" class="text-center">
-            <v-progress-circular indeterminate color="primary"></v-progress-circular>
-          </div>
           <v-row class="mt-0">
             <v-col cols="12" md="9">
-              <v-data-table :headers="headers" :search="search" :items="factures" :items-per-page="3" dense locale="fr">
+              <v-data-table :headers="headers" :search="search" :items="factures" :items-per-page="5" :loading="loading" dense locale="fr">
                 <template #top>
                   <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher ..." class="my-0"></v-text-field>
                 </template>
@@ -158,7 +155,7 @@ export default {
       { text: 'Equipement', align: 'start', value: 'compteur', sortable: false },
       { text: 'Départ', align: 'start', value: 'index_depart' },
       { text: 'Fin', align: 'start', value: 'index_fin', width: '10%', sortable: false },
-      { text: 'Montant', align: 'start', value: 'montant' },
+      { text: 'Montant', align: 'end', value: 'montant' },
     ],
   }),
   computed: {

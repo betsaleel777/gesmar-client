@@ -101,7 +101,7 @@ export const actions = {
   },
 
   async getFreeByMarchePersonne({}, payload) {
-    const requete = await this.$axios.get(`api/parametres/emplacements/marche/${payload.marche}/personne/${payload.personne}/free`)
+    const requete = await this.$axios.get(`api/parametres/emplacements/free/by-site-personne`, { params: payload })
     return requete.data
   },
 
