@@ -160,7 +160,7 @@ export default {
   }),
   computed: {
     errorFind() {
-      return this.apercus.length > 0 ? this.apercus.some((elt) => elt.montant < 0) : true
+      return this.apercus.length > 0 ? this.apercus.some(({ prix_unitaire, index_fin, index_depart }) => prix_unitaire * (index_fin - index_depart) < 0) : true
     },
     currentDate() {
       return this.$moment(this.mois + '-01')
@@ -201,7 +201,6 @@ export default {
                 prix_fixe,
                 frais_facture,
                 montant: 0,
-                contrat,
                 error: false,
               }
             }
@@ -212,7 +211,8 @@ export default {
     },
     save() {
       this.submiting = true
-      this.ajouter({ date_limite: this.date_limite, factures: this.apercus })
+      const factures = this.apercus.map(({ id, code, client, ...factures }) => factures)
+      this.ajouter({ date_limite: this.date_limite, factures })
         .then(({ message }) => {
           this.$notify({ text: message, title: 'succès de la création'.toLocaleUpperCase(), type: 'success' })
           this.dialog = false
@@ -222,8 +222,9 @@ export default {
     draft(index) {
       const facture = this.factures[index]
       const exists = this.apercus.some((elt) => elt.id === facture.id)
-      facture.montant = facture.prix_unitaire * (facture.index_fin - facture.index_depart)
-      facture.error = facture.montant < 0
+      const coutEnergie = facture.prix_unitaire * (facture.index_fin - facture.index_depart)
+      facture.montant = coutEnergie + facture.frais_facture + facture.prix_fixe
+      facture.error = coutEnergie < 0
       if (!isNaN(parseInt(facture.index_fin)) && !exists) {
         this.apercus.push(facture)
       } else if (exists) {
