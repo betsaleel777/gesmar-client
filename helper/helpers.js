@@ -271,15 +271,21 @@ const ordonnancementPrinter = (societe, ordonnancement, logoUrl) => {
       label: '#: ',
       num: `${ordonnancement.code}/${ordonnancement.contrat.code}`,
       invDate: window.$nuxt.$moment(ordonnancement.created_at).format('ll'),
-      invGenDate: `fait le ${window.$nuxt.$moment().format('ll')} \n ${labelProduct}: ${produit.code}`,
+      invGenDate: `fait le ${window.$nuxt.$moment().format('ll')}`,
       headerBorder: true,
       tableBodyBorder: true,
-      header: [{ title: '#', style: { width: 10 } }, { title: 'Code' }, { title: 'Mois' }, { title: 'Statut' }, { title: 'Montant', style: { width: 20 } }],
+      header: [
+        { title: '#', style: { width: 10 } },
+        { title: 'Code' },
+        { title: 'Mois' },
+        { title: `${labelProduct}` },
+        { title: 'Montant', style: { width: 20 } },
+      ],
       table: Array.from(Array(factures.length), (item, index) => [
         index + 1,
         factures[index].code,
         window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') ? window.$nuxt.$moment(factures[index].periode).format('MMMM YYYY') : 'Aucun',
-        factures[index].status,
+        `${produit.code}`,
         window.$nuxt.$options.filters.currency(factures[index].loyer) ??
           window.$nuxt.$options.filters.currency(factures[index].montant) ??
           window.$nuxt.$options.filters.currency(factures[index].equipement) ??
