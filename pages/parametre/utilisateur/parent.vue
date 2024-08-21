@@ -22,29 +22,20 @@
         >Permissions</b-nav-item
       >
     </b-nav>
-    <ListeUser class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
-
 <script>
-import ListeUser from '~/components/utilisateur/ListeUser.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, ListeUser },
+  components: { PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Configuration de marché' }],
+    liens: [{ path: '#', text: 'Parametres Caisse' }],
     link: ['bg-light', 'text-primary'],
     activeClass: 'bg-white text-primary',
   }),
   head: {
-    title: 'Utilisateurs',
-    meta: [
-      {
-        hid: 'Utilisateurs',
-        name: 'Utilisateurs',
-        content: 'Liste des utilisateurs',
-      },
-    ],
+    titleTemplate: 'Parametrage des utilisateurs - %s',
   },
   methods: {
     active(route) {

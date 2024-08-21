@@ -30,29 +30,20 @@
         >Banque</b-nav-item
       >
     </b-nav>
-    <ListeGuichet class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
-
 <script>
-import ListeGuichet from '~/components/caisse/guichet/ListeGuichet.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, ListeGuichet },
+  components: { PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Configuration de marché' }],
+    liens: [{ path: '#', text: 'Parametres Caisse' }],
     link: ['bg-light', 'text-primary'],
     activeClass: 'bg-white text-primary',
   }),
   head: {
-    title: 'Guichets',
-    meta: [
-      {
-        hid: 'Guichets',
-        name: 'Guichets',
-        content: 'Liste des guichets',
-      },
-    ],
+    titleTemplate: 'Parametrage de caisse %s',
   },
   methods: {
     active(route) {
