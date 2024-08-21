@@ -5,7 +5,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   env: { API: process.env.API },
   head: {
-    title: 'gesmar',
+    titleTemplate: '%s Gesmar',
     htmlAttrs: { lang: 'fr' },
     meta: [
       { charset: 'utf-8' },
@@ -86,6 +86,10 @@ export default {
       'BProgress',
       'BFormFile',
       'BButton',
+      'BNav',
+      'BNavItem',
+      'BCardHeader',
+      'BCardBody',
     ],
     componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
   },

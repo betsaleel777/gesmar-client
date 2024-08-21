@@ -15,7 +15,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/site')"
+        :exact-active-class="active('/parametre/architecture/parent/site')"
         >Marchés</b-nav-item
       >
       <b-nav-item
@@ -23,7 +23,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/pavillon')"
+        :exact-active-class="active('/parametre/architecture/parent/pavillon')"
         >Pavillons</b-nav-item
       >
       <b-nav-item
@@ -31,7 +31,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/niveau')"
+        :exact-active-class="active('/parametre/architecture/parent/niveau')"
         >Niveaux</b-nav-item
       >
       <b-nav-item
@@ -39,7 +39,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/zone')"
+        :exact-active-class="active('/parametre/architecture/parent/zone')"
         >Zones</b-nav-item
       >
       <b-nav-item
@@ -47,7 +47,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/emplacement')"
+        :exact-active-class="active('/parametre/architecture/parent/emplacement')"
         >Emplacements</b-nav-item
       >
       <b-nav-item
@@ -55,7 +55,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/equipement')"
+        :exact-active-class="active('/parametre/architecture/parent/equipement')"
         >Equipements</b-nav-item
       >
       <b-nav-item
@@ -63,7 +63,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/service-annexe')"
+        :exact-active-class="active('/parametre/architecture/parent/service-annexe')"
         >Services Annexes</b-nav-item
       >
       <b-nav-item
@@ -71,7 +71,7 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/type-equipement')"
+        :exact-active-class="active('/parametre/architecture/parent/type-equipement')"
         >Types d'équipement</b-nav-item
       >
       <b-nav-item
@@ -79,32 +79,23 @@
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/type-emplacement')"
+        :exact-active-class="active('/parametre/architecture/parent/type-emplacement')"
         >Types d'emplacement</b-nav-item
       >
     </b-nav>
-    <AcceuilArchitecture class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
-
 <script>
-import AcceuilArchitecture from '~/components/architecture/AcceuilArchitecture.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, AcceuilArchitecture },
+  components: { PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Configuration de marché' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {
-    title: 'Acceuil',
-    meta: [
-      {
-        hid: 'acceuil',
-        name: 'acceuil',
-        content: 'Treemap des sites gérés',
-      },
-    ],
+    titleTemplate: 'Configurations %s',
   },
   methods: {
     active(route) {

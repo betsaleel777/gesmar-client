@@ -1,15 +1,4 @@
-import {
-  site,
-  pavillon,
-  niveau,
-  zone,
-  emplacement,
-  equipement,
-  abonnement,
-  typeEquipement,
-  typeEmplacement,
-  serviceAnnexe,
-} from '~/helper/permissions'
+import { site, pavillon, niveau, zone, emplacement, equipement, typeEquipement, typeEmplacement, serviceAnnexe } from '~/helper/permissions'
 export default {
   computed: {
     disableSite() {
@@ -30,14 +19,14 @@ export default {
     disableEquipement() {
       return !this.$gates.hasAnyPermission(`${equipement.global}|${equipement.own}`)
     },
-    disableAbonnement() {
-      return !this.$gates.hasAnyPermission(`${abonnement.global}|${abonnement.own}`)
+    displayEquipement() {
+      return this.$gates.hasAnyPermission(`${typeEmplacement.global}|${typeEmplacement.own}`)
     },
-    disableSettingMenu() {
-      return !this.$gates.hasAnyPermission(
-        `${typeEquipement.global}|${typeEquipement.own}|${typeEmplacement.global}|${typeEmplacement.own}|${serviceAnnexe.global}|
-        ${serviceAnnexe.own}`
-      )
+    displayEmplacement() {
+      return this.$gates.hasAnyPermission(`${typeEquipement.global}|${typeEquipement.own}`)
+    },
+    displayServices() {
+      return this.$gates.hasAnyPermission(`${serviceAnnexe.global}|${serviceAnnexe.own}`)
     },
   },
 }
