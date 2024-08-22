@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item
         to="/parametre/architecture"
@@ -87,9 +86,7 @@
   </div>
 </template>
 <script>
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Configuration de marché' }],
     link: ['bg-light', 'text-primary'],

@@ -3,17 +3,8 @@
     <div>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <nuxt-link to="/">Acceuil</nuxt-link>
-          </li>
-          <li
-            v-for="(lien, index) in liens"
-            :key="index"
-            class="breadcrumb-item"
-            :class="{ active: liens.length - 1 === index }"
-            aria-current="page"
-          >
-            <nuxt-link v-if="liens.length - 1 !== index" :to="lien.path">{{ lien.text }}</nuxt-link>
+          <li v-for="(lien, index) in liens" :key="index" class="breadcrumb-item" :class="{ active: liens.length - 1 !== index }" aria-current="page">
+            <b-link v-if="liens.length - 1 !== index" :to="lien.path">{{ lien.text }}</b-link>
             <span v-else>{{ lien.text }}</span>
           </li>
         </ol>
@@ -32,4 +23,3 @@ export default {
   },
 }
 </script>
-<style></style>

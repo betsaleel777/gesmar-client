@@ -1,12 +1,11 @@
 <template>
   <div class="container-fluid">
-    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/finance/facture" :active-class="'bg-white text-primary'" :link-classes="link" exact :exact-active-class="active('/finance/facture')"
         >Tableau</b-nav-item
       >
       <b-nav-item
-        to="/finance/facture/parent/demande"
+        to="/finance/facture/parent/initiale"
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
@@ -50,11 +49,8 @@
   </div>
 </template>
 <script>
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Facturations Quittances' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {

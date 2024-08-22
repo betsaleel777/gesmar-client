@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/finance/bordereau" :active-class="'bg-white text-primary'" :link-classes="link" exact :exact-active-class="active('/finance/bordereau')"
         >Tableau</b-nav-item
@@ -27,11 +26,9 @@
 </template>
 <script>
 import TableauBordereau from '~/components/finance/TableauBordereau.vue'
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauBordereau },
+  components: { TableauBordereau },
   data: () => ({
-    liens: [{ path: '#', text: 'Facturations Bordereaux' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {

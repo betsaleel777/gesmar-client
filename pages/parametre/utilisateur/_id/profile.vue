@@ -1,6 +1,5 @@
 <template>
   <div>
-    <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-profile">
       <div class="profile-sidebar">
         <div class="profile-sidebar-header">
@@ -44,52 +43,18 @@
           <div class="nav-wrapper">
             <ul id="profileTab" class="nav nav-line" role="tablist">
               <li class="nav-item">
-                <a
-                  id="overview-tab"
-                  class="nav-link active"
-                  data-toggle="tab"
-                  href="#overview"
-                  role="tab"
-                  aria-controls="overview"
-                  aria-selected="true"
+                <a id="overview-tab" class="nav-link active" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true"
                   >Overview</a
                 >
               </li>
               <li class="nav-item">
-                <a
-                  id="projects-tab"
-                  class="nav-link"
-                  data-toggle="tab"
-                  href="#timeline"
-                  role="tab"
-                  aria-controls="projects"
-                  aria-selected="false"
-                  >Projects</a
-                >
+                <a id="projects-tab" class="nav-link" data-toggle="tab" href="#timeline" role="tab" aria-controls="projects" aria-selected="false">Projects</a>
               </li>
               <li class="nav-item">
-                <a
-                  id="people-tab"
-                  class="nav-link"
-                  data-toggle="tab"
-                  href="#people"
-                  role="tab"
-                  aria-controls="people"
-                  aria-selected="false"
-                  >Connections</a
-                >
+                <a id="people-tab" class="nav-link" data-toggle="tab" href="#people" role="tab" aria-controls="people" aria-selected="false">Connections</a>
               </li>
               <li class="nav-item">
-                <a
-                  id="settings-tab"
-                  class="nav-link"
-                  data-toggle="tab"
-                  href="#settings"
-                  role="tab"
-                  aria-controls="settings"
-                  aria-selected="false"
-                  >Settings</a
-                >
+                <a id="settings-tab" class="nav-link" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
               </li>
             </ul>
           </div>
@@ -141,8 +106,8 @@
                   <h6 class="mg-b-5 tx-semibold">Themepixels, Inc. LTD</h6>
                   <p class="tx-color-03 tx-13">January 2016 - Present</p>
                   <p>
-                    An online-based high performing web and mobile development company, with a passion for
-                    making high quality web-based application and services for businesses and organization.
+                    An online-based high performing web and mobile development company, with a passion for making high quality web-based application and
+                    services for businesses and organization.
                   </p>
                 </div>
               </li>
@@ -199,9 +164,7 @@
   <!-- content-body -->
 </template>
 <script>
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb },
   computed: {
     liens() {
       return [{ path: '#', text: `profile ${this.user.name}` }]

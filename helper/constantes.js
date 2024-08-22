@@ -93,6 +93,14 @@ const REPARATION = Object.freeze({
   finished: 'terminée',
 })
 const SUPERROLE = 'Super-admin'
+const LINKS = Object.freeze({
+  demande: 'Demandes',
+  reception: 'Acceuil reception',
+  prospect: 'Prospects',
+  client: 'Clients',
+  contrat: 'Contrats validés',
+  abonnement: 'Abonnements',
+})
 module.exports = {
   EQUIPEMENT,
   ABONNEMENT,
@@ -111,4 +119,5 @@ module.exports = {
   REPARATION,
   PERSONNE,
   FERMETURE,
+  LINKS,
 }

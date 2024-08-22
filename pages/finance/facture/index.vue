@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/finance/facture" :active-class="'bg-white text-primary'" :link-classes="link" exact :exact-active-class="active('/finance/facture')"
         >Tableau</b-nav-item
@@ -51,9 +50,8 @@
 </template>
 <script>
 import TableauFacture from '~/components/finance/facture/TableauFacture.vue'
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauFacture },
+  components: { TableauFacture },
   data: () => ({
     liens: [{ path: '#', text: 'Facturation Quittance' }],
     link: ['bg-light', 'text-primary'],

@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-    <PartialBreadcrumb :liens="liens" />
     <div class="container">
       <b-overlay :show="$fetchState.pending || processing" spinner-variant="primary" rounded="sm">
         <div class="row">
@@ -8,12 +7,7 @@
             <b-overlay :show="processing" rounded="sm">
               <div class="profile-sidebar-header">
                 <div class="avatar">
-                  <img
-                    v-if="!enterprise.logo"
-                    src="https://via.placeholder.com/500/637382/fff"
-                    class="rounded-circle"
-                    alt=""
-                  />
+                  <img v-if="!enterprise.logo" src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
                   <img v-else :src="enterprise.logo" class="rounded-circle" alt="" />
                 </div>
 
@@ -68,9 +62,7 @@
                   </div>
                 </div>
                 <div class="form-group my-1">
-                  <label class="form-label mg-t-10"
-                    >Nom de la société<span class="text-danger">*</span></label
-                  >
+                  <label class="form-label mg-t-10">Nom de la société<span class="text-danger">*</span></label>
                   <input
                     v-model="societe.nom"
                     type="text"
@@ -83,9 +75,7 @@
                   </span>
                 </div>
                 <div class="form-group my-1">
-                  <label class="form-label mg-t-10"
-                    >Sigle de la société<span class="text-danger">*</span></label
-                  >
+                  <label class="form-label mg-t-10">Sigle de la société<span class="text-danger">*</span></label>
                   <input
                     v-model="societe.sigle"
                     type="text"
@@ -112,36 +102,21 @@
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Contact mobile<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.smartphone"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.smartphone.exist }"
-                  />
+                  <input v-model="societe.smartphone" type="text" class="form-control" :class="{ 'is-invalid': errors.smartphone.exist }" />
                   <span v-if="errors.smartphone.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.smartphone.message }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Téléphone fixe<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.phone"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.phone.exist }"
-                  />
+                  <input v-model="societe.phone" type="text" class="form-control" :class="{ 'is-invalid': errors.phone.exist }" />
                   <span v-if="errors.phone.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.phone.message }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Email<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.email"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.email.exist }"
-                  />
+                  <input v-model="societe.email" type="text" class="form-control" :class="{ 'is-invalid': errors.email.exist }" />
                   <span v-if="errors.email.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.email.message }}</strong>
                   </span>
@@ -159,13 +134,7 @@
                     <strong>{{ errors.capital.message }}</strong>
                   </span>
                 </div>
-                <button
-                  v-can="permissions.edit"
-                  :disabled="processing"
-                  type="button"
-                  class="btn btn-primary float-right text-white"
-                  @click="save"
-                >
+                <button v-can="permissions.edit" :disabled="processing" type="button" class="btn btn-primary float-right text-white" @click="save">
                   enregistrer
                 </button>
               </form>
@@ -179,13 +148,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import { errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
 import { errorHandling } from '~/helper/helpers'
 export default {
-  components: { PartialBreadcrumb, ImagePreview },
+  components: { ImagePreview },
   data: () => ({
     liens: [{ path: '#', text: 'Application' }],
     processing: false,

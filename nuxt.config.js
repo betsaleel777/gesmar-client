@@ -90,6 +90,8 @@ export default {
       'BNavItem',
       'BCardHeader',
       'BCardBody',
+      'BBreadcrumb',
+      'BLink',
     ],
     componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
   },

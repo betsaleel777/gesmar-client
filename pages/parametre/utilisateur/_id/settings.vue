@@ -1,6 +1,5 @@
 <template>
   <div>
-    <PartialBreadcrumb :liens="liens" />
     <div class="content-body">
       <div class="row row-xs">
         <div class="col-md-4">
@@ -73,7 +72,6 @@ import ProfileSetup from '~/components/utilisateur/ProfileSetup.vue'
 import AccountSetup from '~/components/utilisateur/AccountSetup.vue'
 import SecuritySetup from '~/components/utilisateur/SecuritySetup.vue'
 import PermissionSetup from '~/components/utilisateur/PermissionSetup.vue'
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import { utilisateur } from '~/helper/permissions'
 export default {
   components: {
@@ -81,7 +79,6 @@ export default {
     AccountSetup,
     SecuritySetup,
     PermissionSetup,
-    PartialBreadcrumb,
   },
   async asyncData({ params, store }) {
     const {
