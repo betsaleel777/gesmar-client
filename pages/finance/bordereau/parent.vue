@@ -22,27 +22,19 @@
         >Bordereaux</b-nav-item
       >
     </b-nav>
-    <TableauBordereau class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
 <script>
-import TableauBordereau from '~/components/finance/TableauBordereau.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauBordereau },
+  components: { PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Facturations Bordereaux' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {
-    title: 'Acceuil Bordereau',
-    meta: [
-      {
-        hid: 'Bordereau',
-        name: 'Bordereau',
-        content: 'Tableau de bord des bordereaux',
-      },
-    ],
+    titleTemplate: 'Bordereaux %s',
   },
   methods: {
     active(route) {

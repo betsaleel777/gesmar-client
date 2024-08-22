@@ -6,7 +6,7 @@
         >Tableau</b-nav-item
       >
       <b-nav-item
-        to="/finance/facture/parent/initiale"
+        to="/finance/facture/parent/demande"
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
@@ -46,27 +46,19 @@
         >Factures soldées</b-nav-item
       >
     </b-nav>
-    <TableauFacture class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
 <script>
-import TableauFacture from '~/components/finance/facture/TableauFacture.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauFacture },
+  components: { PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Facturation Quittance' }],
+    liens: [{ path: '#', text: 'Facturations Quittances' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {
-    title: 'Acceuil Facturation',
-    meta: [
-      {
-        hid: 'Facturation',
-        name: 'Facturation',
-        content: 'Tableau de bord de la facturation',
-      },
-    ],
+    titleTemplate: 'Facturation %s',
   },
   methods: {
     active(route) {

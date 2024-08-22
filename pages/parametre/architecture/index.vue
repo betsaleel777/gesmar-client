@@ -97,11 +97,11 @@ export default {
     link: ['bg-light', 'text-primary'],
   }),
   head: {
-    title: 'Acceuil',
+    title: 'Acceuil Configuration',
     meta: [
       {
-        hid: 'acceuil',
-        name: 'acceuil',
+        hid: 'acceuil configuration',
+        name: 'acceuil configuration',
         content: 'Treemap des sites gérés',
       },
     ],

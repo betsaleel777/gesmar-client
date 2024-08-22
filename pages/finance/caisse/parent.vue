@@ -30,27 +30,19 @@
         >Encaissements</b-nav-item
       >
     </b-nav>
-    <TableauCaisse class="mt-5" />
+    <NuxtChild class="mt-5" />
   </div>
 </template>
 <script>
-import TableauCaisse from '~/components/finance/caisse/TableauCaisse.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauCaisse },
+  components: { PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Paiements & caisse' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {
-    title: 'Acceuil Caisse',
-    meta: [
-      {
-        hid: 'Caisse',
-        name: 'Caisse',
-        content: 'Tableau de bord de la caisse',
-      },
-    ],
+    titleTemplate: 'Caisse %s',
   },
   methods: {
     active(route) {
