@@ -1,5 +1,6 @@
 <template>
   <div>
+    <PartialBreadcrumb :liens="liens" />
     <div class="content-body content-body-profile">
       <div class="profile-sidebar">
         <div class="profile-sidebar-header">
@@ -22,13 +23,13 @@
               <span class="tx-color-03">{{ user.adresse }}</span>
             </li>
             <!-- <li>
-              <feather size="17" stroke-width="2" type="smartphone" />
-              <a href="">(+1) 012 345 6789</a>
-            </li>
-            <li>
-              <feather size="17" stroke-width="2" type="phone" />
-              <a href="">(+1) 987 654 3201</a>
-            </li> -->
+                <feather size="17" stroke-width="2" type="smartphone" />
+                <a href="">(+1) 012 345 6789</a>
+              </li>
+              <li>
+                <feather size="17" stroke-width="2" type="phone" />
+                <a href="">(+1) 987 654 3201</a>
+              </li> -->
             <li>
               <feather size="17" stroke-width="2" type="mail" />
               <a href="">{{ user.email }}</a>
@@ -160,16 +161,30 @@
       </div>
       <!-- profile-body -->
     </div>
+    <!-- content-body -->
   </div>
-  <!-- content-body -->
 </template>
 <script>
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
+
 export default {
+  components: { PartialBreadcrumb },
+  head() {
+    return {
+      title: `Utilisateur ${this.user.name}`,
+      meta: [
+        {
+          hid: 'Parametrage de profile',
+          name: 'Parametrage de profile',
+          content: 'Parametrage de profile',
+        },
+      ],
+    }
+  },
   computed: {
     liens() {
-      return [{ path: '#', text: `profile ${this.user.name}` }]
+      return [{ path: '#', text: `Profile ${this.user.name}` }]
     },
   },
 }
 </script>
-<style lang=""></style>

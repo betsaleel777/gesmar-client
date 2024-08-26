@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/parametre/caisse" :active-class="activeClass" :link-classes="link" exact :exact-active-class="active('/parametre/caisse')"
         >Guichet</b-nav-item
@@ -33,13 +34,25 @@
   </div>
 </template>
 <script>
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
+import { LINKS } from '~/helper/constantes'
+
 export default {
+  components: { PartialBreadcrumb },
   data: () => ({
     link: ['bg-light', 'text-primary'],
     activeClass: 'bg-white text-primary',
   }),
   head: {
     titleTemplate: 'Parametrage de caisse %s',
+  },
+  computed: {
+    liens() {
+      return [
+        { path: '/parametre/caisse', text: 'Guichets' },
+        { path: '#', text: LINKS[this.$route.fullPath.split('/').at(-1)] },
+      ]
+    },
   },
   methods: {
     active(route) {

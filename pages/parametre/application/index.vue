@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <div class="container">
       <b-overlay :show="$fetchState.pending || processing" spinner-variant="primary" rounded="sm">
         <div class="row">
@@ -152,10 +153,11 @@ import { errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
 import { errorHandling } from '~/helper/helpers'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { ImagePreview },
+  components: { ImagePreview, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Application' }],
+    liens: [{ path: '#', text: "Paramétrage de l'application" }],
     processing: false,
     permissions: application,
     societe: {

@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/finance/caisse" :active-class="'bg-white text-primary'" :link-classes="link" exact :exact-active-class="active('/finance/caisse')"
         >Tableau</b-nav-item
@@ -34,10 +35,11 @@
 </template>
 <script>
 import TableauCaisse from '~/components/finance/caisse/TableauCaisse.vue'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { TableauCaisse },
+  components: { TableauCaisse, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Paiements & caisse' }],
+    liens: [{ path: '#', text: 'Acceuil Caisse' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {

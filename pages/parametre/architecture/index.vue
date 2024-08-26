@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item
         to="/parametre/architecture"
@@ -50,11 +51,11 @@
         >Emplacements</b-nav-item
       >
       <b-nav-item
-        to="/parametre/architecture/parent/equipement"
+        to="/parametre/architecture/parent/equipements"
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecure/parent/equipement')"
+        :exact-active-class="active('/parametre/architecure/parent/equipements')"
         >Equipements</b-nav-item
       >
       <b-nav-item
@@ -88,8 +89,9 @@
 
 <script>
 import AcceuilArchitecture from '~/components/architecture/AcceuilArchitecture.vue'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { AcceuilArchitecture },
+  components: { AcceuilArchitecture, PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Configuration de marché' }],
     link: ['bg-light', 'text-primary'],

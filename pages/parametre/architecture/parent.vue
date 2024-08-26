@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item
         to="/parametre/architecture"
@@ -50,11 +51,11 @@
         >Emplacements</b-nav-item
       >
       <b-nav-item
-        to="/parametre/architecture/parent/equipement"
+        to="/parametre/architecture/parent/equipements"
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/parametre/architecture/parent/equipement')"
+        :exact-active-class="active('/parametre/architecture/parent/equipements')"
         >Equipements</b-nav-item
       >
       <b-nav-item
@@ -86,13 +87,24 @@
   </div>
 </template>
 <script>
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
+import { LINKS } from '~/helper/constantes'
+
 export default {
+  components: { PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Configuration de marché' }],
     link: ['bg-light', 'text-primary'],
   }),
   head: {
     titleTemplate: 'Configurations %s',
+  },
+  computed: {
+    liens() {
+      return [
+        { path: '/parametre/architecture', text: 'Configuration de marché' },
+        { path: '#', text: LINKS[this.$route.fullPath.split('/').at(-1)] },
+      ]
+    },
   },
   methods: {
     active(route) {

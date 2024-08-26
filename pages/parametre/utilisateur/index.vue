@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <PartialBreadcrumb :liens="liens" />
     <b-nav tabs>
       <b-nav-item to="/parametre/utilisateur" :active-class="activeClass" :link-classes="link" exact :exact-active-class="active('/parametre/utilisateur')"
         >Utilisateur</b-nav-item
@@ -26,11 +27,12 @@
 </template>
 
 <script>
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import ListeUser from '~/components/utilisateur/ListeUser.vue'
 export default {
-  components: { ListeUser },
+  components: { ListeUser, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Configuration de marché' }],
+    liens: [{ path: '#', text: 'Utilisateurs & rôles' }],
     link: ['bg-light', 'text-primary'],
     activeClass: 'bg-white text-primary',
   }),
