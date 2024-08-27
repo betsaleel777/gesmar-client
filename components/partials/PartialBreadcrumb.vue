@@ -1,15 +1,13 @@
 <template>
   <div class="content-header">
-    <div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li v-for="(lien, index) in liens" :key="index" class="breadcrumb-item" :class="{ active: liens.length - 1 !== index }" aria-current="page">
-            <b-link v-if="liens.length - 1 !== index" active-class="text-primary" :to="lien.path">{{ lien.text }}</b-link>
-            <span v-else>{{ lien.text }}</span>
-          </li>
-        </ol>
-      </nav>
-    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li v-for="(lien, index) in liens" :key="index" class="breadcrumb-item" aria-current="page">
+          <b-link v-if="liens.length - 1 !== index" :to="lien.path">{{ lien.text }}</b-link>
+          <span v-else class="text-primary">{{ lien.text }}</span>
+        </li>
+      </ol>
+    </nav>
   </div>
 </template>
 <script>
