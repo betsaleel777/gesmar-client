@@ -135,6 +135,24 @@
                     <strong>{{ errors.capital.message }}</strong>
                   </span>
                 </div>
+                <div class="form-group my-1">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="primaire">Couleur primaire <span class="text-danger">*</span></label>
+                      <b-form-input id="primaire" v-model="societe.primaire" :class="{ 'is-invalid': errors.primaire.exist }" type="color"></b-form-input>
+                      <span v-if="errors.primaire.exist" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.primaire.message }}</strong>
+                      </span>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="secondaire">Couleur secondaire <span class="text-danger">*</span></label>
+                      <b-form-input id="secondaire" v-model="societe.secondaire" type="color" :class="{ 'is-invalid': errors.secondaire.exist }"></b-form-input>
+                      <span v-if="errors.secondaire.exist" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.secondaire.message }}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <button v-can="permissions.edit" :disabled="processing" type="button" class="btn btn-primary float-right text-white" @click="save">
                   enregistrer
                 </button>
@@ -169,6 +187,8 @@ export default {
       email: '',
       logo: null,
       capital: null,
+      primaire: null,
+      secondaire: null,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -179,6 +199,8 @@ export default {
       email: { exist: false, message: null },
       capital: { exist: false, message: null },
       logo: { exist: false, message: null },
+      primaire: { exist: false, message: null },
+      secondaire: { exist: false, message: null },
     },
   }),
   async fetch() {

@@ -92,6 +92,7 @@ export default {
       'BCardBody',
       'BBreadcrumb',
       'BLink',
+      'BFormInput',
     ],
     componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
   },
