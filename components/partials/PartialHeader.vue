@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header d-print-none">
     <div class="header-left">
       <a class="burger-menu" @click="sidebarHide = !sidebarHide">
         <feather type="menu" />
@@ -85,12 +85,8 @@
             <!-- media -->
           </div>
           <div class="dropdown-menu-body">
-            <nuxt-link :to="`/parametre/utilisateur/${user.id}/profile`" class="dropdown-item"
-              ><feather type="user" /> Voir le profil</nuxt-link
-            >
-            <nuxt-link :to="`/parametre/utilisateur/${user.id}/settings`" class="dropdown-item"
-              ><feather type="briefcase" /> Paramètre de compte</nuxt-link
-            >
+            <nuxt-link :to="`/parametre/utilisateur/${user.id}/profile`" class="dropdown-item"><feather type="user" /> Voir le profil</nuxt-link>
+            <nuxt-link :to="`/parametre/utilisateur/${user.id}/settings`" class="dropdown-item"><feather type="briefcase" /> Paramètre de compte</nuxt-link>
             <!-- <a href="" class="dropdown-item"
               ><i data-feather="shield"></i> Privacy Settings</a
             > -->

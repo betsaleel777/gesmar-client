@@ -16,7 +16,7 @@ import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import ListeTermeContrat from '~/components/template/ListeTermeContrat.vue'
 import { MODULES } from '~/helper/modules-types'
 export default {
-  components: { PartialBreadcrumb, ListeTermeContrat },
+  components: { ListeTermeContrat, PartialBreadcrumb },
   data: () => ({
     liens: [{ path: '#', text: 'Gabaris de documents' }],
     tabIndex: 0,

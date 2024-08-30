@@ -1,52 +1,63 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
-    <div class="col-md-12 col-sm-12">
-      <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
-        <b-tab title="Guichets" :title-link-class="linkClass(0)">
-          <ListeGuichet />
-        </b-tab>
-        <b-tab title="Caissiers" :title-link-class="linkClass(1)">
-          <ListeCaissier />
-        </b-tab>
-        <b-tab title="Comptes" :title-link-class="linkClass(2)">
-          <ListeCompte />
-        </b-tab>
-        <b-tab title="Banques" :title-link-class="linkClass(3)">
-          <ListeBanque />
-        </b-tab>
-      </b-tabs>
-    </div>
-    <!-- content-right -->
+    <b-nav tabs>
+      <b-nav-item to="/parametre/caisse" :active-class="activeClass" :link-classes="link" exact :exact-active-class="active('/parametre/caisse')"
+        >Guichet</b-nav-item
+      >
+      <b-nav-item
+        to="/parametre/caisse/parent/caissier"
+        :active-class="activeClass"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/parametre/caisse/parent/caissier')"
+        >Caissier</b-nav-item
+      >
+      <b-nav-item
+        to="/parametre/caisse/parent/compte"
+        :active-class="activeClass"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/parametre/caisse/parent/compte')"
+        >Compte</b-nav-item
+      >
+      <b-nav-item
+        to="/parametre/caisse/parent/banque"
+        :active-class="activeClass"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/parametre/caisse/parent/banque')"
+        >Banque</b-nav-item
+      >
+    </b-nav>
+    <ListeGuichet class="mt-5" />
   </div>
 </template>
+
 <script>
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
-import ListeCaissier from '~/components/caisse/caissier/ListeCaissier.vue'
 import ListeGuichet from '~/components/caisse/guichet/ListeGuichet.vue'
-import ListeCompte from '~/components/caisse/compte/ListeCompte.vue'
-import ListeBanque from '~/components/caisse/banque/ListeBanque.vue'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: {
-    PartialBreadcrumb,
-    ListeCaissier,
-    ListeGuichet,
-    ListeCompte,
-    ListeBanque,
-  },
+  components: { ListeGuichet, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Caisse' }],
-    tabIndex: 0,
+    liens: [{ path: '#', text: 'Guichets' }],
+    link: ['bg-light', 'text-primary'],
+    activeClass: 'bg-white text-primary',
   }),
+  head: {
+    title: 'Guichets',
+    meta: [
+      {
+        hid: 'Guichets',
+        name: 'Guichets',
+        content: 'Liste des guichets',
+      },
+    ],
+  },
   methods: {
-    linkClass(idx) {
-      if (this.tabIndex === idx) {
-        return ['bg-white', 'text-primary']
-      } else {
-        return ['bg-light', 'text-primary']
-      }
+    active(route) {
+      return this.$route.path === route ? 'active' : ''
     },
   },
 }
 </script>
-<style></style>

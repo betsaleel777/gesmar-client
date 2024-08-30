@@ -8,5 +8,3 @@ export default {
   components: { StructureTreemap },
 }
 </script>
-
-<style scoped></style>

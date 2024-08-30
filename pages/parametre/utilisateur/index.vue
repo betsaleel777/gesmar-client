@@ -1,53 +1,55 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
-    <div class="col-sm-12 col-md-12">
-      <b-tabs v-model="tabIndex" content-class="mt-7" active-nav-item-class="font-weight-bold">
-        <b-tab title="Utilisateurs" lazy :title-link-class="linkClass(0)">
-          <ListeUser v-if="!archive.user" @archivage="archive.user = true" />
-          <ListeUserArchive v-else @back="archive.user = false" />
-        </b-tab>
-        <b-tab title="Rôles" lazy :title-link-class="linkClass(1)">
-          <ListeRole />
-        </b-tab>
-        <b-tab title="Permissions" lazy :title-link-class="linkClass(2)">
-          <ListePermission />
-        </b-tab>
-      </b-tabs>
-    </div>
+    <b-nav tabs>
+      <b-nav-item to="/parametre/utilisateur" :active-class="activeClass" :link-classes="link" exact :exact-active-class="active('/parametre/utilisateur')"
+        >Utilisateur</b-nav-item
+      >
+      <b-nav-item
+        to="/parametre/utilisateur/parent/role"
+        :active-class="activeClass"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/parametre/utilisateur/parent/role')"
+        >Role</b-nav-item
+      >
+      <b-nav-item
+        to="/parametre/utilisateur/parent/permission"
+        :active-class="activeClass"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/parametre/utilisateur/parent/permission')"
+        >Permissions</b-nav-item
+      >
+    </b-nav>
+    <ListeUser class="mt-5" />
   </div>
 </template>
+
 <script>
-import ListePermission from '~/components/permission/ListePermission.vue'
-import ListeUser from '~/components/utilisateur/ListeUser.vue'
-import ListeUserArchive from '~/components/utilisateur/ListeUserArchive.vue'
-import ListeRole from '~/components/role/ListeRole.vue'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
+import ListeUser from '~/components/utilisateur/ListeUser.vue'
 export default {
-  components: {
-    ListePermission,
-    ListeRole,
-    ListeUser,
-    PartialBreadcrumb,
-    ListeUserArchive,
-  },
+  components: { ListeUser, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Utilisateurs & fonctions' }],
-    archive: { user: false },
-    tabIndex: 0,
+    liens: [{ path: '#', text: 'Utilisateurs & rôles' }],
+    link: ['bg-light', 'text-primary'],
+    activeClass: 'bg-white text-primary',
   }),
+  head: {
+    title: 'Utilisateurs',
+    meta: [
+      {
+        hid: 'Utilisateurs',
+        name: 'Utilisateurs',
+        content: 'Liste des utilisateurs',
+      },
+    ],
+  },
   methods: {
-    onBack(numero) {
-      if (numero === 0) this.archive.user = false
-    },
-    linkClass(idx) {
-      if (this.tabIndex === idx) {
-        return ['bg-white', 'text-primary']
-      } else {
-        return ['bg-light', 'text-primary']
-      }
+    active(route) {
+      return this.$route.path === route ? 'active' : ''
     },
   },
 }
 </script>
-<style></style>

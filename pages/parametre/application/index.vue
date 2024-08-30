@@ -8,12 +8,7 @@
             <b-overlay :show="processing" rounded="sm">
               <div class="profile-sidebar-header">
                 <div class="avatar">
-                  <img
-                    v-if="!enterprise.logo"
-                    src="https://via.placeholder.com/500/637382/fff"
-                    class="rounded-circle"
-                    alt=""
-                  />
+                  <img v-if="!enterprise.logo" src="https://via.placeholder.com/500/637382/fff" class="rounded-circle" alt="" />
                   <img v-else :src="enterprise.logo" class="rounded-circle" alt="" />
                 </div>
 
@@ -68,9 +63,7 @@
                   </div>
                 </div>
                 <div class="form-group my-1">
-                  <label class="form-label mg-t-10"
-                    >Nom de la société<span class="text-danger">*</span></label
-                  >
+                  <label class="form-label mg-t-10">Nom de la société<span class="text-danger">*</span></label>
                   <input
                     v-model="societe.nom"
                     type="text"
@@ -83,9 +76,7 @@
                   </span>
                 </div>
                 <div class="form-group my-1">
-                  <label class="form-label mg-t-10"
-                    >Sigle de la société<span class="text-danger">*</span></label
-                  >
+                  <label class="form-label mg-t-10">Sigle de la société<span class="text-danger">*</span></label>
                   <input
                     v-model="societe.sigle"
                     type="text"
@@ -112,36 +103,21 @@
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Contact mobile<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.smartphone"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.smartphone.exist }"
-                  />
+                  <input v-model="societe.smartphone" type="text" class="form-control" :class="{ 'is-invalid': errors.smartphone.exist }" />
                   <span v-if="errors.smartphone.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.smartphone.message }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Téléphone fixe<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.phone"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.phone.exist }"
-                  />
+                  <input v-model="societe.phone" type="text" class="form-control" :class="{ 'is-invalid': errors.phone.exist }" />
                   <span v-if="errors.phone.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.phone.message }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Email<span class="text-danger">*</span></label>
-                  <input
-                    v-model="societe.email"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.email.exist }"
-                  />
+                  <input v-model="societe.email" type="text" class="form-control" :class="{ 'is-invalid': errors.email.exist }" />
                   <span v-if="errors.email.exist" class="invalid-feedback" role="alert">
                     <strong>{{ errors.email.message }}</strong>
                   </span>
@@ -159,13 +135,25 @@
                     <strong>{{ errors.capital.message }}</strong>
                   </span>
                 </div>
-                <button
-                  v-can="permissions.edit"
-                  :disabled="processing"
-                  type="button"
-                  class="btn btn-primary float-right text-white"
-                  @click="save"
-                >
+                <div class="form-group my-1">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="primaire">Couleur primaire <span class="text-danger">*</span></label>
+                      <b-form-input id="primaire" v-model="societe.primaire" :class="{ 'is-invalid': errors.primaire.exist }" type="color"></b-form-input>
+                      <span v-if="errors.primaire.exist" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.primaire.message }}</strong>
+                      </span>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="secondaire">Couleur secondaire <span class="text-danger">*</span></label>
+                      <b-form-input id="secondaire" v-model="societe.secondaire" type="color" :class="{ 'is-invalid': errors.secondaire.exist }"></b-form-input>
+                      <span v-if="errors.secondaire.exist" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.secondaire.message }}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button v-can="permissions.edit" :disabled="processing" type="button" class="btn btn-primary float-right text-white" @click="save">
                   enregistrer
                 </button>
               </form>
@@ -179,15 +167,15 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import { errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
 import { errorHandling } from '~/helper/helpers'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, ImagePreview },
+  components: { ImagePreview, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Application' }],
+    liens: [{ path: '#', text: "Paramétrage de l'application" }],
     processing: false,
     permissions: application,
     societe: {
@@ -199,6 +187,8 @@ export default {
       email: '',
       logo: null,
       capital: null,
+      primaire: null,
+      secondaire: null,
     },
     errors: {
       nom: { exist: false, message: null },
@@ -209,6 +199,8 @@ export default {
       email: { exist: false, message: null },
       capital: { exist: false, message: null },
       logo: { exist: false, message: null },
+      primaire: { exist: false, message: null },
+      secondaire: { exist: false, message: null },
     },
   }),
   async fetch() {

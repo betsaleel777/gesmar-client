@@ -1,60 +1,53 @@
 <template>
   <div class="container-fluid">
     <PartialBreadcrumb :liens="liens" />
-    <div class="col-md-12 col-sm-12">
-      <b-tabs v-model="tabIndex" lazy content-class="mt-7" active-nav-item-class="font-weight-bold">
-        <b-tab id="tableau" title="Tableau" :title-link-class="linkClass(0)">
-          <TableauBordereau />
-        </b-tab>
-        <b-tab
-          id="commerciaux"
-          :disabled="disableCommerciaux"
-          title="Commerciaux"
-          :title-link-class="linkClass(1)"
-        >
-          <ListeCommercial />
-        </b-tab>
-        <b-tab
-          id="bordereaux"
-          :disabled="disableBordereau"
-          title="Bordereaux"
-          :title-link-class="linkClass(2)"
-        >
-          <ListeBordereaux />
-        </b-tab>
-      </b-tabs>
-    </div>
+    <b-nav tabs>
+      <b-nav-item to="/finance/bordereau" :active-class="'bg-white text-primary'" :link-classes="link" exact :exact-active-class="active('/finance/bordereau')"
+        >Tableau</b-nav-item
+      >
+      <b-nav-item
+        to="/finance/bordereau/parent/commercial"
+        :active-class="'bg-white text-primary'"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/finance/bordereau/parent/commercial')"
+        >Commerciaux</b-nav-item
+      >
+      <b-nav-item
+        to="/finance/bordereau/parent/bordereau"
+        :active-class="'bg-white text-primary'"
+        :link-classes="link"
+        exact
+        :exact-active-class="active('/finance/bordereau/parent/bordereau')"
+        >Bordereaux</b-nav-item
+      >
+    </b-nav>
+    <TableauBordereau class="mt-5" />
   </div>
 </template>
 <script>
-import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 import TableauBordereau from '~/components/finance/TableauBordereau.vue'
-import ListeCommercial from '~/components/finance/commerciaux/ListeCommercial.vue'
-import ListeBordereaux from '~/components/finance/bordereau/ListeBordereaux.vue'
-import { bordereau, commercial } from '~/helper/permissions'
+import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
-  components: { PartialBreadcrumb, TableauBordereau, ListeCommercial, ListeBordereaux },
+  components: { TableauBordereau, PartialBreadcrumb },
   data: () => ({
-    liens: [{ path: '#', text: 'Bordereaux' }],
-    tabIndex: 0,
+    liens: [{ path: '#', text: 'Acceuil Bordereaux' }],
+    link: ['bg-light', 'text-primary'],
   }),
-  computed: {
-    disableBordereau() {
-      return !this.$gates.hasAnyPermission(`${bordereau.global}|${bordereau.own}`)
-    },
-    disableCommerciaux() {
-      return !this.$gates.hasAnyPermission(`${commercial.global}|${commercial.own}`)
-    },
+  head: {
+    title: 'Acceuil Bordereau',
+    meta: [
+      {
+        hid: 'Bordereau',
+        name: 'Bordereau',
+        content: 'Tableau de bord des bordereaux',
+      },
+    ],
   },
   methods: {
-    linkClass(idx) {
-      if (this.tabIndex === idx) {
-        return ['bg-white', 'text-primary']
-      } else {
-        return ['bg-light', 'text-primary']
-      }
+    active(route) {
+      return this.$route.path === route ? 'active' : ''
     },
   },
 }
 </script>
-<style></style>

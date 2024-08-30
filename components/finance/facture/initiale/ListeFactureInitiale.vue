@@ -1,5 +1,5 @@
 <template>
-  <b-card aria-hidden="true" header="Liste des factures initiales">
+  <b-card aria-hidden="true" header="Liste des factures PDP">
     <b-card-text>
       <div class="btn-toolbar d-flex flex-row-reverse"></div>
       <hr class="mg-t-4" />

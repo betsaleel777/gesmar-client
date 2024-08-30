@@ -16,9 +16,9 @@
               >fait le: {{ $moment(facture.created_at).format('ll') }} par <b>{{ facture.audit.user.name }}</b></span
             >
             <div class="btn-group-invoice">
-              <button class="btn btn-white btn-sm btn-uppercase" @click="imprimer">
+              <nuxt-link class="btn btn-white btn-sm btn-uppercase" :to="`/finance/facture/initiale/${facture.id}`">
                 <feather type="printer" size="20" stroke="blue" />
-              </button>
+              </nuxt-link>
               <button class="btn btn-white btn-sm btn-uppercase">
                 <feather type="mail" size="20" stroke="blue" />
               </button>
@@ -130,5 +130,3 @@ export default {
   },
 }
 </script>
-
-<style></style>
