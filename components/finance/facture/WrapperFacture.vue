@@ -8,7 +8,7 @@
       <slot />
       <div class="card-footer vert-sgmt">
         <p class="mb-0 text-center tx-white">
-          {{ societe.sigle }}, localisation: {{ societe.siege }}, contact: {{ societe.phone }} / {{ societe.smartphone }}, Email: {{ societe.email }}
+          siège social: {{ societe.siege }}, contact: {{ societe.phone }}-{{ societe.smartphone }}, Email: {{ societe.email }}
         </p>
       </div>
     </div>

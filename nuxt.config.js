@@ -94,7 +94,7 @@ export default {
       'BLink',
       'BFormInput',
     ],
-    componentPlugins: ['ToastPlugin', 'ModalPlugin', 'VBTooltipPlugin'],
+    componentPlugins: ['ModalPlugin', 'VBTooltipPlugin'],
   },
 
   router: { middleware: ['auth', 'permission-filter'] },

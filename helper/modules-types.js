@@ -473,7 +473,7 @@ export const MODULES = Object.freeze({
         VALIDES: contratBailRoot + 'getAllValides',
         TRASHED: contratBailRoot + 'getTrashAll',
         ONE: contratBailRoot + 'getOne',
-        SCHEDULE: contratBailRoot + 'schedule',
+        VALIDATE: contratBailRoot + 'validate',
         EDIT: contratBailRoot + 'modifier',
         TRASH: contratBailRoot + 'supprimer',
         RESTORE: contratBailRoot + 'restaurer',
