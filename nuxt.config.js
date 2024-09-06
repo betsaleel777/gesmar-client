@@ -61,6 +61,16 @@ export default {
     headers: { 'Access-Control-Allow-Origin': '*' },
     credentials: true,
   },
+  vuetify: {
+    theme: {
+      themes: {
+        light: {
+          primary: '#5556fd',
+        },
+      },
+    },
+    treeShake: true,
+  },
   bootstrapVue: {
     icons: false,
     bootstrapCSS: false,
