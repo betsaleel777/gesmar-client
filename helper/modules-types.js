@@ -481,6 +481,7 @@ export const MODULES = Object.freeze({
         BY_PERSONNE: contratBailRoot + 'getByPersonne',
         DETAILS: contratBailRoot + 'getDetails',
         CONTENT: contratBailRoot + 'content',
+        SIGNER: contratBailRoot + 'signer',
       }),
     }),
   }),
