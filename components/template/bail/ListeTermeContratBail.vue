@@ -14,14 +14,7 @@
         />
       </div>
       <hr class="mg-t-4" />
-      <b-form-input
-        id="filter-input"
-        v-model="filter"
-        type="search"
-        placeholder="Rechercher"
-        class="mg-y-10"
-        :debounce="500"
-      ></b-form-input>
+      <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Rechercher" class="mg-y-10" :debounce="500"></b-form-input>
       <b-table
         id="table"
         class="table"
@@ -46,9 +39,6 @@
             <strong>Chargement...</strong>
           </div>
         </template>
-        <template #cell(index)="data">
-          {{ data.index + 1 }}
-        </template>
         <template #cell(status)="data">
           <span :class="statusClass(data.item.status)">{{ data.item.status }}</span>
         </template>
@@ -56,12 +46,7 @@
           <a type="button" @click="pdf(data.item)">
             <feather title="pdf" type="file-text" size="20" stroke="indigo" />
           </a>
-          <a
-            v-if="data.item.status === STATUS.unuse"
-            v-can="permissions.trash"
-            type="button"
-            @click="dialoger(data.item)"
-          >
+          <a v-if="data.item.status === STATUS.unuse" v-can="permissions.trash" type="button" @click="dialoger(data.item)">
             <feather title="archiver" type="trash-2" size="20" stroke="red" />
           </a>
         </template>
@@ -72,14 +57,7 @@
           <h6 class="text-center text-muted pd-y-10">{{ scope.emptyText }}</h6>
         </template>
       </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="right"
-        size="sm"
-        aria-controls="table"
-      ></b-pagination>
+      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" size="sm" aria-controls="table"></b-pagination>
       <ConfirmationModal
         :id="dialogData.id"
         :key="dialogData.modal"
@@ -112,7 +90,6 @@ export default {
   data: () => ({
     STATUS: GABARI,
     fields: [
-      'index',
       { key: 'code', label: 'Code', sortable: true },
       { key: 'user.name', label: 'Utilisateur', sortable: true },
       { key: 'site.nom', label: 'Marché', sortable: true },

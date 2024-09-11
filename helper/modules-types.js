@@ -480,7 +480,7 @@ export const MODULES = Object.freeze({
         ADD: contratBailRoot + 'ajouter',
         BY_PERSONNE: contratBailRoot + 'getByPersonne',
         DETAILS: contratBailRoot + 'getDetails',
-        PRINT: contratBailRoot + 'print',
+        CONTENT: contratBailRoot + 'content',
       }),
     }),
   }),
