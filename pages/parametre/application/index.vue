@@ -57,9 +57,9 @@
             <div class="container">
               <form ref="form" enctype="multipart/form-data">
                 <div class="form-group my-1">
-                  <ImagePreview v-model="societe.logo" :error-state="errors.logo.exist" />
-                  <div v-if="errors.logo.exist" class="text-danger text-thin" role="alert">
-                    <strong>{{ errors.logo.message }}</strong>
+                  <ImagePreview v-model="societe.logo" :error-state="errors.hasOwnProperty('logo')" />
+                  <div v-if="errors.hasOwnProperty('logo')" class="text-danger text-thin" role="alert">
+                    <strong>{{ errors.logo }}</strong>
                   </div>
                 </div>
                 <div class="form-group my-1">
@@ -68,11 +68,11 @@
                     v-model="societe.nom"
                     type="text"
                     class="form-control"
-                    :class="{ 'is-invalid': errors.nom.exist }"
+                    :class="{ 'is-invalid': errors.hasOwnProperty('nom') }"
                     placeholder="Entrer le nom de la société"
                   />
-                  <span v-if="errors.nom.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.nom.message }}</strong>
+                  <span v-if="errors.hasOwnProperty('nom')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.nom }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
@@ -81,11 +81,11 @@
                     v-model="societe.sigle"
                     type="text"
                     class="form-control"
-                    :class="{ 'is-invalid': errors.sigle.exist }"
+                    :class="{ 'is-invalid': errors.hasOwnProperty('sigle') }"
                     placeholder="Entrer le sigle de la société"
                   />
-                  <span v-if="errors.sigle.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.sigle.message }}</strong>
+                  <span v-if="errors.hasOwnProperty('sigle')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.sigle }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
@@ -94,32 +94,32 @@
                     v-model="societe.siege"
                     type="text"
                     class="form-control"
-                    :class="{ 'is-invalid': errors.siege.exist }"
+                    :class="{ 'is-invalid': errors.hasOwnProperty('siege') }"
                     placeholder="Entrer le siège de la société"
                   />
-                  <span v-if="errors.siege.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.siege.message }}</strong>
+                  <span v-if="errors.hasOwnProperty('siege')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.siege }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Contact mobile<span class="text-danger">*</span></label>
-                  <input v-model="societe.smartphone" type="text" class="form-control" :class="{ 'is-invalid': errors.smartphone.exist }" />
-                  <span v-if="errors.smartphone.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.smartphone.message }}</strong>
+                  <input v-model="societe.smartphone" type="text" class="form-control" :class="{ 'is-invalid': errors.hasOwnProperty('smartphone') }" />
+                  <span v-if="errors.hasOwnProperty('smartphone')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.smartphone }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Téléphone fixe<span class="text-danger">*</span></label>
-                  <input v-model="societe.phone" type="text" class="form-control" :class="{ 'is-invalid': errors.phone.exist }" />
-                  <span v-if="errors.phone.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.phone.message }}</strong>
+                  <input v-model="societe.phone" type="text" class="form-control" :class="{ 'is-invalid': errors.hasOwnProperty('phone') }" />
+                  <span v-if="errors.hasOwnProperty('phone')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.phone }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <label class="form-label mg-t-10">Email<span class="text-danger">*</span></label>
-                  <input v-model="societe.email" type="text" class="form-control" :class="{ 'is-invalid': errors.email.exist }" />
-                  <span v-if="errors.email.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.email.message }}</strong>
+                  <input v-model="societe.email" type="text" class="form-control" :class="{ 'is-invalid': errors.hasOwnProperty('email') }" />
+                  <span v-if="errors.hasOwnProperty('email')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.email }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
@@ -128,32 +128,70 @@
                     v-model="societe.capital"
                     type="text"
                     class="form-control"
-                    :class="{ 'is-invalid': errors.capital.exist }"
+                    :class="{ 'is-invalid': errors.hasOwnProperty('capital') }"
                     placeholder="Entrer le capital"
                   />
-                  <span v-if="errors.capital.exist" class="invalid-feedback" role="alert">
-                    <strong>{{ errors.capital.message }}</strong>
+                  <span v-if="errors.hasOwnProperty('capital')" class="invalid-feedback" role="alert">
+                    <strong>{{ errors.capital }}</strong>
                   </span>
                 </div>
                 <div class="form-group my-1">
                   <div class="row">
                     <div class="col-md-6 col-sm-6">
-                      <label class="form-label mg-t-10" for="primaire">Couleur primaire <span class="text-danger">*</span></label>
-                      <b-form-input id="primaire" v-model="societe.primaire" :class="{ 'is-invalid': errors.primaire.exist }" type="color"></b-form-input>
-                      <span v-if="errors.primaire.exist" class="invalid-feedback" role="alert">
-                        <strong>{{ errors.primaire.message }}</strong>
+                      <label class="form-label mg-t-10" for="postale">Boîte Postale <span class="text-danger">*</span></label>
+                      <b-form-input
+                        id="postale"
+                        v-model="societe.boite_postale"
+                        :class="{ 'is-invalid': errors.hasOwnProperty('boite_postale') }"
+                        type="text"
+                      ></b-form-input>
+                      <span v-if="errors.hasOwnProperty('boite_postale')" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.boite_postale }}</strong>
                       </span>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                      <label class="form-label mg-t-10" for="secondaire">Couleur secondaire <span class="text-danger">*</span></label>
-                      <b-form-input id="secondaire" v-model="societe.secondaire" type="color" :class="{ 'is-invalid': errors.secondaire.exist }"></b-form-input>
-                      <span v-if="errors.secondaire.exist" class="invalid-feedback" role="alert">
-                        <strong>{{ errors.secondaire.message }}</strong>
+                      <label class="form-label mg-t-10" for="timbre">Timbre de loyer<span class="text-danger">*</span></label>
+                      <b-form-input
+                        id="timbre"
+                        v-model="societe.timbre_loyer"
+                        type="text"
+                        :class="{ 'is-invalid': errors.hasOwnProperty('timbre_loyer') }"
+                      ></b-form-input>
+                      <span v-if="errors.hasOwnProperty('timbre_loyer')" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.timbre_loyer }}</strong>
                       </span>
                     </div>
                   </div>
                 </div>
-                <button v-can="permissions.edit" :disabled="processing" type="button" class="btn btn-primary float-right text-white" @click="save">
+                <div class="form-group my-1">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="primaire">Couleur primaire <span class="text-danger">*</span></label>
+                      <b-form-input
+                        id="primaire"
+                        v-model="societe.primaire"
+                        :class="{ 'is-invalid': errors.hasOwnProperty('primaire') }"
+                        type="color"
+                      ></b-form-input>
+                      <span v-if="errors.hasOwnProperty('primaire')" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.primaire }}</strong>
+                      </span>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                      <label class="form-label mg-t-10" for="secondaire">Couleur secondaire <span class="text-danger">*</span></label>
+                      <b-form-input
+                        id="secondaire"
+                        v-model="societe.secondaire"
+                        type="color"
+                        :class="{ 'is-invalid': errors.hasOwnProperty('secondaire') }"
+                      ></b-form-input>
+                      <span v-if="errors.hasOwnProperty('secondaire')" class="invalid-feedback" role="alert">
+                        <strong>{{ errors.secondaire }}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button v-can="permissions.edit" :disabled="processing" type="button" class="btn btn-primary float-right text-white mt-2" @click="save">
                   enregistrer
                 </button>
               </form>
@@ -167,10 +205,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ImagePreview from '~/components/tools/ImagePreview.vue'
-import { errorsInitialise } from '~/helper/handleErrors'
 import { application } from '~/helper/permissions'
 import { MODULES } from '~/helper/modules-types'
-import { errorHandling } from '~/helper/helpers'
 import PartialBreadcrumb from '~/components/partials/PartialBreadcrumb.vue'
 export default {
   components: { ImagePreview, PartialBreadcrumb },
@@ -189,18 +225,8 @@ export default {
       capital: null,
       primaire: null,
       secondaire: null,
-    },
-    errors: {
-      nom: { exist: false, message: null },
-      sigle: { exist: false, message: null },
-      siege: { exist: false, message: null },
-      smartphone: { exist: false, message: null },
-      phone: { exist: false, message: null },
-      email: { exist: false, message: null },
-      capital: { exist: false, message: null },
-      logo: { exist: false, message: null },
-      primaire: { exist: false, message: null },
-      secondaire: { exist: false, message: null },
+      boite_postale: '',
+      timbre_loyer: 0,
     },
   }),
   async fetch() {
@@ -223,13 +249,13 @@ export default {
         data.append(key, this.societe[key])
       }
       const traiter = this.societe.id ? this.modifier : this.ajouter
-      errorsInitialise(this.errors)
+      this.fillErrors([{}])
       traiter(data)
         .then(({ message }) => {
           this.$notify({ text: message, title: "succès de l'opération", type: 'success' })
         })
         .catch((err) => {
-          errorHandling(err.response, this.errors)
+          this.fillErrors(err.response.data.errors)
         })
         .finally(() => (this.processing = false))
     },
