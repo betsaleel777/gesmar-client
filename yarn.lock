@@ -9576,6 +9576,11 @@ vue-imask@^6.4.3:
     imask "^6.4.3"
     vue-demi "^0.13.11"
 
+vue-laravel-errors@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/vue-laravel-errors/-/vue-laravel-errors-0.2.5.tgz#e2d8a15bd5fd4574558348075b1dffb41a6778a3"
+  integrity sha512-llOGYeHKtfAnvFSa61gMSgSDr0cr917D3Cw2r1Z5cWj3KPeD6ghnW8SeGRiTH4oYCKJj3EmUx5hiHMwC7v2sbw==
+
 vue-loader@^15.9.7:
   version "15.9.8"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-15.9.8.tgz#4b0f602afaf66a996be1e534fb9609dc4ab10e61"

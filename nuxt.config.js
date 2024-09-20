@@ -45,6 +45,7 @@ export default {
     '~/plugins/vue-gates',
     '~/plugins/currency.js',
     '~/plugins/notifications.js',
+    '~/plugins/server-errors.js',
   ],
 
   buildModules: ['@nuxtjs/eslint-module', '@nuxtjs/moment', '@nuxtjs/vuetify', '@nuxt/image'],
