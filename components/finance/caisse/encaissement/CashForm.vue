@@ -6,12 +6,7 @@
     </v-radio-group>
     <div v-show="payable === 1">
       <v-text-field readonly label="montant à payer" :value="montant" suffix="FCFA"></v-text-field>
-      <v-text-field
-        v-model.number="encaissement.versement"
-        :error="errors.versement.exist"
-        :error-messages="errors.versement.message"
-        suffix="FCFA"
-      >
+      <v-text-field v-model.number="encaissement.versement" :error="errors.versement.exist" :error-messages="errors.versement.message" suffix="FCFA">
         <template #label>
           montant versé
           <span class="red--text"><strong>* </strong></span>
@@ -20,14 +15,7 @@
       <v-text-field readonly label="monnaie à rendre" :value="monnaie" suffix="FCFA"></v-text-field>
     </div>
     <div v-show="payable === 2">
-      <v-text-field
-        readonly
-        label="montant à payer"
-        outlined
-        dense
-        :value="montant"
-        suffix="FCFA"
-      ></v-text-field>
+      <v-text-field readonly label="montant à payer" outlined dense :value="montant" suffix="FCFA"></v-text-field>
       <v-autocomplete
         v-model="encaissement.banque_id"
         :items="banques"
@@ -60,13 +48,7 @@
           <span class="red--text"><strong>* </strong></span>
         </template>
       </v-autocomplete>
-      <v-text-field
-        v-model="encaissement.numero"
-        outlined
-        dense
-        :error="errors.numero.exist"
-        :error-messages="errors.numero.message"
-      >
+      <v-text-field v-model="encaissement.numero" outlined dense :error="errors.numero.exist" :error-messages="errors.numero.message">
         <template #label>
           Numéro du cheque
           <span class="red--text"><strong>* </strong></span>
@@ -115,7 +97,7 @@ export default {
   data() {
     return {
       payable: this.mode,
-      montant: Number(this.ordonnancement.total),
+      montant: Number(this.ordonnancement.total + this.ordonnancement.timbre),
       monnaie: null,
       errors: {
         versement: { exist: false, message: null },

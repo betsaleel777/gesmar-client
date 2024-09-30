@@ -6,7 +6,9 @@
     <p v-if="ordonnancement.emplacement"><b>Emplacement</b>: {{ ordonnancement.emplacement.code }}</p>
     <p v-else><b>Annexe</b>: {{ ordonnancement.annexe.code }}</p>
     <p><b>Montant à payer</b>: {{ ordonnancement.total | currency }}</p>
-    <p><b>Période</b>: {{ mois }}</p>
+    <p><b>Timbre</b>: {{ ordonnancement.timbre | currency }}</p>
+    <p><b>Nature de paiement</b>: {{ ordonnancement.nature }}</p>
+    <p v-if="mois"><b>Période</b>: {{ mois }}</p>
   </v-container>
 </template>
 
