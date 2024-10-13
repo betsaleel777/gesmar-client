@@ -40,6 +40,7 @@ const factureAnnexeRoot = 'facture/annexe/'
 const factureLoyerRoot = 'facture/loyer/'
 const factureRoot = 'facture/facture/'
 const factureEquipementRoot = 'facture/equipement/'
+const releveRoot = 'finance/releve/'
 
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
@@ -739,5 +740,8 @@ export const MODULES = Object.freeze({
   MEDIA: Object.freeze({
     GETTERS: Object.freeze({ URL: 'media/url' }),
     ACTIONS: Object.freeze({ DOWNLOAD: 'media/getUrl' }),
+  }),
+  RELEVE: Object.freeze({
+    ACTIONS: Object.freeze({ ALL: releveRoot + 'getReleve' }),
   }),
 })
