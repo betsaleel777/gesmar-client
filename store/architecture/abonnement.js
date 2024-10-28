@@ -75,8 +75,8 @@ export const actions = {
     return { message: requete.data.message, abonnement: requete.data.abonnement }
   },
 
-  async getLastIndex({}, id) {
-    const requete = await this.$axios.get('api/parametres/abonnements/indexing/' + id)
+  async getLastIndex({}, payload) {
+    const requete = await this.$axios.get('api/parametres/abonnements/indexing', { params: payload })
     return { index: requete.data.index }
   },
 }

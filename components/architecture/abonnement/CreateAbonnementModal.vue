@@ -34,7 +34,6 @@
                 <thead>
                   <tr>
                     <th class="text-left">Code</th>
-                    <th class="text-left">Equipement</th>
                     <th class="text-left">Type</th>
                     <th class="text-left">Statut</th>
                   </tr>
@@ -42,7 +41,6 @@
                 <tbody>
                   <tr v-for="row in emplacement.equipements" :key="row.id">
                     <td>{{ row.code }}</td>
-                    <td>{{ row.nom }}</td>
                     <td>{{ row.type.nom.toUpperCase() }}</td>
                     <td>
                       <v-chip label :color="statusClass(row)" small>{{ row.abonnement }}</v-chip>
@@ -187,7 +185,7 @@ export default {
         gear.id = lastGear.id
         gear.nom = lastGear.code
         gear.site_id = lastGear.site_id
-        this.getLastIndex(gear.id).then(({ index }) => {
+        this.getLastIndex({ contrat_id: this.abonnement.contrat_id, id: gear.id }).then(({ index }) => {
           gear.index_depart = index
           gear.index_autre = null
           this.abonnement.equipements.push(gear)

@@ -43,20 +43,10 @@
           </div>
         </template>
         <template #cell(option)="data">
-          <a
-            v-if="data.item.status === STATUS.progressing"
-            v-can="permissions.abort"
-            type="button"
-            @click="resilier(data.item)"
-          >
+          <a v-if="data.item.status === STATUS.progressing" v-can="permissions.abort" type="button" @click="resilier(data.item)">
             <feather title="résilier" type="x-octagon" size="20" stroke="red" />
           </a>
-          <a
-            v-if="data.item.status === STATUS.error"
-            v-can="permissions.edit"
-            type="button"
-            @click="confirmer(data.item)"
-          >
+          <a v-if="data.item.status === STATUS.error" v-can="permissions.edit" type="button" @click="confirmer(data.item)">
             <feather title="confimer" type="check-circle" size="20" stroke="blue" />
           </a>
         </template>
@@ -75,14 +65,7 @@
           </h6>
         </template>
       </b-table>
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        align="right"
-        base-url="#"
-        size="sm"
-        @change="getPage"
-      ></b-pagination-nav>
+      <b-pagination-nav v-model="currentPage" :number-of-pages="pages" align="right" base-url="#" size="sm" @change="getPage"></b-pagination-nav>
       <CreateAbonnementModal v-if="create" v-model="create" />
       <FinishAbonnementModal v-if="edit.modal" :id="edit.id" v-model="edit.modal" />
       <ValidateAbonnementModal v-if="confirm.modal" :id="confirm.id" v-model="confirm.modal" />
@@ -162,7 +145,12 @@ export default {
       this.confirm.modal = true
     },
     statusClass(value) {
-      return value === ABONNEMENT.progressing ? 'badge badge-primary-light' : 'badge badge-danger-light'
+      const classes = {
+        [ABONNEMENT.progressing]: 'badge badge-primary-light',
+        [ABONNEMENT.pending]: 'badge badge-warning-light',
+        [ABONNEMENT.error]: 'badge badge-danger-light',
+      }
+      return classes[value]
     },
     pageInit() {
       this.pages = this.abonnements.meta.last_page

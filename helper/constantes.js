@@ -14,6 +14,7 @@ const EMPLACEMENT = Object.freeze({
 })
 const ABONNEMENT = Object.freeze({
   progressing: 'en cours',
+  pending: 'en attente',
   stopped: 'résilié',
   error: 'erreur index',
 })
