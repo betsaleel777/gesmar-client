@@ -44,17 +44,17 @@ export const actions = {
     commit('SET_FACTURE', requete.data.factures)
   },
 
-  async getByMarche({ commit }, id) {
+  async getByMarche(_, id) {
     const requete = await this.$axios.get('api/finances/factures/marche/' + id)
     return requete.data
   },
 
-  async getOne({ commit }, id) {
+  async getOne(_, id) {
     const requete = await this.$axios.get('api/finances/factures/' + id)
     return requete.data
   },
 
-  async getByContrat({ commit }, id) {
+  async getByContrat(_, id) {
     const requete = await this.$axios.get(`api/finances/factures/contrat/${id}`)
     return requete.data
   },

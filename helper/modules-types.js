@@ -41,7 +41,7 @@ const factureLoyerRoot = 'facture/loyer/'
 const factureRoot = 'facture/facture/'
 const factureEquipementRoot = 'facture/equipement/'
 const releveRoot = 'finance/releve/'
-
+const factureAutreRoot = 'facture/autre/'
 export const MODULES = Object.freeze({
   REPARATION: Object.freeze({
     ALL: reparationRoot + '/getAll',
@@ -734,6 +734,18 @@ export const MODULES = Object.freeze({
         ADD: factureEquipementRoot + 'ajouter',
         RESTORE: factureEquipementRoot + 'restaurer',
         TRASHED: factureEquipementRoot + 'getTrashAll',
+      }),
+    },
+    AUTRE: {
+      GETTERS: Object.freeze({
+        FACTURES: factureAutreRoot + 'factures',
+      }),
+      ACTIONS: Object.freeze({
+        ALL: factureAutreRoot + 'getAll',
+        ONE: factureAutreRoot + 'getOne',
+        PAGINATE: factureAutreRoot + 'getPaginate',
+        SEARCH: factureAutreRoot + 'getSearch',
+        ADD: factureAutreRoot + 'ajouter',
       }),
     },
   }),

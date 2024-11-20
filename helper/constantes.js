@@ -58,7 +58,8 @@ const FACTURE = Object.freeze({
     loyer: 'loyer',
     initiale: 'initiale',
     annexe: 'annexe',
-    equipement: 'équipement',
+    equipement: 'equipement',
+    abonnement: 'abonnement',
   },
 })
 const MATRIMONIALE = Object.freeze({

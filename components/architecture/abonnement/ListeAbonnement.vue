@@ -43,6 +43,9 @@
           </div>
         </template>
         <template #cell(option)="data">
+          <nuxt-link v-can="permissions.show" :to="`/exploitation/abonnement/facture/${data.item.id}`">
+            <feather title="voir la facture" type="file-text" size="20" stroke="green" />
+          </nuxt-link>
           <a v-if="data.item.status === STATUS.progressing" v-can="permissions.abort" type="button" @click="resilier(data.item)">
             <feather title="résilier" type="x-octagon" size="20" stroke="red" />
           </a>
