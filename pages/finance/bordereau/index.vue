@@ -14,11 +14,11 @@
         >Commerciaux</b-nav-item
       >
       <b-nav-item
-        to="/finance/bordereau/parent/bordereau"
+        to="/finance/bordereau/parent/bordereaux"
         :active-class="'bg-white text-primary'"
         :link-classes="link"
         exact
-        :exact-active-class="active('/finance/bordereau/parent/bordereau')"
+        :exact-active-class="active('/finance/bordereau/parent/bordereaux')"
         >Bordereaux</b-nav-item
       >
     </b-nav>

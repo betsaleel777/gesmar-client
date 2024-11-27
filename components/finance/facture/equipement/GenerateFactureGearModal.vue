@@ -64,6 +64,8 @@
                     outlined
                     dense
                     v-bind="attrs"
+                    :error-messages="errors.date_limite"
+                    :error="errors.hasOwnProperty('date_limite')"
                     v-on="on"
                   ></v-text-field>
                 </template>
@@ -185,8 +187,13 @@ export default {
         this.$refs.menuMonth.save(this.mois)
         this.getMonthRental(date).then(({ abonnements }) => {
           this.factures = abonnements.map(
-            ({ id, emplacement, equipement: { id: equipement_id, code: compteur, prix_unitaire, prix_fixe, frais_facture }, index_depart: depart }) => {
-              const { contrat, code } = emplacement
+            ({
+              id,
+              emplacement,
+              contrat,
+              equipement: { id: equipement_id, code: compteur, prix_unitaire, prix_fixe, frais_facture },
+              index_depart: depart,
+            }) => {
               return {
                 id,
                 contrat_id: contrat.id,
@@ -195,7 +202,7 @@ export default {
                 client: contrat.personne.alias,
                 index_depart: contrat.facturesEquipements.length > 0 ? contrat.facturesEquipements[0].index_fin : depart,
                 index_fin: null,
-                code,
+                code: emplacement.code,
                 periode: this.mois + '-01',
                 prix_unitaire,
                 prix_fixe,
@@ -216,6 +223,9 @@ export default {
         .then(({ message }) => {
           this.$notify({ text: message, title: 'succès de la création'.toLocaleUpperCase(), type: 'success' })
           this.dialog = false
+        })
+        .catch((err) => {
+          this.fillErrors(err.response.data.errors)
         })
         .finally(() => (this.submiting = false))
     },
